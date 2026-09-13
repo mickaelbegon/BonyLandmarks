@@ -12,9 +12,9 @@ from .client import TeacherServerClient
 from .export import export_session
 from .i18n import tr
 from .login_dialog import LoginDialog
-from .mesh_loader import load_glb_mesh, parse_markers
-from .viewer import LandmarkViewer
+from .mesh_loader import load_avatar_glb
 from .scoring import SessionScore
+from .viewer import LandmarkViewer
 
 
 class MainWindow(QMainWindow):
@@ -36,18 +36,24 @@ class MainWindow(QMainWindow):
 
             try:
                 client = TeacherServerClient(server_url)
-                glb_bytes, markers_raw = client.fetch_scan(matricule, birthdate)
+                avatar_bytes = client.fetch_avatar(matricule, birthdate)
                 break
             except ValueError:
                 dialog.set_error(tr("error_credentials", self._lang))
             except (httpx.HTTPError, ConnectionError) as exc:
                 dialog.set_error(tr("error_network", self._lang, detail=str(exc)))
 
-        markers = parse_markers(markers_raw)
-        mesh = load_glb_mesh(glb_bytes)
-        landmark_codes = list(markers.keys())
+        body_mesh, vertex_colors, landmark_markers, all_markers = load_avatar_glb(avatar_bytes)
+        landmark_codes = list(landmark_markers.keys())
 
-        viewer = LandmarkViewer(mesh, markers, landmark_codes, lang=self._lang)
+        viewer = LandmarkViewer(
+            mesh=body_mesh,
+            ground_truth=landmark_markers,
+            landmark_codes=landmark_codes,
+            lang=self._lang,
+            vertex_colors=vertex_colors,
+            all_markers=all_markers,
+        )
         viewer.session_complete.connect(lambda score: self._on_session_done(score, matricule))
         self.setCentralWidget(viewer)
         self.show()

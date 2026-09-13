@@ -11,16 +11,11 @@ Workflow per landmark:
 
 from __future__ import annotations
 
-from typing import Callable
-
 import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
-    QComboBox,
-    QDialog,
-    QDialogButtonBox,
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -58,10 +53,14 @@ class LandmarkViewer(QWidget):
         ground_truth: dict[str, np.ndarray],
         landmark_codes: list[str],
         lang: Language = "fr",
+        vertex_colors: np.ndarray | None = None,
+        all_markers: dict[str, np.ndarray] | None = None,
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
         self._mesh = mesh
+        self._vertex_colors = vertex_colors
+        self._all_markers = all_markers or {}
         self._ground_truth = ground_truth
         self._lang = lang
 
@@ -172,12 +171,35 @@ class LandmarkViewer(QWidget):
     def _setup_scene(self) -> None:
         pl = self._plotter
         pl.background_color = "#1a1a2e"
-        pl.add_mesh(self._mesh, color=_MESH_COLOR, opacity=0.85, smooth_shading=True)
 
-        # BodyLoop reference markers as green spheres
+        # Use photographic vertex colours when available, otherwise flat skin tone
+        if self._vertex_colors is not None:
+            rgba = self._vertex_colors[:, :3]   # RGB only for PyVista scalars
+            self._mesh.point_data["RGB"] = rgba
+            pl.add_mesh(
+                self._mesh,
+                scalars="RGB",
+                rgb=True,
+                smooth_shading=True,
+                show_scalar_bar=False,
+            )
+        else:
+            pl.add_mesh(self._mesh, color=_MESH_COLOR, opacity=0.85, smooth_shading=True)
+
+        # All BodyLoop auto-markers as small grey spheres
+        gt_codes = {lm.code for lm in self._landmarks}
+        for bl_name, xyz in self._all_markers.items():
+            # Skip the 24 that will be shown as green below
+            from .mesh_loader import BODYLOOP_NAME_TO_CODE
+            if BODYLOOP_NAME_TO_CODE.get(bl_name) in gt_codes:
+                continue
+            sphere = pv.Sphere(radius=5, center=xyz)
+            pl.add_mesh(sphere, color="#888888", opacity=0.6, name=f"extra_{bl_name}")
+
+        # BodyLoop reference markers as green spheres (the 24 to place)
         for code, xyz in self._ground_truth.items():
-            if code in {lm.code for lm in self._landmarks}:
-                sphere = pv.Sphere(radius=8, center=xyz)
+            if code in gt_codes:
+                sphere = pv.Sphere(radius=10, center=xyz)
                 pl.add_mesh(sphere, color=_MARKER_COLOR, name=f"{_ACTOR_PREFIX_REF}{code}")
 
         pl.enable_surface_point_picking(
