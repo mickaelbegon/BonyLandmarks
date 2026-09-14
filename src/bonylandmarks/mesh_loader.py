@@ -77,10 +77,37 @@ def _largest_trimesh(scene: trimesh.Scene) -> trimesh.Trimesh:
     return max(meshes.values(), key=lambda m: len(m.vertices))
 
 
+def _sample_texture_at_uv(tm: trimesh.Trimesh) -> "np.ndarray | None":
+    """Return per-vertex RGBA colours by baking the PBR texture via trimesh.
+
+    trimesh.visual.to_color() handles the UV→vertex mapping correctly even
+    for multi-primitive GLTF meshes; direct UV sampling produces artefacts
+    because trimesh's visual.uv ordering doesn't always match vertices.
+    """
+    visual = tm.visual
+    if not isinstance(visual, trimesh.visual.texture.TextureVisuals):
+        return None
+    try:
+        color_vis = visual.to_color()
+        vc = color_vis.vertex_colors
+        if vc is not None and len(vc) == len(tm.vertices):
+            return np.array(vc, dtype=np.uint8)
+    except Exception:
+        pass
+    return None
+
+
 def _extract_vertex_colors(tm: trimesh.Trimesh) -> "np.ndarray | None":
     try:
+        visual = tm.visual
+        # Fast path: already per-vertex colours — no re-baking needed.
+        if isinstance(visual, trimesh.visual.ColorVisuals):
+            vc = visual.vertex_colors
+            if vc is not None and len(vc) == len(tm.vertices):
+                return np.array(vc, dtype=np.uint8)
+        # Slow path: bake PBR texture to vertex colours.
         color_mesh = tm.copy()
-        color_mesh.visual = tm.visual.to_color()
+        color_mesh.visual = visual.to_color()
         vc = color_mesh.visual.vertex_colors
         if vc is not None and len(vc) == len(tm.vertices):
             return np.array(vc, dtype=np.uint8)
@@ -113,13 +140,16 @@ def load_glb_mesh(glb_bytes: bytes) -> "tuple[pv.PolyData, np.ndarray | None]":
 
 def load_avatar_glb(
     glb_bytes: bytes,
+    remove_stickers: bool = True,
+    sticker_radius_mm: float = 16.0,
+    blend_margin_mm: float = 6.0,
 ) -> "tuple[pv.PolyData, np.ndarray | None, dict[str, np.ndarray], dict[str, np.ndarray]]":
     """Parse a BodyLoop avatar_3d GLB and return:
 
     (body_mesh, vertex_colors, landmark_markers, all_markers)
 
     - body_mesh        : PyVista PolyData in mm
-    - vertex_colors    : (N,4) uint8 RGBA or None
+    - vertex_colors    : (N,4) uint8 RGBA sampled from PBR texture, or None
     - landmark_markers : {our_code -> xyz_mm}  (24 anatomical landmarks)
     - all_markers      : {bodyloop_name -> xyz_mm}  (all 83 auto-detected markers)
     """
@@ -130,7 +160,6 @@ def load_avatar_glb(
 
     scene = _to_trimesh_scene(glb_bytes)
     body_tm = _largest_trimesh(scene)
-    body_mesh, vertex_colors = _to_pyvista(body_tm)
 
     # pygltflib needs a file path, write to a temp file
     with tempfile.NamedTemporaryFile(suffix=".glb", delete=False) as tmp:
@@ -154,6 +183,48 @@ def load_avatar_glb(
             for i, name in enumerate(names):
                 if i < len(pts):
                     all_markers[name] = pts[i]
+
+    # PalpationMarkers = physical green stickers (more precise than AutoMarkers)
+    palpation_positions: list[np.ndarray] = []
+    pm_geom = scene.geometry.get("PalpationMarkers")
+    if pm_geom is not None:
+        pts = np.array(pm_geom.vertices, dtype=float)
+        if np.abs(pts).max() < _METRES_THRESHOLD:
+            pts = pts * 1000.0
+        palpation_positions = list(pts)
+
+    # Try UV texture sampling first — photographic quality without PyVista UV issues.
+    uv_colors = _sample_texture_at_uv(body_tm)
+
+    sticker_positions = palpation_positions if palpation_positions else list(all_markers.values())
+
+    if uv_colors is not None:
+        # Build a ColorVisuals mesh from the baked colours so sticker_removal
+        # can work on it without re-baking from scratch.
+        color_tm = body_tm.copy()
+        color_tm.visual = trimesh.visual.ColorVisuals(
+            mesh=color_tm, vertex_colors=uv_colors
+        )
+        if remove_stickers and sticker_positions:
+            from .sticker_removal import remove_sticker_markers
+            color_tm = remove_sticker_markers(
+                color_tm,
+                marker_positions=sticker_positions,
+                sticker_radius_mm=sticker_radius_mm,
+                blend_margin_mm=blend_margin_mm,
+            )
+        body_mesh, vertex_colors = _to_pyvista(color_tm)
+    else:
+        # Fallback: apply sticker removal directly on the TextureVisuals mesh.
+        if remove_stickers and sticker_positions:
+            from .sticker_removal import remove_sticker_markers
+            body_tm = remove_sticker_markers(
+                body_tm,
+                marker_positions=sticker_positions,
+                sticker_radius_mm=sticker_radius_mm,
+                blend_margin_mm=blend_margin_mm,
+            )
+        body_mesh, vertex_colors = _to_pyvista(body_tm)
 
     landmark_markers: dict[str, np.ndarray] = {
         our_code: all_markers[bl_name]
