@@ -28,8 +28,8 @@ _STRINGS: dict[str, dict[Language, str]] = {
         "en": "Teacher server URL",
     },
     "connect_button": {
-        "fr": "Se connecter et charger le scan",
-        "en": "Connect and load scan",
+        "fr": "Se connecter",
+        "en": "Connect",
     },
     "error_credentials": {
         "fr": "Matricule ou date de naissance incorrects.",
@@ -74,6 +74,26 @@ _STRINGS: dict[str, dict[Language, str]] = {
     "lang_toggle": {
         "fr": "English",
         "en": "Français",
+    },
+    "select_name_label": {
+        "fr": "Sélectionnez votre nom",
+        "en": "Select your name",
+    },
+    "dob_label": {
+        "fr": "Date de naissance (JJ/MM/AAAA)",
+        "en": "Date of birth (DD/MM/YYYY)",
+    },
+    "error_server_config": {
+        "fr": "Fichier server.json introuvable. Contactez l'enseignant.",
+        "en": "server.json not found. Contact your instructor.",
+    },
+    "error_invalid_matricule": {
+        "fr": "Le matricule doit contenir 8 chiffres.",
+        "en": "Student ID must be 8 digits.",
+    },
+    "error_invalid_dob": {
+        "fr": "Date de naissance invalide. Format : JJ/MM/AAAA",
+        "en": "Invalid date of birth. Format: DD/MM/YYYY",
     },
 }
 

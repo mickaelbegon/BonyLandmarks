@@ -12,6 +12,7 @@ from .client import TeacherServerClient
 from .export import export_session
 from .i18n import tr
 from .login_dialog import LoginDialog
+from .manifest import get_server_url, load_manifest
 from .mesh_loader import load_avatar_glb
 from .scoring import SessionScore
 from .viewer import LandmarkViewer
@@ -25,14 +26,22 @@ class MainWindow(QMainWindow):
         self.resize(1280, 800)
 
     def start(self) -> None:
-        dialog = LoginDialog(self._lang, self)
+        students = load_manifest()
+        server_url = get_server_url()
+
+        dialog = LoginDialog(students=students, server_url=server_url, lang=self._lang, parent=self)
         while True:
             if dialog.exec() != LoginDialog.Accepted:
                 sys.exit(0)
 
             matricule = dialog.matricule
             birthdate = dialog.birthdate
-            server_url = dialog.server_url
+
+            # Defensive: dialog disables Connect when server_url is None,
+            # but guard here to avoid passing None to the client.
+            if server_url is None:
+                dialog.set_error(tr("error_server_config", self._lang))
+                continue
 
             try:
                 client = TeacherServerClient(server_url)

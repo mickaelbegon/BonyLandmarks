@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from datetime import date
 
 import httpx
@@ -17,14 +18,34 @@ class TeacherServerClient:
         self._timeout = timeout
 
     def fetch_avatar(self, matricule: str, birthdate: date) -> bytes:
-        """Download and decrypt the avatar GLB for *matricule*.
+        """POST /auth → token → GET /scan/{matricule} → decrypt.
 
         Returns decrypted GLB bytes (contains mesh + markers).
         Raises ValueError on bad credentials, httpx.HTTPError on network issues.
         """
-        url = f"{self._base}/scan/{matricule.lower()}"
+        dob_hash = hashlib.sha256(
+            f"{matricule.lower().strip()}:{birthdate.strftime('%Y%m%d')}".encode()
+        ).hexdigest()
+
         with httpx.Client(timeout=self._timeout) as client:
-            resp = client.get(url)
-            resp.raise_for_status()
-            encrypted = resp.content
+            # Step 1: authenticate
+            auth_resp = client.post(
+                f"{self._base}/auth",
+                json={"matricule": matricule.lower(), "dob_hash": dob_hash},
+            )
+            if auth_resp.status_code == 401:
+                raise ValueError("Identifiants incorrects / Wrong credentials")
+            auth_resp.raise_for_status()
+            token = auth_resp.json()["token"]
+
+            # Step 2: download scan
+            scan_resp = client.get(
+                f"{self._base}/scan/{matricule.lower()}",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            if scan_resp.status_code in (401, 403):
+                raise ValueError("Accès refusé / Access denied")
+            scan_resp.raise_for_status()
+            encrypted = scan_resp.content
+
         return decrypt_bytes(encrypted, matricule, birthdate)
