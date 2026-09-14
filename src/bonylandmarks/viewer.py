@@ -19,13 +19,15 @@ import random
 import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtGui import QColor, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
+    QListWidget,
     QPushButton,
     QSizePolicy,
     QSlider,
@@ -122,6 +124,12 @@ class LandmarkViewer(QWidget):
         # Task C — queue of landmarks to retry (grade D)
         self._retry_queue: list[Landmark] = []
         self._retry_mode: bool = False
+
+        # Inverse identification mode
+        self._inverse_mode: bool = False
+        self._inverse_queue: list[Landmark] = []   # landmarks to identify, shuffled
+        self._inverse_index: int = 0
+        self._inverse_shown_actor: str | None = None  # PyVista actor name of the shown sphere
 
         self._candidate_point: np.ndarray | None = None
         self._redo_count: int = 0
@@ -289,6 +297,54 @@ class LandmarkViewer(QWidget):
         )
         self._sticker_btn.clicked.connect(self._on_sticker_toggled)
         panel.addWidget(self._sticker_btn)
+
+        # Mode toggle: Placement ↔ Identification inverse
+        self._mode_btn = QPushButton("Mode : Placement")
+        self._mode_btn.setCheckable(True)
+        self._mode_btn.setChecked(False)
+        self._mode_btn.clicked.connect(self._on_mode_toggled)
+        panel.addWidget(self._mode_btn)
+
+        # Inverse identification panel (hidden by default)
+        self._inverse_panel = QWidget()
+        inv_layout = QVBoxLayout(self._inverse_panel)
+        inv_layout.setContentsMargins(0, 0, 0, 0)
+        inv_layout.setSpacing(6)
+
+        inv_title = QLabel("Quel est ce repère ?")
+        inv_title.setStyleSheet("font-size: 13px; font-weight: bold;")
+        inv_layout.addWidget(inv_title)
+
+        self._inverse_filter = QLineEdit()
+        self._inverse_filter.setPlaceholderText("Filtrer...")
+        self._inverse_filter.textChanged.connect(self._on_inverse_filter_changed)
+        inv_layout.addWidget(self._inverse_filter)
+
+        self._inverse_list = QListWidget()
+        self._inverse_list.setMinimumHeight(120)
+        self._inverse_item_codes: dict[int, str] = {}
+
+        lm_sorted = sorted(self._landmarks, key=lambda lm: lm.name(self._lang))
+        for i, lm_item in enumerate(lm_sorted):
+            cat = lm_item.category if hasattr(lm_item, "category") else ""
+            item_text = f"{cat} • {lm_item.name(self._lang)}"
+            self._inverse_list.addItem(item_text)
+            self._inverse_item_codes[i] = lm_item.code
+
+        self._inverse_validate_btn = QPushButton("Valider ma réponse")
+        self._inverse_validate_btn.setEnabled(False)
+        self._inverse_validate_btn.clicked.connect(self._on_inverse_validate)
+
+        self._inverse_list.itemSelectionChanged.connect(
+            lambda: self._inverse_validate_btn.setEnabled(
+                bool(self._inverse_list.selectedItems())
+            )
+        )
+        inv_layout.addWidget(self._inverse_list)
+        inv_layout.addWidget(self._inverse_validate_btn)
+
+        self._inverse_panel.setVisible(False)
+        panel.addWidget(self._inverse_panel)
 
         # Enter key confirms (works even when the 3-D view has focus)
         for key in (Qt.Key_Return, Qt.Key_Enter):
@@ -913,3 +969,190 @@ class LandmarkViewer(QWidget):
         self._instr_label.setText(tr("instructions", self._lang))
         if self._retry_mode or self._index < len(self._landmarks):
             self._update_instruction_panel()
+
+    # ── Mode inverse — identification anatomique ──────────────────────────────
+
+    def _on_mode_toggled(self, checked: bool) -> None:
+        # Prevent entering inverse mode during a retry session
+        if self._retry_mode and checked:
+            self._mode_btn.setChecked(False)
+            return
+        self._inverse_mode = checked
+        label = "Mode : Identification" if checked else "Mode : Placement"
+        self._mode_btn.setText(label)
+        if checked:
+            self._start_inverse_session()
+        else:
+            self._stop_inverse_session()
+
+    def _start_inverse_session(self) -> None:
+        """Build the identification queue and enter inverse mode."""
+        self._inverse_queue = [
+            lm for lm in self._landmarks if lm.code in self._ground_truth
+        ]
+        random.shuffle(self._inverse_queue)
+        self._inverse_index = 0
+
+        self._plotter.disable_picking()
+
+        # Hide placement widgets; show identification panel
+        self._confirm_btn.setVisible(False)
+        self._redo_btn.setVisible(False)
+        self._instr_label.setVisible(False)
+        self._inverse_panel.setVisible(True)
+
+        self._show_inverse_landmark()
+
+    def _stop_inverse_session(self) -> None:
+        """Leave inverse mode and restore normal surface picking."""
+        if self._inverse_shown_actor is not None:
+            self._plotter.remove_actor(self._inverse_shown_actor, render=False)
+            self._inverse_shown_actor = None
+
+        # Re-enable picking with the same parameters used in _setup_scene
+        self._plotter.enable_surface_point_picking(
+            callback=self._on_surface_pick,
+            show_message=False,
+            left_clicking=True,
+            pickable_window=False,
+        )
+        self._plotter.render()
+
+        # Restore placement widgets; hide identification panel
+        self._confirm_btn.setVisible(True)
+        self._redo_btn.setVisible(True)
+        self._instr_label.setVisible(True)
+        self._inverse_panel.setVisible(False)
+
+        if self._mode_btn.isChecked():
+            self._mode_btn.setChecked(False)
+        self._inverse_mode = False
+
+    def _show_inverse_landmark(self) -> None:
+        """Display the ground-truth sphere for the current inverse landmark."""
+        if self._inverse_index >= len(self._inverse_queue):
+            self._finish_inverse_session()
+            return
+
+        lm = self._inverse_queue[self._inverse_index]
+        gt = self._ground_truth[lm.code]
+
+        # Remove previous sphere
+        if self._inverse_shown_actor is not None:
+            self._plotter.remove_actor(self._inverse_shown_actor, render=False)
+
+        actor_name = f"inverse_shown_{lm.code}"
+        sphere = pv.Sphere(radius=12, center=gt)
+        self._plotter.add_mesh(sphere, color=_MARKER_COLOR, name=actor_name)
+        self._inverse_shown_actor = actor_name
+
+        # Orient camera toward the shown sphere
+        self._plotter.set_focus(gt)
+        self._plotter.reset_camera()
+        self._plotter.render()
+
+        # Update side panel (name hidden so as not to reveal the answer)
+        n = len(self._inverse_queue)
+        self._progress_label.setText(
+            f"Identification — {self._inverse_index + 1} / {n}"
+        )
+        self._name_label.setText("?")
+        self._hint_text.setText("")
+        self._application_text.setText("")
+        self._error_label.setText("")
+
+        # Reset identification list
+        self._inverse_filter.clear()
+        self._inverse_list.clearSelection()
+        self._inverse_validate_btn.setEnabled(False)
+        for i in range(self._inverse_list.count()):
+            item = self._inverse_list.item(i)
+            item.setHidden(False)
+            item.setData(Qt.BackgroundRole, None)
+
+    def _on_inverse_filter_changed(self, text: str) -> None:
+        """Show/hide list items according to the filter text (case-insensitive)."""
+        lower = text.lower()
+        for i in range(self._inverse_list.count()):
+            item = self._inverse_list.item(i)
+            item.setHidden(lower not in item.text().lower())
+
+    def _on_inverse_validate(self) -> None:
+        """Check whether the selected landmark matches the displayed sphere."""
+        selected = self._inverse_list.selectedItems()
+        if not selected:
+            return
+        item = selected[0]
+        row = self._inverse_list.row(item)
+        selected_code = self._inverse_item_codes.get(row)
+        expected_code = self._inverse_queue[self._inverse_index].code
+
+        if selected_code == expected_code:
+            # Correct — swap green sphere for blue, then advance after 1 s
+            if self._inverse_shown_actor is not None:
+                self._plotter.remove_actor(self._inverse_shown_actor, render=False)
+            lm = self._inverse_queue[self._inverse_index]
+            gt = self._ground_truth[lm.code]
+            blue_name = f"inverse_correct_{lm.code}"
+            self._plotter.add_mesh(
+                pv.Sphere(radius=12, center=gt), color=_CONFIRMED_COLOR, name=blue_name
+            )
+            self._inverse_shown_actor = blue_name
+            self._plotter.render()
+
+            self._error_label.setText("✓ Correct !")
+            self._error_label.setStyleSheet(
+                "font-size: 14px; font-weight: bold; color: #2e7d32;"
+            )
+            self._inverse_validate_btn.setEnabled(False)
+
+            def _advance() -> None:
+                self._inverse_index += 1
+                self._show_inverse_landmark()
+
+            QTimer.singleShot(1000, _advance)
+        else:
+            # Incorrect — let the student try again
+            self._error_label.setText("✗ Essayez encore")
+            self._error_label.setStyleSheet(
+                "font-size: 14px; font-weight: bold; color: #c62828;"
+            )
+            item.setBackground(QColor("#ffcccc"))
+
+    def _finish_inverse_session(self) -> None:
+        """Display a summary dialog and return to placement mode."""
+        if self._inverse_shown_actor is not None:
+            self._plotter.remove_actor(self._inverse_shown_actor, render=False)
+            self._inverse_shown_actor = None
+        self._plotter.render()
+
+        n = len(self._inverse_queue)
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Session terminée")
+        dlg.setWindowModality(Qt.WindowModal)
+        dlg.setMinimumWidth(360)
+
+        layout = QVBoxLayout(dlg)
+        layout.setSpacing(16)
+        layout.setContentsMargins(28, 28, 28, 24)
+
+        msg = QLabel(
+            f"Session d'identification terminée !\n"
+            f"Score : {n} / {n}"
+        )
+        msg.setWordWrap(True)
+        msg.setAlignment(Qt.AlignCenter)
+        msg.setStyleSheet("font-size: 15px;")
+        layout.addWidget(msg)
+
+        close_btn = QPushButton("Fermer")
+        close_btn.setDefault(True)
+        close_btn.setStyleSheet("font-size: 13px; padding: 8px 20px;")
+        layout.addWidget(close_btn, alignment=Qt.AlignCenter)
+
+        close_btn.clicked.connect(dlg.accept)
+        dlg.finished.connect(lambda _: self._stop_inverse_session())
+
+        dlg.show()
+        dlg.raise_()
+        self._center_dialog(dlg)
