@@ -13,6 +13,7 @@ from .export import export_session
 from .i18n import tr
 from .login_dialog import LoginDialog
 from .manifest import get_server_url, load_manifest
+from .landmarks_extended import LANDMARKS
 from .mesh_loader import load_avatar_glb
 from .scoring import SessionScore
 from .viewer import LandmarkViewer
@@ -26,34 +27,48 @@ class MainWindow(QMainWindow):
         self.resize(1280, 800)
 
     def start(self) -> None:
-        students = load_manifest()
-        server_url = get_server_url()
+        import os
+        dev_scan = os.environ.get("BONY_DEV_SCAN")
+        if dev_scan:
+            avatar_bytes = Path(dev_scan).read_bytes()
+            matricule = "dev"
+        else:
+            students = load_manifest()
+            server_url = get_server_url()
 
-        dialog = LoginDialog(students=students, server_url=server_url, lang=self._lang, parent=self)
-        while True:
-            if dialog.exec() != LoginDialog.Accepted:
-                sys.exit(0)
+            dialog = LoginDialog(students=students, server_url=server_url, lang=self._lang, parent=self)
+            while True:
+                if dialog.exec() != LoginDialog.Accepted:
+                    sys.exit(0)
 
-            matricule = dialog.matricule
-            birthdate = dialog.birthdate
+                matricule = dialog.matricule
+                birthdate = dialog.birthdate
 
-            # Defensive: dialog disables Connect when server_url is None,
-            # but guard here to avoid passing None to the client.
-            if server_url is None:
-                dialog.set_error(tr("error_server_config", self._lang))
-                continue
+                # Defensive: dialog disables Connect when server_url is None,
+                # but guard here to avoid passing None to the client.
+                if server_url is None:
+                    dialog.set_error(tr("error_server_config", self._lang))
+                    continue
 
-            try:
-                client = TeacherServerClient(server_url)
-                avatar_bytes = client.fetch_avatar(matricule, birthdate)
-                break
-            except ValueError:
-                dialog.set_error(tr("error_credentials", self._lang))
-            except (httpx.HTTPError, ConnectionError) as exc:
-                dialog.set_error(tr("error_network", self._lang, detail=str(exc)))
+                try:
+                    client = TeacherServerClient(server_url)
+                    avatar_bytes = client.fetch_avatar(matricule, birthdate)
+                    break
+                except ValueError:
+                    dialog.set_error(tr("error_credentials", self._lang))
+                except (httpx.HTTPError, ConnectionError) as exc:
+                    dialog.set_error(tr("error_network", self._lang, detail=str(exc)))
 
-        body_mesh, vertex_colors, landmark_markers, all_markers = load_avatar_glb(avatar_bytes)
-        landmark_codes = list(landmark_markers.keys())
+        body_mesh, vertex_colors, landmark_markers, all_markers = load_avatar_glb(
+            avatar_bytes, remove_stickers=True
+        )
+        _, vertex_colors_raw, _, _ = load_avatar_glb(
+            avatar_bytes, remove_stickers=False
+        )
+        # All codes from the extended set; ground_truth available only for the
+        # 24 BodyLoop-mapped BONE landmarks — EMG/SKINFOLD/ANTHRO are shown
+        # but marked "non évalué" when no ground truth exists.
+        landmark_codes = [lm.code for lm in LANDMARKS]
 
         viewer = LandmarkViewer(
             mesh=body_mesh,
@@ -61,6 +76,7 @@ class MainWindow(QMainWindow):
             landmark_codes=landmark_codes,
             lang=self._lang,
             vertex_colors=vertex_colors,
+            vertex_colors_raw=vertex_colors_raw,
             all_markers=all_markers,
         )
         viewer.session_complete.connect(lambda score: self._on_session_done(score, matricule))
