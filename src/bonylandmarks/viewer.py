@@ -1044,13 +1044,28 @@ class LandmarkViewer(QWidget):
             self._plotter.remove_actor(self._inverse_shown_actor, render=False)
 
         actor_name = f"inverse_shown_{lm.code}"
-        sphere = pv.Sphere(radius=12, center=gt)
+        sphere = pv.Sphere(radius=22, center=gt)
         self._plotter.add_mesh(sphere, color=_MARKER_COLOR, name=actor_name)
         self._inverse_shown_actor = actor_name
 
-        # Orient camera toward the shown sphere
-        self._plotter.set_focus(gt)
-        self._plotter.reset_camera()
+        # Orient camera toward the shown sphere.
+        # Compute a side-view position: project gt onto the horizontal plane,
+        # find the outward direction from the body axis, then place the camera
+        # at gt + direction * distance so the landmark is always facing the viewer.
+        import numpy as _np
+        body_cx, body_cz = 0.0, 0.0  # body is centred at origin horizontally
+        horiz = _np.array([gt[0] - body_cx, 0.0, gt[2] - body_cz], dtype=float)
+        horiz_norm = _np.linalg.norm(horiz)
+        if horiz_norm < 1.0:
+            direction = _np.array([0.0, 0.0, 1.0])  # fallback: front view
+        else:
+            direction = horiz / horiz_norm
+        cam_distance = 650.0  # mm — close enough to see the landmark clearly
+        cam_pos = gt + direction * cam_distance
+        cam = self._plotter.camera
+        cam.position = tuple(cam_pos)
+        cam.focal_point = tuple(gt)
+        cam.up = (0.0, 1.0, 0.0)
         self._plotter.render()
 
         # Update side panel (name hidden so as not to reveal the answer)

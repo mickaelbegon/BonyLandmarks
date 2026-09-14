@@ -437,8 +437,8 @@ LANDMARKS: list[Landmark] = [
     Landmark(
         code="lateral_epicondyle_left",
         category="BONE",
-        name_fr="Épicondyle latéral gauche",
-        name_en="Left lateral epicondyle",
+        name_fr="Épicondyle latéral de l'humérus gauche",
+        name_en="Left lateral humeral epicondyle",
         hint_fr=(
             "Saillie osseuse latérale de l'extrémité distale de l'humérus gauche, "
             "coude fléchi à 90°. Elle donne insertion aux extenseurs du poignet. "
@@ -456,8 +456,8 @@ LANDMARKS: list[Landmark] = [
     Landmark(
         code="lateral_epicondyle_right",
         category="BONE",
-        name_fr="Épicondyle latéral droit",
-        name_en="Right lateral epicondyle",
+        name_fr="Épicondyle latéral de l'humérus droit",
+        name_en="Right lateral humeral epicondyle",
         hint_fr=(
             "Saillie osseuse latérale de l'extrémité distale de l'humérus droit, "
             "coude fléchi à 90°. Elle donne insertion aux extenseurs du poignet. "
@@ -475,8 +475,8 @@ LANDMARKS: list[Landmark] = [
     Landmark(
         code="medial_epicondyle_left",
         category="BONE",
-        name_fr="Épicondyle médial gauche",
-        name_en="Left medial epicondyle",
+        name_fr="Épicondyle médial de l'humérus gauche",
+        name_en="Left medial humeral epicondyle",
         hint_fr=(
             "Saillie osseuse médiale de l'extrémité distale de l'humérus gauche, "
             "très proéminente coude fléchi. Le nerf ulnaire passe juste en arrière "
@@ -493,8 +493,8 @@ LANDMARKS: list[Landmark] = [
     Landmark(
         code="medial_epicondyle_right",
         category="BONE",
-        name_fr="Épicondyle médial droit",
-        name_en="Right medial epicondyle",
+        name_fr="Épicondyle médial de l'humérus droit",
+        name_en="Right medial humeral epicondyle",
         hint_fr=(
             "Saillie osseuse médiale de l'extrémité distale de l'humérus droit, "
             "très proéminente coude fléchi. Le nerf ulnaire passe juste en arrière "
