@@ -563,7 +563,7 @@ class LandmarkViewer(QWidget):
         # Landmark name (large, bold)
         name_lbl = QLabel(lm.name(self._lang))
         name_lbl.setWordWrap(True)
-        name_lbl.setStyleSheet("font-size: 18px; font-weight: bold;")
+        name_lbl.setStyleSheet("font-size: 18px; font-weight: bold; color: #f5f5f5;")
         layout.addWidget(name_lbl)
 
         # Grade badge (scored landmarks only)
@@ -575,13 +575,13 @@ class LandmarkViewer(QWidget):
                 f"&nbsp;&nbsp;{result.composite_score:.0f}/100"
                 f"&nbsp;({result.error_mm:.1f} mm)"
             )
-            grade_lbl.setStyleSheet("font-size: 14px;")
+            grade_lbl.setStyleSheet("font-size: 14px; color: #e0e0e0;")
             layout.addWidget(grade_lbl)
         else:
             not_scored_lbl = QLabel(
                 "Non évalué" if self._lang == "fr" else "Not scored"
             )
-            not_scored_lbl.setStyleSheet("font-size: 13px; color: #888;")
+            not_scored_lbl.setStyleSheet("font-size: 13px; color: #aaa;")
             layout.addWidget(not_scored_lbl)
 
         # Palpation hint
@@ -593,7 +593,9 @@ class LandmarkViewer(QWidget):
         hint_box.setReadOnly(True)
         hint_box.setText(lm.hint(self._lang))
         hint_box.setFixedHeight(110)
-        hint_box.setStyleSheet("font-size: 12px; color: #222;")
+        hint_box.setStyleSheet(
+            "font-size: 12px; color: #111; background: #ffffff; border: 1px solid #bbb; border-radius: 4px;"
+        )
         layout.addWidget(hint_box)
 
         # Clinical application (only when non-empty)
@@ -610,8 +612,8 @@ class LandmarkViewer(QWidget):
             app_box.setText(app_text)
             app_box.setFixedHeight(70)
             app_box.setStyleSheet(
-                "font-size: 11px; color: #336; font-style: italic; "
-                "background: #f0f4ff; border: 1px solid #c0c8e8; border-radius: 4px;"
+                "font-size: 11px; color: #1a237e; font-style: italic; "
+                "background: #e8edf8; border: 1px solid #90a4d4; border-radius: 4px;"
             )
             layout.addWidget(app_box)
 
