@@ -1060,7 +1060,7 @@ class LandmarkViewer(QWidget):
             direction = _np.array([0.0, 0.0, 1.0])  # fallback: front view
         else:
             direction = horiz / horiz_norm
-        cam_distance = 650.0  # mm — close enough to see the landmark clearly
+        cam_distance = 1950.0  # mm
         cam_pos = gt + direction * cam_distance
         cam = self._plotter.camera
         cam.position = tuple(cam_pos)
