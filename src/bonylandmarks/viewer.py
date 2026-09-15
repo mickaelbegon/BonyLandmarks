@@ -80,9 +80,9 @@ _ICONS_DIR = _Path(__file__).parent / "icons"
 _body_icon_cache: dict[tuple[str, int, str], QIcon] = {}
 
 
-def _body_icon(filename: str, size: int = 44, fg: str = "#c8d8f8") -> QIcon:
-    """Load a white-bg body silhouette PNG, make white transparent, tint to fg color."""
-    cache_key = (filename, size, fg)
+def _body_icon(filename: str, size: int = 44) -> QIcon:
+    """Load a white-bg body silhouette PNG and make the white background transparent."""
+    cache_key = (filename, size)
     if cache_key in _body_icon_cache:
         return _body_icon_cache[cache_key]
 
@@ -90,31 +90,23 @@ def _body_icon(filename: str, size: int = 44, fg: str = "#c8d8f8") -> QIcon:
     pix = QPixmap(str(path))
     if pix.isNull():
         return QIcon()
-    # Scale to target size FIRST (reduces pixel iteration count significantly)
     pix = pix.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-    # Convert to QImage for pixel manipulation
     img = pix.toImage().convertToFormat(QImage.Format_ARGB32)
-
-    # Parse target foreground color
-    fg_color = QColor(fg)
-    fr, fg_r, fb = fg_color.red(), fg_color.green(), fg_color.blue()
 
     w, h = img.width(), img.height()
     for y in range(h):
         for x in range(w):
             pixel = QColor(img.pixel(x, y))
             r, g, b, a = pixel.red(), pixel.green(), pixel.blue(), pixel.alpha()
-            # White-ish pixels → fully transparent
             brightness = (r + g + b) / 3
-            if brightness > 200 and a > 128:
-                img.setPixel(x, y, QColor(255, 255, 255, 0).rgba())
-            else:
-                # Dark pixels (the silhouette) → recolor to fg, preserve darkness
-                darkness = 1.0 - brightness / 255.0
-                nr = int(fr * darkness)
-                ng = int(fg_r * darkness)
-                nb = int(fb * darkness)
-                img.setPixel(x, y, QColor(nr, ng, nb, a).rgba())
+            if brightness > 230:
+                # Pure white background → fully transparent
+                img.setPixel(x, y, QColor(0, 0, 0, 0).rgba())
+            elif brightness > 180:
+                # Anti-aliased edge → partial transparency proportional to whiteness
+                alpha = int((230 - brightness) / 50 * 255)
+                img.setPixel(x, y, QColor(r, g, b, alpha).rgba())
+            # else: silhouette pixels keep their original color (light gray visible on dark bg)
 
     icon = QIcon(QPixmap.fromImage(img))
     _body_icon_cache[cache_key] = icon
