@@ -88,8 +88,8 @@ _STRINGS: dict[str, dict[Language, str]] = {
         "en": "server.json not found. Contact your instructor.",
     },
     "error_invalid_matricule": {
-        "fr": "Le matricule doit contenir 8 chiffres.",
-        "en": "Student ID must be 8 digits.",
+        "fr": "Le matricule doit contenir au moins 3 caractères alphanumériques.",
+        "en": "Student ID must contain at least 3 alphanumeric characters.",
     },
     "error_invalid_dob": {
         "fr": "Date de naissance invalide. Format : JJ/MM/AAAA",
