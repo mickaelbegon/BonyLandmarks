@@ -38,8 +38,14 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from .dialogs import (
+    build_category_transition_dialog,
+    build_debrief_dialog,
+    build_phase2_dialog,
+    build_retry_dialog,
+)
 from .i18n import Language, tr
-from .landmarks_extended import CATEGORY_LABELS, LANDMARKS, Landmark
+from .landmarks_extended import LANDMARKS, Landmark
 from .scoring import LandmarkResult, SessionScore
 
 
@@ -51,35 +57,6 @@ _CANDIDATE_COLOR = "#ffdd00"    # Student candidate pick (yellow)
 _CONFIRMED_COLOR = "#3399ff"    # Confirmed student pick (blue)
 _ACTOR_PREFIX_REF = "ref_"
 _ACTOR_PREFIX_CONFIRMED = "confirmed_"
-
-_GRADE_COLORS: dict[str, str] = {
-    "A": "#2e7d32",   # dark green
-    "B": "#1565c0",   # dark blue
-    "C": "#e65100",   # dark orange
-    "D": "#c62828",   # dark red
-}
-
-# Category descriptions shown on the transition screen (FR, EN)
-_CATEGORY_DESCRIPTIONS: dict[str, tuple[str, str]] = {
-    "BONE": (
-        "Repères osseux palpables — base de toute mesure en kinésiologie",
-        "Palpable bony landmarks — the foundation of every kinesiology measurement",
-    ),
-    "EMG": (
-        "Sites d'électrodes de surface selon les recommandations SENIAM — "
-        "chaque site se construit à partir de deux repères osseux",
-        "Surface electrode sites per SENIAM recommendations — "
-        "each site is defined relative to two bony landmarks",
-    ),
-    "SKINFOLD": (
-        "Sites de plis cutanés — protocole ISAK. La pastille marque le centre de la pince.",
-        "Skinfold sites — ISAK protocol. The marker indicates the centre of the caliper.",
-    ),
-    "ANTHRO": (
-        "Sites de circonférences et diamètres osseux — protocole ISAK côté droit",
-        "Girths and bone diameters — ISAK protocol, right side only",
-    ),
-}
 
 
 class LandmarkViewer(QWidget):
@@ -571,98 +548,8 @@ class LandmarkViewer(QWidget):
 
         Advancement to the next landmark happens when the dialog closes.
         """
-        dlg = QDialog(self)
-        dlg.setWindowTitle(
-            "Résumé du repère" if self._lang == "fr" else "Landmark summary"
-        )
-        dlg.setWindowModality(Qt.WindowModal)
-        dlg.setMinimumWidth(440)
-
-        layout = QVBoxLayout(dlg)
-        layout.setSpacing(12)
-        layout.setContentsMargins(24, 24, 24, 20)
-
-        # Landmark name (large, bold)
-        name_lbl = QLabel(lm.name(self._lang))
-        name_lbl.setWordWrap(True)
-        name_lbl.setStyleSheet("font-size: 18px; font-weight: bold; color: #f5f5f5;")
-        layout.addWidget(name_lbl)
-
-        # Grade badge (scored landmarks only)
-        if result is not None:
-            grade = result.grade_letter()
-            grade_color = _GRADE_COLORS.get(grade, "#607D8B")
-            grade_lbl = QLabel(
-                f"Note : <b style='color:{grade_color};font-size:16px'>{grade}</b>"
-                f"&nbsp;&nbsp;{result.composite_score:.0f}/100"
-                f"&nbsp;({result.error_mm:.1f} mm)"
-            )
-            grade_lbl.setStyleSheet("font-size: 14px; color: #e0e0e0;")
-            layout.addWidget(grade_lbl)
-        else:
-            not_scored_lbl = QLabel(
-                "Non évalué" if self._lang == "fr" else "Not scored"
-            )
-            not_scored_lbl.setStyleSheet("font-size: 13px; color: #aaa;")
-            layout.addWidget(not_scored_lbl)
-
-        # Palpation hint
-        hint_title = QLabel(
-            "<b>Palpation</b>" if self._lang == "fr" else "<b>Palpation guide</b>"
-        )
-        layout.addWidget(hint_title)
-        hint_box = QTextEdit()
-        hint_box.setReadOnly(True)
-        hint_box.setText(lm.hint(self._lang))
-        hint_box.setFixedHeight(110)
-        hint_box.setStyleSheet(
-            "font-size: 12px; color: #111; background: #ffffff; border: 1px solid #bbb; border-radius: 4px;"
-        )
-        layout.addWidget(hint_box)
-
-        # Clinical application (only when non-empty)
-        app_text = lm.application(self._lang) if hasattr(lm, "application") else ""
-        if app_text:
-            app_title = QLabel(
-                "<b>Application clinique</b>"
-                if self._lang == "fr"
-                else "<b>Clinical application</b>"
-            )
-            layout.addWidget(app_title)
-            app_box = QTextEdit()
-            app_box.setReadOnly(True)
-            app_box.setText(app_text)
-            app_box.setFixedHeight(70)
-            app_box.setStyleSheet(
-                "font-size: 11px; color: #1a237e; font-style: italic; "
-                "background: #e8edf8; border: 1px solid #90a4d4; border-radius: 4px;"
-            )
-            layout.addWidget(app_box)
-
-        # Continue button
-        continue_btn = QPushButton(
-            "Continuer →" if self._lang == "fr" else "Continue →"
-        )
-        continue_btn.setDefault(True)
-        continue_btn.setStyleSheet(
-            "font-size: 14px; padding: 8px 24px; font-weight: bold;"
-        )
-        layout.addWidget(continue_btn, alignment=Qt.AlignCenter)
-
-        # Enter / Return shortcut inside the dialog
-        for key in (Qt.Key_Return, Qt.Key_Enter):
-            sc = QShortcut(QKeySequence(key), dlg)
-            sc.setContext(Qt.WindowShortcut)
-            sc.activated.connect(dlg.accept)
-
-        continue_btn.clicked.connect(dlg.accept)
-
-        # Advancement happens exactly once, when the dialog closes
+        dlg = build_debrief_dialog(lm, result, self._lang, self, self._center_dialog)
         dlg.finished.connect(lambda _result: self._advance_after_debrief(lm, result))
-
-        dlg.show()
-        dlg.raise_()
-        self._center_dialog(dlg)
 
     def _advance_after_debrief(
         self, prev_lm: Landmark, result: LandmarkResult | None
@@ -698,166 +585,27 @@ class LandmarkViewer(QWidget):
         Returns True if a transition dialog was displayed (caller must NOT call
         _update_instruction_panel directly — the dialog's close callback does it).
         """
-        if prev_lm is not None and prev_lm.category == next_lm.category:
+        prev_cat = prev_lm.category if prev_lm is not None else None
+        dlg = build_category_transition_dialog(
+            prev_cat, next_lm, self._lang, self, self._center_dialog
+        )
+        if dlg is None:
             return False
-
-        cat = next_lm.category
-        cat_fr, cat_en = CATEGORY_LABELS.get(cat, (cat, cat))
-        desc_fr, desc_en = _CATEGORY_DESCRIPTIONS.get(cat, ("", ""))
-        cat_label = cat_fr if self._lang == "fr" else cat_en
-        desc = desc_fr if self._lang == "fr" else desc_en
-        theme_color = (
-            next_lm.theme_color() if hasattr(next_lm, "theme_color") else "#607D8B"
-        )
-
-        dlg = QDialog(self)
-        dlg.setWindowTitle(cat_label)
-        dlg.setWindowModality(Qt.WindowModal)
-        dlg.setMinimumWidth(400)
-
-        layout = QVBoxLayout(dlg)
-        layout.setSpacing(16)
-        layout.setContentsMargins(28, 32, 28, 24)
-
-        # Category title in theme colour
-        title_lbl = QLabel(cat_label)
-        title_lbl.setWordWrap(True)
-        title_lbl.setAlignment(Qt.AlignCenter)
-        title_lbl.setStyleSheet(
-            f"font-size: 22px; font-weight: bold; color: {theme_color};"
-        )
-        layout.addWidget(title_lbl)
-
-        # Description sentence
-        if desc:
-            desc_lbl = QLabel(desc)
-            desc_lbl.setWordWrap(True)
-            desc_lbl.setAlignment(Qt.AlignCenter)
-            desc_lbl.setStyleSheet("font-size: 13px; color: #444; padding: 0 8px;")
-            layout.addWidget(desc_lbl)
-
-        layout.addSpacing(8)
-
-        # Start button
-        start_btn = QPushButton(
-            "Commencer →" if self._lang == "fr" else "Start →"
-        )
-        start_btn.setDefault(True)
-        start_btn.setStyleSheet(
-            f"font-size: 14px; padding: 10px 28px; font-weight: bold; "
-            f"background-color: {theme_color}; color: white; border-radius: 6px;"
-        )
-        layout.addWidget(start_btn, alignment=Qt.AlignCenter)
-
-        for key in (Qt.Key_Return, Qt.Key_Enter):
-            sc = QShortcut(QKeySequence(key), dlg)
-            sc.setContext(Qt.WindowShortcut)
-            sc.activated.connect(dlg.accept)
-
-        start_btn.clicked.connect(dlg.accept)
         dlg.finished.connect(lambda _: self._update_instruction_panel())
-
-        dlg.show()
-        dlg.raise_()
-        self._center_dialog(dlg)
-
         return True
 
     # ── Task C — D-grade retry ────────────────────────────────────────────────
 
     def _show_retry_intro(self, d_landmarks: list[Landmark]) -> None:
         """Show the retry introduction and let the student start or skip."""
-        n = len(d_landmarks)
-        if self._lang == "fr":
-            body = (
-                f"{n} repère{'s ont' if n > 1 else ' a'} une note D.\n"
-                "Vous allez les reprendre jusqu'à obtenir au moins C."
-            )
-        else:
-            body = (
-                f"{n} landmark{'s have' if n > 1 else ' has'} a grade D.\n"
-                "You will redo them until you reach at least a C."
-            )
-
-        dlg = QDialog(self)
-        dlg.setWindowTitle(
-            "Reprise des repères insuffisants"
-            if self._lang == "fr"
-            else "Retry: insufficient landmarks"
+        build_retry_dialog(
+            d_landmarks,
+            self._lang,
+            self,
+            self._center_dialog,
+            on_start=lambda: self._begin_retry_session(d_landmarks),
+            on_skip=self._emit_final_session,
         )
-        dlg.setWindowModality(Qt.WindowModal)
-        dlg.setMinimumWidth(400)
-
-        layout = QVBoxLayout(dlg)
-        layout.setSpacing(14)
-        layout.setContentsMargins(28, 28, 28, 24)
-
-        title_lbl = QLabel(
-            "Reprise des repères D"
-            if self._lang == "fr"
-            else "Retrying grade-D landmarks"
-        )
-        title_lbl.setAlignment(Qt.AlignCenter)
-        title_lbl.setStyleSheet(
-            "font-size: 18px; font-weight: bold; color: #c62828;"
-        )
-        layout.addWidget(title_lbl)
-
-        body_lbl = QLabel(body)
-        body_lbl.setWordWrap(True)
-        body_lbl.setAlignment(Qt.AlignCenter)
-        body_lbl.setStyleSheet("font-size: 13px; color: #444;")
-        layout.addWidget(body_lbl)
-
-        layout.addSpacing(4)
-
-        btn_row = QHBoxLayout()
-
-        start_btn = QPushButton(
-            "Commencer la reprise →"
-            if self._lang == "fr"
-            else "Start retry →"
-        )
-        start_btn.setDefault(True)
-        start_btn.setStyleSheet(
-            "font-size: 13px; padding: 8px 16px; font-weight: bold;"
-        )
-
-        skip_btn = QPushButton(
-            "Terminer quand même"
-            if self._lang == "fr"
-            else "Finish anyway"
-        )
-        skip_btn.setStyleSheet("font-size: 12px; padding: 8px 12px; color: #888;")
-
-        btn_row.addWidget(start_btn)
-        btn_row.addWidget(skip_btn)
-        layout.addLayout(btn_row)
-
-        for key in (Qt.Key_Return, Qt.Key_Enter):
-            sc = QShortcut(QKeySequence(key), dlg)
-            sc.setContext(Qt.WindowShortcut)
-            sc.activated.connect(dlg.accept)
-
-        # Default finished handler (e.g. window X closed) → start retry
-        dlg.finished.connect(lambda _: self._begin_retry_session(d_landmarks))
-
-        def _start() -> None:
-            dlg.finished.disconnect()
-            dlg.accept()
-            self._begin_retry_session(d_landmarks)
-
-        def _skip() -> None:
-            dlg.finished.disconnect()
-            dlg.accept()
-            self._emit_final_session()
-
-        start_btn.clicked.connect(_start)
-        skip_btn.clicked.connect(_skip)
-
-        dlg.show()
-        dlg.raise_()
-        self._center_dialog(dlg)
 
     def _begin_retry_session(self, d_landmarks: list[Landmark]) -> None:
         """Initialise the retry queue and reset UI state for the retry pass."""
@@ -871,16 +619,8 @@ class LandmarkViewer(QWidget):
         self._error_label.setText("")
         self._update_instruction_panel()
 
-    def _emit_final_session(self) -> None:
-        """Emit session_complete using the best score accumulated for every landmark."""
-        final_results = list(self._best_results.values())
-        # Include results for unscored landmarks (no ground truth) from normal pass
-        scored_codes = {r.code for r in final_results}
-        for r in self._results:
-            if r.code not in scored_codes:
-                final_results.append(r)
-
-        score = SessionScore(final_results)
+    def _display_session_complete(self, score: SessionScore) -> None:
+        """Update all result widgets and emit session_complete."""
         self._name_label.setText(
             tr("session_complete", self._lang, mean=score.mean_error_mm)
         )
@@ -904,6 +644,16 @@ class LandmarkViewer(QWidget):
         self._theme_badge.setVisible(False)
         self._application_text.setVisible(False)
         self.session_complete.emit(score)
+
+    def _emit_final_session(self) -> None:
+        """Emit session_complete using the best score accumulated for every landmark."""
+        final_results = list(self._best_results.values())
+        # Include results for unscored landmarks (no ground truth) from normal pass
+        scored_codes = {r.code for r in final_results}
+        for r in self._results:
+            if r.code not in scored_codes:
+                final_results.append(r)
+        self._display_session_complete(SessionScore(final_results))
 
     def _finish_session(self) -> None:
         """Called when the current pass (normal or retry) is exhausted."""
@@ -921,30 +671,7 @@ class LandmarkViewer(QWidget):
             return
 
         # No D grades — emit the normal session results directly
-        score = SessionScore(self._results)
-        self._name_label.setText(
-            tr("session_complete", self._lang, mean=score.mean_error_mm)
-        )
-        if self._mixed_session and self._inverse_queue:
-            n_inv = len(self._inverse_queue)
-            n_correct = len(self._inverse_correct_codes)
-            self._error_label.setText(
-                f"Identification : {n_correct}/{n_inv} — "
-                f"Placement : {score.global_score:.0f}/100 — {score.global_grade}"
-            )
-        else:
-            self._error_label.setText(
-                f"Score global : {score.global_score:.0f}/100 — {score.global_grade}"
-            )
-        self._error_label.setStyleSheet(
-            "font-size: 16px; font-weight: bold; color: #3399ff;"
-        )
-        self._instr_label.setText("")
-        self._hint_text.setText("")
-        self._progress_label.setText("")
-        self._theme_badge.setVisible(False)
-        self._application_text.setVisible(False)
-        self.session_complete.emit(score)
+        self._display_session_complete(SessionScore(self._results))
 
     # ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -1075,6 +802,26 @@ class LandmarkViewer(QWidget):
             self._mode_btn.setChecked(False)
         self._inverse_mode = False
 
+    def _orbit_camera_to(self, point: np.ndarray) -> None:
+        """Orbit the camera around the body axis to face *point*."""
+        bounds = self._mesh.bounds  # (xmin, xmax, ymin, ymax, zmin, zmax)
+        body_cx = (bounds[0] + bounds[1]) * 0.5
+        body_cz = (bounds[4] + bounds[5]) * 0.5
+        focus = np.array([body_cx, point[1], body_cz], dtype=float)
+        horiz = np.array([point[0] - body_cx, 0.0, point[2] - body_cz], dtype=float)
+        horiz_norm = np.linalg.norm(horiz)
+        if horiz_norm < 1.0:
+            direction = np.array([0.0, 0.0, 1.0])  # fallback: front view
+        else:
+            direction = horiz / horiz_norm
+        cam_distance = 1950.0  # mm from body axis
+        cam_pos = focus + direction * cam_distance
+        cam = self._plotter.camera
+        cam.position = tuple(cam_pos)
+        cam.focal_point = tuple(focus)
+        cam.up = (0.0, 1.0, 0.0)
+        self._plotter.render()
+
     def _show_inverse_landmark(self) -> None:
         """Display the ground-truth sphere for the current inverse landmark."""
         if self._inverse_index >= len(self._inverse_queue):
@@ -1093,27 +840,8 @@ class LandmarkViewer(QWidget):
         self._plotter.add_mesh(sphere, color=_MARKER_COLOR, name=actor_name)
         self._inverse_shown_actor = actor_name
 
-        # Rotate the view so the landmark is visible while keeping the avatar
-        # upright.  Strategy: fix the focal point at the body axis at the
-        # landmark's height, then orbit the camera around that axis in the
-        # direction of the landmark so it always faces the viewer.
-        bounds = self._mesh.bounds  # (xmin, xmax, ymin, ymax, zmin, zmax)
-        body_cx = (bounds[0] + bounds[1]) * 0.5
-        body_cz = (bounds[4] + bounds[5]) * 0.5
-        focus = np.array([body_cx, gt[1], body_cz], dtype=float)
-        horiz = np.array([gt[0] - body_cx, 0.0, gt[2] - body_cz], dtype=float)
-        horiz_norm = np.linalg.norm(horiz)
-        if horiz_norm < 1.0:
-            direction = np.array([0.0, 0.0, 1.0])  # fallback: front view
-        else:
-            direction = horiz / horiz_norm
-        cam_distance = 1950.0  # mm from body axis
-        cam_pos = focus + direction * cam_distance
-        cam = self._plotter.camera
-        cam.position = tuple(cam_pos)
-        cam.focal_point = tuple(focus)
-        cam.up = (0.0, 1.0, 0.0)
-        self._plotter.render()
+        # Orbit camera to face the landmark, keeping the avatar upright.
+        self._orbit_camera_to(gt)
 
         # Update side panel (name hidden so as not to reveal the answer)
         n = len(self._inverse_queue)
@@ -1235,68 +963,12 @@ class LandmarkViewer(QWidget):
 
     def _show_phase2_transition(self) -> None:
         """Show a transition dialog from inverse (Phase 1) to placement (Phase 2)."""
-        n_inv = len(self._inverse_queue)
-        n_correct = len(self._inverse_correct_codes)
-        n_placement = len(self._landmarks)
-
-        if self._lang == "fr":
-            title_text = "Phase 2 — Placement"
-            body_text = (
-                f"Identification terminée : {n_correct} / {n_inv} "
-                f"correct{'s' if n_correct != 1 else ''}.\n\n"
-                f"Maintenant placez {n_placement} "
-                f"repère{'s' if n_placement != 1 else ''} sur le modèle 3D."
-            )
-            btn_text = "Commencer →"
-        else:
-            title_text = "Phase 2 — Placement"
-            body_text = (
-                f"Identification done: {n_correct} / {n_inv} correct.\n\n"
-                f"Now place {n_placement} "
-                f"landmark{'s' if n_placement != 1 else ''} on the 3D model."
-            )
-            btn_text = "Start →"
-
-        dlg = QDialog(self)
-        dlg.setWindowTitle(title_text)
-        dlg.setWindowModality(Qt.WindowModal)
-        dlg.setMinimumWidth(380)
-
-        layout = QVBoxLayout(dlg)
-        layout.setSpacing(16)
-        layout.setContentsMargins(28, 28, 28, 24)
-
-        title_lbl = QLabel(title_text)
-        title_lbl.setAlignment(Qt.AlignCenter)
-        title_lbl.setStyleSheet(
-            "font-size: 18px; font-weight: bold; color: #1565c0;"
+        dlg = build_phase2_dialog(
+            n_correct=len(self._inverse_correct_codes),
+            n_inv=len(self._inverse_queue),
+            n_placement=len(self._landmarks),
+            lang=self._lang,
+            parent=self,
+            center_fn=self._center_dialog,
         )
-        layout.addWidget(title_lbl)
-
-        body_lbl = QLabel(body_text)
-        body_lbl.setWordWrap(True)
-        body_lbl.setAlignment(Qt.AlignCenter)
-        body_lbl.setStyleSheet("font-size: 13px; color: #333;")
-        layout.addWidget(body_lbl)
-
-        layout.addSpacing(8)
-
-        btn = QPushButton(btn_text)
-        btn.setDefault(True)
-        btn.setStyleSheet(
-            "font-size: 14px; padding: 10px 28px; font-weight: bold; "
-            "background-color: #1565c0; color: white; border-radius: 6px;"
-        )
-        layout.addWidget(btn, alignment=Qt.AlignCenter)
-
-        for key in (Qt.Key_Return, Qt.Key_Enter):
-            sc = QShortcut(QKeySequence(key), dlg)
-            sc.setContext(Qt.WindowShortcut)
-            sc.activated.connect(dlg.accept)
-
-        btn.clicked.connect(dlg.accept)
         dlg.finished.connect(lambda _: self._update_instruction_panel())
-
-        dlg.show()
-        dlg.raise_()
-        self._center_dialog(dlg)
