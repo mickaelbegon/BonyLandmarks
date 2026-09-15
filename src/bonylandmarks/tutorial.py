@@ -435,14 +435,24 @@ class TutorialViewer(QWidget):
     def _reset_camera_front(self) -> None:
         """Full-body front view, avatar upright (same framing as the viewer)."""
         bounds = self._mesh.bounds  # (xmin, xmax, ymin, ymax, zmin, zmax)
-        cx = (bounds[0] + bounds[1]) * 0.5
-        cy = (bounds[2] + bounds[3]) * 0.5
-        cz = (bounds[4] + bounds[5]) * 0.5
-        height = bounds[3] - bounds[2]
+        extents = [bounds[1]-bounds[0], bounds[3]-bounds[2], bounds[5]-bounds[4]]
+        up_axis = extents.index(max(extents))   # body's vertical axis (0=X, 1=Y, 2=Z)
+        sorted_axes = sorted(range(3), key=lambda i: extents[i])
+        front_axis = sorted_axes[-2]            # second-largest extent = "front"
+        centers = [
+            (bounds[0] + bounds[1]) * 0.5,
+            (bounds[2] + bounds[3]) * 0.5,
+            (bounds[4] + bounds[5]) * 0.5,
+        ]
+        height = extents[up_axis]
+        cam_pos = list(centers)
+        cam_pos[front_axis] += height * 1.8
+        up_vec = [0.0, 0.0, 0.0]
+        up_vec[up_axis] = 1.0
         cam = self._plotter.camera
-        cam.position = (cx, cy, cz + height * 1.8)
-        cam.focal_point = (cx, cy, cz)
-        cam.up = (0.0, 1.0, 0.0)
+        cam.position = tuple(cam_pos)
+        cam.focal_point = tuple(centers)
+        cam.up = tuple(up_vec)
         self._plotter.render()
 
     def _orbit_camera_to(self, point: np.ndarray) -> None:
@@ -450,23 +460,37 @@ class TutorialViewer(QWidget):
 
         Same logic as ``LandmarkViewer._orbit_camera_to``: the focus sits on the
         body axis at the landmark's height, and the camera is pushed out along
-        the horizontal direction of the landmark (Z+ front view as fallback).
+        the horizontal direction of the landmark (front view as fallback).
+        Vertical axis is detected from bounds to work for both Y-up and Z-up GLBs.
         """
         bounds = self._mesh.bounds
-        body_cx = (bounds[0] + bounds[1]) * 0.5
-        body_cz = (bounds[4] + bounds[5]) * 0.5
-        focus = np.array([body_cx, point[1], body_cz], dtype=float)
-        horiz = np.array([point[0] - body_cx, 0.0, point[2] - body_cz], dtype=float)
+        extents = [bounds[1]-bounds[0], bounds[3]-bounds[2], bounds[5]-bounds[4]]
+        up_axis = extents.index(max(extents))  # body's vertical axis (0=X, 1=Y, 2=Z)
+        centers = [
+            (bounds[0] + bounds[1]) * 0.5,
+            (bounds[2] + bounds[3]) * 0.5,
+            (bounds[4] + bounds[5]) * 0.5,
+        ]
+        # Focus is at body center horizontally, at landmark height along the vertical axis
+        focus = np.array(centers, dtype=float)
+        focus[up_axis] = point[up_axis]
+        # Horizontal direction from body axis to landmark (zeroing the vertical component)
+        horiz = np.array(point, dtype=float) - np.array(centers, dtype=float)
+        horiz[up_axis] = 0.0
         horiz_norm = float(np.linalg.norm(horiz))
         if horiz_norm < 1.0:
-            direction = np.array([0.0, 0.0, 1.0])  # fallback: front view
+            sorted_axes = sorted(range(3), key=lambda i: extents[i])
+            direction = np.zeros(3)
+            direction[sorted_axes[-2]] = 1.0    # fallback: front along second-largest axis
         else:
             direction = horiz / horiz_norm
         cam_pos = focus + direction * _CAM_DISTANCE
+        up_vec = [0.0, 0.0, 0.0]
+        up_vec[up_axis] = 1.0
         cam = self._plotter.camera
         cam.position = tuple(cam_pos)
         cam.focal_point = tuple(focus)
-        cam.up = (0.0, 1.0, 0.0)
+        cam.up = tuple(up_vec)
         self._plotter.render()
 
     # ── Presentation of the current landmark ─────────────────────────────────
