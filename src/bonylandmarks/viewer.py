@@ -17,8 +17,9 @@ from __future__ import annotations
 import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
-from PySide6.QtCore import Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QKeySequence, QShortcut
+from PySide6.QtCore import QByteArray, QSize, Qt, QTimer, Signal
+from PySide6.QtGui import QColor, QIcon, QKeySequence, QPainter, QPixmap, QShortcut
+from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
@@ -71,6 +72,56 @@ _INVERSE_CAT_COLORS: dict[str, str] = {
     "SKINFOLD": "#b0f0c0",
     "ANTHRO":   "#e0b0ff",
 }
+
+# ─── Navigation overlay — SVG icons ─────────────────────────────────────────
+
+_SVG_FRONT = (
+    '<path d="M14 4 L14 24 M7 10 L14 4 L21 10" stroke="{c}" stroke-width="2"'
+    ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    '<circle cx="14" cy="20" r="3" fill="{c}"/>'
+)
+_SVG_BACK = (
+    '<path d="M14 24 L14 4 M7 18 L14 24 L21 18" stroke="{c}" stroke-width="2"'
+    ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    '<circle cx="14" cy="8" r="3" fill="{c}"/>'
+)
+_SVG_RIGHT = (
+    '<path d="M4 14 L24 14 M18 7 L24 14 L18 21" stroke="{c}" stroke-width="2"'
+    ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    '<circle cx="8" cy="14" r="3" fill="{c}"/>'
+)
+_SVG_LEFT = (
+    '<path d="M24 14 L4 14 M10 7 L4 14 L10 21" stroke="{c}" stroke-width="2"'
+    ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    '<circle cx="20" cy="14" r="3" fill="{c}"/>'
+)
+_SVG_TOP = (
+    '<path d="M14 4 L14 24 M7 10 L14 4 L21 10" stroke="{c}" stroke-width="1.5"'
+    ' fill="none" stroke-linecap="round"/>'
+    '<path d="M4 14 L24 14 M18 9 L24 14 L18 19" stroke="{c}" stroke-width="1.5"'
+    ' fill="none" stroke-linecap="round"/>'
+)
+_SVG_RESET = (
+    '<path d="M20 14 A6 6 0 1 1 14 8" stroke="{c}" stroke-width="2"'
+    ' fill="none" stroke-linecap="round"/>'
+    '<path d="M14 4 L14 9 L19 7 Z" fill="{c}"/>'
+)
+
+
+def _svg_icon(path_d: str, size: int = 24, color: str = "#c8d8f8") -> QIcon:
+    """Build a QIcon from an inline SVG path string with a {c} color placeholder."""
+    colored = path_d.replace("{c}", color)
+    svg_bytes = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">'
+        f'{colored}</svg>'
+    ).encode()
+    renderer = QSvgRenderer(QByteArray(svg_bytes))
+    pix = QPixmap(size, size)
+    pix.fill(Qt.transparent)
+    painter = QPainter(pix)
+    renderer.render(painter)
+    painter.end()
+    return QIcon(pix)
 
 
 class LandmarkViewer(QWidget):
@@ -149,6 +200,9 @@ class LandmarkViewer(QWidget):
         self._plotter = QtInteractor(self)
         self._plotter.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         root.addWidget(self._plotter.interactor, stretch=3)
+
+        # Floating navigation overlay (positioned top-right of the 3D viewport)
+        self._build_nav_overlay()
 
         # Right: control panel
         panel = QVBoxLayout()
@@ -437,6 +491,7 @@ class LandmarkViewer(QWidget):
         up_axis = extents.index(max(extents))   # body's vertical axis (0=X, 1=Y, 2=Z)
         sorted_axes = sorted(range(3), key=lambda i: extents[i])
         front_axis = sorted_axes[-2]            # second-largest extent = "front"
+        side_axis = ({0, 1, 2} - {up_axis, front_axis}).pop()
         centers = [
             (bounds[0] + bounds[1]) * 0.5,
             (bounds[2] + bounds[3]) * 0.5,
@@ -453,6 +508,140 @@ class LandmarkViewer(QWidget):
         cam.focal_point = tuple(centers)
         cam.up = tuple(up_vec)
         self._plotter.render()
+
+        # Save camera geometry for navigation buttons / shortcuts
+        self._up_axis = up_axis
+        self._front_axis = front_axis
+        self._side_axis = side_axis
+        self._body_centers = centers
+        self._body_extents = extents
+        self._cam_distance = cam_distance
+
+        # Wire keyboard shortcuts now that axes are known
+        self._setup_nav_shortcuts()
+
+        # Ensure overlay stays on top after the plotter renders
+        if hasattr(self, "_nav_overlay"):
+            self._nav_overlay.raise_()
+
+    # ── Navigation toolbar ────────────────────────────────────────────────────
+
+    def _set_view(self, cam_axis: int, direction: int) -> None:
+        """Set camera to look along *cam_axis* (0=X,1=Y,2=Z), direction +1 or -1."""
+        cam_pos = list(self._body_centers)
+        cam_pos[cam_axis] += direction * self._cam_distance
+        up_vec = [0.0, 0.0, 0.0]
+        up_vec[self._up_axis] = 1.0
+        cam = self._plotter.camera
+        cam.position = tuple(cam_pos)
+        cam.focal_point = tuple(self._body_centers)
+        cam.up = tuple(up_vec)
+        self._plotter.render()
+
+    def _view_top(self) -> None:
+        """Set camera directly above, with the front axis pointing 'up' in screen space."""
+        cam_pos = list(self._body_centers)
+        cam_pos[self._up_axis] += self._cam_distance
+        up_vec = [0.0, 0.0, 0.0]
+        up_vec[self._front_axis] = 1.0  # front axis becomes screen-up when looking down
+        cam = self._plotter.camera
+        cam.position = tuple(cam_pos)
+        cam.focal_point = tuple(self._body_centers)
+        cam.up = tuple(up_vec)
+        self._plotter.render()
+
+    def _reset_view(self) -> None:
+        """Return to the initial full-body front view."""
+        self._set_view(self._front_axis, +1)
+
+    def _build_nav_overlay(self) -> None:
+        """Create a semi-transparent floating toolbar anchored to the 3D viewport."""
+        container = self._plotter.interactor
+
+        overlay = QWidget(container)
+        overlay.setObjectName("nav_overlay")
+        overlay.setAttribute(Qt.WA_TranslucentBackground)
+        overlay.setStyleSheet("""
+            QWidget#nav_overlay {
+                background: transparent;
+            }
+            QPushButton {
+                background-color: rgba(26, 26, 46, 180);
+                color: #e0e0e0;
+                border: 1px solid rgba(255,255,255,0.15);
+                border-radius: 6px;
+                font-size: 11px;
+                padding: 0px;
+                min-width: 44px;
+                min-height: 44px;
+                max-width: 44px;
+                max-height: 44px;
+            }
+            QPushButton:hover {
+                background-color: rgba(60, 80, 140, 210);
+                border-color: rgba(100,160,255,0.6);
+            }
+            QPushButton:pressed {
+                background-color: rgba(30, 60, 120, 230);
+            }
+        """)
+        layout = QVBoxLayout(overlay)
+        layout.setSpacing(4)
+        layout.setContentsMargins(6, 6, 6, 6)
+
+        # (svg_path_d, tooltip_fr, callback)
+        buttons = [
+            (_SVG_FRONT,  "Vue avant\n[1]",    lambda: self._set_view(self._front_axis, +1)),
+            (_SVG_BACK,   "Vue arrière\n[2]",  lambda: self._set_view(self._front_axis, -1)),
+            (_SVG_RIGHT,  "Vue droite\n[3]",   lambda: self._set_view(self._side_axis, +1)),
+            (_SVG_LEFT,   "Vue gauche\n[4]",   lambda: self._set_view(self._side_axis, -1)),
+            (_SVG_TOP,    "Vue dessus\n[5]",   self._view_top),
+            (_SVG_RESET,  "Reset\n[R]",        self._reset_view),
+        ]
+        for svg_d, tooltip, cb in buttons:
+            btn = QPushButton()
+            btn.setToolTip(tooltip)
+            btn.setIcon(_svg_icon(svg_d, size=24, color="#c8d8f8"))
+            btn.setIconSize(QSize(24, 24))
+            btn.clicked.connect(cb)
+            layout.addWidget(btn)
+
+        overlay.adjustSize()
+        self._nav_overlay = overlay
+        self._position_nav_overlay()
+
+    def _position_nav_overlay(self) -> None:
+        """Move the overlay to the top-right corner of the 3D viewport."""
+        if not hasattr(self, "_nav_overlay"):
+            return
+        container = self._plotter.interactor
+        margin = 10
+        w = self._nav_overlay.width() or self._nav_overlay.sizeHint().width()
+        h = self._nav_overlay.height() or self._nav_overlay.sizeHint().height()
+        x = container.width() - w - margin
+        y = margin
+        self._nav_overlay.move(x, y)
+        self._nav_overlay.raise_()
+
+    def _setup_nav_shortcuts(self) -> None:
+        """Register keyboard shortcuts for the 6 navigation views (called after axes are set)."""
+        shortcuts = [
+            ("1", lambda: self._set_view(self._front_axis, +1)),
+            ("2", lambda: self._set_view(self._front_axis, -1)),
+            ("3", lambda: self._set_view(self._side_axis, +1)),
+            ("4", lambda: self._set_view(self._side_axis, -1)),
+            ("5", self._view_top),
+            ("r", self._reset_view),
+            ("R", self._reset_view),
+        ]
+        for key, cb in shortcuts:
+            sc = QShortcut(QKeySequence(key), self)
+            sc.setContext(Qt.WindowShortcut)
+            sc.activated.connect(cb)
+
+    def resizeEvent(self, event) -> None:
+        super().resizeEvent(event)
+        self._position_nav_overlay()
 
     # ── Interaction callbacks ─────────────────────────────────────────────────
 
