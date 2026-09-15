@@ -16,7 +16,9 @@ from .manifest import get_server_url, load_manifest
 from .landmarks_extended import LANDMARKS
 from .mesh_loader import load_avatar_glb
 from .scoring import SessionScore
+from .tutorial import TutorialViewer
 from .viewer import LandmarkViewer
+from .welcome import WelcomeDialog
 
 
 class MainWindow(QMainWindow):
@@ -65,11 +67,70 @@ class MainWindow(QMainWindow):
         _, vertex_colors_raw, _, _ = load_avatar_glb(
             avatar_bytes, remove_stickers=False
         )
+
+        # Welcome dialog — skip if the user has checked "don't show again"
+        from PySide6.QtWidgets import QDialog
+        tutorial_mode = False
+        if not WelcomeDialog.dont_show():
+            welcome = WelcomeDialog(lang=self._lang, parent=self)
+            result = welcome.exec()
+            if result == QDialog.Rejected:
+                return  # user closed the window
+            tutorial_mode = (result == WelcomeDialog.TUTORIAL_RESULT)
+
         # All codes from the extended set; ground_truth available only for the
         # 24 BodyLoop-mapped BONE landmarks — EMG/SKINFOLD/ANTHRO are shown
         # but marked "non évalué" when no ground truth exists.
         landmark_codes = [lm.code for lm in LANDMARKS]
 
+        if tutorial_mode:
+            # Guided tour first; the exercise starts when the student asks for it.
+            tutorial = TutorialViewer(
+                mesh=body_mesh,
+                ground_truth=landmark_markers,
+                landmark_codes=landmark_codes,
+                lang=self._lang,
+                vertex_colors=vertex_colors,
+            )
+            tutorial.start_session.connect(
+                lambda: self._launch_session(
+                    body_mesh,
+                    vertex_colors,
+                    vertex_colors_raw,
+                    landmark_markers,
+                    all_markers,
+                    landmark_codes,
+                    matricule,
+                )
+            )
+            self.setCentralWidget(tutorial)
+            self.show()
+        else:
+            self._launch_session(
+                body_mesh,
+                vertex_colors,
+                vertex_colors_raw,
+                landmark_markers,
+                all_markers,
+                landmark_codes,
+                matricule,
+            )
+
+    def _launch_session(
+        self,
+        body_mesh,
+        vertex_colors,
+        vertex_colors_raw,
+        landmark_markers,
+        all_markers,
+        landmark_codes,
+        matricule: str,
+    ) -> None:
+        """Create the graded LandmarkViewer and make it the central widget.
+
+        Called directly when the student skips the tutorial, or from the
+        tutorial's ``start_session`` signal (which replaces the central widget).
+        """
         viewer = LandmarkViewer(
             mesh=body_mesh,
             ground_truth=landmark_markers,
@@ -79,7 +140,9 @@ class MainWindow(QMainWindow):
             vertex_colors_raw=vertex_colors_raw,
             all_markers=all_markers,
         )
-        viewer.session_complete.connect(lambda score: self._on_session_done(score, matricule))
+        viewer.session_complete.connect(
+            lambda score: self._on_session_done(score, matricule)
+        )
         self.setCentralWidget(viewer)
         self.show()
 

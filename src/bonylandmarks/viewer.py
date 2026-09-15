@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QListWidgetItem,
     QPushButton,
     QSizePolicy,
     QSlider,
@@ -57,6 +58,20 @@ _CONFIRMED_COLOR = "#3399ff"    # Confirmed student pick (blue)
 _ACTOR_PREFIX_REF = "ref_"
 _ACTOR_PREFIX_CONFIRMED = "confirmed_"
 
+# Inverse identification — category labels (fr, en) and item text colours
+_INVERSE_CAT_LABELS: dict[str, tuple[str, str]] = {
+    "BONE":     ("Repères osseux",               "Bone landmarks"),
+    "EMG":      ("Sites électrodes",              "EMG electrode sites"),
+    "SKINFOLD": ("Plis cutanés",                  "Skinfold sites"),
+    "ANTHRO":   ("Mesures anthropométriques",     "Anthropometric measures"),
+}
+_INVERSE_CAT_COLORS: dict[str, str] = {
+    "BONE":     "#b0d0ff",
+    "EMG":      "#ffd0a0",
+    "SKINFOLD": "#b0f0c0",
+    "ANTHRO":   "#e0b0ff",
+}
+
 
 class LandmarkViewer(QWidget):
     """Main widget containing the PyVista 3D view and control panels."""
@@ -72,9 +87,11 @@ class LandmarkViewer(QWidget):
         vertex_colors: np.ndarray | None = None,
         vertex_colors_raw: np.ndarray | None = None,
         all_markers: dict[str, np.ndarray] | None = None,
+        tutorial_mode: bool = False,
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
+        self._tutorial_mode = tutorial_mode
         self._mesh = mesh
         self._vertex_colors_clean = vertex_colors
         self._vertex_colors_raw = vertex_colors_raw
@@ -284,22 +301,53 @@ class LandmarkViewer(QWidget):
         inv_layout.addWidget(inv_title)
 
         self._inverse_filter = QLineEdit()
-        self._inverse_filter.setPlaceholderText("Filtrer...")
+        self._inverse_filter.setPlaceholderText(
+            "Rechercher un repère... (ex: acromion)"
+        )
         self._inverse_filter.textChanged.connect(self._on_inverse_filter_changed)
         inv_layout.addWidget(self._inverse_filter)
 
+        # Partial hint: theme only (narrows to ~10 themes, not 178 landmarks)
+        self._inverse_hint_label = QLabel("")
+        self._inverse_hint_label.setStyleSheet(
+            "font-size: 11px; font-style: italic; color: #aaaaaa; padding: 2px 0;"
+        )
+        inv_layout.addWidget(self._inverse_hint_label)
+
         self._inverse_list = QListWidget()
         self._inverse_list.setMinimumHeight(120)
-        self._inverse_item_codes: dict[int, str] = {}
 
-        lm_sorted = sorted(
-            self._session.all_session_landmarks, key=lambda lm: lm.name(self._lang)
-        )
-        for i, lm_item in enumerate(lm_sorted):
+        # Build a grouped list: category-separator rows + coloured landmark rows.
+        # Landmark code is stored in Qt.UserRole; category key in Qt.UserRole+1.
+        cat_groups: dict[str, list] = {}
+        for lm_item in self._session.all_session_landmarks:
             cat = lm_item.category if hasattr(lm_item, "category") else ""
-            item_text = f"{cat} • {lm_item.name(self._lang)}"
-            self._inverse_list.addItem(item_text)
-            self._inverse_item_codes[i] = lm_item.code
+            cat_groups.setdefault(cat, []).append(lm_item)
+        for cat in cat_groups:
+            cat_groups[cat].sort(key=lambda lm: lm.name(self._lang))
+
+        for cat in sorted(cat_groups.keys()):
+            labels = _INVERSE_CAT_LABELS.get(cat, (cat, cat))
+            cat_label = labels[0] if self._lang == "fr" else labels[1]
+
+            sep_item = QListWidgetItem(f"── {cat} — {cat_label} ──")
+            sep_item.setFlags(Qt.NoItemFlags)
+            sep_item.setBackground(QColor("#2a2a2a"))
+            sep_item.setForeground(QColor("#ffffff"))
+            sep_font = sep_item.font()
+            sep_font.setBold(True)
+            sep_font.setItalic(True)
+            sep_item.setFont(sep_font)
+            self._inverse_list.addItem(sep_item)
+
+            for lm_item in cat_groups[cat]:
+                item_text = f"{cat} • {lm_item.name(self._lang)}"
+                list_item = QListWidgetItem(item_text)
+                color = _INVERSE_CAT_COLORS.get(cat, "#cccccc")
+                list_item.setForeground(QColor(color))
+                list_item.setData(Qt.UserRole, lm_item.code)
+                list_item.setData(Qt.UserRole + 1, cat)
+                self._inverse_list.addItem(list_item)
 
         self._inverse_validate_btn = QPushButton("Valider ma réponse")
         self._inverse_validate_btn.setEnabled(False)
@@ -809,7 +857,15 @@ class LandmarkViewer(QWidget):
         self._application_text.setText("")
         self._error_label.setText("")
 
-        # Reset identification list
+        # Theme hint — partial clue that narrows to ~10 themes, not 178 landmarks
+        theme_label = lm.theme_label(self._lang) if hasattr(lm, "theme_label") else ""
+        if theme_label:
+            hint_prefix = "Thème" if self._lang == "fr" else "Theme"
+            self._inverse_hint_label.setText(f"{hint_prefix} : {theme_label}")
+        else:
+            self._inverse_hint_label.setText("")
+
+        # Reset identification list — restore original category colours
         self._inverse_filter.clear()
         self._inverse_list.clearSelection()
         self._inverse_validate_btn.setEnabled(False)
@@ -817,12 +873,19 @@ class LandmarkViewer(QWidget):
             item = self._inverse_list.item(i)
             item.setHidden(False)
             item.setData(Qt.BackgroundRole, None)
+            if item.flags() & Qt.ItemIsEnabled:
+                cat = item.data(Qt.UserRole + 1) or ""
+                item.setForeground(QColor(_INVERSE_CAT_COLORS.get(cat, "#cccccc")))
 
     def _on_inverse_filter_changed(self, text: str) -> None:
         """Show/hide list items according to the filter text (case-insensitive)."""
         lower = text.lower()
         for i in range(self._inverse_list.count()):
             item = self._inverse_list.item(i)
+            if not (item.flags() & Qt.ItemIsEnabled):
+                # Separator row — hide while a filter is active to declutter results
+                item.setHidden(bool(lower))
+                continue
             item.setHidden(lower not in item.text().lower())
 
     def _on_inverse_validate(self) -> None:
@@ -831,8 +894,7 @@ class LandmarkViewer(QWidget):
         if not selected:
             return
         item = selected[0]
-        row = self._inverse_list.row(item)
-        selected_code = self._inverse_item_codes.get(row)
+        selected_code = item.data(Qt.UserRole)
         lm = self._session.current_inverse_landmark()
         expected_code = lm.code
 
@@ -849,7 +911,14 @@ class LandmarkViewer(QWidget):
             self._inverse_shown_actor = blue_name
             self._plotter.render()
 
-            self._error_label.setText("✓ Correct !")
+            # Visual feedback: green item, reveal landmark name
+            item.setBackground(QColor("#1b5e20"))
+            item.setForeground(QColor("#a5d6a7"))
+            lm_name = lm.name(self._lang)
+            if self._lang == "fr":
+                self._error_label.setText(f"✓ Correct ! — {lm_name}")
+            else:
+                self._error_label.setText(f"✓ Correct! — {lm_name}")
             self._error_label.setStyleSheet(
                 "font-size: 14px; font-weight: bold; color: #2e7d32;"
             )
@@ -861,12 +930,38 @@ class LandmarkViewer(QWidget):
 
             QTimer.singleShot(1000, _advance)
         else:
-            # Incorrect — let the student try again
-            self._error_label.setText("✗ Essayez encore")
+            # Incorrect — highlight selection red, correct item orange, advance after 2 s
+            item.setBackground(QColor("#b71c1c"))
+            item.setForeground(QColor("#ffffff"))
+
+            # Highlight the correct item in orange (without selecting it)
+            for i in range(self._inverse_list.count()):
+                candidate = self._inverse_list.item(i)
+                if candidate.data(Qt.UserRole) == expected_code:
+                    candidate.setBackground(QColor("#e65100"))
+                    candidate.setForeground(QColor("#ffffff"))
+                    self._inverse_list.scrollToItem(candidate)
+                    break
+
+            lm_name = lm.name(self._lang)
+            if self._lang == "fr":
+                self._error_label.setText(
+                    f"✗ Incorrect — La bonne réponse était : {lm_name}"
+                )
+            else:
+                self._error_label.setText(
+                    f"✗ Incorrect — The correct answer was: {lm_name}"
+                )
             self._error_label.setStyleSheet(
-                "font-size: 14px; font-weight: bold; color: #c62828;"
+                "font-size: 13px; font-weight: bold; color: #c62828;"
             )
-            item.setBackground(QColor("#ffcccc"))
+            self._inverse_validate_btn.setEnabled(False)
+
+            def _advance_after_wrong() -> None:
+                self._session.inverse_advance()
+                self._show_inverse_landmark()
+
+            QTimer.singleShot(2000, _advance_after_wrong)
 
     def _finish_inverse_session(self) -> None:
         """Called when all inverse landmarks have been identified.
