@@ -117,6 +117,23 @@ class LandmarkViewer(QWidget):
                 or (lm.code.endswith("_right") and self._chosen_side == "left")
             )
         ]
+
+        # ── Mixed session: split landmarks into inverse (50 %) and placement (50 %) ──
+        # Save the full list so the inverse identification widget shows all choices.
+        self._all_session_landmarks: list[Landmark] = list(self._landmarks)
+        # Only landmarks with a ground truth can be displayed in inverse mode.
+        _gt_lms = [lm for lm in self._landmarks if lm.code in ground_truth]
+        random.shuffle(_gt_lms)
+        n_inv = len(_gt_lms) // 2          # 50 % → inverse phase
+        self._inverse_landmarks: list[Landmark] = _gt_lms[:n_inv]
+        _inv_codes = {lm.code for lm in self._inverse_landmarks}
+        # Placement list: remaining landmarks in their original session order.
+        self._landmarks = [lm for lm in self._landmarks if lm.code not in _inv_codes]
+        # Mixed session = True when there is at least one inverse landmark.
+        self._mixed_session: bool = bool(self._inverse_landmarks)
+        # Inverse phase score tracking
+        self._inverse_correct_codes: set[str] = set()
+
         self._index = 0
         self._results: list[LandmarkResult] = []
         # Task C — best result per code across all passes (normal + retry)
@@ -136,7 +153,10 @@ class LandmarkViewer(QWidget):
 
         self._build_ui()
         self._setup_scene()
-        self._update_instruction_panel()
+        if self._mixed_session:
+            self._start_inverse_session(queue=self._inverse_landmarks)
+        else:
+            self._update_instruction_panel()
 
     # ── internal helpers ──────────────────────────────────────────────────────
 
@@ -299,10 +319,12 @@ class LandmarkViewer(QWidget):
         panel.addWidget(self._sticker_btn)
 
         # Mode toggle: Placement ↔ Identification inverse
+        # Hidden in mixed sessions where phases auto-sequence.
         self._mode_btn = QPushButton("Mode : Placement")
         self._mode_btn.setCheckable(True)
         self._mode_btn.setChecked(False)
         self._mode_btn.clicked.connect(self._on_mode_toggled)
+        self._mode_btn.setVisible(not self._mixed_session)
         panel.addWidget(self._mode_btn)
 
         # Inverse identification panel (hidden by default)
@@ -324,7 +346,7 @@ class LandmarkViewer(QWidget):
         self._inverse_list.setMinimumHeight(120)
         self._inverse_item_codes: dict[int, str] = {}
 
-        lm_sorted = sorted(self._landmarks, key=lambda lm: lm.name(self._lang))
+        lm_sorted = sorted(self._all_session_landmarks, key=lambda lm: lm.name(self._lang))
         for i, lm_item in enumerate(lm_sorted):
             cat = lm_item.category if hasattr(lm_item, "category") else ""
             item_text = f"{cat} • {lm_item.name(self._lang)}"
@@ -862,9 +884,17 @@ class LandmarkViewer(QWidget):
         self._name_label.setText(
             tr("session_complete", self._lang, mean=score.mean_error_mm)
         )
-        self._error_label.setText(
-            f"Score global : {score.global_score:.0f}/100 — {score.global_grade}"
-        )
+        if self._mixed_session and self._inverse_queue:
+            n_inv = len(self._inverse_queue)
+            n_correct = len(self._inverse_correct_codes)
+            self._error_label.setText(
+                f"Identification : {n_correct}/{n_inv} — "
+                f"Placement : {score.global_score:.0f}/100 — {score.global_grade}"
+            )
+        else:
+            self._error_label.setText(
+                f"Score global : {score.global_score:.0f}/100 — {score.global_grade}"
+            )
         self._error_label.setStyleSheet(
             "font-size: 16px; font-weight: bold; color: #3399ff;"
         )
@@ -895,9 +925,17 @@ class LandmarkViewer(QWidget):
         self._name_label.setText(
             tr("session_complete", self._lang, mean=score.mean_error_mm)
         )
-        self._error_label.setText(
-            f"Score global : {score.global_score:.0f}/100 — {score.global_grade}"
-        )
+        if self._mixed_session and self._inverse_queue:
+            n_inv = len(self._inverse_queue)
+            n_correct = len(self._inverse_correct_codes)
+            self._error_label.setText(
+                f"Identification : {n_correct}/{n_inv} — "
+                f"Placement : {score.global_score:.0f}/100 — {score.global_grade}"
+            )
+        else:
+            self._error_label.setText(
+                f"Score global : {score.global_score:.0f}/100 — {score.global_grade}"
+            )
         self._error_label.setStyleSheet(
             "font-size: 16px; font-weight: bold; color: #3399ff;"
         )
@@ -984,12 +1022,22 @@ class LandmarkViewer(QWidget):
         else:
             self._stop_inverse_session()
 
-    def _start_inverse_session(self) -> None:
-        """Build the identification queue and enter inverse mode."""
-        self._inverse_queue = [
-            lm for lm in self._landmarks if lm.code in self._ground_truth
-        ]
-        random.shuffle(self._inverse_queue)
+    def _start_inverse_session(self, queue: list[Landmark] | None = None) -> None:
+        """Build the identification queue and enter inverse mode.
+
+        If *queue* is provided (mixed-session auto-start) it is used directly.
+        Otherwise the queue is built from all placement landmarks that have a
+        ground truth (manual-toggle path).
+        """
+        self._inverse_mode = True
+        if queue is not None:
+            self._inverse_queue = list(queue)
+            random.shuffle(self._inverse_queue)
+        else:
+            self._inverse_queue = [
+                lm for lm in self._landmarks if lm.code in self._ground_truth
+            ]
+            random.shuffle(self._inverse_queue)
         self._inverse_index = 0
 
         self._plotter.disable_picking()
@@ -1105,7 +1153,8 @@ class LandmarkViewer(QWidget):
         expected_code = self._inverse_queue[self._inverse_index].code
 
         if selected_code == expected_code:
-            # Correct — swap green sphere for blue, then advance after 1 s
+            # Correct — record result, swap green sphere for blue, advance after 1 s
+            self._inverse_correct_codes.add(expected_code)
             if self._inverse_shown_actor is not None:
                 self._plotter.remove_actor(self._inverse_shown_actor, render=False)
             lm = self._inverse_queue[self._inverse_index]
@@ -1137,13 +1186,24 @@ class LandmarkViewer(QWidget):
             item.setBackground(QColor("#ffcccc"))
 
     def _finish_inverse_session(self) -> None:
-        """Display a summary dialog and return to placement mode."""
+        """Called when all inverse landmarks have been identified.
+
+        In a mixed session: transitions directly to the placement phase.
+        In standalone mode: shows a summary dialog then returns to placement.
+        """
         if self._inverse_shown_actor is not None:
             self._plotter.remove_actor(self._inverse_shown_actor, render=False)
             self._inverse_shown_actor = None
         self._plotter.render()
 
+        if self._mixed_session:
+            self._stop_inverse_session()
+            self._show_phase2_transition()
+            return
+
+        # Standalone mode — show summary dialog
         n = len(self._inverse_queue)
+        n_correct = len(self._inverse_correct_codes)
         dlg = QDialog(self)
         dlg.setWindowTitle("Session terminée")
         dlg.setWindowModality(Qt.WindowModal)
@@ -1155,7 +1215,7 @@ class LandmarkViewer(QWidget):
 
         msg = QLabel(
             f"Session d'identification terminée !\n"
-            f"Score : {n} / {n}"
+            f"Score : {n_correct} / {n}"
         )
         msg.setWordWrap(True)
         msg.setAlignment(Qt.AlignCenter)
@@ -1169,6 +1229,74 @@ class LandmarkViewer(QWidget):
 
         close_btn.clicked.connect(dlg.accept)
         dlg.finished.connect(lambda _: self._stop_inverse_session())
+
+        dlg.show()
+        dlg.raise_()
+        self._center_dialog(dlg)
+
+    def _show_phase2_transition(self) -> None:
+        """Show a transition dialog from inverse (Phase 1) to placement (Phase 2)."""
+        n_inv = len(self._inverse_queue)
+        n_correct = len(self._inverse_correct_codes)
+        n_placement = len(self._landmarks)
+
+        if self._lang == "fr":
+            title_text = "Phase 2 — Placement"
+            body_text = (
+                f"Identification terminée : {n_correct} / {n_inv} "
+                f"correct{'s' if n_correct != 1 else ''}.\n\n"
+                f"Maintenant placez {n_placement} "
+                f"repère{'s' if n_placement != 1 else ''} sur le modèle 3D."
+            )
+            btn_text = "Commencer →"
+        else:
+            title_text = "Phase 2 — Placement"
+            body_text = (
+                f"Identification done: {n_correct} / {n_inv} correct.\n\n"
+                f"Now place {n_placement} "
+                f"landmark{'s' if n_placement != 1 else ''} on the 3D model."
+            )
+            btn_text = "Start →"
+
+        dlg = QDialog(self)
+        dlg.setWindowTitle(title_text)
+        dlg.setWindowModality(Qt.WindowModal)
+        dlg.setMinimumWidth(380)
+
+        layout = QVBoxLayout(dlg)
+        layout.setSpacing(16)
+        layout.setContentsMargins(28, 28, 28, 24)
+
+        title_lbl = QLabel(title_text)
+        title_lbl.setAlignment(Qt.AlignCenter)
+        title_lbl.setStyleSheet(
+            "font-size: 18px; font-weight: bold; color: #1565c0;"
+        )
+        layout.addWidget(title_lbl)
+
+        body_lbl = QLabel(body_text)
+        body_lbl.setWordWrap(True)
+        body_lbl.setAlignment(Qt.AlignCenter)
+        body_lbl.setStyleSheet("font-size: 13px; color: #333;")
+        layout.addWidget(body_lbl)
+
+        layout.addSpacing(8)
+
+        btn = QPushButton(btn_text)
+        btn.setDefault(True)
+        btn.setStyleSheet(
+            "font-size: 14px; padding: 10px 28px; font-weight: bold; "
+            "background-color: #1565c0; color: white; border-radius: 6px;"
+        )
+        layout.addWidget(btn, alignment=Qt.AlignCenter)
+
+        for key in (Qt.Key_Return, Qt.Key_Enter):
+            sc = QShortcut(QKeySequence(key), dlg)
+            sc.setContext(Qt.WindowShortcut)
+            sc.activated.connect(dlg.accept)
+
+        btn.clicked.connect(dlg.accept)
+        dlg.finished.connect(lambda _: self._update_instruction_panel())
 
         dlg.show()
         dlg.raise_()
