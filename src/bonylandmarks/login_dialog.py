@@ -34,6 +34,7 @@ class LoginDialog(QDialog):
         self._server_url = server_url
         self._matricule: str = ""
         self._birthdate: date | None = None
+        self._local_glb_bytes: bytes | None = None
         self.setWindowTitle(tr("login_title", lang))
         self.setMinimumWidth(400)
         self._build_ui()
@@ -89,11 +90,10 @@ class LoginDialog(QDialog):
         layout.addWidget(self._matricule_label)
 
         self._matricule_edit = QLineEdit()
-        self._matricule_edit.setEchoMode(QLineEdit.Password)
-        self._matricule_edit.setMaxLength(8)
-        self._matricule_edit.setPlaceholderText("••••••••")
+        self._matricule_edit.setMaxLength(12)
+        self._matricule_edit.setPlaceholderText("Ex: A3745")
         self._matricule_edit.setValidator(
-            QRegularExpressionValidator(QRegularExpression(r"\d{0,8}"))
+            QRegularExpressionValidator(QRegularExpression(r"[A-Za-z0-9]{0,12}"))
         )
         layout.addWidget(self._matricule_edit)
 
@@ -120,9 +120,15 @@ class LoginDialog(QDialog):
             self._connect_btn.setEnabled(False)
         layout.addWidget(self._connect_btn)
 
+        # Local file fallback — always visible for offline / dev use
+        self._local_btn = QPushButton("Charger un fichier local...")
+        self._local_btn.setStyleSheet("color: #888; font-size: 11px;")
+        self._local_btn.clicked.connect(self._on_load_local)
+        layout.addWidget(self._local_btn)
+
     def _on_connect(self) -> None:
-        matricule_text = self._matricule_edit.text().strip()
-        if len(matricule_text) != 8 or not matricule_text.isdigit():
+        matricule_text = self._matricule_edit.text().strip().upper()
+        if len(matricule_text) < 3 or not matricule_text.isalnum():
             self.set_error(tr("error_invalid_matricule", self._lang))
             return
 
@@ -148,6 +154,22 @@ class LoginDialog(QDialog):
         self._error_label.hide()
         self.accept()
 
+    def _on_load_local(self) -> None:
+        from PySide6.QtWidgets import QFileDialog
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Charger un scan BodyLoop", "", "GLB (*.glb)"
+        )
+        if not path:
+            return
+        from pathlib import Path
+        self._local_glb_bytes = Path(path).read_bytes()
+        matricule_text = self._matricule_edit.text().strip().upper()
+        if not matricule_text:
+            matricule_text = "LOCAL"
+        self._matricule = matricule_text
+        self._birthdate = None
+        self.accept()
+
     # ── Public properties ─────────────────────────────────────────────────────
 
     @property
@@ -159,6 +181,10 @@ class LoginDialog(QDialog):
         if self._birthdate is None:
             raise RuntimeError("birthdate not set — dialog has not been accepted yet")
         return self._birthdate
+
+    @property
+    def local_glb_bytes(self) -> bytes | None:
+        return self._local_glb_bytes
 
     @property
     def selected_student_name(self) -> str:

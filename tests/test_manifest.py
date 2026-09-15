@@ -13,9 +13,9 @@ from bonylandmarks.manifest import get_server_url, load_manifest
 
 
 def test_load_manifest_returns_dev_fixture() -> None:
-    """load_manifest() should return the 3 students from manifest.dev.json."""
+    """load_manifest() should return the 4 students from manifest.dev.json."""
     students = load_manifest()
-    assert len(students) == 3
+    assert len(students) == 4
 
 
 def test_load_manifest_sorted() -> None:
