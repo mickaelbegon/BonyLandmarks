@@ -517,7 +517,7 @@ class LandmarkViewer(QWidget):
 
     def _reset_view(self) -> None:
         """Return to the initial full-body front view."""
-        self._set_view(self._front_axis, +1)
+        self._set_view(self._front_axis, -1)
 
     def _build_nav_overlay(self) -> None:
         """Create a semi-transparent floating toolbar anchored to the 3D viewport."""
@@ -556,10 +556,10 @@ class LandmarkViewer(QWidget):
 
         # (png_filename_or_None, tooltip_fr, callback)
         buttons = [
-            ("view_front.png",      "Vue avant [1]",     lambda: self._set_view(self._front_axis, +1)),
-            ("view_back.png",       "Vue arrière [2]",   lambda: self._set_view(self._front_axis, -1)),
-            ("view_side_right.png", "Vue droite [3]",    lambda: self._set_view(self._side_axis, +1)),
-            ("view_side_left.png",  "Vue gauche [4]",    lambda: self._set_view(self._side_axis, -1)),
+            ("view_front.png",      "Vue avant [1]",     lambda: self._set_view(self._front_axis, -1)),
+            ("view_back.png",       "Vue arrière [2]",   lambda: self._set_view(self._front_axis, +1)),
+            ("view_side_right.png", "Vue droite [3]",    lambda: self._set_view(self._side_axis, -1)),
+            ("view_side_left.png",  "Vue gauche [4]",    lambda: self._set_view(self._side_axis, +1)),
             ("view_top.png",        "Vue dessus [5]",    self._view_top),
             (None,                  "Réinitialiser [R]", self._reset_view),
         ]
@@ -598,8 +598,8 @@ class LandmarkViewer(QWidget):
         shortcuts = [
             ("1", lambda: self._set_view(self._front_axis, +1)),
             ("2", lambda: self._set_view(self._front_axis, -1)),
-            ("3", lambda: self._set_view(self._side_axis, +1)),
-            ("4", lambda: self._set_view(self._side_axis, -1)),
+            ("3", lambda: self._set_view(self._side_axis, -1)),
+            ("4", lambda: self._set_view(self._side_axis, +1)),
             ("5", self._view_top),
             ("r", self._reset_view),
             ("R", self._reset_view),
