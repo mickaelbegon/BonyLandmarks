@@ -14,8 +14,6 @@ Workflow per landmark:
 
 from __future__ import annotations
 
-import random
-
 import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
@@ -47,6 +45,7 @@ from .dialogs import (
 from .i18n import Language, tr
 from .landmarks_extended import LANDMARKS, Landmark
 from .scoring import LandmarkResult, SessionScore
+from .session import SessionController
 
 
 # ─── colour constants ────────────────────────────────────────────────────────
@@ -84,45 +83,15 @@ class LandmarkViewer(QWidget):
         self._ground_truth = ground_truth
         self._lang = lang
 
-        # Pick a random side for this session then filter bilateral landmarks
-        self._chosen_side = random.choice(("left", "right"))
-        self._landmarks: list[Landmark] = [
-            lm for lm in LANDMARKS
-            if lm.code in landmark_codes
-            and not (
-                (lm.code.endswith("_left") and self._chosen_side == "right")
-                or (lm.code.endswith("_right") and self._chosen_side == "left")
-            )
-        ]
+        # All session state and logic lives in a Qt-free controller.
+        self._session = SessionController(
+            landmarks=[lm for lm in LANDMARKS if lm.code in landmark_codes],
+            ground_truth=ground_truth,
+            lang=lang,
+        )
 
-        # ── Mixed session: split landmarks into inverse (50 %) and placement (50 %) ──
-        # Save the full list so the inverse identification widget shows all choices.
-        self._all_session_landmarks: list[Landmark] = list(self._landmarks)
-        # Only landmarks with a ground truth can be displayed in inverse mode.
-        _gt_lms = [lm for lm in self._landmarks if lm.code in ground_truth]
-        random.shuffle(_gt_lms)
-        n_inv = len(_gt_lms) // 2          # 50 % → inverse phase
-        self._inverse_landmarks: list[Landmark] = _gt_lms[:n_inv]
-        _inv_codes = {lm.code for lm in self._inverse_landmarks}
-        # Placement list: remaining landmarks in their original session order.
-        self._landmarks = [lm for lm in self._landmarks if lm.code not in _inv_codes]
-        # Mixed session = True when there is at least one inverse landmark.
-        self._mixed_session: bool = bool(self._inverse_landmarks)
-        # Inverse phase score tracking
-        self._inverse_correct_codes: set[str] = set()
-
-        self._index = 0
-        self._results: list[LandmarkResult] = []
-        # Task C — best result per code across all passes (normal + retry)
-        self._best_results: dict[str, LandmarkResult] = {}
-        # Task C — queue of landmarks to retry (grade D)
-        self._retry_queue: list[Landmark] = []
-        self._retry_mode: bool = False
-
-        # Inverse identification mode
+        # Inverse identification mode (UI state)
         self._inverse_mode: bool = False
-        self._inverse_queue: list[Landmark] = []   # landmarks to identify, shuffled
-        self._inverse_index: int = 0
         self._inverse_shown_actor: str | None = None  # PyVista actor name of the shown sphere
 
         self._candidate_point: np.ndarray | None = None
@@ -130,8 +99,8 @@ class LandmarkViewer(QWidget):
 
         self._build_ui()
         self._setup_scene()
-        if self._mixed_session:
-            self._start_inverse_session(queue=self._inverse_landmarks)
+        if self._session.mixed_session:
+            self._start_inverse_session(queue=self._session.inverse_landmarks)
         else:
             self._update_instruction_panel()
 
@@ -139,9 +108,9 @@ class LandmarkViewer(QWidget):
 
     def _current_landmark(self) -> Landmark:
         """Return the landmark currently being placed."""
-        if self._retry_mode:
-            return self._retry_queue[0]
-        return self._landmarks[self._index]
+        if self._session.retry_mode:
+            return self._session.current_retry_landmark()
+        return self._session.current_landmark()
 
     def _center_dialog(self, dlg: QDialog) -> None:
         """Move *dlg* so it is centred over the 3-D plotter area."""
@@ -301,7 +270,7 @@ class LandmarkViewer(QWidget):
         self._mode_btn.setCheckable(True)
         self._mode_btn.setChecked(False)
         self._mode_btn.clicked.connect(self._on_mode_toggled)
-        self._mode_btn.setVisible(not self._mixed_session)
+        self._mode_btn.setVisible(not self._session.mixed_session)
         panel.addWidget(self._mode_btn)
 
         # Inverse identification panel (hidden by default)
@@ -323,7 +292,9 @@ class LandmarkViewer(QWidget):
         self._inverse_list.setMinimumHeight(120)
         self._inverse_item_codes: dict[int, str] = {}
 
-        lm_sorted = sorted(self._all_session_landmarks, key=lambda lm: lm.name(self._lang))
+        lm_sorted = sorted(
+            self._session.all_session_landmarks, key=lambda lm: lm.name(self._lang)
+        )
         for i, lm_item in enumerate(lm_sorted):
             cat = lm_item.category if hasattr(lm_item, "category") else ""
             item_text = f"{cat} • {lm_item.name(self._lang)}"
@@ -415,10 +386,10 @@ class LandmarkViewer(QWidget):
 
     def _on_surface_pick(self, point: np.ndarray) -> None:
         """Called by PyVista when the user clicks the mesh surface."""
-        if self._retry_mode:
-            if not self._retry_queue:
+        if self._session.retry_mode:
+            if self._session.retry_finished():
                 return
-        elif self._index >= len(self._landmarks):
+        elif self._session.placement_finished():
             return
 
         self._candidate_point = np.array(point, dtype=float)
@@ -462,15 +433,7 @@ class LandmarkViewer(QWidget):
                 student_pick=self._candidate_point.copy(),
                 redo_count=self._redo_count_saved,
             )
-            # In normal mode, append to the main results list
-            if not self._retry_mode:
-                self._results.append(result)
-            # Always keep the best score across all passes
-            if (
-                lm.code not in self._best_results
-                or result.composite_score > self._best_results[lm.code].composite_score
-            ):
-                self._best_results[lm.code] = result
+            self._session.record_result(result)
 
             # Reveal correct position
             gt_sphere = pv.Sphere(radius=10, center=gt)
@@ -555,22 +518,17 @@ class LandmarkViewer(QWidget):
         self, prev_lm: Landmark, result: LandmarkResult | None
     ) -> None:
         """Called when the debrief dialog closes. Advances to the next landmark."""
-        if self._retry_mode:
-            # Pop the front of the queue
-            done_lm = self._retry_queue.pop(0)
-            # If still D, push back for another attempt
-            if result is not None and result.grade_letter() == "D":
-                self._retry_queue.append(done_lm)
-            if not self._retry_queue:
+        if self._session.retry_mode:
+            # Pop the front of the queue; a still-D landmark is re-queued.
+            if self._session.advance_retry(result):
                 self._finish_session()
             else:
                 self._update_instruction_panel()
         else:
-            self._index += 1
-            if self._index >= len(self._landmarks):
+            if self._session.advance():
                 self._finish_session()
                 return
-            next_lm = self._landmarks[self._index]
+            next_lm = self._session.current_landmark()
             shown = self._maybe_show_category_transition(prev_lm, next_lm)
             if not shown:
                 self._update_instruction_panel()
@@ -609,9 +567,7 @@ class LandmarkViewer(QWidget):
 
     def _begin_retry_session(self, d_landmarks: list[Landmark]) -> None:
         """Initialise the retry queue and reset UI state for the retry pass."""
-        self._retry_mode = True
-        self._retry_queue = list(d_landmarks)
-        random.shuffle(self._retry_queue)
+        self._session.begin_retry(d_landmarks)
         self._candidate_point = None
         self._redo_count = 0
         self._confirm_btn.setEnabled(False)
@@ -624,9 +580,8 @@ class LandmarkViewer(QWidget):
         self._name_label.setText(
             tr("session_complete", self._lang, mean=score.mean_error_mm)
         )
-        if self._mixed_session and self._inverse_queue:
-            n_inv = len(self._inverse_queue)
-            n_correct = len(self._inverse_correct_codes)
+        n_correct, n_inv = self._session.inverse_score()
+        if self._session.mixed_session and n_inv:
             self._error_label.setText(
                 f"Identification : {n_correct}/{n_inv} — "
                 f"Placement : {score.global_score:.0f}/100 — {score.global_grade}"
@@ -647,40 +602,33 @@ class LandmarkViewer(QWidget):
 
     def _emit_final_session(self) -> None:
         """Emit session_complete using the best score accumulated for every landmark."""
-        final_results = list(self._best_results.values())
-        # Include results for unscored landmarks (no ground truth) from normal pass
-        scored_codes = {r.code for r in final_results}
-        for r in self._results:
-            if r.code not in scored_codes:
-                final_results.append(r)
-        self._display_session_complete(SessionScore(final_results))
+        self._display_session_complete(self._session.session_score())
 
     def _finish_session(self) -> None:
         """Called when the current pass (normal or retry) is exhausted."""
-        if self._retry_mode:
+        if self._session.retry_mode:
             # Retry pass done — emit best results
             self._emit_final_session()
             return
 
         # Normal pass — check for grade-D landmarks to retry
-        d_codes = {r.code for r in self._results if r.grade_letter() == "D"}
-        d_landmarks = [lm for lm in self._landmarks if lm.code in d_codes]
+        d_landmarks = self._session.build_retry_queue()
 
         if d_landmarks:
             self._show_retry_intro(d_landmarks)
             return
 
         # No D grades — emit the normal session results directly
-        self._display_session_complete(SessionScore(self._results))
+        self._display_session_complete(self._session.normal_score())
 
     # ── Helpers ───────────────────────────────────────────────────────────────
 
     def _update_instruction_panel(self) -> None:
-        if self._retry_mode:
-            if not self._retry_queue:
+        if self._session.retry_mode:
+            if self._session.retry_finished():
                 return
-            lm = self._retry_queue[0]
-            n = len(self._retry_queue)
+            lm = self._session.current_retry_landmark()
+            n = len(self._session.retry_queue)
             s = "s" if n > 1 else ""
             if self._lang == "fr":
                 self._progress_label.setText(
@@ -691,19 +639,20 @@ class LandmarkViewer(QWidget):
                     f"Retry — {n} landmark{s} remaining"
                 )
         else:
-            if self._index >= len(self._landmarks):
+            if self._session.placement_finished():
                 return
-            lm = self._landmarks[self._index]
-            side_label = "Côté gauche" if self._chosen_side == "left" else "Côté droit"
+            lm = self._session.current_landmark()
+            side = self._session.chosen_side
+            side_label = "Côté gauche" if side == "left" else "Côté droit"
             if self._lang == "en":
-                side_label = "Right side" if self._chosen_side == "right" else "Left side"
+                side_label = "Right side" if side == "right" else "Left side"
             self._progress_label.setText(
                 f"{side_label} — "
                 + tr(
                     "landmark_label",
                     self._lang,
-                    index=self._index + 1,
-                    total=len(self._landmarks),
+                    index=self._session.current_placement_index + 1,
+                    total=self._session.n_placement,
                 )
             )
 
@@ -729,16 +678,17 @@ class LandmarkViewer(QWidget):
 
     def _toggle_lang(self) -> None:
         self._lang = "en" if self._lang == "fr" else "fr"
+        self._session.lang = self._lang
         self._lang_btn.setText(tr("lang_toggle", self._lang))
         self._instr_label.setText(tr("instructions", self._lang))
-        if self._retry_mode or self._index < len(self._landmarks):
+        if self._session.retry_mode or not self._session.placement_finished():
             self._update_instruction_panel()
 
     # ── Mode inverse — identification anatomique ──────────────────────────────
 
     def _on_mode_toggled(self, checked: bool) -> None:
         # Prevent entering inverse mode during a retry session
-        if self._retry_mode and checked:
+        if self._session.retry_mode and checked:
             self._mode_btn.setChecked(False)
             return
         self._inverse_mode = checked
@@ -757,15 +707,7 @@ class LandmarkViewer(QWidget):
         ground truth (manual-toggle path).
         """
         self._inverse_mode = True
-        if queue is not None:
-            self._inverse_queue = list(queue)
-            random.shuffle(self._inverse_queue)
-        else:
-            self._inverse_queue = [
-                lm for lm in self._landmarks if lm.code in self._ground_truth
-            ]
-            random.shuffle(self._inverse_queue)
-        self._inverse_index = 0
+        self._session.start_inverse(queue)
 
         self._plotter.disable_picking()
 
@@ -824,11 +766,11 @@ class LandmarkViewer(QWidget):
 
     def _show_inverse_landmark(self) -> None:
         """Display the ground-truth sphere for the current inverse landmark."""
-        if self._inverse_index >= len(self._inverse_queue):
+        if self._session.inverse_finished():
             self._finish_inverse_session()
             return
 
-        lm = self._inverse_queue[self._inverse_index]
+        lm = self._session.current_inverse_landmark()
         gt = self._ground_truth[lm.code]
 
         # Remove previous sphere
@@ -844,9 +786,9 @@ class LandmarkViewer(QWidget):
         self._orbit_camera_to(gt)
 
         # Update side panel (name hidden so as not to reveal the answer)
-        n = len(self._inverse_queue)
+        n = len(self._session.inverse_queue)
         self._progress_label.setText(
-            f"Identification — {self._inverse_index + 1} / {n}"
+            f"Identification — {self._session.inverse_index + 1} / {n}"
         )
         self._name_label.setText("?")
         self._hint_text.setText("")
@@ -877,14 +819,14 @@ class LandmarkViewer(QWidget):
         item = selected[0]
         row = self._inverse_list.row(item)
         selected_code = self._inverse_item_codes.get(row)
-        expected_code = self._inverse_queue[self._inverse_index].code
+        lm = self._session.current_inverse_landmark()
+        expected_code = lm.code
 
         if selected_code == expected_code:
             # Correct — record result, swap green sphere for blue, advance after 1 s
-            self._inverse_correct_codes.add(expected_code)
+            self._session.record_inverse_correct(expected_code)
             if self._inverse_shown_actor is not None:
                 self._plotter.remove_actor(self._inverse_shown_actor, render=False)
-            lm = self._inverse_queue[self._inverse_index]
             gt = self._ground_truth[lm.code]
             blue_name = f"inverse_correct_{lm.code}"
             self._plotter.add_mesh(
@@ -900,7 +842,7 @@ class LandmarkViewer(QWidget):
             self._inverse_validate_btn.setEnabled(False)
 
             def _advance() -> None:
-                self._inverse_index += 1
+                self._session.inverse_advance()
                 self._show_inverse_landmark()
 
             QTimer.singleShot(1000, _advance)
@@ -923,14 +865,13 @@ class LandmarkViewer(QWidget):
             self._inverse_shown_actor = None
         self._plotter.render()
 
-        if self._mixed_session:
+        if self._session.mixed_session:
             self._stop_inverse_session()
             self._show_phase2_transition()
             return
 
         # Standalone mode — show summary dialog
-        n = len(self._inverse_queue)
-        n_correct = len(self._inverse_correct_codes)
+        n_correct, n = self._session.inverse_score()
         dlg = QDialog(self)
         dlg.setWindowTitle("Session terminée")
         dlg.setWindowModality(Qt.WindowModal)
@@ -963,10 +904,11 @@ class LandmarkViewer(QWidget):
 
     def _show_phase2_transition(self) -> None:
         """Show a transition dialog from inverse (Phase 1) to placement (Phase 2)."""
+        n_correct, n_inv = self._session.inverse_score()
         dlg = build_phase2_dialog(
-            n_correct=len(self._inverse_correct_codes),
-            n_inv=len(self._inverse_queue),
-            n_placement=len(self._landmarks),
+            n_correct=n_correct,
+            n_inv=n_inv,
+            n_placement=self._session.n_placement,
             lang=self._lang,
             parent=self,
             center_fn=self._center_dialog,
