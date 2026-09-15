@@ -49,8 +49,10 @@ class MainWindow(QMainWindow):
                 students=students,
                 server_url=server_url,
                 lang=self._lang,
-                parent=self,
+                parent=None,  # no hidden parent — avoids dialog falling behind on Windows
             )
+            splash.raise_()
+            splash.activateWindow()
             while True:
                 result = splash.exec()
                 if result == QDialog.Rejected:
