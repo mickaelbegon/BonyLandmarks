@@ -17,9 +17,8 @@ from __future__ import annotations
 import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
-from PySide6.QtCore import QByteArray, QSize, Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QIcon, QKeySequence, QPainter, QPixmap, QShortcut
-from PySide6.QtSvg import QSvgRenderer
+from PySide6.QtCore import QSize, Qt, QTimer, Signal
+from PySide6.QtGui import QColor, QIcon, QImage, QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
@@ -73,76 +72,53 @@ _INVERSE_CAT_COLORS: dict[str, str] = {
     "ANTHRO":   "#e0b0ff",
 }
 
-# ─── Navigation overlay — SVG icons (human body silhouettes, viewBox 0 0 44 44) ──
+# ─── Navigation overlay — PNG body silhouette icons ──────────────────────────
 
-# FRONT: symmetrical person facing viewer (head circle + body)
-_SVG_FRONT = (
-    '<circle cx="22" cy="10" r="5" fill="{c}"/>'
-    '<rect x="15" y="16" width="14" height="16" rx="3" fill="{c}"/>'
-    '<rect x="11" y="16" width="5" height="12" rx="2" fill="{c}"/>'
-    '<rect x="28" y="16" width="5" height="12" rx="2" fill="{c}"/>'
-    '<rect x="15" y="33" width="5" height="9" rx="2" fill="{c}"/>'
-    '<rect x="24" y="33" width="5" height="9" rx="2" fill="{c}"/>'
-    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">AVT</text>'
-)
+from pathlib import Path as _Path
 
-# BACK: same silhouette + spine line to indicate back
-_SVG_BACK = (
-    '<circle cx="22" cy="10" r="5" fill="{c}"/>'
-    '<rect x="15" y="16" width="14" height="16" rx="3" fill="{c}"/>'
-    '<rect x="11" y="16" width="5" height="12" rx="2" fill="{c}"/>'
-    '<rect x="28" y="16" width="5" height="12" rx="2" fill="{c}"/>'
-    '<rect x="15" y="33" width="5" height="9" rx="2" fill="{c}"/>'
-    '<rect x="24" y="33" width="5" height="9" rx="2" fill="{c}"/>'
-    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">ARR</text>'
-    '<line x1="22" y1="17" x2="22" y2="31" stroke="{bg}" stroke-width="1.5"/>'
-)
-
-# RIGHT SIDE: side profile
-_SVG_RIGHT = (
-    '<circle cx="22" cy="10" r="5" fill="{c}"/>'
-    '<ellipse cx="21" cy="24" rx="6" ry="8" fill="{c}"/>'
-    '<rect x="19" y="33" width="5" height="9" rx="2" fill="{c}"/>'
-    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">DRT</text>'
-)
-
-# LEFT SIDE: mirror of right
-_SVG_LEFT = (
-    '<circle cx="22" cy="10" r="5" fill="{c}"/>'
-    '<ellipse cx="23" cy="24" rx="6" ry="8" fill="{c}"/>'
-    '<rect x="20" y="33" width="5" height="9" rx="2" fill="{c}"/>'
-    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">GAU</text>'
-)
-
-# TOP: overhead view — shoulders oval + head circle + upward arrow
-_SVG_TOP = (
-    '<ellipse cx="22" cy="22" rx="10" ry="8" fill="{c}" opacity="0.5"/>'
-    '<circle cx="22" cy="22" r="5" fill="{c}"/>'
-    '<line x1="22" y1="5" x2="22" y2="12" stroke="{c}" stroke-width="2" stroke-linecap="round"/>'
-    '<text x="22" y="40" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">TOP</text>'
-)
-
-# RESET: home icon (house outline + filled door)
-_SVG_RESET = (
-    '<polygon points="22,8 8,20 10,20 10,36 34,36 34,20 36,20" fill="none" stroke="{c}" stroke-width="2" stroke-linejoin="round"/>'
-    '<rect x="17" y="26" width="10" height="10" rx="1" fill="{c}"/>'
-    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">&#8635;</text>'
-)
+_ICONS_DIR = _Path(__file__).parent / "icons"
+_body_icon_cache: dict[tuple[str, int, str], QIcon] = {}
 
 
-def _svg_icon(path_d: str, size: int = 32, color: str = "#c8d8f8", bg: str = "rgba(0,0,0,0)") -> QIcon:
-    """Build a QIcon from an inline SVG string with {c} color and {bg} background placeholders."""
-    colored = path_d.replace("{c}", color).replace("{bg}", bg)
-    svg_bytes = (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44">{colored}</svg>'
-    ).encode()
-    renderer = QSvgRenderer(QByteArray(svg_bytes))
-    pix = QPixmap(size, size)
-    pix.fill(Qt.transparent)
-    painter = QPainter(pix)
-    renderer.render(painter)
-    painter.end()
-    return QIcon(pix)
+def _body_icon(filename: str, size: int = 44, fg: str = "#c8d8f8") -> QIcon:
+    """Load a white-bg body silhouette PNG, make white transparent, tint to fg color."""
+    cache_key = (filename, size, fg)
+    if cache_key in _body_icon_cache:
+        return _body_icon_cache[cache_key]
+
+    path = _ICONS_DIR / filename
+    pix = QPixmap(str(path))
+    if pix.isNull():
+        return QIcon()
+    # Scale to target size FIRST (reduces pixel iteration count significantly)
+    pix = pix.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    # Convert to QImage for pixel manipulation
+    img = pix.toImage().convertToFormat(QImage.Format_ARGB32)
+
+    # Parse target foreground color
+    fg_color = QColor(fg)
+    fr, fg_r, fb = fg_color.red(), fg_color.green(), fg_color.blue()
+
+    w, h = img.width(), img.height()
+    for y in range(h):
+        for x in range(w):
+            pixel = QColor(img.pixel(x, y))
+            r, g, b, a = pixel.red(), pixel.green(), pixel.blue(), pixel.alpha()
+            # White-ish pixels → fully transparent
+            brightness = (r + g + b) / 3
+            if brightness > 200 and a > 128:
+                img.setPixel(x, y, QColor(255, 255, 255, 0).rgba())
+            else:
+                # Dark pixels (the silhouette) → recolor to fg, preserve darkness
+                darkness = 1.0 - brightness / 255.0
+                nr = int(fr * darkness)
+                ng = int(fg_r * darkness)
+                nb = int(fb * darkness)
+                img.setPixel(x, y, QColor(nr, ng, nb, a).rgba())
+
+    icon = QIcon(QPixmap.fromImage(img))
+    _body_icon_cache[cache_key] = icon
+    return icon
 
 
 class LandmarkViewer(QWidget):
@@ -586,20 +562,25 @@ class LandmarkViewer(QWidget):
         layout.setSpacing(4)
         layout.setContentsMargins(6, 6, 6, 6)
 
-        # (svg_path_d, tooltip_fr, callback, extra kwargs for _svg_icon)
+        # (png_filename_or_None, tooltip_fr, callback)
         buttons = [
-            (_SVG_FRONT, "Vue avant [1]",     lambda: self._set_view(self._front_axis, +1),  {}),
-            (_SVG_BACK,  "Vue arrière [2]",   lambda: self._set_view(self._front_axis, -1),  {"bg": "#1a1a2e"}),
-            (_SVG_RIGHT, "Vue droite [3]",    lambda: self._set_view(self._side_axis, +1),   {}),
-            (_SVG_LEFT,  "Vue gauche [4]",    lambda: self._set_view(self._side_axis, -1),   {}),
-            (_SVG_TOP,   "Vue dessus [5]",    self._view_top,                                {}),
-            (_SVG_RESET, "Réinitialiser [R]", self._reset_view,                              {}),
+            ("view_front.png",      "Vue avant [1]",     lambda: self._set_view(self._front_axis, +1)),
+            ("view_back.png",       "Vue arrière [2]",   lambda: self._set_view(self._front_axis, -1)),
+            ("view_side_right.png", "Vue droite [3]",    lambda: self._set_view(self._side_axis, +1)),
+            ("view_side_left.png",  "Vue gauche [4]",    lambda: self._set_view(self._side_axis, -1)),
+            ("view_top.png",        "Vue dessus [5]",    self._view_top),
+            (None,                  "Réinitialiser [R]", self._reset_view),
         ]
-        for svg_d, tooltip, cb, kw in buttons:
+        for filename, tooltip, cb in buttons:
             btn = QPushButton()
             btn.setToolTip(tooltip)
-            btn.setIcon(_svg_icon(svg_d, size=44, **kw))
-            btn.setIconSize(QSize(44, 44))
+            if filename is not None:
+                icon = _body_icon(filename, size=44)
+                btn.setIcon(icon)
+                btn.setIconSize(QSize(44, 44))
+            else:
+                btn.setText("↺")
+                btn.setStyleSheet(btn.styleSheet() + "font-size: 20px;")
             btn.clicked.connect(cb)
             layout.addWidget(btn)
 
