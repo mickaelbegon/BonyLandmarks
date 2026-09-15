@@ -379,8 +379,22 @@ class LandmarkViewer(QWidget):
             left_clicking=True,
             pickable_window=False,
         )
-        pl.reset_camera()
         pl.show()
+
+        # Set initial camera: avatar upright, seen from front, full body in view.
+        # Coordinate system (from _orbit_camera_to): X=left/right, Y=up/down, Z=front/back.
+        # Camera at Z+ looks toward the body; up=(0,1,0) keeps the avatar standing.
+        bounds = self._mesh.bounds  # (xmin, xmax, ymin, ymax, zmin, zmax)
+        cx = (bounds[0] + bounds[1]) * 0.5
+        cy = (bounds[2] + bounds[3]) * 0.5
+        cz = (bounds[4] + bounds[5]) * 0.5
+        height = bounds[3] - bounds[2]  # Y extent = full body height
+        cam_distance = height * 1.8     # far enough to see the whole body
+        cam = self._plotter.camera
+        cam.position = (cx, cy, cz + cam_distance)
+        cam.focal_point = (cx, cy, cz)
+        cam.up = (0.0, 1.0, 0.0)
+        self._plotter.render()
 
     # ── Interaction callbacks ─────────────────────────────────────────────────
 
