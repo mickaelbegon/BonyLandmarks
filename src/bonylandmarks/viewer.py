@@ -537,10 +537,10 @@ class LandmarkViewer(QWidget):
                 border-radius: 6px;
                 font-size: 11px;
                 padding: 0px;
-                min-width: 56px;
-                min-height: 56px;
-                max-width: 56px;
-                max-height: 56px;
+                min-width: 84px;
+                min-height: 84px;
+                max-width: 84px;
+                max-height: 84px;
             }
             QPushButton:hover {
                 background-color: rgba(60, 80, 140, 210);
@@ -567,9 +567,9 @@ class LandmarkViewer(QWidget):
             btn = QPushButton()
             btn.setToolTip(tooltip)
             if filename is not None:
-                icon = _body_icon(filename, size=44)
+                icon = _body_icon(filename, size=66)
                 btn.setIcon(icon)
-                btn.setIconSize(QSize(44, 44))
+                btn.setIconSize(QSize(66, 66))
             else:
                 btn.setText("↺")
                 btn.setStyleSheet(btn.styleSheet() + "font-size: 20px;")
