@@ -1048,23 +1048,26 @@ class LandmarkViewer(QWidget):
         self._plotter.add_mesh(sphere, color=_MARKER_COLOR, name=actor_name)
         self._inverse_shown_actor = actor_name
 
-        # Orient camera toward the shown sphere.
-        # Compute a side-view position: project gt onto the horizontal plane,
-        # find the outward direction from the body axis, then place the camera
-        # at gt + direction * distance so the landmark is always facing the viewer.
+        # Rotate the view so the landmark is visible while keeping the avatar
+        # upright.  Strategy: fix the focal point at the body axis at the
+        # landmark's height, then orbit the camera around that axis in the
+        # direction of the landmark so it always faces the viewer.
         import numpy as _np
-        body_cx, body_cz = 0.0, 0.0  # body is centred at origin horizontally
+        bounds = self._mesh.bounds  # (xmin, xmax, ymin, ymax, zmin, zmax)
+        body_cx = (bounds[0] + bounds[1]) * 0.5
+        body_cz = (bounds[4] + bounds[5]) * 0.5
+        focus = _np.array([body_cx, gt[1], body_cz], dtype=float)
         horiz = _np.array([gt[0] - body_cx, 0.0, gt[2] - body_cz], dtype=float)
         horiz_norm = _np.linalg.norm(horiz)
         if horiz_norm < 1.0:
             direction = _np.array([0.0, 0.0, 1.0])  # fallback: front view
         else:
             direction = horiz / horiz_norm
-        cam_distance = 1950.0  # mm
-        cam_pos = gt + direction * cam_distance
+        cam_distance = 1950.0  # mm from body axis
+        cam_pos = focus + direction * cam_distance
         cam = self._plotter.camera
         cam.position = tuple(cam_pos)
-        cam.focal_point = tuple(gt)
+        cam.focal_point = tuple(focus)
         cam.up = (0.0, 1.0, 0.0)
         self._plotter.render()
 
