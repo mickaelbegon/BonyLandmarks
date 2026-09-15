@@ -1097,15 +1097,14 @@ class LandmarkViewer(QWidget):
         # upright.  Strategy: fix the focal point at the body axis at the
         # landmark's height, then orbit the camera around that axis in the
         # direction of the landmark so it always faces the viewer.
-        import numpy as _np
         bounds = self._mesh.bounds  # (xmin, xmax, ymin, ymax, zmin, zmax)
         body_cx = (bounds[0] + bounds[1]) * 0.5
         body_cz = (bounds[4] + bounds[5]) * 0.5
-        focus = _np.array([body_cx, gt[1], body_cz], dtype=float)
-        horiz = _np.array([gt[0] - body_cx, 0.0, gt[2] - body_cz], dtype=float)
-        horiz_norm = _np.linalg.norm(horiz)
+        focus = np.array([body_cx, gt[1], body_cz], dtype=float)
+        horiz = np.array([gt[0] - body_cx, 0.0, gt[2] - body_cz], dtype=float)
+        horiz_norm = np.linalg.norm(horiz)
         if horiz_norm < 1.0:
-            direction = _np.array([0.0, 0.0, 1.0])  # fallback: front view
+            direction = np.array([0.0, 0.0, 1.0])  # fallback: front view
         else:
             direction = horiz / horiz_norm
         cam_distance = 1950.0  # mm from body axis
