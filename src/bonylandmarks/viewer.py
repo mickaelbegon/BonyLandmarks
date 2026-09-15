@@ -953,12 +953,9 @@ class LandmarkViewer(QWidget):
         self._theme_badge.setVisible(bool(label))
 
         self._name_label.setText(lm.name(self._lang))
-        self._hint_text.setText(lm.hint(self._lang))
-
-        # Application context
-        app_text = lm.application(self._lang) if hasattr(lm, "application") else ""
-        self._application_text.setText(app_text)
-        self._application_text.setVisible(bool(app_text))
+        # Hint and application are revealed only in the post-confirmation debrief
+        self._hint_text.setText("")
+        self._application_text.setVisible(False)
 
         self._instr_label.setText(tr("instructions", self._lang))
         self._error_label.setText("")
