@@ -42,7 +42,7 @@ from typing import Literal
 
 Language = Literal["fr", "en"]
 Category = Literal["BONE", "EMG", "SKINFOLD", "ANTHRO"]
-BodySide = Literal["left", "right", "bilateral"]
+BodySide = Literal["left", "right", "bilateral", "midline"]
 Theme = Literal[
     "gait",            # analyse de la marche
     "shoulder",        # épaule / ceinture scapulaire
@@ -142,6 +142,185 @@ LANDMARKS: list[Landmark] = [
             "the hair with the rule before marking; this is the stature "
             "measurement point."
         ),
+        body_side="midline",
+        theme="posture",
+    ),
+    Landmark(
+        code="glabella",
+        category="BONE",
+        name_fr="Glabelle",
+        name_en="Glabella",
+        hint_fr=(
+            "Surface osseuse lisse du frontal, sur la ligne médiane, entre les deux "
+            "arcades sourcilières et juste au-dessus de la racine du nez. Tête "
+            "orientée selon le plan de Francfort, marquer le point le plus "
+            "antérieur de ce relief."
+        ),
+        hint_en=(
+            "Smooth bony area of the frontal bone, on the midline, between the two "
+            "brow ridges and just above the root of the nose. With the head in the "
+            "Frankfort plane, mark the most anterior point of this prominence."
+        ),
+        body_side="midline",
+        theme="posture",
+        application_fr=(
+            "Repère médian antérieur de la tête : il quantifie l'inclinaison "
+            "latérale de la tête en vue frontale et complète le méat acoustique "
+            "externe pour décrire la position antérieure de la tête en vue sagittale."
+        ),
+        application_en=(
+            "Anterior midline head reference: it quantifies lateral head tilt in the "
+            "frontal view and complements the external acoustic meatus in describing "
+            "forward head posture in the sagittal view."
+        ),
+    ),
+    Landmark(
+        code="external_occipital_protuberance",
+        category="BONE",
+        name_fr="Protubérance occipitale externe (inion)",
+        name_en="External occipital protuberance (inion)",
+        hint_fr=(
+            "Bosse médiane à l'arrière du crâne : remonter la ligne médiane de la "
+            "nuque avec le pouce jusqu'à buter sur le relief osseux, environ 6-8 cm "
+            "au-dessus de C7. C'est l'insertion supérieure du ligament nuchal et des "
+            "fibres les plus hautes du trapèze."
+        ),
+        hint_en=(
+            "Midline bump at the back of the skull: run the thumb up the midline of "
+            "the neck until it meets the bony ridge, roughly 6-8 cm above C7. It is "
+            "the upper attachment of the nuchal ligament and of the highest "
+            "trapezius fibres."
+        ),
+        body_side="midline",
+        theme="posture",
+        application_fr=(
+            "Avec C7, il matérialise l'axe crânio-cervical en vue sagittale "
+            "(extension occipitale du sujet en tête antérieure). Repère d'origine "
+            "des extenseurs cervicaux."
+        ),
+        application_en=(
+            "With C7 it materialises the craniocervical axis in the sagittal view "
+            "(occipital extension in forward head posture). Origin reference for the "
+            "cervical extensors."
+        ),
+    ),
+    Landmark(
+        code="external_acoustic_meatus_left",
+        category="BONE",
+        name_fr="Méat acoustique externe gauche",
+        name_en="Left external acoustic meatus",
+        hint_fr=(
+            "Orifice du conduit auditif externe gauche, juste en arrière du tragus. "
+            "Marquer la peau immédiatement au-dessus de l'orifice, sur le bord "
+            "supérieur du méat : c'est le point de la ligne de plomb posturale, et "
+            "l'un des deux points du plan de Francfort."
+        ),
+        hint_en=(
+            "Opening of the left ear canal, immediately behind the tragus. Mark the "
+            "skin right above the opening, on the upper border of the meatus: this "
+            "is the plumb-line point used in postural assessment and one of the two "
+            "points of the Frankfort plane."
+        ),
+        body_side="left",
+        theme="posture",
+        application_fr=(
+            "Point le plus haut de la ligne de plomb sagittale (méat → acromion → "
+            "grand trochanter → en avant de la malléole latérale) : son décalage "
+            "antérieur par rapport à l'acromion quantifie la tête antérieure."
+        ),
+        application_en=(
+            "Highest point of the sagittal plumb line (meatus → acromion → greater "
+            "trochanter → just anterior to the lateral malleolus): its forward "
+            "offset relative to the acromion quantifies forward head posture."
+        ),
+    ),
+    Landmark(
+        code="external_acoustic_meatus_right",
+        category="BONE",
+        name_fr="Méat acoustique externe droit",
+        name_en="Right external acoustic meatus",
+        hint_fr=(
+            "Orifice du conduit auditif externe droit, juste en arrière du tragus. "
+            "Marquer la peau immédiatement au-dessus de l'orifice, sur le bord "
+            "supérieur du méat : c'est le point de la ligne de plomb posturale, et "
+            "l'un des deux points du plan de Francfort."
+        ),
+        hint_en=(
+            "Opening of the right ear canal, immediately behind the tragus. Mark the "
+            "skin right above the opening, on the upper border of the meatus: this "
+            "is the plumb-line point used in postural assessment and one of the two "
+            "points of the Frankfort plane."
+        ),
+        body_side="right",
+        theme="posture",
+        application_fr=(
+            "Point le plus haut de la ligne de plomb sagittale (méat → acromion → "
+            "grand trochanter → en avant de la malléole latérale) : son décalage "
+            "antérieur par rapport à l'acromion quantifie la tête antérieure."
+        ),
+        application_en=(
+            "Highest point of the sagittal plumb line (meatus → acromion → greater "
+            "trochanter → just anterior to the lateral malleolus): its forward "
+            "offset relative to the acromion quantifies forward head posture."
+        ),
+    ),
+    Landmark(
+        code="mastoid_process_left",
+        category="BONE",
+        name_fr="Processus mastoïde gauche",
+        name_en="Left mastoid process",
+        hint_fr=(
+            "Grosse saillie osseuse arrondie située juste en arrière et en dessous "
+            "du lobe de l'oreille gauche. Marquer sa pointe inférieure. C'est "
+            "l'insertion du sterno-cléido-mastoïdien, du splénius et du "
+            "longissimus de la tête."
+        ),
+        hint_en=(
+            "Rounded bony prominence just behind and below the left earlobe. Mark "
+            "its inferior tip. It is the insertion of sternocleidomastoid, splenius "
+            "capitis and longissimus capitis."
+        ),
+        body_side="left",
+        theme="posture",
+        application_fr=(
+            "La ligne mastoïde gauche - mastoïde droite donne l'inclinaison de la "
+            "tête dans le plan frontal ; avec C7 elle sert à calculer l'angle "
+            "crânio-vertébral (tête antérieure)."
+        ),
+        application_en=(
+            "The left-to-right mastoid line gives head tilt in the frontal plane; "
+            "with C7 it is used to compute the craniovertebral angle (forward head "
+            "posture)."
+        ),
+    ),
+    Landmark(
+        code="mastoid_process_right",
+        category="BONE",
+        name_fr="Processus mastoïde droit",
+        name_en="Right mastoid process",
+        hint_fr=(
+            "Grosse saillie osseuse arrondie située juste en arrière et en dessous "
+            "du lobe de l'oreille droite. Marquer sa pointe inférieure. C'est "
+            "l'insertion du sterno-cléido-mastoïdien, du splénius et du "
+            "longissimus de la tête."
+        ),
+        hint_en=(
+            "Rounded bony prominence just behind and below the right earlobe. Mark "
+            "its inferior tip. It is the insertion of sternocleidomastoid, splenius "
+            "capitis and longissimus capitis."
+        ),
+        body_side="right",
+        theme="posture",
+        application_fr=(
+            "La ligne mastoïde gauche - mastoïde droite donne l'inclinaison de la "
+            "tête dans le plan frontal ; avec C7 elle sert à calculer l'angle "
+            "crânio-vertébral (tête antérieure)."
+        ),
+        application_en=(
+            "The left-to-right mastoid line gives head tilt in the frontal plane; "
+            "with C7 it is used to compute the craniovertebral angle (forward head "
+            "posture)."
+        ),
     ),
     Landmark(
         code="suprasternal_notch",
@@ -160,6 +339,7 @@ LANDMARKS: list[Landmark] = [
             "midline until it drops into the notch; mark the superior border of "
             "the sternum, not the soft tissue of the hollow."
         ),
+        body_side="midline",
     ),
     Landmark(
         code="xiphoid_process",
@@ -178,6 +358,7 @@ LANDMARKS: list[Landmark] = [
             "to their midline junction. Palpate gently: the tip is cartilaginous "
             "and tender."
         ),
+        body_side="midline",
     ),
     Landmark(
         code="sternal_angle_louis",
@@ -198,6 +379,7 @@ LANDMARKS: list[Landmark] = [
             "Proximal reference for counting intercostal spaces and the upper limit of "
             "the CPR compression zone."
         ),
+        body_side="midline",
         theme="cpr",
         application_fr=(
             "Utilisé pour délimiter la zone de compression thoracique en RCP (moitié "
@@ -226,6 +408,93 @@ LANDMARKS: list[Landmark] = [
             "the neck: C6 slides away under the finger in extension while C7 stays "
             "prominent. Reference point for the upper trapezius EMG site."
         ),
+        body_side="midline",
+        theme="posture",
+    ),
+    Landmark(
+        code="T1_spinous",
+        category="BONE",
+        name_fr="Processus épineux de T1",
+        name_en="T1 spinous process",
+        hint_fr=(
+            "Première épineuse thoracique, immédiatement sous C7. Repérer C7 "
+            "(vertebra prominens), puis descendre d'une épineuse : T1 est souvent "
+            "aussi saillante que C7 mais ne s'efface pas en extension du cou. Elle "
+            "se situe au niveau du bord supérieur des épaules."
+        ),
+        hint_en=(
+            "First thoracic spinous process, immediately below C7. Locate C7 "
+            "(vertebra prominens), then step down one spinous process: T1 is often "
+            "as prominent as C7 but does not slide away on neck extension. It lies "
+            "at the level of the top of the shoulders."
+        ),
+        body_side="midline",
+        theme="posture",
+        application_fr=(
+            "Sommet de la courbure thoracique : avec T12 il définit la cyphose "
+            "thoracique mesurée à l'inclinomètre ou à l'arcomètre en vue sagittale."
+        ),
+        application_en=(
+            "Top of the thoracic curve: with T12 it defines the thoracic kyphosis "
+            "measured with an inclinometer or flexicurve in the sagittal view."
+        ),
+    ),
+    Landmark(
+        code="T4_spinous",
+        category="BONE",
+        name_fr="Processus épineux de T4",
+        name_en="T4 spinous process",
+        hint_fr=(
+            "Compter quatre épineuses vers le bas à partir de C7, bras le long du "
+            "corps. T4 se situe approximativement au niveau de l'épine de la scapula "
+            "(T3-T4) et de l'angle sternal en vue antérieure."
+        ),
+        hint_en=(
+            "Count four spinous processes downward from C7 with the arms at the "
+            "side. T4 lies roughly level with the scapular spine (T3-T4) and with "
+            "the sternal angle anteriorly."
+        ),
+        body_side="midline",
+        theme="posture",
+        application_fr=(
+            "Repère du segment thoracique supérieur : mobilité en extension "
+            "thoracique et référence des tests de rotation du tronc dans le plan "
+            "transversal."
+        ),
+        application_en=(
+            "Upper thoracic reference: thoracic extension mobility and reference "
+            "for trunk rotation tests in the transverse plane."
+        ),
+    ),
+    Landmark(
+        code="T7_spinous",
+        category="BONE",
+        name_fr="Processus épineux de T7",
+        name_en="T7 spinous process",
+        hint_fr=(
+            "Compter sept épineuses vers le bas à partir de C7, sujet debout et bras "
+            "relâchés. T7 se trouve juste au-dessus du niveau des angles inférieurs "
+            "des scapulas (T7-T8) : la ligne joignant les deux angles inférieurs "
+            "croise le rachis à ce niveau."
+        ),
+        hint_en=(
+            "Count seven spinous processes downward from C7, subject standing with "
+            "the arms relaxed. T7 sits just above the level of the inferior angles "
+            "of the scapulae (T7-T8): the line joining both inferior angles crosses "
+            "the spine at this level."
+        ),
+        body_side="midline",
+        theme="posture",
+        application_fr=(
+            "Sommet habituel de la cyphose thoracique : point de mesure de la flèche "
+            "cervico-thoracique et repère central des mesures de gibbosité en "
+            "dépistage de scoliose."
+        ),
+        application_en=(
+            "Usual apex of the thoracic kyphosis: measurement point for sagittal "
+            "offsets and central reference for rib-hump measurements in scoliosis "
+            "screening."
+        ),
     ),
     Landmark(
         code="T8_spinous",
@@ -242,6 +511,67 @@ LANDMARKS: list[Landmark] = [
             "Count spinous processes downward from C7 with the arms at the side. "
             "T8 lies roughly level with the inferior angle of the scapula "
             "(≈ T7-T8). Distal reference for the lower trapezius EMG site."
+        ),
+        body_side="midline",
+        theme="posture",
+    ),
+    Landmark(
+        code="T10_spinous",
+        category="BONE",
+        name_fr="Processus épineux de T10",
+        name_en="T10 spinous process",
+        hint_fr=(
+            "Compter dix épineuses vers le bas à partir de C7. Contrôle : la 10e "
+            "côte est la plus basse à rejoindre le rebord costal ; en suivant ce "
+            "rebord vers l'arrière on retombe sur le niveau T10 (les épineuses "
+            "thoraciques basses sont fortement inclinées vers le bas)."
+        ),
+        hint_en=(
+            "Count ten spinous processes downward from C7. Cross-check: the 10th rib "
+            "is the lowest one reaching the costal margin; following that margin "
+            "backward brings you to the T10 level (low thoracic spinous processes "
+            "are steeply angled downward)."
+        ),
+        body_side="midline",
+        theme="posture",
+        application_fr=(
+            "Repère du rachis thoracique bas : il borne la zone de transition entre "
+            "la cyphose thoracique et la lordose lombaire en analyse posturale "
+            "sagittale."
+        ),
+        application_en=(
+            "Low thoracic reference: it bounds the transition zone between thoracic "
+            "kyphosis and lumbar lordosis in sagittal postural analysis."
+        ),
+    ),
+    Landmark(
+        code="T12_spinous",
+        category="BONE",
+        name_fr="Processus épineux de T12",
+        name_en="T12 spinous process",
+        hint_fr=(
+            "Dernière épineuse thoracique, à la charnière thoraco-lombaire. La "
+            "repérer en remontant de L4 (ligne des crêtes iliaques) ou en suivant la "
+            "12e côte vers la ligne médiane. La transition se sent : les épineuses "
+            "lombaires sous-jacentes sont plus larges et horizontales."
+        ),
+        hint_en=(
+            "Last thoracic spinous process, at the thoracolumbar junction. Find it by "
+            "counting up from L4 (iliac crest line) or by following the 12th rib to "
+            "the midline. The transition is palpable: the lumbar spinous processes "
+            "below are broader and more horizontal."
+        ),
+        body_side="midline",
+        theme="posture",
+        application_fr=(
+            "Borne inférieure de la cyphose thoracique (T1-T12) et borne supérieure "
+            "de la lordose lombaire (T12-S1) : c'est le repère pivot des mesures de "
+            "courbures rachidiennes en vue sagittale."
+        ),
+        application_en=(
+            "Lower bound of the thoracic kyphosis (T1-T12) and upper bound of the "
+            "lumbar lordosis (T12-S1): the pivot landmark for spinal curvature "
+            "measurements in the sagittal view."
         ),
     ),
     Landmark(
@@ -261,6 +591,8 @@ LANDMARKS: list[Landmark] = [
             "Reference for the longissimus and iliocostalis EMG sites (two finger "
             "widths laterally)."
         ),
+        body_side="midline",
+        theme="posture",
     ),
     Landmark(
         code="L5_spinous",
@@ -276,6 +608,98 @@ LANDMARKS: list[Landmark] = [
             "Last mobile lumbar spinous process, just above the sacrum, on the "
             "midline between both PSIS. Key landmark for the lumbosacral junction "
             "(L5-S1) in ergonomics and lifting analysis."
+        ),
+        body_side="midline",
+        theme="posture",
+    ),
+    Landmark(
+        code="S1_spinous",
+        category="BONE",
+        name_fr="Épineuse de S1 (crête sacrée médiane)",
+        name_en="S1 spinous tubercle (median sacral crest)",
+        hint_fr=(
+            "Premier tubercule de la crête sacrée médiane, juste sous l'épineuse de "
+            "L5. Descendre le doigt de L5 : on franchit un petit décrochement, puis "
+            "on rencontre une crête fixe et immobile en flexion-extension du tronc, "
+            "au niveau de la ligne joignant les deux EIPS ou légèrement au-dessus."
+        ),
+        hint_en=(
+            "First tubercle of the median sacral crest, just below the L5 spinous "
+            "process. Slide down from L5: you cross a small step-off, then meet a "
+            "ridge that stays fixed during trunk flexion-extension, at or slightly "
+            "above the line joining both PSIS."
+        ),
+        body_side="midline",
+        theme="posture",
+        application_fr=(
+            "Extrémité inférieure de la lordose lombaire (T12-S1) et repère de la "
+            "charnière lombo-sacrée : sert à mesurer l'angle sacré et le "
+            "glissement L5-S1 en ergonomie du port de charge."
+        ),
+        application_en=(
+            "Lower end of the lumbar lordosis (T12-S1) and landmark of the "
+            "lumbosacral junction: used to measure the sacral angle and L5-S1 shear "
+            "in manual handling ergonomics."
+        ),
+    ),
+    Landmark(
+        code="rib12_tip_left",
+        category="BONE",
+        name_fr="Extrémité de la 12e côte gauche",
+        name_en="Left 12th rib tip",
+        hint_fr=(
+            "Côte flottante la plus basse, palpée dans la région lombaire latérale "
+            "gauche. Poser la main dans l'espace entre la crête iliaque et le rebord "
+            "costal, puis remonter jusqu'à sentir l'extrémité libre de la côte. "
+            "Marquer son point le plus bas et le plus latéral."
+        ),
+        hint_en=(
+            "Lowest floating rib, palpated in the left lateral lumbar region. Place "
+            "the hand in the gap between the iliac crest and the costal margin, then "
+            "move upward until the free end of the rib is felt. Mark its lowest and "
+            "most lateral point."
+        ),
+        body_side="left",
+        theme="core",
+        application_fr=(
+            "Extrémité proximale de la ligne EMG de l'iliocostal des lombes et "
+            "limite supérieure du 'quadrilatère lombaire' ; sert aussi à repérer la "
+            "taille anatomique pour les circonférences."
+        ),
+        application_en=(
+            "Proximal end of the iliocostalis lumborum EMG line and upper limit of "
+            "the lumbar quadrilateral; also used to locate the anatomical waist for "
+            "girth measurements."
+        ),
+    ),
+    Landmark(
+        code="rib12_tip_right",
+        category="BONE",
+        name_fr="Extrémité de la 12e côte droite",
+        name_en="Right 12th rib tip",
+        hint_fr=(
+            "Côte flottante la plus basse, palpée dans la région lombaire latérale "
+            "droite. Poser la main dans l'espace entre la crête iliaque et le rebord "
+            "costal, puis remonter jusqu'à sentir l'extrémité libre de la côte. "
+            "Marquer son point le plus bas et le plus latéral."
+        ),
+        hint_en=(
+            "Lowest floating rib, palpated in the right lateral lumbar region. Place "
+            "the hand in the gap between the iliac crest and the costal margin, then "
+            "move upward until the free end of the rib is felt. Mark its lowest and "
+            "most lateral point."
+        ),
+        body_side="right",
+        theme="core",
+        application_fr=(
+            "Extrémité proximale de la ligne EMG de l'iliocostal des lombes et "
+            "limite supérieure du 'quadrilatère lombaire' ; sert aussi à repérer la "
+            "taille anatomique pour les circonférences."
+        ),
+        application_en=(
+            "Proximal end of the iliocostalis lumborum EMG line and upper limit of "
+            "the lumbar quadrilateral; also used to locate the anatomical waist for "
+            "girth measurements."
         ),
     ),
     # ══════════════════════════════════════════════════════════════════════
@@ -431,9 +855,363 @@ LANDMARKS: list[Landmark] = [
         ),
         body_side="right",
     ),
+    Landmark(
+        code="scapular_spine_left",
+        category="BONE",
+        name_fr="Épine de la scapula gauche",
+        name_en="Left scapular spine",
+        hint_fr=(
+            "Crête osseuse oblique traversant la face postérieure de la scapula "
+            "gauche, entre le trigone (médial, ≈ T3) et l'acromion (latéral). "
+            "Marquer le milieu de cette crête, sur son bord postérieur le plus "
+            "saillant, bras relâché le long du corps."
+        ),
+        hint_en=(
+            "Oblique bony ridge crossing the posterior surface of the left scapula, "
+            "running from the trigonum (medial, ≈ T3) to the acromion (lateral). "
+            "Mark the midpoint of the ridge, on its most prominent posterior border, "
+            "with the arm relaxed at the side."
+        ),
+        body_side="left",
+        theme="anatomy",
+        application_fr=(
+            "Ligne d'insertion du trapèze moyen (bord supérieur) et d'origine du "
+            "deltoïde postérieur (bord inférieur) : elle sépare les fosses supra- et "
+            "infra-épineuse et sert de guide au placement des électrodes scapulaires."
+        ),
+        application_en=(
+            "Attachment line of the middle trapezius (upper border) and origin of "
+            "the posterior deltoid (lower border): it separates the supraspinous and "
+            "infraspinous fossae and guides scapular electrode placement."
+        ),
+    ),
+    Landmark(
+        code="scapular_spine_right",
+        category="BONE",
+        name_fr="Épine de la scapula droite",
+        name_en="Right scapular spine",
+        hint_fr=(
+            "Crête osseuse oblique traversant la face postérieure de la scapula "
+            "droite, entre le trigone (médial, ≈ T3) et l'acromion (latéral). "
+            "Marquer le milieu de cette crête, sur son bord postérieur le plus "
+            "saillant, bras relâché le long du corps."
+        ),
+        hint_en=(
+            "Oblique bony ridge crossing the posterior surface of the right scapula, "
+            "running from the trigonum (medial, ≈ T3) to the acromion (lateral). "
+            "Mark the midpoint of the ridge, on its most prominent posterior border, "
+            "with the arm relaxed at the side."
+        ),
+        body_side="right",
+        theme="anatomy",
+        application_fr=(
+            "Ligne d'insertion du trapèze moyen (bord supérieur) et d'origine du "
+            "deltoïde postérieur (bord inférieur) : elle sépare les fosses supra- et "
+            "infra-épineuse et sert de guide au placement des électrodes scapulaires."
+        ),
+        application_en=(
+            "Attachment line of the middle trapezius (upper border) and origin of "
+            "the posterior deltoid (lower border): it separates the supraspinous and "
+            "infraspinous fossae and guides scapular electrode placement."
+        ),
+    ),
+    Landmark(
+        code="scapula_superior_angle_left",
+        category="BONE",
+        name_fr="Angle supérieur de la scapula gauche",
+        name_en="Left superior angle of the scapula",
+        hint_fr=(
+            "Coin supéro-médial de la scapula gauche (≈ niveau T2), sous le chef "
+            "descendant du trapèze. Suivre le bord médial vers le haut jusqu'à la "
+            "butée ; demander au sujet de relâcher l'épaule ou de poser la main dans "
+            "le dos pour dégager l'angle sous les doigts."
+        ),
+        hint_en=(
+            "Superomedial corner of the left scapula (≈ T2 level), beneath the upper "
+            "trapezius. Follow the medial border upward to its stop; ask the subject "
+            "to drop the shoulder or place the hand behind the back to bring the "
+            "angle out under the fingers."
+        ),
+        body_side="left",
+        theme="shoulder",
+        application_fr=(
+            "Insertion de l'élévateur de la scapula : point clé des cervicalgies "
+            "d'origine scapulaire et du dépistage de la sonnette (bascule) de la "
+            "scapula lors de l'élévation du bras."
+        ),
+        application_en=(
+            "Insertion of levator scapulae: a key point in scapulogenic neck pain and "
+            "in screening scapular rotation (tipping) during arm elevation."
+        ),
+    ),
+    Landmark(
+        code="scapula_superior_angle_right",
+        category="BONE",
+        name_fr="Angle supérieur de la scapula droit",
+        name_en="Right superior angle of the scapula",
+        hint_fr=(
+            "Coin supéro-médial de la scapula droite (≈ niveau T2), sous le chef "
+            "descendant du trapèze. Suivre le bord médial vers le haut jusqu'à la "
+            "butée ; demander au sujet de relâcher l'épaule ou de poser la main dans "
+            "le dos pour dégager l'angle sous les doigts."
+        ),
+        hint_en=(
+            "Superomedial corner of the right scapula (≈ T2 level), beneath the upper "
+            "trapezius. Follow the medial border upward to its stop; ask the subject "
+            "to drop the shoulder or place the hand behind the back to bring the "
+            "angle out under the fingers."
+        ),
+        body_side="right",
+        theme="shoulder",
+        application_fr=(
+            "Insertion de l'élévateur de la scapula : point clé des cervicalgies "
+            "d'origine scapulaire et du dépistage de la sonnette (bascule) de la "
+            "scapula lors de l'élévation du bras."
+        ),
+        application_en=(
+            "Insertion of levator scapulae: a key point in scapulogenic neck pain and "
+            "in screening scapular rotation (tipping) during arm elevation."
+        ),
+    ),
+    Landmark(
+        code="coracoid_process_left",
+        category="BONE",
+        name_fr="Processus coracoïde gauche",
+        name_en="Left coracoid process",
+        hint_fr=(
+            "Petite saillie osseuse antérieure, à 2-3 cm sous le tiers latéral de la "
+            "clavicule gauche, dans le sillon delto-pectoral. Presser doucement vers "
+            "l'arrière et le dehors : le relief est dur et sensible. Marquer sa "
+            "pointe antérieure, bras le long du corps."
+        ),
+        hint_en=(
+            "Small anterior bony prominence, 2-3 cm below the lateral third of the "
+            "left clavicle, in the deltopectoral groove. Press gently backward and "
+            "laterally: the prominence is hard and tender. Mark its anterior tip with "
+            "the arm at the side."
+        ),
+        body_side="left",
+        theme="shoulder",
+        application_fr=(
+            "Insertion du petit pectoral et origine du court chef du biceps et du "
+            "coraco-brachial : repère central de la posture en enroulement d'épaules "
+            "(petit pectoral court) et du conflit sous-acromial."
+        ),
+        application_en=(
+            "Insertion of pectoralis minor and origin of the short head of biceps and "
+            "coracobrachialis: the central landmark for rounded-shoulder posture "
+            "(short pectoralis minor) and for subacromial impingement."
+        ),
+    ),
+    Landmark(
+        code="coracoid_process_right",
+        category="BONE",
+        name_fr="Processus coracoïde droit",
+        name_en="Right coracoid process",
+        hint_fr=(
+            "Petite saillie osseuse antérieure, à 2-3 cm sous le tiers latéral de la "
+            "clavicule droite, dans le sillon delto-pectoral. Presser doucement vers "
+            "l'arrière et le dehors : le relief est dur et sensible. Marquer sa "
+            "pointe antérieure, bras le long du corps."
+        ),
+        hint_en=(
+            "Small anterior bony prominence, 2-3 cm below the lateral third of the "
+            "right clavicle, in the deltopectoral groove. Press gently backward and "
+            "laterally: the prominence is hard and tender. Mark its anterior tip with "
+            "the arm at the side."
+        ),
+        body_side="right",
+        theme="shoulder",
+        application_fr=(
+            "Insertion du petit pectoral et origine du court chef du biceps et du "
+            "coraco-brachial : repère central de la posture en enroulement d'épaules "
+            "(petit pectoral court) et du conflit sous-acromial."
+        ),
+        application_en=(
+            "Insertion of pectoralis minor and origin of the short head of biceps and "
+            "coracobrachialis: the central landmark for rounded-shoulder posture "
+            "(short pectoralis minor) and for subacromial impingement."
+        ),
+    ),
+    Landmark(
+        code="greater_tubercle_left",
+        category="BONE",
+        name_fr="Grand tubercule de l'humérus gauche (trochiter)",
+        name_en="Left greater tubercle of the humerus",
+        hint_fr=(
+            "Relief osseux latéral de l'extrémité proximale de l'humérus gauche, "
+            "environ 1 cm sous et en dehors du bord antéro-latéral de l'acromion. "
+            "Demander une rotation médiale/latérale du bras coude au corps : le "
+            "tubercule roule sous le doigt. Marquer sa facette la plus latérale."
+        ),
+        hint_en=(
+            "Lateral bony prominence at the proximal end of the left humerus, about "
+            "1 cm below and lateral to the anterolateral border of the acromion. Ask "
+            "for medial/lateral rotation with the elbow at the side: the tubercle "
+            "rolls under the finger. Mark its most lateral facet."
+        ),
+        body_side="left",
+        theme="shoulder",
+        application_fr=(
+            "Insertion du supra-épineux, de l'infra-épineux et du petit rond : c'est "
+            "le site de palpation des tendinopathies de la coiffe des rotateurs et le "
+            "repère de l'espace sous-acromial."
+        ),
+        application_en=(
+            "Insertion of supraspinatus, infraspinatus and teres minor: the palpation "
+            "site for rotator cuff tendinopathy and the landmark of the subacromial "
+            "space."
+        ),
+    ),
+    Landmark(
+        code="greater_tubercle_right",
+        category="BONE",
+        name_fr="Grand tubercule de l'humérus droit (trochiter)",
+        name_en="Right greater tubercle of the humerus",
+        hint_fr=(
+            "Relief osseux latéral de l'extrémité proximale de l'humérus droit, "
+            "environ 1 cm sous et en dehors du bord antéro-latéral de l'acromion. "
+            "Demander une rotation médiale/latérale du bras coude au corps : le "
+            "tubercule roule sous le doigt. Marquer sa facette la plus latérale."
+        ),
+        hint_en=(
+            "Lateral bony prominence at the proximal end of the right humerus, about "
+            "1 cm below and lateral to the anterolateral border of the acromion. Ask "
+            "for medial/lateral rotation with the elbow at the side: the tubercle "
+            "rolls under the finger. Mark its most lateral facet."
+        ),
+        body_side="right",
+        theme="shoulder",
+        application_fr=(
+            "Insertion du supra-épineux, de l'infra-épineux et du petit rond : c'est "
+            "le site de palpation des tendinopathies de la coiffe des rotateurs et le "
+            "repère de l'espace sous-acromial."
+        ),
+        application_en=(
+            "Insertion of supraspinatus, infraspinatus and teres minor: the palpation "
+            "site for rotator cuff tendinopathy and the landmark of the subacromial "
+            "space."
+        ),
+    ),
+    Landmark(
+        code="sternoclavicular_joint_left",
+        category="BONE",
+        name_fr="Articulation sterno-claviculaire gauche",
+        name_en="Left sternoclavicular joint",
+        hint_fr=(
+            "Extrémité médiale de la clavicule gauche, contre le manubrium, juste "
+            "en dehors de la fourchette sternale. Demander une élévation puis un "
+            "abaissement de l'épaule : la clavicule bascule nettement sous le doigt, "
+            "ce qui confirme l'interligne."
+        ),
+        hint_en=(
+            "Medial end of the left clavicle against the manubrium, just lateral to "
+            "the suprasternal notch. Ask for shoulder elevation then depression: the "
+            "clavicle clearly tilts under the finger, confirming the joint line."
+        ),
+        body_side="left",
+        theme="shoulder",
+        application_fr=(
+            "Seule attache osseuse du membre supérieur au thorax : avec l'acromion, "
+            "elle décrit l'orientation de la clavicule et donc la protraction/"
+            "élévation de l'épaule dans les plans frontal et transversal."
+        ),
+        application_en=(
+            "The only bony link between the upper limb and the thorax: with the "
+            "acromion it describes clavicular orientation, hence shoulder "
+            "protraction/elevation in the frontal and transverse planes."
+        ),
+    ),
+    Landmark(
+        code="sternoclavicular_joint_right",
+        category="BONE",
+        name_fr="Articulation sterno-claviculaire droite",
+        name_en="Right sternoclavicular joint",
+        hint_fr=(
+            "Extrémité médiale de la clavicule droite, contre le manubrium, juste "
+            "en dehors de la fourchette sternale. Demander une élévation puis un "
+            "abaissement de l'épaule : la clavicule bascule nettement sous le doigt, "
+            "ce qui confirme l'interligne."
+        ),
+        hint_en=(
+            "Medial end of the right clavicle against the manubrium, just lateral to "
+            "the suprasternal notch. Ask for shoulder elevation then depression: the "
+            "clavicle clearly tilts under the finger, confirming the joint line."
+        ),
+        body_side="right",
+        theme="shoulder",
+        application_fr=(
+            "Seule attache osseuse du membre supérieur au thorax : avec l'acromion, "
+            "elle décrit l'orientation de la clavicule et donc la protraction/"
+            "élévation de l'épaule dans les plans frontal et transversal."
+        ),
+        application_en=(
+            "The only bony link between the upper limb and the thorax: with the "
+            "acromion it describes clavicular orientation, hence shoulder "
+            "protraction/elevation in the frontal and transverse planes."
+        ),
+    ),
     # ══════════════════════════════════════════════════════════════════════
     # BONE — Membre supérieur
     # ══════════════════════════════════════════════════════════════════════
+    Landmark(
+        code="deltoid_tuberosity_left",
+        category="BONE",
+        name_fr="Tubérosité deltoïdienne gauche",
+        name_en="Left deltoid tuberosity",
+        hint_fr=(
+            "Rugosité allongée sur la face latérale de l'humérus gauche, à "
+            "mi-hauteur du bras (≈ 50 % de la distance acromion-épicondyle latéral). "
+            "Demander une abduction contre résistance : le V du deltoïde converge "
+            "vers ce point, que l'on palpe à travers le muscle relâché."
+        ),
+        hint_en=(
+            "Elongated roughened area on the lateral surface of the left humerus, at "
+            "mid-arm level (≈ 50 % of the acromion-lateral epicondyle distance). Ask "
+            "for resisted abduction: the V of the deltoid converges on this point, "
+            "palpated through the relaxed muscle."
+        ),
+        body_side="left",
+        theme="anatomy",
+        application_fr=(
+            "Insertion distale des trois chefs du deltoïde : elle borne la ligne du "
+            "site EMG du deltoïde et explique le bras de levier court du muscle en "
+            "abduction."
+        ),
+        application_en=(
+            "Distal insertion of all three deltoid heads: it bounds the deltoid EMG "
+            "line and explains the muscle's short lever arm in abduction."
+        ),
+    ),
+    Landmark(
+        code="deltoid_tuberosity_right",
+        category="BONE",
+        name_fr="Tubérosité deltoïdienne droite",
+        name_en="Right deltoid tuberosity",
+        hint_fr=(
+            "Rugosité allongée sur la face latérale de l'humérus droit, à "
+            "mi-hauteur du bras (≈ 50 % de la distance acromion-épicondyle latéral). "
+            "Demander une abduction contre résistance : le V du deltoïde converge "
+            "vers ce point, que l'on palpe à travers le muscle relâché."
+        ),
+        hint_en=(
+            "Elongated roughened area on the lateral surface of the right humerus, at "
+            "mid-arm level (≈ 50 % of the acromion-lateral epicondyle distance). Ask "
+            "for resisted abduction: the V of the deltoid converges on this point, "
+            "palpated through the relaxed muscle."
+        ),
+        body_side="right",
+        theme="anatomy",
+        application_fr=(
+            "Insertion distale des trois chefs du deltoïde : elle borne la ligne du "
+            "site EMG du deltoïde et explique le bras de levier court du muscle en "
+            "abduction."
+        ),
+        application_en=(
+            "Distal insertion of all three deltoid heads: it bounds the deltoid EMG "
+            "line and explains the muscle's short lever arm in abduction."
+        ),
+    ),
     Landmark(
         code="lateral_epicondyle_left",
         category="BONE",
@@ -702,6 +1480,66 @@ LANDMARKS: list[Landmark] = [
         body_side="right",
     ),
     Landmark(
+        code="AIIS_left",
+        category="BONE",
+        name_fr="Épine iliaque antéro-inférieure gauche (EIAI)",
+        name_en="Left anterior inferior iliac spine (AIIS)",
+        hint_fr=(
+            "Saillie osseuse située environ 2 travers de doigt sous et légèrement en "
+            "dehors de l'EIAS gauche, au fond du sillon inguinal. Palper en profondeur "
+            "à travers le sartorius et le tenseur du fascia lata, hanche légèrement "
+            "fléchie pour détendre les tissus. Palpation ferme mais respectueuse."
+        ),
+        hint_en=(
+            "Bony prominence about two finger widths below and slightly lateral to "
+            "the left ASIS, deep in the groin crease. Palpate deeply through "
+            "sartorius and tensor fasciae latae, with the hip slightly flexed to "
+            "relax the tissues. Firm but respectful palpation."
+        ),
+        body_side="left",
+        theme="anatomy",
+        application_fr=(
+            "Origine du droit fémoral (tendon direct) et du ligament ilio-fémoral : "
+            "site des avulsions apophysaires du jeune sprinteur et repère des "
+            "tendinopathies proximales du quadriceps."
+        ),
+        application_en=(
+            "Origin of rectus femoris (direct head) and of the iliofemoral ligament: "
+            "site of apophyseal avulsion in young sprinters and landmark for proximal "
+            "quadriceps tendinopathy."
+        ),
+    ),
+    Landmark(
+        code="AIIS_right",
+        category="BONE",
+        name_fr="Épine iliaque antéro-inférieure droite (EIAI)",
+        name_en="Right anterior inferior iliac spine (AIIS)",
+        hint_fr=(
+            "Saillie osseuse située environ 2 travers de doigt sous et légèrement en "
+            "dehors de l'EIAS droite, au fond du sillon inguinal. Palper en profondeur "
+            "à travers le sartorius et le tenseur du fascia lata, hanche légèrement "
+            "fléchie pour détendre les tissus. Palpation ferme mais respectueuse."
+        ),
+        hint_en=(
+            "Bony prominence about two finger widths below and slightly lateral to "
+            "the right ASIS, deep in the groin crease. Palpate deeply through "
+            "sartorius and tensor fasciae latae, with the hip slightly flexed to "
+            "relax the tissues. Firm but respectful palpation."
+        ),
+        body_side="right",
+        theme="anatomy",
+        application_fr=(
+            "Origine du droit fémoral (tendon direct) et du ligament ilio-fémoral : "
+            "site des avulsions apophysaires du jeune sprinteur et repère des "
+            "tendinopathies proximales du quadriceps."
+        ),
+        application_en=(
+            "Origin of rectus femoris (direct head) and of the iliofemoral ligament: "
+            "site of apophyseal avulsion in young sprinters and landmark for proximal "
+            "quadriceps tendinopathy."
+        ),
+    ),
+    Landmark(
         code="PSIS_left",
         category="BONE",
         name_fr="Épine iliaque postéro-supérieure gauche (EIPS)",
@@ -868,6 +1706,36 @@ LANDMARKS: list[Landmark] = [
             "gluteal masses. Origin of the gluteus maximus EMG line "
             "(sacrum → greater trochanter)."
         ),
+        body_side="midline",
+    ),
+    Landmark(
+        code="pubic_symphysis",
+        category="BONE",
+        name_fr="Symphyse pubienne (bord supérieur)",
+        name_en="Pubic symphysis (superior border)",
+        hint_fr=(
+            "Relief osseux médian à la partie la plus basse de l'abdomen, sur la "
+            "ligne médiane. Faire réaliser la palpation par le sujet lui-même, à "
+            "plat ventre de la main, en descendant depuis le nombril jusqu'à la "
+            "butée osseuse ; marquer le bord supérieur, jamais plus bas."
+        ),
+        hint_en=(
+            "Midline bony ridge at the lowest part of the abdomen. Have the subject "
+            "palpate it themselves with the flat of the hand, sliding down from the "
+            "navel until reaching bone; mark the superior border only, never lower."
+        ),
+        body_side="midline",
+        theme="core",
+        application_fr=(
+            "Insertion basse du droit de l'abdomen et origine des adducteurs et du "
+            "gracile : repère des pubalgies de l'athlète et référence antérieure de "
+            "la bascule du bassin (ligne EIAS - symphyse)."
+        ),
+        application_en=(
+            "Lower attachment of rectus abdominis and origin of the adductors and "
+            "gracilis: landmark for athletic groin pain and anterior reference for "
+            "pelvic tilt (ASIS - symphysis line)."
+        ),
     ),
     # ══════════════════════════════════════════════════════════════════════
     # BONE — Membre inférieur
@@ -909,6 +1777,66 @@ LANDMARKS: list[Landmark] = [
             "skinfold (ISAK)."
         ),
         body_side="right",
+    ),
+    Landmark(
+        code="patella_center_left",
+        category="BONE",
+        name_fr="Centre de la patella gauche",
+        name_en="Left centre of the patella",
+        hint_fr=(
+            "Milieu de la rotule gauche, genou en extension et quadriceps relâché : "
+            "encadrer la patella entre pouce et index pour repérer ses bords médial "
+            "et latéral, puis marquer le point situé à mi-distance, à mi-hauteur "
+            "entre la base et la pointe."
+        ),
+        hint_en=(
+            "Middle of the left patella, knee extended and quadriceps relaxed: frame "
+            "the patella between thumb and index to find its medial and lateral "
+            "borders, then mark the point midway between them, halfway between base "
+            "and apex."
+        ),
+        body_side="left",
+        theme="posture",
+        application_fr=(
+            "Sommet de l'angle Q (EIAS → centre de la patella → tubérosité tibiale) : "
+            "quantifie l'alignement fémoro-patellaire dans le plan frontal (valgus "
+            "dynamique, syndrome fémoro-patellaire)."
+        ),
+        application_en=(
+            "Apex of the Q angle (ASIS → patellar centre → tibial tuberosity): "
+            "quantifies patellofemoral alignment in the frontal plane (dynamic "
+            "valgus, patellofemoral pain syndrome)."
+        ),
+    ),
+    Landmark(
+        code="patella_center_right",
+        category="BONE",
+        name_fr="Centre de la patella droite",
+        name_en="Right centre of the patella",
+        hint_fr=(
+            "Milieu de la rotule droite, genou en extension et quadriceps relâché : "
+            "encadrer la patella entre pouce et index pour repérer ses bords médial "
+            "et latéral, puis marquer le point situé à mi-distance, à mi-hauteur "
+            "entre la base et la pointe."
+        ),
+        hint_en=(
+            "Middle of the right patella, knee extended and quadriceps relaxed: frame "
+            "the patella between thumb and index to find its medial and lateral "
+            "borders, then mark the point midway between them, halfway between base "
+            "and apex."
+        ),
+        body_side="right",
+        theme="posture",
+        application_fr=(
+            "Sommet de l'angle Q (EIAS → centre de la patella → tubérosité tibiale) : "
+            "quantifie l'alignement fémoro-patellaire dans le plan frontal (valgus "
+            "dynamique, syndrome fémoro-patellaire)."
+        ),
+        application_en=(
+            "Apex of the Q angle (ASIS → patellar centre → tibial tuberosity): "
+            "quantifies patellofemoral alignment in the frontal plane (dynamic "
+            "valgus, patellofemoral pain syndrome)."
+        ),
     ),
     Landmark(
         code="lateral_knee_left",
@@ -1063,6 +1991,186 @@ LANDMARKS: list[Landmark] = [
         body_side="right",
     ),
     Landmark(
+        code="gerdy_tubercle_left",
+        category="BONE",
+        name_fr="Tubercule de Gerdy gauche",
+        name_en="Left Gerdy's tubercle",
+        hint_fr=(
+            "Petite surface osseuse aplatie sur la face antéro-latérale du tibia "
+            "gauche, à mi-chemin entre la tubérosité tibiale (médialement) et la tête "
+            "de la fibula (latéralement), quelques centimètres sous l'interligne. "
+            "Elle se tend nettement lors d'une abduction de hanche en charge."
+        ),
+        hint_en=(
+            "Small flattened bony area on the anterolateral surface of the left "
+            "tibia, midway between the tibial tuberosity (medially) and the fibular "
+            "head (laterally), a few centimetres below the joint line. It tightens "
+            "clearly during weight-bearing hip abduction."
+        ),
+        body_side="left",
+        theme="anatomy",
+        application_fr=(
+            "Insertion distale de la bandelette ilio-tibiale (tenseur du fascia lata "
+            "et grand fessier) : repère du syndrome de l'essuie-glace chez le coureur "
+            "et de la stabilité antéro-latérale du genou."
+        ),
+        application_en=(
+            "Distal insertion of the iliotibial band (tensor fasciae latae and "
+            "gluteus maximus): landmark for iliotibial band syndrome in runners and "
+            "for anterolateral knee stability."
+        ),
+    ),
+    Landmark(
+        code="gerdy_tubercle_right",
+        category="BONE",
+        name_fr="Tubercule de Gerdy droit",
+        name_en="Right Gerdy's tubercle",
+        hint_fr=(
+            "Petite surface osseuse aplatie sur la face antéro-latérale du tibia "
+            "droit, à mi-chemin entre la tubérosité tibiale (médialement) et la tête "
+            "de la fibula (latéralement), quelques centimètres sous l'interligne. "
+            "Elle se tend nettement lors d'une abduction de hanche en charge."
+        ),
+        hint_en=(
+            "Small flattened bony area on the anterolateral surface of the right "
+            "tibia, midway between the tibial tuberosity (medially) and the fibular "
+            "head (laterally), a few centimetres below the joint line. It tightens "
+            "clearly during weight-bearing hip abduction."
+        ),
+        body_side="right",
+        theme="anatomy",
+        application_fr=(
+            "Insertion distale de la bandelette ilio-tibiale (tenseur du fascia lata "
+            "et grand fessier) : repère du syndrome de l'essuie-glace chez le coureur "
+            "et de la stabilité antéro-latérale du genou."
+        ),
+        application_en=(
+            "Distal insertion of the iliotibial band (tensor fasciae latae and "
+            "gluteus maximus): landmark for iliotibial band syndrome in runners and "
+            "for anterolateral knee stability."
+        ),
+    ),
+    Landmark(
+        code="pes_anserinus_left",
+        category="BONE",
+        name_fr="Patte d'oie gauche (pes anserinus)",
+        name_en="Left pes anserinus",
+        hint_fr=(
+            "Zone d'insertion tendineuse sur la face antéro-médiale du tibia gauche, "
+            "4 à 5 cm sous l'interligne médial du genou et juste en dedans de la "
+            "tubérosité tibiale. Demander une flexion de genou contre résistance : "
+            "les tendons du sartorius, du gracile et du semi-tendineux se tendent."
+        ),
+        hint_en=(
+            "Tendon attachment area on the anteromedial surface of the left tibia, "
+            "4 to 5 cm below the medial knee joint line and just medial to the tibial "
+            "tuberosity. Ask for resisted knee flexion: the sartorius, gracilis and "
+            "semitendinosus tendons stand out."
+        ),
+        body_side="left",
+        theme="anatomy",
+        application_fr=(
+            "Insertion commune sartorius-gracile-semi-tendineux (SGT) : site de la "
+            "bursite de la patte d'oie et zone de prélèvement du greffon DIDT en "
+            "chirurgie du LCA."
+        ),
+        application_en=(
+            "Common insertion of sartorius, gracilis and semitendinosus: site of pes "
+            "anserine bursitis and harvest zone of the hamstring graft in ACL "
+            "surgery."
+        ),
+    ),
+    Landmark(
+        code="pes_anserinus_right",
+        category="BONE",
+        name_fr="Patte d'oie droite (pes anserinus)",
+        name_en="Right pes anserinus",
+        hint_fr=(
+            "Zone d'insertion tendineuse sur la face antéro-médiale du tibia droit, "
+            "4 à 5 cm sous l'interligne médial du genou et juste en dedans de la "
+            "tubérosité tibiale. Demander une flexion de genou contre résistance : "
+            "les tendons du sartorius, du gracile et du semi-tendineux se tendent."
+        ),
+        hint_en=(
+            "Tendon attachment area on the anteromedial surface of the right tibia, "
+            "4 to 5 cm below the medial knee joint line and just medial to the tibial "
+            "tuberosity. Ask for resisted knee flexion: the sartorius, gracilis and "
+            "semitendinosus tendons stand out."
+        ),
+        body_side="right",
+        theme="anatomy",
+        application_fr=(
+            "Insertion commune sartorius-gracile-semi-tendineux (SGT) : site de la "
+            "bursite de la patte d'oie et zone de prélèvement du greffon DIDT en "
+            "chirurgie du LCA."
+        ),
+        application_en=(
+            "Common insertion of sartorius, gracilis and semitendinosus: site of pes "
+            "anserine bursitis and harvest zone of the hamstring graft in ACL "
+            "surgery."
+        ),
+    ),
+    Landmark(
+        code="adductor_tubercle_left",
+        category="BONE",
+        name_fr="Tubercule de l'adducteur gauche",
+        name_en="Left adductor tubercle",
+        hint_fr=(
+            "Petite pointe osseuse au sommet de l'épicondyle médial du fémur gauche, "
+            "genou fléchi à 30°. Remonter le bord médial du condyle jusqu'à sentir un "
+            "tubercule pointu ; le tendon du grand adducteur, tendu, y aboutit "
+            "lorsqu'on résiste une adduction de hanche."
+        ),
+        hint_en=(
+            "Small bony spike at the top of the left medial femoral epicondyle, knee "
+            "flexed to 30°. Run up the medial border of the condyle until a pointed "
+            "tubercle is felt; the taut adductor magnus tendon leads to it during "
+            "resisted hip adduction."
+        ),
+        body_side="left",
+        theme="anatomy",
+        application_fr=(
+            "Insertion du faisceau ischio-condylaire du grand adducteur et repère du "
+            "vaste médial oblique (VMO) : utile pour vérifier le site EMG du VMO et "
+            "pour palper le ligament collatéral médial."
+        ),
+        application_en=(
+            "Insertion of the ischiocondylar part of adductor magnus and reference "
+            "for the vastus medialis obliquus (VMO): useful to check the VMO EMG site "
+            "and to palpate the medial collateral ligament."
+        ),
+    ),
+    Landmark(
+        code="adductor_tubercle_right",
+        category="BONE",
+        name_fr="Tubercule de l'adducteur droit",
+        name_en="Right adductor tubercle",
+        hint_fr=(
+            "Petite pointe osseuse au sommet de l'épicondyle médial du fémur droit, "
+            "genou fléchi à 30°. Remonter le bord médial du condyle jusqu'à sentir un "
+            "tubercule pointu ; le tendon du grand adducteur, tendu, y aboutit "
+            "lorsqu'on résiste une adduction de hanche."
+        ),
+        hint_en=(
+            "Small bony spike at the top of the right medial femoral epicondyle, knee "
+            "flexed to 30°. Run up the medial border of the condyle until a pointed "
+            "tubercle is felt; the taut adductor magnus tendon leads to it during "
+            "resisted hip adduction."
+        ),
+        body_side="right",
+        theme="anatomy",
+        application_fr=(
+            "Insertion du faisceau ischio-condylaire du grand adducteur et repère du "
+            "vaste médial oblique (VMO) : utile pour vérifier le site EMG du VMO et "
+            "pour palper le ligament collatéral médial."
+        ),
+        application_en=(
+            "Insertion of the ischiocondylar part of adductor magnus and reference "
+            "for the vastus medialis obliquus (VMO): useful to check the VMO EMG site "
+            "and to palpate the medial collateral ligament."
+        ),
+    ),
+    Landmark(
         code="lateral_malleolus_left",
         category="BONE",
         name_fr="Malléole latérale gauche",
@@ -1169,6 +2277,246 @@ LANDMARKS: list[Landmark] = [
             "gastrocnemius EMG line (fibular head → heel)."
         ),
         body_side="right",
+    ),
+    Landmark(
+        code="navicular_tuberosity_left",
+        category="BONE",
+        name_fr="Tubérosité du naviculaire gauche",
+        name_en="Left navicular tuberosity",
+        hint_fr=(
+            "Bosse osseuse arrondie sur le bord médial du pied gauche, environ "
+            "2-3 cm en avant et sous la malléole médiale, au sommet de l'arche "
+            "longitudinale interne. Demander une inversion du pied contre "
+            "résistance : le tendon du tibial postérieur y aboutit directement."
+        ),
+        hint_en=(
+            "Rounded bony bump on the medial border of the left foot, about 2-3 cm "
+            "anterior and inferior to the medial malleolus, at the top of the medial "
+            "longitudinal arch. Ask for resisted foot inversion: the tibialis "
+            "posterior tendon runs straight to it."
+        ),
+        body_side="left",
+        theme="anatomy",
+        application_fr=(
+            "Insertion principale du tibial postérieur et point de mesure du "
+            "navicular drop test : hauteur de l'arche interne, pied plat acquis et "
+            "dysfonction du tibial postérieur."
+        ),
+        application_en=(
+            "Main insertion of tibialis posterior and measurement point of the "
+            "navicular drop test: medial arch height, acquired flatfoot and tibialis "
+            "posterior dysfunction."
+        ),
+    ),
+    Landmark(
+        code="navicular_tuberosity_right",
+        category="BONE",
+        name_fr="Tubérosité du naviculaire droit",
+        name_en="Right navicular tuberosity",
+        hint_fr=(
+            "Bosse osseuse arrondie sur le bord médial du pied droit, environ "
+            "2-3 cm en avant et sous la malléole médiale, au sommet de l'arche "
+            "longitudinale interne. Demander une inversion du pied contre "
+            "résistance : le tendon du tibial postérieur y aboutit directement."
+        ),
+        hint_en=(
+            "Rounded bony bump on the medial border of the right foot, about 2-3 cm "
+            "anterior and inferior to the medial malleolus, at the top of the medial "
+            "longitudinal arch. Ask for resisted foot inversion: the tibialis "
+            "posterior tendon runs straight to it."
+        ),
+        body_side="right",
+        theme="anatomy",
+        application_fr=(
+            "Insertion principale du tibial postérieur et point de mesure du "
+            "navicular drop test : hauteur de l'arche interne, pied plat acquis et "
+            "dysfonction du tibial postérieur."
+        ),
+        application_en=(
+            "Main insertion of tibialis posterior and measurement point of the "
+            "navicular drop test: medial arch height, acquired flatfoot and tibialis "
+            "posterior dysfunction."
+        ),
+    ),
+    Landmark(
+        code="fifth_metatarsal_base_left",
+        category="BONE",
+        name_fr="Base du 5e métatarsien gauche (styloïde)",
+        name_en="Left base of the 5th metatarsal (styloid)",
+        hint_fr=(
+            "Saillie osseuse très nette sur le bord latéral du pied gauche, à "
+            "mi-longueur entre le talon et la tête du 5e métatarsien. Suivre le bord "
+            "externe du pied d'arrière en avant : la styloïde est la première butée "
+            "rencontrée. Demander une éversion pour tendre le tendon du court fibulaire."
+        ),
+        hint_en=(
+            "Clear bony prominence on the lateral border of the left foot, midway "
+            "between the heel and the head of the 5th metatarsal. Run along the "
+            "lateral border from back to front: the styloid is the first bony stop. "
+            "Ask for eversion to tension the fibularis brevis tendon."
+        ),
+        body_side="left",
+        theme="anatomy",
+        application_fr=(
+            "Insertion du court fibulaire : site de la fracture de Jones et des "
+            "avulsions lors de l'entorse en inversion ; repère de la largeur du pied "
+            "et du chaussage."
+        ),
+        application_en=(
+            "Insertion of fibularis brevis: site of Jones fracture and of avulsions "
+            "during inversion ankle sprains; landmark for foot width and footwear "
+            "fitting."
+        ),
+    ),
+    Landmark(
+        code="fifth_metatarsal_base_right",
+        category="BONE",
+        name_fr="Base du 5e métatarsien droit (styloïde)",
+        name_en="Right base of the 5th metatarsal (styloid)",
+        hint_fr=(
+            "Saillie osseuse très nette sur le bord latéral du pied droit, à "
+            "mi-longueur entre le talon et la tête du 5e métatarsien. Suivre le bord "
+            "externe du pied d'arrière en avant : la styloïde est la première butée "
+            "rencontrée. Demander une éversion pour tendre le tendon du court fibulaire."
+        ),
+        hint_en=(
+            "Clear bony prominence on the lateral border of the right foot, midway "
+            "between the heel and the head of the 5th metatarsal. Run along the "
+            "lateral border from back to front: the styloid is the first bony stop. "
+            "Ask for eversion to tension the fibularis brevis tendon."
+        ),
+        body_side="right",
+        theme="anatomy",
+        application_fr=(
+            "Insertion du court fibulaire : site de la fracture de Jones et des "
+            "avulsions lors de l'entorse en inversion ; repère de la largeur du pied "
+            "et du chaussage."
+        ),
+        application_en=(
+            "Insertion of fibularis brevis: site of Jones fracture and of avulsions "
+            "during inversion ankle sprains; landmark for foot width and footwear "
+            "fitting."
+        ),
+    ),
+    Landmark(
+        code="first_metatarsal_head_left",
+        category="BONE",
+        name_fr="Tête du 1er métatarsien gauche",
+        name_en="Left head of the 1st metatarsal",
+        hint_fr=(
+            "Renflement osseux à la base du gros orteil gauche, sur le bord médial "
+            "de l'avant-pied. Mobiliser passivement l'hallux : l'articulation se "
+            "creuse et la tête du métatarsien devient évidente. Marquer son point le "
+            "plus médial, pied en charge."
+        ),
+        hint_en=(
+            "Bony bulge at the base of the left big toe, on the medial border of the "
+            "forefoot. Move the hallux passively: the joint line opens and the "
+            "metatarsal head becomes obvious. Mark its most medial point with the "
+            "foot loaded."
+        ),
+        body_side="left",
+        theme="gait",
+        application_fr=(
+            "Point d'appui du déroulé du pas en phase propulsive et repère du hallux "
+            "valgus ; avec la tête du 5e métatarsien il définit la ligne de l'arche "
+            "antérieure."
+        ),
+        application_en=(
+            "Support point during the propulsive phase of roll-off and landmark for "
+            "hallux valgus; with the 5th metatarsal head it defines the transverse "
+            "arch line."
+        ),
+    ),
+    Landmark(
+        code="first_metatarsal_head_right",
+        category="BONE",
+        name_fr="Tête du 1er métatarsien droit",
+        name_en="Right head of the 1st metatarsal",
+        hint_fr=(
+            "Renflement osseux à la base du gros orteil droit, sur le bord médial "
+            "de l'avant-pied. Mobiliser passivement l'hallux : l'articulation se "
+            "creuse et la tête du métatarsien devient évidente. Marquer son point le "
+            "plus médial, pied en charge."
+        ),
+        hint_en=(
+            "Bony bulge at the base of the right big toe, on the medial border of the "
+            "forefoot. Move the hallux passively: the joint line opens and the "
+            "metatarsal head becomes obvious. Mark its most medial point with the "
+            "foot loaded."
+        ),
+        body_side="right",
+        theme="gait",
+        application_fr=(
+            "Point d'appui du déroulé du pas en phase propulsive et repère du hallux "
+            "valgus ; avec la tête du 5e métatarsien il définit la ligne de l'arche "
+            "antérieure."
+        ),
+        application_en=(
+            "Support point during the propulsive phase of roll-off and landmark for "
+            "hallux valgus; with the 5th metatarsal head it defines the transverse "
+            "arch line."
+        ),
+    ),
+    Landmark(
+        code="second_metatarsal_head_left",
+        category="BONE",
+        name_fr="Tête du 2e métatarsien gauche",
+        name_en="Left head of the 2nd metatarsal",
+        hint_fr=(
+            "Sur la face dorsale de l'avant-pied gauche, remonter le 2e orteil "
+            "jusqu'au renflement de l'articulation métatarso-phalangienne. Marquer le "
+            "sommet dorsal de cette tête : c'est l'extrémité antérieure de l'axe "
+            "longitudinal du pied (talon → 2e métatarsien)."
+        ),
+        hint_en=(
+            "On the dorsum of the left forefoot, follow the 2nd toe back to the "
+            "bulge of the metatarsophalangeal joint. Mark the dorsal top of that "
+            "head: it is the anterior end of the long axis of the foot "
+            "(heel → 2nd metatarsal)."
+        ),
+        body_side="left",
+        theme="gait",
+        application_fr=(
+            "Définit l'axe longitudinal du pied et donc l'angle de progression du "
+            "pied (foot progression angle) dans le plan transversal : rotation "
+            "in-toeing / out-toeing à la marche et à la course."
+        ),
+        application_en=(
+            "Defines the long axis of the foot and therefore the foot progression "
+            "angle in the transverse plane: in-toeing / out-toeing during walking "
+            "and running."
+        ),
+    ),
+    Landmark(
+        code="second_metatarsal_head_right",
+        category="BONE",
+        name_fr="Tête du 2e métatarsien droit",
+        name_en="Right head of the 2nd metatarsal",
+        hint_fr=(
+            "Sur la face dorsale de l'avant-pied droit, remonter le 2e orteil "
+            "jusqu'au renflement de l'articulation métatarso-phalangienne. Marquer le "
+            "sommet dorsal de cette tête : c'est l'extrémité antérieure de l'axe "
+            "longitudinal du pied (talon → 2e métatarsien)."
+        ),
+        hint_en=(
+            "On the dorsum of the right forefoot, follow the 2nd toe back to the "
+            "bulge of the metatarsophalangeal joint. Mark the dorsal top of that "
+            "head: it is the anterior end of the long axis of the foot "
+            "(heel → 2nd metatarsal)."
+        ),
+        body_side="right",
+        theme="gait",
+        application_fr=(
+            "Définit l'axe longitudinal du pied et donc l'angle de progression du "
+            "pied (foot progression angle) dans le plan transversal : rotation "
+            "in-toeing / out-toeing à la marche et à la course."
+        ),
+        application_en=(
+            "Defines the long axis of the foot and therefore the foot progression "
+            "angle in the transverse plane: in-toeing / out-toeing during walking "
+            "and running."
+        ),
     ),
 
     # ══════════════════════════════════════════════════════════════════════
@@ -2523,6 +3871,7 @@ LANDMARKS: list[Landmark] = [
             "relaxed. It is the horizontal origin for the abdominal skinfold (5 cm "
             "to the right) and a common reference for waist girth in some protocols."
         ),
+        body_side="midline",
     ),
     Landmark(
         code="anthro_arm_flexed_girth_right",
@@ -3018,13 +4367,14 @@ def landmarks_by_category(category: Category) -> list[Landmark]:
 def landmarks_by_side(side: BodySide, include_midline: bool = True) -> list[Landmark]:
     """Return landmarks for one body side.
 
-    ``include_midline`` also returns the non-lateralised ('bilateral') markers
-    such as ``C7_spinous`` or ``sacrum_S2``.
+    ``include_midline`` also returns the non-lateralised markers
+    (``'bilateral'`` or ``'midline'``) such as ``C7_spinous`` or ``sacrum_S2``.
     """
     return [
         lm
         for lm in LANDMARKS
-        if lm.body_side == side or (include_midline and lm.body_side == "bilateral")
+        if lm.body_side == side
+        or (include_midline and lm.body_side in ("bilateral", "midline"))
     ]
 
 
