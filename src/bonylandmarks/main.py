@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 import httpx
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox
 
 from .client import TeacherServerClient
@@ -92,17 +93,27 @@ class MainWindow(QMainWindow):
                 lang=self._lang,
                 vertex_colors=vertex_colors,
             )
-            tutorial.start_session.connect(
-                lambda: self._launch_session(
-                    body_mesh,
-                    vertex_colors,
-                    vertex_colors_raw,
-                    landmark_markers,
-                    all_markers,
-                    landmark_codes,
-                    matricule,
+
+            def _on_tutorial_done() -> None:
+                # Release the tutorial's VTK render window, then swap the
+                # central widget on the next event-loop turn: replacing it
+                # from inside the button's own signal would delete the widget
+                # that is still emitting.
+                tutorial.shutdown()
+                QTimer.singleShot(
+                    0,
+                    lambda: self._launch_session(
+                        body_mesh,
+                        vertex_colors,
+                        vertex_colors_raw,
+                        landmark_markers,
+                        all_markers,
+                        landmark_codes,
+                        matricule,
+                    ),
                 )
-            )
+
+            tutorial.start_session.connect(_on_tutorial_done)
             self.setCentralWidget(tutorial)
             self.show()
         else:
