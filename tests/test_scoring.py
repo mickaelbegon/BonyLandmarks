@@ -30,13 +30,21 @@ def test_feedback_color_green() -> None:
     assert r.feedback_color() == "green"
 
 
+def test_feedback_color_teal() -> None:
+    # B zone: 30 < error <= 80 mm
+    r = _make_result([0, 0, 0], [50, 0, 0])
+    assert r.feedback_color() == "teal"
+
+
 def test_feedback_color_orange() -> None:
-    r = _make_result([0, 0, 0], [30, 0, 0])
+    # C zone: 80 < error <= 150 mm
+    r = _make_result([0, 0, 0], [100, 0, 0])
     assert r.feedback_color() == "orange"
 
 
 def test_feedback_color_red() -> None:
-    r = _make_result([0, 0, 0], [50, 0, 0])
+    # D zone: error > 150 mm
+    r = _make_result([0, 0, 0], [160, 0, 0])
     assert r.feedback_color() == "red"
 
 
