@@ -7,19 +7,24 @@ from pathlib import Path
 
 import httpx
 from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QFileDialog,
+    QMainWindow,
+    QMessageBox,
+)
 
 from .client import TeacherServerClient
 from .export import export_session
 from .i18n import tr
-from .login_dialog import LoginDialog
 from .manifest import get_server_url, load_manifest
 from .landmarks_extended import LANDMARKS
 from .mesh_loader import load_avatar_glb
 from .scoring import SessionScore
+from .splash import SplashDialog
 from .tutorial import TutorialViewer
 from .viewer import LandmarkViewer
-from .welcome import WelcomeDialog
 
 
 class MainWindow(QMainWindow):
@@ -35,27 +40,36 @@ class MainWindow(QMainWindow):
         if dev_scan:
             avatar_bytes = Path(dev_scan).read_bytes()
             matricule = "dev"
+            tutorial_mode = False
         else:
             students = load_manifest()
             server_url = get_server_url()
 
-            dialog = LoginDialog(students=students, server_url=server_url, lang=self._lang, parent=self)
+            splash = SplashDialog(
+                students=students,
+                server_url=server_url,
+                lang=self._lang,
+                parent=self,
+            )
             while True:
-                if dialog.exec() != LoginDialog.Accepted:
+                result = splash.exec()
+                if result == QDialog.Rejected:
                     sys.exit(0)
 
-                matricule = dialog.matricule
+                tutorial_mode = (result == SplashDialog.TUTORIAL_RESULT)
+                matricule = splash.matricule
 
-                if dialog.local_glb_bytes is not None:
-                    avatar_bytes = dialog.local_glb_bytes
+                # Local file bypass — no credentials needed
+                if splash.local_glb_bytes is not None:
+                    avatar_bytes = splash.local_glb_bytes
                     break
 
-                birthdate = dialog.birthdate
+                birthdate = splash.birthdate
 
-                # Defensive: dialog disables Connect when server_url is None,
-                # but guard here to avoid passing None to the client.
+                # Defensive: the splash disables "Commencer" when server_url is
+                # None, but guard here to avoid passing None to the client.
                 if server_url is None:
-                    dialog.set_error(tr("error_server_config", self._lang))
+                    splash.set_error(tr("error_server_config", self._lang))
                     continue
 
                 try:
@@ -63,9 +77,9 @@ class MainWindow(QMainWindow):
                     avatar_bytes = client.fetch_avatar(matricule, birthdate)
                     break
                 except ValueError:
-                    dialog.set_error(tr("error_credentials", self._lang))
+                    splash.set_error(tr("error_credentials", self._lang))
                 except (httpx.HTTPError, ConnectionError) as exc:
-                    dialog.set_error(tr("error_network", self._lang, detail=str(exc)))
+                    splash.set_error(tr("error_network", self._lang, detail=str(exc)))
 
         body_mesh, vertex_colors, landmark_markers, all_markers = load_avatar_glb(
             avatar_bytes, remove_stickers=True
@@ -73,16 +87,6 @@ class MainWindow(QMainWindow):
         _, vertex_colors_raw, _, _ = load_avatar_glb(
             avatar_bytes, remove_stickers=False
         )
-
-        # Welcome dialog — skip if the user has checked "don't show again"
-        from PySide6.QtWidgets import QDialog
-        tutorial_mode = False
-        if not WelcomeDialog.dont_show():
-            welcome = WelcomeDialog(lang=self._lang, parent=self)
-            result = welcome.exec()
-            if result == QDialog.Rejected:
-                return  # user closed the window
-            tutorial_mode = (result == WelcomeDialog.TUTORIAL_RESULT)
 
         # All codes from the extended set; ground_truth available only for the
         # 24 BodyLoop-mapped BONE landmarks — EMG/SKINFOLD/ANTHRO are shown
