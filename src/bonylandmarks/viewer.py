@@ -73,47 +73,68 @@ _INVERSE_CAT_COLORS: dict[str, str] = {
     "ANTHRO":   "#e0b0ff",
 }
 
-# ─── Navigation overlay — SVG icons ─────────────────────────────────────────
+# ─── Navigation overlay — SVG icons (human body silhouettes, viewBox 0 0 44 44) ──
 
+# FRONT: symmetrical person facing viewer (head circle + body)
 _SVG_FRONT = (
-    '<path d="M14 4 L14 24 M7 10 L14 4 L21 10" stroke="{c}" stroke-width="2"'
-    ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-    '<circle cx="14" cy="20" r="3" fill="{c}"/>'
+    '<circle cx="22" cy="10" r="5" fill="{c}"/>'
+    '<rect x="15" y="16" width="14" height="16" rx="3" fill="{c}"/>'
+    '<rect x="11" y="16" width="5" height="12" rx="2" fill="{c}"/>'
+    '<rect x="28" y="16" width="5" height="12" rx="2" fill="{c}"/>'
+    '<rect x="15" y="33" width="5" height="9" rx="2" fill="{c}"/>'
+    '<rect x="24" y="33" width="5" height="9" rx="2" fill="{c}"/>'
+    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">AVT</text>'
 )
+
+# BACK: same silhouette + spine line to indicate back
 _SVG_BACK = (
-    '<path d="M14 24 L14 4 M7 18 L14 24 L21 18" stroke="{c}" stroke-width="2"'
-    ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-    '<circle cx="14" cy="8" r="3" fill="{c}"/>'
+    '<circle cx="22" cy="10" r="5" fill="{c}"/>'
+    '<rect x="15" y="16" width="14" height="16" rx="3" fill="{c}"/>'
+    '<rect x="11" y="16" width="5" height="12" rx="2" fill="{c}"/>'
+    '<rect x="28" y="16" width="5" height="12" rx="2" fill="{c}"/>'
+    '<rect x="15" y="33" width="5" height="9" rx="2" fill="{c}"/>'
+    '<rect x="24" y="33" width="5" height="9" rx="2" fill="{c}"/>'
+    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">ARR</text>'
+    '<line x1="22" y1="17" x2="22" y2="31" stroke="{bg}" stroke-width="1.5"/>'
 )
+
+# RIGHT SIDE: side profile
 _SVG_RIGHT = (
-    '<path d="M4 14 L24 14 M18 7 L24 14 L18 21" stroke="{c}" stroke-width="2"'
-    ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-    '<circle cx="8" cy="14" r="3" fill="{c}"/>'
+    '<circle cx="22" cy="10" r="5" fill="{c}"/>'
+    '<ellipse cx="21" cy="24" rx="6" ry="8" fill="{c}"/>'
+    '<rect x="19" y="33" width="5" height="9" rx="2" fill="{c}"/>'
+    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">DRT</text>'
 )
+
+# LEFT SIDE: mirror of right
 _SVG_LEFT = (
-    '<path d="M24 14 L4 14 M10 7 L4 14 L10 21" stroke="{c}" stroke-width="2"'
-    ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-    '<circle cx="20" cy="14" r="3" fill="{c}"/>'
+    '<circle cx="22" cy="10" r="5" fill="{c}"/>'
+    '<ellipse cx="23" cy="24" rx="6" ry="8" fill="{c}"/>'
+    '<rect x="20" y="33" width="5" height="9" rx="2" fill="{c}"/>'
+    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">GAU</text>'
 )
+
+# TOP: overhead view — shoulders oval + head circle + upward arrow
 _SVG_TOP = (
-    '<path d="M14 4 L14 24 M7 10 L14 4 L21 10" stroke="{c}" stroke-width="1.5"'
-    ' fill="none" stroke-linecap="round"/>'
-    '<path d="M4 14 L24 14 M18 9 L24 14 L18 19" stroke="{c}" stroke-width="1.5"'
-    ' fill="none" stroke-linecap="round"/>'
+    '<ellipse cx="22" cy="22" rx="10" ry="8" fill="{c}" opacity="0.5"/>'
+    '<circle cx="22" cy="22" r="5" fill="{c}"/>'
+    '<line x1="22" y1="5" x2="22" y2="12" stroke="{c}" stroke-width="2" stroke-linecap="round"/>'
+    '<text x="22" y="40" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">TOP</text>'
 )
+
+# RESET: home icon (house outline + filled door)
 _SVG_RESET = (
-    '<path d="M20 14 A6 6 0 1 1 14 8" stroke="{c}" stroke-width="2"'
-    ' fill="none" stroke-linecap="round"/>'
-    '<path d="M14 4 L14 9 L19 7 Z" fill="{c}"/>'
+    '<polygon points="22,8 8,20 10,20 10,36 34,36 34,20 36,20" fill="none" stroke="{c}" stroke-width="2" stroke-linejoin="round"/>'
+    '<rect x="17" y="26" width="10" height="10" rx="1" fill="{c}"/>'
+    '<text x="22" y="43" text-anchor="middle" font-size="5" fill="{c}" font-family="sans-serif">&#8635;</text>'
 )
 
 
-def _svg_icon(path_d: str, size: int = 24, color: str = "#c8d8f8") -> QIcon:
-    """Build a QIcon from an inline SVG path string with a {c} color placeholder."""
-    colored = path_d.replace("{c}", color)
+def _svg_icon(path_d: str, size: int = 32, color: str = "#c8d8f8", bg: str = "rgba(0,0,0,0)") -> QIcon:
+    """Build a QIcon from an inline SVG string with {c} color and {bg} background placeholders."""
+    colored = path_d.replace("{c}", color).replace("{bg}", bg)
     svg_bytes = (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">'
-        f'{colored}</svg>'
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44">{colored}</svg>'
     ).encode()
     renderer = QSvgRenderer(QByteArray(svg_bytes))
     pix = QPixmap(size, size)
@@ -361,47 +382,23 @@ class LandmarkViewer(QWidget):
         self._inverse_filter.textChanged.connect(self._on_inverse_filter_changed)
         inv_layout.addWidget(self._inverse_filter)
 
-        # Partial hint: theme only (narrows to ~10 themes, not 178 landmarks)
-        self._inverse_hint_label = QLabel("")
-        self._inverse_hint_label.setStyleSheet(
-            "font-size: 11px; font-style: italic; color: #aaaaaa; padding: 2px 0;"
-        )
-        inv_layout.addWidget(self._inverse_hint_label)
-
         self._inverse_list = QListWidget()
         self._inverse_list.setMinimumHeight(120)
 
-        # Build a grouped list: category-separator rows + coloured landmark rows.
+        # All inverse-mode landmarks sorted alphabetically by name (flat list, no headers).
         # Landmark code is stored in Qt.UserRole; category key in Qt.UserRole+1.
-        cat_groups: dict[str, list] = {}
-        for lm_item in self._session.all_session_landmarks:
-            cat = lm_item.category if hasattr(lm_item, "category") else ""
-            cat_groups.setdefault(cat, []).append(lm_item)
-        for cat in cat_groups:
-            cat_groups[cat].sort(key=lambda lm: lm.name(self._lang))
-
-        for cat in sorted(cat_groups.keys()):
-            labels = _INVERSE_CAT_LABELS.get(cat, (cat, cat))
-            cat_label = labels[0] if self._lang == "fr" else labels[1]
-
-            sep_item = QListWidgetItem(f"── {cat} — {cat_label} ──")
-            sep_item.setFlags(Qt.NoItemFlags)
-            sep_item.setBackground(QColor("#2a2a2a"))
-            sep_item.setForeground(QColor("#ffffff"))
-            sep_font = sep_item.font()
-            sep_font.setBold(True)
-            sep_font.setItalic(True)
-            sep_item.setFont(sep_font)
-            self._inverse_list.addItem(sep_item)
-
-            for lm_item in cat_groups[cat]:
-                item_text = f"{cat} • {lm_item.name(self._lang)}"
-                list_item = QListWidgetItem(item_text)
-                color = _INVERSE_CAT_COLORS.get(cat, "#cccccc")
-                list_item.setForeground(QColor(color))
-                list_item.setData(Qt.UserRole, lm_item.code)
-                list_item.setData(Qt.UserRole + 1, cat)
-                self._inverse_list.addItem(list_item)
+        all_inverse = sorted(
+            self._session.all_session_landmarks,
+            key=lambda lm: lm.name(self._lang).lower()
+        )
+        for lm_item in all_inverse:
+            item_text = lm_item.name(self._lang)
+            list_item = QListWidgetItem(item_text)
+            color = _INVERSE_CAT_COLORS.get(lm_item.category, "#cccccc")
+            list_item.setForeground(QColor(color))
+            list_item.setData(Qt.UserRole, lm_item.code)
+            list_item.setData(Qt.UserRole + 1, lm_item.category)
+            self._inverse_list.addItem(list_item)
 
         self._inverse_validate_btn = QPushButton("Valider ma réponse")
         self._inverse_validate_btn.setEnabled(False)
@@ -490,7 +487,7 @@ class LandmarkViewer(QWidget):
         extents = [bounds[1]-bounds[0], bounds[3]-bounds[2], bounds[5]-bounds[4]]
         up_axis = extents.index(max(extents))   # body's vertical axis (0=X, 1=Y, 2=Z)
         sorted_axes = sorted(range(3), key=lambda i: extents[i])
-        front_axis = sorted_axes[-2]            # second-largest extent = "front"
+        front_axis = sorted_axes[0]             # smallest extent = depth = "front"
         side_axis = ({0, 1, 2} - {up_axis, front_axis}).pop()
         centers = [
             (bounds[0] + bounds[1]) * 0.5,
@@ -498,7 +495,7 @@ class LandmarkViewer(QWidget):
             (bounds[4] + bounds[5]) * 0.5,
         ]
         height = extents[up_axis]
-        cam_distance = height * 1.8             # far enough to see the whole body
+        cam_distance = height * 2.5             # far enough to see the whole body
         cam_pos = list(centers)
         cam_pos[front_axis] += cam_distance
         up_vec = [0.0, 0.0, 0.0]
@@ -572,10 +569,10 @@ class LandmarkViewer(QWidget):
                 border-radius: 6px;
                 font-size: 11px;
                 padding: 0px;
-                min-width: 44px;
-                min-height: 44px;
-                max-width: 44px;
-                max-height: 44px;
+                min-width: 56px;
+                min-height: 56px;
+                max-width: 56px;
+                max-height: 56px;
             }
             QPushButton:hover {
                 background-color: rgba(60, 80, 140, 210);
@@ -589,20 +586,20 @@ class LandmarkViewer(QWidget):
         layout.setSpacing(4)
         layout.setContentsMargins(6, 6, 6, 6)
 
-        # (svg_path_d, tooltip_fr, callback)
+        # (svg_path_d, tooltip_fr, callback, extra kwargs for _svg_icon)
         buttons = [
-            (_SVG_FRONT,  "Vue avant\n[1]",    lambda: self._set_view(self._front_axis, +1)),
-            (_SVG_BACK,   "Vue arrière\n[2]",  lambda: self._set_view(self._front_axis, -1)),
-            (_SVG_RIGHT,  "Vue droite\n[3]",   lambda: self._set_view(self._side_axis, +1)),
-            (_SVG_LEFT,   "Vue gauche\n[4]",   lambda: self._set_view(self._side_axis, -1)),
-            (_SVG_TOP,    "Vue dessus\n[5]",   self._view_top),
-            (_SVG_RESET,  "Reset\n[R]",        self._reset_view),
+            (_SVG_FRONT, "Vue avant [1]",     lambda: self._set_view(self._front_axis, +1),  {}),
+            (_SVG_BACK,  "Vue arrière [2]",   lambda: self._set_view(self._front_axis, -1),  {"bg": "#1a1a2e"}),
+            (_SVG_RIGHT, "Vue droite [3]",    lambda: self._set_view(self._side_axis, +1),   {}),
+            (_SVG_LEFT,  "Vue gauche [4]",    lambda: self._set_view(self._side_axis, -1),   {}),
+            (_SVG_TOP,   "Vue dessus [5]",    self._view_top,                                {}),
+            (_SVG_RESET, "Réinitialiser [R]", self._reset_view,                              {}),
         ]
-        for svg_d, tooltip, cb in buttons:
+        for svg_d, tooltip, cb, kw in buttons:
             btn = QPushButton()
             btn.setToolTip(tooltip)
-            btn.setIcon(_svg_icon(svg_d, size=24, color="#c8d8f8"))
-            btn.setIconSize(QSize(24, 24))
+            btn.setIcon(_svg_icon(svg_d, size=44, **kw))
+            btn.setIconSize(QSize(44, 44))
             btn.clicked.connect(cb)
             layout.addWidget(btn)
 
@@ -1025,7 +1022,7 @@ class LandmarkViewer(QWidget):
         if horiz_norm < 1.0:
             sorted_axes = sorted(range(3), key=lambda i: extents[i])
             direction = np.zeros(3)
-            direction[sorted_axes[-2]] = 1.0    # fallback: front along second-largest axis
+            direction[sorted_axes[0]] = 1.0     # fallback: front along smallest (depth) axis
         else:
             direction = horiz / horiz_norm
         cam_distance = 1950.0  # mm from body axis
@@ -1069,14 +1066,6 @@ class LandmarkViewer(QWidget):
         self._application_text.setText("")
         self._error_label.setText("")
 
-        # Theme hint — partial clue that narrows to ~10 themes, not 178 landmarks
-        theme_label = lm.theme_label(self._lang) if hasattr(lm, "theme_label") else ""
-        if theme_label:
-            hint_prefix = "Thème" if self._lang == "fr" else "Theme"
-            self._inverse_hint_label.setText(f"{hint_prefix} : {theme_label}")
-        else:
-            self._inverse_hint_label.setText("")
-
         # Reset identification list — restore original category colours
         self._inverse_filter.clear()
         self._inverse_list.clearSelection()
@@ -1094,11 +1083,7 @@ class LandmarkViewer(QWidget):
         lower = text.lower()
         for i in range(self._inverse_list.count()):
             item = self._inverse_list.item(i)
-            if not (item.flags() & Qt.ItemIsEnabled):
-                # Separator row — hide while a filter is active to declutter results
-                item.setHidden(bool(lower))
-                continue
-            item.setHidden(lower not in item.text().lower())
+            item.setHidden(bool(lower) and lower not in item.text().lower())
 
     def _on_inverse_validate(self) -> None:
         """Check whether the selected landmark matches the displayed sphere."""
