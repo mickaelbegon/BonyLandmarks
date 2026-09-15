@@ -45,6 +45,11 @@ class MainWindow(QMainWindow):
                     sys.exit(0)
 
                 matricule = dialog.matricule
+
+                if dialog.local_glb_bytes is not None:
+                    avatar_bytes = dialog.local_glb_bytes
+                    break
+
                 birthdate = dialog.birthdate
 
                 # Defensive: dialog disables Connect when server_url is None,
