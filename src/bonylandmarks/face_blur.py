@@ -135,8 +135,8 @@ def blur_vertex_colors(
     colors: np.ndarray,
     face_mask: np.ndarray,
     mesh_points: np.ndarray,
-    blur_radius: float = 30.0,
-    n_passes: int = 5,
+    blur_radius: float = 50.0,
+    n_passes: int = 10,
 ) -> np.ndarray:
     """Return a copy of *colors* with the face zone blurred.
 
@@ -232,8 +232,8 @@ def blur_mesh_geometry(
     mesh_points: np.ndarray,
     face_mask: np.ndarray,
     mesh_faces: np.ndarray,
-    n_passes: int = 20,
-    relax: float = 0.2,
+    n_passes: int = 30,
+    relax: float = 0.25,
 ) -> np.ndarray:
     """Return a copy of *mesh_points* with face vertex positions Laplacian-smoothed.
 
@@ -292,6 +292,25 @@ def blur_mesh_geometry(
         rows = np.concatenate([v0, v1, v1, v2, v0, v2])
         cols = np.concatenate([v1, v0, v2, v1, v2, v0])
         data = np.ones(len(rows), dtype=np.float64)
+
+        # ---- Weld UV-seam vertices (same 3-D position, different UV) ----
+        # At UV seams a vertex is duplicated into two indices with identical
+        # positions but different UV coordinates.  The topology graph has no
+        # edge between them, so Laplacian smoothing moves them independently,
+        # creating a small gap that renders as a black grid line.  Detect all
+        # such pairs within the face mask and add a unit edge so they are
+        # treated as neighbours.
+        face_pts = pts[mask_indices]
+        weld_tree = KDTree(face_pts)
+        weld_pairs = weld_tree.query_pairs(r=0.5)   # 0.5 mm tolerance
+        if weld_pairs:
+            wp_arr = np.array(list(weld_pairs), dtype=np.int64)
+            gi = mask_indices[wp_arr[:, 0]]
+            gj = mask_indices[wp_arr[:, 1]]
+            rows = np.concatenate([rows, gi, gj])
+            cols = np.concatenate([cols, gj, gi])
+            data = np.concatenate([data, np.ones(len(gi), dtype=np.float64),
+                                         np.ones(len(gj), dtype=np.float64)])
 
         L_raw = csr_matrix((data, (rows, cols)), shape=(N, N))
 
