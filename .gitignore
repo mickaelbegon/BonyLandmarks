@@ -10,6 +10,12 @@ venv/
 *.glb
 *.glb.enc
 *.json.local
+# Private student data (contains dates of birth — teacher-server only, NEVER commit)
+manifest_private*.json
+manifest_private*.xlsx
+*.private.json
+BonyLandmarks_reperes.xlsx
+dev_landmarks.json
 .pytest_cache/
 .coverage
 htmlcov/

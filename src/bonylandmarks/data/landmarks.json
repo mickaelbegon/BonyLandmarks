@@ -480,6 +480,30 @@
     "application_en": "The only bony link between the upper limb and the thorax: with the acromion it describes clavicular orientation, hence shoulder protraction/elevation in the frontal and transverse planes."
   },
   {
+    "code": "acromioclavicular_joint_left",
+    "category": "BONE",
+    "name_fr": "Articulation acromio-claviculaire gauche",
+    "name_en": "Left acromioclavicular joint",
+    "hint_fr": "Interligne entre l'extrémité latérale de la clavicule gauche et le bord médial de l'acromion. Suivre l'épine de la scapula vers le dehors jusqu'à l'acromion, puis glisser le doigt vers l'avant et légèrement en dedans le long du bord supérieur de la clavicule : le léger creux de l'interligne se perçoit, confirmé par le mouvement de la clavicule lors d'élévations du bras.",
+    "hint_en": "Joint line between the lateral end of the left clavicle and the medial border of the acromion. Follow the scapular spine outward to the acromion, then slide the finger forward and slightly medially along the superior border of the clavicle: a slight depression marks the joint line, confirmed by clavicular movement during arm elevation.",
+    "body_side": "left",
+    "theme": "shoulder",
+    "application_fr": "Repère ISB de l'extrémité latérale de la clavicule (Wu et al. 2005, J Biomech) : avec l'articulation sterno-claviculaire, il définit l'axe longitudinal de la clavicule pour la cinématique 3D de l'épaule.",
+    "application_en": "ISB landmark for the lateral end of the clavicle (Wu et al. 2005, J Biomech): with the sternoclavicular joint it defines the clavicular long axis for 3D shoulder kinematics."
+  },
+  {
+    "code": "acromioclavicular_joint_right",
+    "category": "BONE",
+    "name_fr": "Articulation acromio-claviculaire droite",
+    "name_en": "Right acromioclavicular joint",
+    "hint_fr": "Interligne entre l'extrémité latérale de la clavicule droite et le bord médial de l'acromion. Suivre l'épine de la scapula vers le dehors jusqu'à l'acromion, puis glisser le doigt vers l'avant et légèrement en dedans le long du bord supérieur de la clavicule : le léger creux de l'interligne se perçoit, confirmé par le mouvement de la clavicule lors d'élévations du bras.",
+    "hint_en": "Joint line between the lateral end of the right clavicle and the medial border of the acromion. Follow the scapular spine outward to the acromion, then slide the finger forward and slightly medially along the superior border of the clavicle: a slight depression marks the joint line, confirmed by clavicular movement during arm elevation.",
+    "body_side": "right",
+    "theme": "shoulder",
+    "application_fr": "Repère ISB de l'extrémité latérale de la clavicule (Wu et al. 2005, J Biomech) : avec l'articulation sterno-claviculaire, il définit l'axe longitudinal de la clavicule pour la cinématique 3D de l'épaule.",
+    "application_en": "ISB landmark for the lateral end of the clavicle (Wu et al. 2005, J Biomech): with the sternoclavicular joint it defines the clavicular long axis for 3D shoulder kinematics."
+  },
+  {
     "code": "deltoid_tuberosity_left",
     "category": "BONE",
     "name_fr": "Tubérosité deltoïdienne gauche",
@@ -1150,6 +1174,30 @@
     "theme": "anatomy",
     "application_fr": "Insertion du court fibulaire : site de la fracture de Jones et des avulsions lors de l'entorse en inversion ; repère de la largeur du pied et du chaussage.",
     "application_en": "Insertion of fibularis brevis: site of Jones fracture and of avulsions during inversion ankle sprains; landmark for foot width and footwear fitting."
+  },
+  {
+    "code": "fifth_metatarsal_head_left",
+    "category": "BONE",
+    "name_fr": "Tête du 5e métatarsien gauche",
+    "name_en": "Left head of the 5th metatarsal",
+    "hint_fr": "Renflement osseux à la base du petit orteil gauche, sur le bord latéral de l'avant-pied, environ 5-6 cm en avant de la styloïde du 5e métatarsien. Mobiliser le 5e orteil passivement en flexion/extension : l'articulation métatarso-phalangienne se creuse et la tête se marque. Marquer son point le plus latéral, pied en charge.",
+    "hint_en": "Bony bulge at the base of the left little toe, on the lateral border of the forefoot, about 5-6 cm anterior to the 5th metatarsal styloid. Passively flex and extend the 5th toe: the metatarsophalangeal joint opens and the head stands out. Mark its most lateral point with the foot loaded.",
+    "body_side": "left",
+    "theme": "gait",
+    "application_fr": "Repère ISB du pied (Wu et al. 2002, J Biomech) : avec la tête du 1er métatarsien et le calcanéum, il définit le système de coordonnées du pied pour la cinématique 3D de la cheville et le calcul de l'angle de progression du pied à la marche.",
+    "application_en": "ISB foot landmark (Wu et al. 2002, J Biomech): with the 1st metatarsal head and the calcaneus it defines the foot coordinate system for 3D ankle kinematics and the foot progression angle during gait."
+  },
+  {
+    "code": "fifth_metatarsal_head_right",
+    "category": "BONE",
+    "name_fr": "Tête du 5e métatarsien droit",
+    "name_en": "Right head of the 5th metatarsal",
+    "hint_fr": "Renflement osseux à la base du petit orteil droit, sur le bord latéral de l'avant-pied, environ 5-6 cm en avant de la styloïde du 5e métatarsien. Mobiliser le 5e orteil passivement en flexion/extension : l'articulation métatarso-phalangienne se creuse et la tête se marque. Marquer son point le plus latéral, pied en charge.",
+    "hint_en": "Bony bulge at the base of the right little toe, on the lateral border of the forefoot, about 5-6 cm anterior to the 5th metatarsal styloid. Passively flex and extend the 5th toe: the metatarsophalangeal joint opens and the head stands out. Mark its most lateral point with the foot loaded.",
+    "body_side": "right",
+    "theme": "gait",
+    "application_fr": "Repère ISB du pied (Wu et al. 2002, J Biomech) : avec la tête du 1er métatarsien et le calcanéum, il définit le système de coordonnées du pied pour la cinématique 3D de la cheville et le calcul de l'angle de progression du pied à la marche.",
+    "application_en": "ISB foot landmark (Wu et al. 2002, J Biomech): with the 1st metatarsal head and the calcaneus it defines the foot coordinate system for 3D ankle kinematics and the foot progression angle during gait."
   },
   {
     "code": "first_metatarsal_head_left",

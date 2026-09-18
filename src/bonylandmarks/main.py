@@ -24,6 +24,7 @@ from .mesh_loader import load_avatar_glb
 from .scoring import SessionScore
 from .splash import SplashDialog
 from .tutorial import TutorialViewer
+from .validation import validate_markers, report_validation
 from .viewer import LandmarkViewer
 
 
@@ -89,6 +90,16 @@ class MainWindow(QMainWindow):
         _, vertex_colors_raw, _, _ = load_avatar_glb(
             avatar_bytes, remove_stickers=False
         )
+
+        # Validate that BONE markers required for evaluation are present in the GLB.
+        bone_codes = [lm.code for lm in LANDMARKS if lm.category == "BONE"]
+        _val = validate_markers(landmark_markers, bone_codes)
+        if _val["missing"]:
+            print(
+                f"[WARNING] {len(_val['missing'])} repère(s) BONE absent(s) du GLB : "
+                + ", ".join(_val["missing"])
+            )
+            report_validation(_val)
 
         # All codes from the extended set; ground_truth available only for the
         # 24 BodyLoop-mapped BONE landmarks — EMG/SKINFOLD/ANTHRO are shown
