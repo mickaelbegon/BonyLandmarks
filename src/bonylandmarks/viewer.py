@@ -17,7 +17,7 @@ from __future__ import annotations
 import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
-from PySide6.QtCore import QSize, Qt, QTimer, Signal
+from PySide6.QtCore import QSize, Qt, QThread, QTimer, Signal
 from PySide6.QtGui import QColor, QIcon, QImage, QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QDialog,
@@ -113,6 +113,32 @@ def _body_icon(filename: str, size: int = 44) -> QIcon:
     return icon
 
 
+class _BlurWorker(QThread):
+    """Calcule le blur du visage dans un thread de fond."""
+
+    result_ready = Signal(object, object, object)  # (mask, blurred_colors, blurred_points)
+    error = Signal(str)
+
+    def __init__(self, mesh_points, mesh_faces, ground_truth, base_colors):
+        super().__init__()
+        self._mesh_points = mesh_points
+        self._mesh_faces = mesh_faces
+        self._ground_truth = ground_truth
+        self._base_colors = base_colors
+
+    def run(self):
+        try:
+            from .face_blur import build_face_mask, blur_vertex_colors, blur_mesh_geometry
+            mask = build_face_mask(self._mesh_points, self._ground_truth)
+            blurred_colors = blur_vertex_colors(self._base_colors.copy(), mask, self._mesh_points)
+            blurred_points = blur_mesh_geometry(self._mesh_points.copy(), mask, self._mesh_faces)
+            self.result_ready.emit(mask, blurred_colors, blurred_points)
+        except Exception as exc:
+            import traceback
+            traceback.print_exc()
+            self.error.emit(str(exc))
+
+
 class LandmarkViewer(QWidget):
     """Main widget containing the PyVista 3D view and control panels."""
 
@@ -153,6 +179,13 @@ class LandmarkViewer(QWidget):
 
         self._candidate_point: np.ndarray | None = None
         self._redo_count: int = 0
+
+        # Face-blur state
+        self._face_blurred: bool = False
+        self._colors_blurred: np.ndarray | None = None  # cached blur result
+        self._points_blurred: np.ndarray | None = None   # lissage géométrique mis en cache
+        self._points_original: np.ndarray | None = None  # positions originales (sauvegardées)
+        self._blur_worker: _BlurWorker | None = None      # thread actif
 
         self._build_ui()
         self._setup_scene()
@@ -295,35 +328,6 @@ class LandmarkViewer(QWidget):
         self._results_table.setMinimumHeight(120)
         panel.addWidget(self._results_table, stretch=1)
 
-        # Opacity slider
-        opacity_row = QHBoxLayout()
-        opacity_row.addWidget(QLabel("Transparence :"))
-        self._opacity_slider = QSlider(Qt.Horizontal)
-        self._opacity_slider.setRange(10, 100)
-        self._opacity_slider.setValue(100)
-        self._opacity_slider.setTickInterval(10)
-        self._opacity_slider.valueChanged.connect(self._on_opacity_changed)
-        opacity_row.addWidget(self._opacity_slider)
-        panel.addLayout(opacity_row)
-
-        # Texture toggle (only visible when vertex colors are available)
-        self._texture_btn = QPushButton("Mode : Texturé")
-        self._texture_btn.setCheckable(True)
-        self._texture_btn.setChecked(True)
-        self._texture_btn.setVisible(self._vertex_colors is not None)
-        self._texture_btn.clicked.connect(self._on_texture_toggled)
-        panel.addWidget(self._texture_btn)
-
-        # Sticker toggle (only visible when both clean and raw colors are available)
-        self._sticker_btn = QPushButton("Stickers : masqués")
-        self._sticker_btn.setCheckable(True)
-        self._sticker_btn.setChecked(True)
-        self._sticker_btn.setVisible(
-            self._vertex_colors_clean is not None and self._vertex_colors_raw is not None
-        )
-        self._sticker_btn.clicked.connect(self._on_sticker_toggled)
-        panel.addWidget(self._sticker_btn)
-
         # Mode toggle: Placement ↔ Identification inverse
         # Hidden in mixed sessions where phases auto-sequence.
         self._mode_btn = QPushButton("Mode : Placement")
@@ -397,6 +401,49 @@ class LandmarkViewer(QWidget):
         )
         legend_label.setStyleSheet("font-size: 11px;")
         panel.addWidget(legend_label)
+
+        # ── Display settings (always at the bottom) ───────────────────────────
+        sep_settings = QFrame()
+        sep_settings.setFrameShape(QFrame.HLine)
+        sep_settings.setFrameShadow(QFrame.Sunken)
+        panel.addWidget(sep_settings)
+
+        # Opacity slider
+        opacity_row = QHBoxLayout()
+        opacity_row.addWidget(QLabel("Transparence :"))
+        self._opacity_slider = QSlider(Qt.Horizontal)
+        self._opacity_slider.setRange(10, 100)
+        self._opacity_slider.setValue(100)
+        self._opacity_slider.setTickInterval(10)
+        self._opacity_slider.valueChanged.connect(self._on_opacity_changed)
+        opacity_row.addWidget(self._opacity_slider)
+        panel.addLayout(opacity_row)
+
+        # Texture toggle (only visible when vertex colors are available)
+        self._texture_btn = QPushButton("Mode : Texturé")
+        self._texture_btn.setCheckable(True)
+        self._texture_btn.setChecked(True)
+        self._texture_btn.setVisible(self._vertex_colors is not None)
+        self._texture_btn.clicked.connect(self._on_texture_toggled)
+        panel.addWidget(self._texture_btn)
+
+        # Sticker toggle (only visible when both clean and raw colors are available)
+        self._sticker_btn = QPushButton("Stickers : masqués")
+        self._sticker_btn.setCheckable(True)
+        self._sticker_btn.setChecked(True)
+        self._sticker_btn.setVisible(
+            self._vertex_colors_clean is not None and self._vertex_colors_raw is not None
+        )
+        self._sticker_btn.clicked.connect(self._on_sticker_toggled)
+        panel.addWidget(self._sticker_btn)
+
+        # Face blur toggle (only visible when vertex colors are available)
+        self._blur_face_btn = QPushButton("Visage : affiché")
+        self._blur_face_btn.setCheckable(True)
+        self._blur_face_btn.setChecked(False)
+        self._blur_face_btn.setVisible(self._vertex_colors is not None)
+        self._blur_face_btn.clicked.connect(self._on_blur_face_toggled)
+        panel.addWidget(self._blur_face_btn)
 
         panel_widget = QWidget()
         panel_widget.setLayout(panel)
@@ -711,15 +758,121 @@ class LandmarkViewer(QWidget):
             self._plotter.render()
 
     def _on_texture_toggled(self, checked: bool) -> None:
+        self._colors_blurred = None  # invalidate blur cache (base colors changed)
+        self._points_blurred = None  # invalider aussi le cache géométrique
+        if self._face_blurred:
+            self._blur_face_btn.setChecked(False)
+            self._face_blurred = False
+            self._blur_face_btn.setText("Visage : affiché")
         self._texture_btn.setText("Mode : Texturé" if checked else "Mode : Gris")
         self._add_body_mesh(textured=checked)
         self._plotter.render()
 
     def _on_sticker_toggled(self, checked: bool) -> None:
+        self._colors_blurred = None  # invalidate blur cache (base colors changed)
+        self._points_blurred = None  # invalider aussi le cache géométrique
+        if self._face_blurred:
+            self._blur_face_btn.setChecked(False)
+            self._face_blurred = False
+            self._blur_face_btn.setText("Visage : affiché")
         self._sticker_btn.setText("Stickers : masqués" if checked else "Stickers : visibles")
         self._vertex_colors = self._vertex_colors_clean if checked else self._vertex_colors_raw
         self._add_body_mesh(textured=self._texture_btn.isChecked())
         self._plotter.render()
+
+    def _refresh_mesh_colors(self) -> None:
+        """Re-add the body mesh actor with the current vertex colors.
+
+        VTK does not pick up in-place point_data changes without removing and
+        re-adding the actor, so we delegate to ``_add_body_mesh`` — the same
+        path used by the sticker and texture toggles.
+        """
+        if self._vertex_colors is not None:
+            self._add_body_mesh(textured=self._texture_btn.isChecked())
+            self._plotter.render()
+
+    def _on_blur_face_toggled(self, checked: bool) -> None:
+        """Apply or remove face blurring."""
+        if checked:
+            if self._colors_blurred is not None and self._points_blurred is not None:
+                # Cache disponible — appliquer immédiatement
+                self._apply_blur()
+            else:
+                # Lancer le calcul en arrière-plan
+                self._start_blur_computation()
+        else:
+            self._remove_blur()
+
+    def _start_blur_computation(self) -> None:
+        """Lance le calcul du blur dans un QThread de fond."""
+        if self._blur_worker is not None and self._blur_worker.isRunning():
+            return  # déjà en cours
+
+        base = self._vertex_colors_clean if self._vertex_colors_clean is not None \
+               else self._vertex_colors
+        if base is None:
+            self._blur_face_btn.setChecked(False)
+            return
+
+        # Sauvegarder les points originaux si pas encore fait
+        if self._points_original is None:
+            self._points_original = np.asarray(self._mesh.points, dtype=np.float64).copy()
+
+        self._blur_face_btn.setText("Visage : calcul...")
+        self._blur_face_btn.setEnabled(False)
+
+        self._blur_worker = _BlurWorker(
+            mesh_points=self._points_original.copy(),
+            mesh_faces=np.asarray(self._mesh.faces).copy(),
+            ground_truth=self._ground_truth,
+            base_colors=base.copy(),
+        )
+        self._blur_worker.result_ready.connect(self._on_blur_computed)
+        self._blur_worker.error.connect(self._on_blur_error)
+        self._blur_worker.start()
+
+    def _on_blur_computed(self, mask, blurred_colors, blurred_points) -> None:
+        """Appelé dans le thread principal quand le calcul est terminé."""
+        self._colors_blurred = blurred_colors
+        self._points_blurred = blurred_points
+        self._blur_face_btn.setEnabled(True)
+        # Le bouton est déjà coché (l'utilisateur a cliqué) — appliquer
+        if self._blur_face_btn.isChecked():
+            self._apply_blur()
+        else:
+            # L'utilisateur a décoché pendant le calcul
+            self._blur_face_btn.setText("Visage : affiché")
+
+    def _on_blur_error(self, msg: str) -> None:
+        """Appelé si le calcul échoue."""
+        print(f"[face_blur] erreur : {msg}")
+        self._blur_face_btn.setChecked(False)
+        self._blur_face_btn.setText("Visage : affiché")
+        self._blur_face_btn.setEnabled(True)
+
+    def _apply_blur(self) -> None:
+        """Applique les couleurs et la géométrie floutées (cache disponible)."""
+        self._vertex_colors = self._colors_blurred
+        if self._points_blurred is not None:
+            self._mesh.points = self._points_blurred
+        self._face_blurred = True
+        self._blur_face_btn.setText("Visage : flouté")
+        self._blur_face_btn.setEnabled(True)
+        self._refresh_mesh_colors()
+
+    def _remove_blur(self) -> None:
+        """Restaure les couleurs et la géométrie originales."""
+        # Restaurer les points originaux
+        if self._points_original is not None:
+            self._mesh.points = self._points_original
+        # Restaurer les couleurs selon l'état actuel des toggles
+        if self._sticker_btn.isChecked():
+            self._vertex_colors = self._vertex_colors_clean
+        else:
+            self._vertex_colors = self._vertex_colors_raw
+        self._face_blurred = False
+        self._blur_face_btn.setText("Visage : affiché")
+        self._refresh_mesh_colors()
 
     def _on_confirm_if_enabled(self) -> None:
         if self._confirm_btn.isEnabled():
@@ -946,6 +1099,8 @@ class LandmarkViewer(QWidget):
         self._confirm_btn.setVisible(False)
         self._redo_btn.setVisible(False)
         self._instr_label.setVisible(False)
+        self._hint_text.setVisible(False)
+        self._application_text.setVisible(False)
         self._inverse_panel.setVisible(True)
 
         self._show_inverse_landmark()
@@ -969,6 +1124,7 @@ class LandmarkViewer(QWidget):
         self._confirm_btn.setVisible(True)
         self._redo_btn.setVisible(True)
         self._instr_label.setVisible(True)
+        self._hint_text.setVisible(True)
         self._inverse_panel.setVisible(False)
 
         if self._mode_btn.isChecked():

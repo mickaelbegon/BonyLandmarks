@@ -11,6 +11,8 @@ from pathlib import Path
 from PySide6.QtCore import QRegularExpression, Qt
 from PySide6.QtGui import QRegularExpressionValidator
 from PySide6.QtWidgets import (
+    QComboBox,
+    QCompleter,
     QDialog,
     QFileDialog,
     QFrame,
@@ -72,6 +74,7 @@ class SplashDialog(QDialog):
         self._matricule: str = ""
         self._birthdate: date | None = None
         self._local_glb_bytes: bytes | None = None
+        self._selected_matricule: str | None = None  # set by combo box selection
 
         self.setFixedSize(700, 620)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
@@ -226,21 +229,67 @@ class SplashDialog(QDialog):
         form_row = QHBoxLayout()
         form_row.setSpacing(16)
 
-        matricule_col = QVBoxLayout()
-        matricule_col.setSpacing(4)
+        name_col = QVBoxLayout()
+        name_col.setSpacing(4)
         self._matricule_label = QLabel()
         self._matricule_label.setStyleSheet(f"font-size: 11px; color: {_TEXT_MUTED};")
-        matricule_col.addWidget(self._matricule_label)
+        name_col.addWidget(self._matricule_label)
 
-        self._matricule_edit = QLineEdit()
-        self._matricule_edit.setMaxLength(12)
-        self._matricule_edit.setPlaceholderText("Ex: A3745")
-        self._matricule_edit.setValidator(
-            QRegularExpressionValidator(QRegularExpression(r"[A-Za-z0-9]{0,12}"))
-        )
-        self._matricule_edit.returnPressed.connect(self._on_start)
-        matricule_col.addWidget(self._matricule_edit)
-        form_row.addLayout(matricule_col, stretch=1)
+        if self._students:
+            # Dropdown with search — student selects their name, matricule is auto-filled
+            self._name_combo = QComboBox()
+            self._name_combo.setEditable(True)
+            self._name_combo.setStyleSheet(
+                f"QComboBox {{ background-color: {_CARD_BG}; color: {_TEXT_MAIN}; "
+                f"border: 1px solid #333366; border-radius: 4px; padding: 4px 8px; "
+                f"font-size: 13px; }}"
+                f"QComboBox::drop-down {{ border: none; width: 20px; }}"
+                f"QComboBox QAbstractItemView {{ background-color: {_CARD_BG}; "
+                f"color: {_TEXT_MAIN}; selection-background-color: {_ACCENT_BLUE}; }}"
+            )
+            # First item is a placeholder (userData=None)
+            self._name_combo.addItem("", None)
+            self._name_combo.lineEdit().setPlaceholderText(
+                "Tapez votre nom pour rechercher..."
+            )
+            display_names: list[str] = []
+            for s in self._students:
+                display = f"{s['nom']}, {s['prenom']}"
+                self._name_combo.addItem(display, s["matricule"])
+                display_names.append(display)
+
+            completer = QCompleter(display_names, self._name_combo)
+            completer.setCaseSensitivity(Qt.CaseInsensitive)
+            completer.setFilterMode(Qt.MatchContains)
+            self._name_combo.setCompleter(completer)
+            # Track selection: activated fires on user pick from dropdown or completer
+            self._name_combo.activated.connect(self._on_name_selected)
+            completer.activated[str].connect(self._on_completer_activated)
+
+            name_col.addWidget(self._name_combo)
+
+            # Matricule info line (auto-filled, read-only display)
+            self._matricule_info = QLabel()
+            self._matricule_info.setStyleSheet(
+                f"font-size: 10px; color: {_TEXT_MUTED}; padding-left: 2px;"
+            )
+            name_col.addWidget(self._matricule_info)
+
+            self._matricule_edit = None   # not used in dropdown mode
+        else:
+            # Fallback: manual text entry (no student list available)
+            self._name_combo = None
+            self._matricule_info = None
+            self._matricule_edit = QLineEdit()
+            self._matricule_edit.setMaxLength(12)
+            self._matricule_edit.setPlaceholderText("Ex: A3745")
+            self._matricule_edit.setValidator(
+                QRegularExpressionValidator(QRegularExpression(r"[A-Za-z0-9]{0,12}"))
+            )
+            self._matricule_edit.returnPressed.connect(self._on_start)
+            name_col.addWidget(self._matricule_edit)
+
+        form_row.addLayout(name_col, stretch=2)
 
         dob_col = QVBoxLayout()
         dob_col.setSpacing(4)
@@ -315,7 +364,10 @@ class SplashDialog(QDialog):
 
         root.addLayout(btn_row)
 
-        self._matricule_edit.setFocus()
+        if self._name_combo is not None:
+            self._name_combo.lineEdit().setFocus()
+        elif self._matricule_edit is not None:
+            self._matricule_edit.setFocus()
 
     # ── Localised text ────────────────────────────────────────────────────────
 
@@ -363,7 +415,12 @@ class SplashDialog(QDialog):
 
         self._grade_hdr.setText("Notation :" if fr else "Grading:")
         self._login_hdr.setText("🔑  Connexion" if fr else "🔑  Login")
-        self._matricule_label.setText(tr("matricule_label", self._lang))
+        if self._name_combo is not None:
+            self._matricule_label.setText(
+                "Votre nom" if self._lang == "fr" else "Your name"
+            )
+        else:
+            self._matricule_label.setText(tr("matricule_label", self._lang))
         self._dob_label.setText(tr("dob_label", self._lang))
 
         self._local_btn.setText(
@@ -382,16 +439,57 @@ class SplashDialog(QDialog):
 
     def _toggle_lang(self) -> None:
         self._lang = "en" if self._lang == "fr" else "fr"
+        if self._name_combo is not None:
+            self._name_combo.lineEdit().setPlaceholderText(
+                "Tapez votre nom pour rechercher..."
+                if self._lang == "fr" else
+                "Type your name to search..."
+            )
         self._refresh_labels()
+
+    # ── Combo box callbacks ───────────────────────────────────────────────────
+
+    def _on_name_selected(self, index: int) -> None:
+        """Called when the user picks an item from the dropdown (by index)."""
+        if self._name_combo is None:
+            return
+        mat = self._name_combo.itemData(index)
+        self._selected_matricule = mat if mat else None
+        if self._matricule_info is not None:
+            self._matricule_info.setText(
+                f"Matricule : {mat}" if mat else ""
+            )
+
+    def _on_completer_activated(self, text: str) -> None:
+        """Called when the user picks a completion suggestion (by display text)."""
+        if self._name_combo is None:
+            return
+        for i in range(1, self._name_combo.count()):
+            if self._name_combo.itemText(i) == text:
+                self._name_combo.setCurrentIndex(i)
+                self._on_name_selected(i)
+                break
 
     # ── Validation ────────────────────────────────────────────────────────────
 
     def _validate_login(self) -> bool:
         """Parse and store matricule + date of birth; show an error if invalid."""
-        matricule_text = self._matricule_edit.text().strip().upper()
-        if len(matricule_text) < 3 or not matricule_text.isalnum():
-            self.set_error(tr("error_invalid_matricule", self._lang))
-            return False
+        if self._name_combo is not None:
+            # Dropdown mode: require a selection from the list
+            matricule_text = self._selected_matricule
+            if not matricule_text:
+                self.set_error(
+                    "Veuillez sélectionner votre nom dans la liste."
+                    if self._lang == "fr" else
+                    "Please select your name from the list."
+                )
+                return False
+        else:
+            # Manual text-entry fallback
+            matricule_text = self._matricule_edit.text().strip().upper()
+            if len(matricule_text) < 3 or not matricule_text.isalnum():
+                self.set_error(tr("error_invalid_matricule", self._lang))
+                return False
 
         # inputMask "99/99/9999;_" yields "DD/MM/YYYY" — drop separators/placeholders
         digits = (
@@ -408,7 +506,7 @@ class SplashDialog(QDialog):
             self.set_error(tr("error_invalid_dob", self._lang))
             return False
 
-        self._matricule = matricule_text
+        self._matricule = matricule_text.upper() if isinstance(matricule_text, str) else matricule_text
         self._birthdate = parsed_date
         self._local_glb_bytes = None
         self._error_label.hide()
@@ -436,7 +534,10 @@ class SplashDialog(QDialog):
         if not path:
             return
         self._local_glb_bytes = Path(path).read_bytes()
-        self._matricule = self._matricule_edit.text().strip().upper() or "LOCAL"
+        if self._name_combo is not None:
+            self._matricule = self._selected_matricule or "LOCAL"
+        else:
+            self._matricule = self._matricule_edit.text().strip().upper() or "LOCAL"
         self._birthdate = None
         self._error_label.hide()
         self.accept()

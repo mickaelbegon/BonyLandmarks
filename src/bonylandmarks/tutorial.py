@@ -2,8 +2,17 @@
 
 This is a **free exploration** mode shown *before* the graded session: the
 student walks through the landmarks one by one, the camera orbits to face each
-one, a green sphere shows where it sits, and the side panel reveals the full
-palpation hint plus its clinical application.
+one, and the side panel reveals the full palpation hint plus its clinical
+application.
+
+Two sub-modes are available, toggled by a button in the panel header:
+
+* **Reconnaissance** (default) — green sphere shows the ground-truth position,
+  full hint + clinical application displayed, no clicking on the mesh.
+* **Placement** — hint is hidden (student must find the landmark independently),
+  the mesh is clickable, a yellow candidate sphere appears on click, and after
+  confirmation the distance to ground truth + the full hint are revealed as a
+  debrief.  No score is recorded — purely for practice.
 
 Nothing is scored here — deliberately.  ``session.py`` is therefore **not**
 imported: the tutorial owns a tiny cursor over a filtered landmark list and
@@ -12,7 +21,8 @@ knows nothing about grades, retries or ground-truth errors.
 Pedagogical intent
 ------------------
 * the theme badge contextualises the landmark (posture, EMG, ISAK...);
-* the hint is shown *in full* (in the exercise it is only revealed afterwards);
+* the hint is shown *in full* in Reconnaissance (in the exercise it is only
+  revealed afterwards);
 * the clinical application answers "why do I need to find this?";
 * protocol reminders (SENIAM inter-electrode distance, ISAK right-side rule)
   are surfaced for the non-bony categories;
@@ -49,9 +59,11 @@ from .landmarks_extended import (
 # ─── colour constants (kept in sync with viewer.py) ──────────────────────────
 
 _MESH_COLOR = "#c8b8a8"
-_TUTORIAL_MARKER_COLOR = "#00cc44"   # green sphere on the ground truth
+_TUTORIAL_MARKER_COLOR = "#00cc44"   # green sphere on the ground truth (recon mode)
+_CANDIDATE_COLOR = "#ffdd00"         # yellow candidate sphere (placement mode)
 _BACKGROUND = "#1a1a2e"
 _SPHERE_ACTOR = "tutorial_sphere"
+_CANDIDATE_ACTOR = "candidate_sphere_tut"
 _SPHERE_RADIUS = 22.0
 _CAM_DISTANCE = 1950.0               # mm from the body axis (same as viewer)
 
@@ -90,6 +102,34 @@ _T: dict[str, tuple[str, str]] = {
         "Utilisez ← / → pour naviguer entre les repères.",
         "Use ← / → to move between landmarks.",
     ),
+    # ── Mode switch ───────────────────────────────────────────────────────────
+    "mode_switch_to_place": (
+        "Mode : Reconnaissance  →  Placement",
+        "Mode: Recognition  →  Placement",
+    ),
+    "mode_switch_to_recon": (
+        "Mode : Placement  →  Reconnaissance",
+        "Mode: Placement  →  Recognition",
+    ),
+    # ── Placement mode widgets ────────────────────────────────────────────────
+    "placement_instr": (
+        "Cliquez sur le mesh pour positionner le repère.",
+        "Click on the mesh to place the landmark.",
+    ),
+    "placement_confirm": ("Confirmer", "Confirm"),
+    "placement_restart": ("Recommencer", "Restart"),
+    "debrief_distance": (
+        "Distance : {value:.1f} mm",
+        "Distance: {value:.1f} mm",
+    ),
+    "debrief_no_gt": (
+        "Aucune vérité terrain disponible pour ce repère.",
+        "No ground truth available for this landmark.",
+    ),
+    "debrief_hint_label": ("Indice de palpation :", "Palpation hint:"),
+    # ── Scan selector ─────────────────────────────────────────────────────────
+    "scan_label": ("Scan actif", "Active scan"),
+    "scan_male": ("Homme (défaut)", "Male (default)"),
 }
 
 # Protocol reminders shown for the non-bony categories.
@@ -125,7 +165,14 @@ def _t(key: str, lang: str = "fr", **kwargs: object) -> str:
 
 
 class TutorialViewer(QWidget):
-    """Free-exploration guided tour of the landmark set (no scoring)."""
+    """Free-exploration guided tour of the landmark set (no scoring).
+
+    Two sub-modes are toggled by the user via a button at the top of the panel:
+
+    * ``"recon"`` — Reconnaissance: green sphere + full hint (default).
+    * ``"place"`` — Placement: mesh clickable, yellow candidate sphere, debrief
+      after confirmation (no score recorded).
+    """
 
     start_session = Signal()
 
@@ -154,6 +201,12 @@ class TutorialViewer(QWidget):
 
         self._mesh_actor = None
         self._sphere_shown: bool = False
+
+        # ── Sub-mode state ────────────────────────────────────────────────────
+        # "recon": Reconnaissance (default) — green sphere, full hint.
+        # "place": Placement — mesh picking, yellow candidate sphere, debrief.
+        self._mode: str = "recon"
+        self._candidate_point: np.ndarray | None = None
 
         self._build_ui()
         self._setup_scene()
@@ -233,6 +286,40 @@ class TutorialViewer(QWidget):
         sep0.setFrameShadow(QFrame.Sunken)
         panel.addWidget(sep0)
 
+        # ── Mode switch button ────────────────────────────────────────────────
+        # Toggles between Reconnaissance (green sphere + full hint) and
+        # Placement (mesh clickable, yellow sphere, debrief after confirm).
+        self._mode_switch_btn = QPushButton()
+        self._mode_switch_btn.setCheckable(True)
+        self._mode_switch_btn.setChecked(False)  # False = Reconnaissance
+        self._mode_switch_btn.setStyleSheet(
+            "font-size: 12px; padding: 6px; "
+            "background-color: #37474f; color: white; border-radius: 5px;"
+        )
+        self._mode_switch_btn.clicked.connect(self._on_mode_toggled)
+        panel.addWidget(self._mode_switch_btn)
+
+        # ── Scan selector (disabled — second scan not yet available) ──────────
+        # TODO: Enable when a second scan (female) GLB/URL is loaded.
+        #       Add the item with its data key and wire up a signal that calls
+        #       a future _load_scan(key) method.  Until then the combo is
+        #       disabled so the affordance is visible but non-functional.
+        scan_row = QHBoxLayout()
+        self._scan_caption = QLabel()
+        self._scan_caption.setStyleSheet("font-size: 11px;")
+        self._scan_caption.setFixedWidth(80)
+        scan_row.addWidget(self._scan_caption)
+        self._scan_combo = QComboBox()
+        self._scan_combo.addItem(_t("scan_male", self._lang), "male")
+        self._scan_combo.setEnabled(False)  # disabled — only one scan available
+        scan_row.addWidget(self._scan_combo, stretch=1)
+        panel.addLayout(scan_row)
+
+        sep0b = QFrame()
+        sep0b.setFrameShape(QFrame.HLine)
+        sep0b.setFrameShadow(QFrame.Sunken)
+        panel.addWidget(sep0b)
+
         # Category filter
         cat_row = QHBoxLayout()
         self._category_caption = QLabel()
@@ -300,6 +387,7 @@ class TutorialViewer(QWidget):
         self._status_label.setVisible(False)
         panel.addWidget(self._status_label)
 
+        # ── Reconnaissance-mode content ───────────────────────────────────────
         # Palpation hint
         self._hint_caption = QLabel()
         self._hint_caption.setStyleSheet(
@@ -337,6 +425,78 @@ class TutorialViewer(QWidget):
             "border: 1px solid #b9d9bd; border-radius: 4px; padding: 5px;"
         )
         panel.addWidget(self._protocol_label)
+
+        # ── Placement-mode content ────────────────────────────────────────────
+        # Grouped in a QWidget so it can be shown/hidden as a unit.
+        self._placement_area = QWidget()
+        pa_layout = QVBoxLayout(self._placement_area)
+        pa_layout.setContentsMargins(0, 0, 0, 0)
+        pa_layout.setSpacing(6)
+
+        self._placement_instr = QLabel()
+        self._placement_instr.setWordWrap(True)
+        self._placement_instr.setStyleSheet(
+            "font-size: 12px; font-style: italic; color: #555;"
+        )
+        pa_layout.addWidget(self._placement_instr)
+
+        placement_btn_row = QHBoxLayout()
+        self._placement_confirm_btn = QPushButton()
+        self._placement_confirm_btn.setEnabled(False)
+        self._placement_confirm_btn.setStyleSheet(
+            "font-size: 13px; font-weight: bold; padding: 8px; "
+            "background-color: #1565c0; color: white; border-radius: 5px;"
+        )
+        self._placement_confirm_btn.clicked.connect(self._on_placement_confirm)
+        placement_btn_row.addWidget(self._placement_confirm_btn)
+
+        self._placement_restart_btn = QPushButton()
+        self._placement_restart_btn.setEnabled(False)
+        self._placement_restart_btn.setStyleSheet(
+            "font-size: 12px; padding: 8px; "
+            "background-color: #555; color: white; border-radius: 5px;"
+        )
+        self._placement_restart_btn.clicked.connect(self._on_placement_restart)
+        placement_btn_row.addWidget(self._placement_restart_btn)
+        pa_layout.addLayout(placement_btn_row)
+
+        # Debrief: shown after the student confirms a pick
+        self._placement_debrief_widget = QWidget()
+        pd_layout = QVBoxLayout(self._placement_debrief_widget)
+        pd_layout.setContentsMargins(0, 4, 0, 0)
+        pd_layout.setSpacing(4)
+
+        self._placement_debrief_dist = QLabel()
+        self._placement_debrief_dist.setAlignment(Qt.AlignCenter)
+        self._placement_debrief_dist.setWordWrap(True)
+        self._placement_debrief_dist.setStyleSheet(
+            "font-size: 14px; font-weight: bold; color: #1a5276; "
+            "background: #d6eaf8; border-radius: 4px; padding: 4px;"
+        )
+        pd_layout.addWidget(self._placement_debrief_dist)
+
+        self._placement_debrief_hint_caption = QLabel()
+        self._placement_debrief_hint_caption.setStyleSheet(
+            "font-size: 11px; font-weight: bold; color: #444;"
+        )
+        pd_layout.addWidget(self._placement_debrief_hint_caption)
+
+        self._placement_debrief_hint_text = QTextEdit()
+        self._placement_debrief_hint_text.setReadOnly(True)
+        self._placement_debrief_hint_text.setMinimumHeight(90)
+        self._placement_debrief_hint_text.setStyleSheet(
+            "font-size: 12px; color: #333;"
+        )
+        pd_layout.addWidget(self._placement_debrief_hint_text)
+
+        self._placement_debrief_widget.setVisible(False)
+        pa_layout.addWidget(self._placement_debrief_widget)
+
+        # Placement area hidden by default (Reconnaissance is the default mode)
+        self._placement_area.setVisible(False)
+        panel.addWidget(self._placement_area, stretch=1)
+
+        # ── Common bottom controls (both modes) ───────────────────────────────
 
         # Opacity slider (helps see deep landmarks through the skin)
         opacity_row = QHBoxLayout()
@@ -496,24 +656,38 @@ class TutorialViewer(QWidget):
     # ── Presentation of the current landmark ─────────────────────────────────
 
     def _clear_sphere(self) -> None:
+        """Remove the ground-truth (green) sphere actor if present."""
         if self._sphere_shown:
             self._plotter.remove_actor(_SPHERE_ACTOR, render=False)
             self._sphere_shown = False
+
+    def _clear_candidate(self) -> None:
+        """Remove the candidate (yellow) sphere actor if present."""
+        self._plotter.remove_actor(_CANDIDATE_ACTOR, render=False)
+        self._candidate_point = None
 
     def _show_current(self) -> None:
         """Refresh the 3-D scene and the whole right panel for the cursor."""
         lm = self.current_landmark()
         self._clear_sphere()
 
+        # In placement mode, reset the candidate state on every navigation
+        if self._mode == "place":
+            self._clear_candidate()
+            self._placement_confirm_btn.setEnabled(False)
+            self._placement_restart_btn.setEnabled(False)
+            self._placement_debrief_widget.setVisible(False)
+
         if lm is None:
             self._counter_label.setText(_t("empty", self._lang))
             self._name_label.setText("—")
             self._theme_badge.setVisible(False)
             self._status_label.setVisible(False)
-            self._hint_text.setPlainText("")
-            self._application_text.setVisible(False)
-            self._application_caption.setVisible(False)
-            self._protocol_label.setVisible(False)
+            if self._mode == "recon":
+                self._hint_text.setPlainText("")
+                self._application_text.setVisible(False)
+                self._application_caption.setVisible(False)
+                self._protocol_label.setVisible(False)
             self._prev_btn.setEnabled(False)
             self._next_btn.setEnabled(False)
             self._plotter.render()
@@ -525,7 +699,7 @@ class TutorialViewer(QWidget):
         )
         self._name_label.setText(lm.name(self._lang))
 
-        # Theme badge
+        # Theme badge (common to both modes)
         theme_label = lm.theme_label(self._lang)
         self._theme_badge.setText(theme_label)
         self._theme_badge.setStyleSheet(
@@ -535,43 +709,184 @@ class TutorialViewer(QWidget):
         )
         self._theme_badge.setVisible(bool(theme_label))
 
-        # Palpation hint (always shown in full — this is the teaching mode)
-        self._hint_text.setPlainText(lm.hint(self._lang))
+        gt = self._ground_truth.get(lm.code)
 
-        # Clinical application (hidden when the landmark has none)
-        application = lm.application(self._lang)
-        self._application_text.setPlainText(application)
-        self._application_text.setVisible(bool(application))
-        self._application_caption.setVisible(bool(application))
+        if self._mode == "recon":
+            # ── Reconnaissance: full hint + green sphere ───────────────────────
+            # Palpation hint (shown in full — this is the teaching mode)
+            self._hint_text.setPlainText(lm.hint(self._lang))
 
-        # Protocol reminder for the category
-        note = _PROTOCOL_NOTES.get(lm.category)
-        if note is not None:
-            self._protocol_label.setText(note[0] if self._lang == "fr" else note[1])
-            self._protocol_label.setVisible(True)
+            # Clinical application (hidden when the landmark has none)
+            application = lm.application(self._lang)
+            self._application_text.setPlainText(application)
+            self._application_text.setVisible(bool(application))
+            self._application_caption.setVisible(bool(application))
+
+            # Protocol reminder for the category
+            note = _PROTOCOL_NOTES.get(lm.category)
+            if note is not None:
+                self._protocol_label.setText(note[0] if self._lang == "fr" else note[1])
+                self._protocol_label.setVisible(True)
+            else:
+                self._protocol_label.setVisible(False)
+
+            # 3-D: green sphere + camera orbit when a ground truth exists
+            if gt is not None:
+                gt_arr = np.asarray(gt, dtype=float)
+                self._plotter.add_mesh(
+                    pv.Sphere(radius=_SPHERE_RADIUS, center=gt_arr),
+                    color=_TUTORIAL_MARKER_COLOR,
+                    name=_SPHERE_ACTOR,
+                )
+                self._sphere_shown = True
+                self._status_label.setVisible(False)
+                self._orbit_camera_to(gt_arr)
+            else:
+                # EMG / SKINFOLD / ANTHRO without a BodyLoop marker
+                self._status_label.setText(_t("not_scored", self._lang))
+                self._status_label.setVisible(True)
+                self._plotter.render()
+
         else:
-            self._protocol_label.setVisible(False)
+            # ── Placement: orbit camera but do NOT reveal the sphere ───────────
+            if gt is not None:
+                gt_arr = np.asarray(gt, dtype=float)
+                self._status_label.setVisible(False)
+                self._orbit_camera_to(gt_arr)
+            else:
+                # No ground truth — student can still click, but distance will
+                # not be computed.
+                self._status_label.setText(_t("not_scored", self._lang))
+                self._status_label.setVisible(True)
+                self._plotter.render()
 
-        # 3-D: green sphere + camera orbit when a ground truth exists
+        self._prev_btn.setEnabled(self._index > 0)
+        self._next_btn.setEnabled(self._index < total - 1)
+
+    # ── Mode switching ────────────────────────────────────────────────────────
+
+    def _on_mode_toggled(self) -> None:
+        """Handle the mode-switch button click."""
+        new_mode = "place" if self._mode_switch_btn.isChecked() else "recon"
+        self._set_mode(new_mode)
+
+    def _set_mode(self, mode: str) -> None:
+        """Switch between ``'recon'`` (Reconnaissance) and ``'place'`` (Placement).
+
+        * Reconnaissance: disable mesh picking, restore green sphere, show full
+          hint/application/protocol widgets.
+        * Placement: enable surface picking, clear green sphere, show only the
+          landmark name + placement instructions + confirm/restart/debrief.
+        """
+        self._mode = mode
+        is_recon = (mode == "recon")
+
+        # Toggle visibility of mode-specific content areas
+        self._hint_caption.setVisible(is_recon)
+        self._hint_text.setVisible(is_recon)
+        self._application_caption.setVisible(is_recon)
+        self._application_text.setVisible(is_recon)
+        self._protocol_label.setVisible(is_recon)
+        self._placement_area.setVisible(not is_recon)
+
+        # Update the switch button label
+        key = "mode_switch_to_place" if is_recon else "mode_switch_to_recon"
+        self._mode_switch_btn.setText(_t(key, self._lang))
+
+        if is_recon:
+            # Disable surface picking (ignore errors — may not have been enabled)
+            try:
+                self._plotter.disable_picking()
+            except Exception:
+                pass
+            # Clear any candidate sphere left over from placement mode
+            self._clear_candidate()
+
+        else:
+            # Enable surface picking — same API as LandmarkViewer._setup_scene
+            self._plotter.enable_surface_point_picking(
+                callback=self._on_surface_pick_tutorial,
+                show_message=False,
+                left_clicking=True,
+                pickable_window=False,
+            )
+            # Clear the recognition sphere so the student can't cheat
+            self._clear_sphere()
+            self._placement_confirm_btn.setEnabled(False)
+            self._placement_restart_btn.setEnabled(False)
+            self._placement_debrief_widget.setVisible(False)
+
+        # Refresh the panel and 3-D scene for the current landmark
+        self._show_current()
+
+    # ── Placement mode callbacks ──────────────────────────────────────────────
+
+    def _on_surface_pick_tutorial(self, point: np.ndarray) -> None:
+        """Called by PyVista when the user clicks the mesh in Placement mode.
+
+        Mirrors the same pattern used in ``LandmarkViewer._on_surface_pick``.
+        """
+        if self._mode != "place":
+            return
+        lm = self.current_landmark()
+        if lm is None:
+            return
+
+        self._candidate_point = np.array(point, dtype=float)
+
+        # Replace previous candidate sphere
+        sphere = pv.Sphere(radius=_SPHERE_RADIUS, center=self._candidate_point)
+        self._plotter.add_mesh(sphere, color=_CANDIDATE_COLOR, name=_CANDIDATE_ACTOR)
+        self._plotter.render()
+
+        # Enable action buttons; hide any previous debrief
+        self._placement_confirm_btn.setEnabled(True)
+        self._placement_restart_btn.setEnabled(True)
+        self._placement_debrief_widget.setVisible(False)
+
+    def _on_placement_confirm(self) -> None:
+        """Confirm the candidate pick: compute distance, reveal ground truth, show hint."""
+        if self._candidate_point is None:
+            return
+        lm = self.current_landmark()
+        if lm is None:
+            return
+
+        # Disable buttons during debrief (student navigates manually)
+        self._placement_confirm_btn.setEnabled(False)
+        self._placement_restart_btn.setEnabled(False)
+
         gt = self._ground_truth.get(lm.code)
         if gt is not None:
-            gt = np.asarray(gt, dtype=float)
+            gt_arr = np.asarray(gt, dtype=float)
+            dist = float(np.linalg.norm(self._candidate_point - gt_arr))
+            self._placement_debrief_dist.setText(
+                _t("debrief_distance", self._lang, value=dist)
+            )
+            # Reveal the ground-truth sphere (green) next to the candidate
             self._plotter.add_mesh(
-                pv.Sphere(radius=_SPHERE_RADIUS, center=gt),
+                pv.Sphere(radius=_SPHERE_RADIUS, center=gt_arr),
                 color=_TUTORIAL_MARKER_COLOR,
                 name=_SPHERE_ACTOR,
             )
             self._sphere_shown = True
-            self._status_label.setVisible(False)
-            self._orbit_camera_to(gt)
         else:
-            # EMG / SKINFOLD / ANTHRO without a BodyLoop marker
-            self._status_label.setText(_t("not_scored", self._lang))
-            self._status_label.setVisible(True)
-            self._plotter.render()
+            self._placement_debrief_dist.setText(_t("debrief_no_gt", self._lang))
 
-        self._prev_btn.setEnabled(self._index > 0)
-        self._next_btn.setEnabled(self._index < total - 1)
+        self._plotter.render()
+
+        # Reveal the full palpation hint as a post-placement debrief
+        self._placement_debrief_hint_text.setPlainText(lm.hint(self._lang))
+        self._placement_debrief_widget.setVisible(True)
+
+    def _on_placement_restart(self) -> None:
+        """Clear the candidate sphere so the student can pick again."""
+        self._clear_candidate()
+        self._clear_sphere()
+        self._plotter.render()
+        self._placement_confirm_btn.setEnabled(False)
+        self._placement_restart_btn.setEnabled(False)
+        self._placement_debrief_widget.setVisible(False)
 
     # ── Teardown ─────────────────────────────────────────────────────────────
 
@@ -582,6 +897,11 @@ class TutorialViewer(QWidget):
         the plotter first avoids leaking the interactor/render window.
         """
         self._clear_sphere()
+        self._clear_candidate()
+        try:
+            self._plotter.disable_picking()
+        except Exception:
+            pass
         try:
             self._plotter.close()
         except Exception:  # pragma: no cover - VTK teardown is best-effort
@@ -624,6 +944,22 @@ class TutorialViewer(QWidget):
         self._next_btn.setText(_t("next", lang))
         self._nav_hint_label.setText(_t("hint_navigation", lang))
         self._start_btn.setText(_t("start", lang))
+
+        # Mode-switch button: text depends on current mode
+        mode_key = (
+            "mode_switch_to_place" if self._mode == "recon" else "mode_switch_to_recon"
+        )
+        self._mode_switch_btn.setText(_t(mode_key, lang))
+
+        # Scan selector label
+        self._scan_caption.setText(_t("scan_label", lang))
+        self._scan_combo.setItemText(0, _t("scan_male", lang))
+
+        # Placement-mode labels
+        self._placement_instr.setText(_t("placement_instr", lang))
+        self._placement_confirm_btn.setText(_t("placement_confirm", lang))
+        self._placement_restart_btn.setText(_t("placement_restart", lang))
+        self._placement_debrief_hint_caption.setText(_t("debrief_hint_label", lang))
 
         # Combo boxes: refresh the localised item texts without losing the
         # current selection (signals blocked to avoid a filter round-trip).
