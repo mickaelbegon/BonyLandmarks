@@ -213,6 +213,21 @@ def blur_vertex_colors(
     return result.astype(orig_dtype)
 
 
+def _parse_pyvista_faces(faces_arr: np.ndarray) -> np.ndarray:
+    """Parse a non-uniform PyVista faces array into an (M, 3) triangle array."""
+    triangles: list[tuple[int, int, int]] = []
+    i = 0
+    while i < len(faces_arr):
+        n = int(faces_arr[i])
+        verts = faces_arr[i + 1 : i + 1 + n]
+        for k in range(1, n - 1):
+            triangles.append((int(verts[0]), int(verts[k]), int(verts[k + 1])))
+        i += n + 1
+    if not triangles:
+        return np.empty((0, 3), dtype=np.int64)
+    return np.array(triangles, dtype=np.int64)
+
+
 def blur_mesh_geometry(
     mesh_points: np.ndarray,
     face_mask: np.ndarray,
@@ -222,69 +237,69 @@ def blur_mesh_geometry(
 ) -> np.ndarray:
     """Lisse les positions 3D des vertices du visage via Taubin smoothing (PyVista).
 
-    Utilise l'implémentation C++ de PyVista (vtkSmoothPolyDataFilter Taubin) :
-    - Pas de rétrécissement (Taubin = alternance +/- relaxation)
-    - boundary_smoothing=False : les vertices au bord du masque ne bougent pas → pas de déchirure
-    - mesh.clean(tolerance=0.5) : soude les coutures UV avant lissage → pas de lignes noires
-
-    Parameters
-    ----------
-    mesh_points:
-        Shape (N, 3), dtype float — vertex positions (mm).
-    face_mask:
-        Shape (N,), dtype bool — True marks vertices whose position will be
-        smoothed.
-    mesh_faces:
-        PyVista flat faces array (1-D int): ``[3, v0, v1, v2, 3, v3, v4, v5, …]``
-        for an all-triangle mesh (the format returned by ``pyvista.PolyData.faces``
-        for BodyLoop GLB output).
-    n_iter:
-        Number of Taubin smoothing iterations (more → stronger deformation).
-    pass_band:
-        Pass-band frequency for Taubin smoothing (lower → more smoothing).
+    Construit un sous-PolyData directement depuis les triangles masqués (évite
+    extract_points qui retourne un UnstructuredGrid sans smooth_taubin).
+    Les coutures UV sont soudées avec clean(tolerance=0.5) avant lissage.
+    boundary_smoothing=False maintient les vertices de bord en place.
 
     Returns
     -------
-    np.ndarray, shape (N, 3) — copy of *mesh_points*; only vertices where
-    ``face_mask`` is True are modified.
+    np.ndarray, shape (N, 3) — copie de mesh_points avec les vertices masqués lissés.
     """
     import pyvista as pv
 
     pts = np.asarray(mesh_points, dtype=np.float64).copy()
     mask_bool = np.asarray(face_mask, dtype=bool)
-    mask_indices = np.where(mask_bool)[0]
-    if len(mask_indices) == 0:
+    if not mask_bool.any():
         return pts
 
-    # Construire le PolyData complet
-    full_mesh = pv.PolyData(pts, np.asarray(mesh_faces))
+    # Parse triangle faces
+    faces_arr = np.asarray(mesh_faces)
+    try:
+        tris = faces_arr.reshape(-1, 4)[:, 1:].astype(np.int64)  # (T, 3)
+    except ValueError:
+        tris = _parse_pyvista_faces(faces_arr)
 
-    # Extraire la sous-région visage (avec les cellules adjacentes pour la topologie)
-    face_sub = full_mesh.extract_points(mask_indices, include_cells=True)
+    if len(tris) == 0:
+        return pts
 
-    # Souder les coutures UV (vertices coïncidents → un seul vertex dans le graphe)
-    face_clean = face_sub.clean(tolerance=0.5)
+    # Keep triangles that touch at least one masked vertex
+    face_in_region = mask_bool[tris].any(axis=1)
+    sub_tris = tris[face_in_region]  # (M, 3) global indices
+    if len(sub_tris) == 0:
+        return pts
 
-    # Taubin smoothing : lisse sans rétrécir ; boundaries fixes pour éviter la déchirure
-    smoothed = face_clean.smooth_taubin(
+    # Remap to contiguous local indices
+    unique_global, inv = np.unique(sub_tris.ravel(), return_inverse=True)
+    sub_pts = pts[unique_global]          # (n_local, 3)
+    local_tris = inv.reshape(-1, 3)       # (M, 3) local indices
+
+    # Build PolyData submesh (triangles only → smooth_taubin available)
+    cell_arr = np.c_[
+        np.full(len(local_tris), 3, dtype=np.int64), local_tris
+    ].ravel()
+    sub_poly = pv.PolyData(sub_pts, cell_arr)
+
+    # Weld UV-seam duplicates
+    sub_clean = sub_poly.clean(tolerance=0.5)
+
+    # Taubin: smooth without shrinkage; boundary vertices stay fixed (no tear)
+    smoothed = sub_clean.smooth_taubin(
         n_iter=n_iter,
         pass_band=pass_band,
         boundary_smoothing=False,
-        normalize_coordinates=False,
     )
 
-    # Mapper les positions lissées vers les vertices originaux :
-    # face_sub.point_data["vtkOriginalPointIds"] donne les indices globaux
-    # Chaque vertex original -> trouver le plus proche dans le mesh soudé (face_clean)
-    orig_global_ids = face_sub.point_data["vtkOriginalPointIds"]  # (n_sub,) int
+    # Map smoothed positions back: for each local vertex find nearest in welded mesh
     if _SCIPY:
-        tree = KDTree(face_clean.points)
-        _, nn_idx = tree.query(face_sub.points)   # (n_sub,) → index in face_clean
-        pts[orig_global_ids] = smoothed.points[nn_idx]
+        tree = KDTree(sub_clean.points)
+        _, nn_idx = tree.query(sub_pts)                  # (n_local,) → index in clean
+        in_mask_local = mask_bool[unique_global]          # only update masked verts
+        pts[unique_global[in_mask_local]] = smoothed.points[nn_idx[in_mask_local]]
     else:  # pragma: no cover
-        # fallback numpy
-        for local_i, global_i in enumerate(orig_global_ids):
-            dists = np.linalg.norm(face_clean.points - face_sub.points[local_i], axis=1)
-            pts[global_i] = smoothed.points[int(dists.argmin())]
+        for li, gi in enumerate(unique_global):
+            if mask_bool[gi]:
+                dists = np.linalg.norm(sub_clean.points - sub_pts[li], axis=1)
+                pts[gi] = smoothed.points[int(dists.argmin())]
 
     return pts
