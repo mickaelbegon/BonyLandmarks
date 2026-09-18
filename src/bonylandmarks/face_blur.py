@@ -6,12 +6,11 @@ for performance.
 """
 from __future__ import annotations
 
-import collections
 import numpy as np
 
 try:
     from scipy.spatial import KDTree
-    from scipy.sparse import csr_matrix, diags
+    from scipy.sparse import csr_matrix
 
     _SCIPY = True
 except ImportError:  # pragma: no cover
@@ -63,12 +62,12 @@ def _head_mask_from_bounds(
 
     if acromion_positions:
         acromion_up = max(float(p[up_axis]) for p in acromion_positions)
-        lower_bound = acromion_up + 30.0        # 30 mm above the highest acromion
+        lower_bound = acromion_up + 120.0       # 120 mm above the highest acromion (above the neck)
     elif "C7_spinous" in ground_truth:
         c7 = np.asarray(ground_truth["C7_spinous"], dtype=np.float64)
-        lower_bound = float(c7[up_axis]) + 50.0
+        lower_bound = float(c7[up_axis]) + 80.0
     else:
-        lower_bound = up_max - body_height * 0.15  # top 15 % of body height
+        lower_bound = up_max - body_height * 0.10  # top 10 % of body height (head only)
 
     # Everything above the shoulder line is the head — front + back.
     # Restricting by depth axis is unreliable because the anterior direction
@@ -135,17 +134,19 @@ def blur_vertex_colors(
     colors: np.ndarray,
     face_mask: np.ndarray,
     mesh_points: np.ndarray,
-    blur_radius: float = 50.0,
+    k_neighbours: int = 20,
     n_passes: int = 10,
 ) -> np.ndarray:
     """Return a copy of *colors* with the face zone blurred.
 
     For each vertex in ``face_mask``, its color is replaced by the weighted
-    average of all neighbors within ``blur_radius`` mm that are also in the
-    mask.  Repeating ``n_passes`` times yields a stronger, Gaussian-like blur.
+    average of its k nearest neighbors that are also in the mask.
+    Repeating ``n_passes`` times yields a stronger, Gaussian-like blur.
 
     The averaging is implemented with a pre-built scipy sparse matrix so that
     each pass is a single matrix–vector product (no Python vertex loop).
+    Using k-nearest neighbors ensures predictable performance regardless of
+    mesh density, with exactly ``k + 1`` edges per vertex (including self-loop).
 
     Parameters
     ----------
@@ -155,8 +156,9 @@ def blur_vertex_colors(
         Shape (N,), dtype bool — True marks vertices to be blurred.
     mesh_points:
         Shape (N, 3) — 3-D positions of every mesh vertex.
-    blur_radius:
-        Neighbourhood radius in the same unit as *mesh_points* (mm).
+    k_neighbours:
+        Number of nearest neighbors per vertex (excluding self).
+        Default 20 — total degree per vertex is k+1 (including self-loop).
     n_passes:
         Number of averaging passes.  More passes → stronger blur.
 
@@ -176,17 +178,17 @@ def blur_vertex_colors(
 
     if _SCIPY:
         tree = KDTree(face_points)
-        # Build a symmetric sparse adjacency matrix with self-loops.
-        # query_pairs returns all (i, j) pairs with i < j and dist <= blur_radius.
-        pairs = tree.query_pairs(r=blur_radius)
+        # k-nearest neighbors: query with k+1 to include self (distance=0 in first column).
+        # Limit k to the number of points available (for small face regions).
+        k_actual = min(k_neighbours + 1, n_face)
+        distances, knn_indices = tree.query(face_points, k=k_actual)
 
-        rows: list[int] = list(range(n_face))   # self-loops (diagonal)
-        cols: list[int] = list(range(n_face))
-        for i, j in pairs:
-            rows.append(i)
-            cols.append(j)
-            rows.append(j)
-            cols.append(i)
+        rows: list[int] = []
+        cols: list[int] = []
+        for i in range(n_face):
+            for j_local in knn_indices[i]:   # includes self (i)
+                rows.append(i)
+                cols.append(j_local)
 
         data = np.ones(len(rows), dtype=np.float64)
         adj = csr_matrix((data, (rows, cols)), shape=(n_face, n_face))
@@ -196,54 +198,34 @@ def blur_vertex_colors(
             face_colors = result[face_indices]                   # (n_face, 3)
             result[face_indices] = adj.dot(face_colors) / row_sums[:, None]
     else:  # pragma: no cover
-        # Pure-numpy fallback — O(n_face^2) per pass, slow for large meshes.
+        # Pure-numpy fallback — k-NN via sorting, O(n_face^2) per pass, slow for large meshes.
+        k_actual = min(k_neighbours + 1, n_face)
         for _ in range(n_passes):
             new_face_colors = result[face_indices].copy()
             for i, gi in enumerate(face_indices):
-                dists = np.linalg.norm(face_points - mesh_points[gi], axis=1)
-                nbrs = np.where(dists <= blur_radius)[0]
-                if len(nbrs):
-                    new_face_colors[i] = result[face_indices[nbrs]].mean(axis=0)
+                dists = np.linalg.norm(face_points - face_points[i], axis=1)
+                # Sort by distance and take k+1 nearest (includes self at distance 0).
+                nearest_indices = np.argsort(dists)[:k_actual]
+                if len(nearest_indices):
+                    new_face_colors[i] = result[face_indices[nearest_indices]].mean(axis=0)
             result[face_indices] = new_face_colors
 
     return result.astype(orig_dtype)
-
-
-def _parse_pyvista_faces(faces_arr: np.ndarray) -> np.ndarray:
-    """Parse a non-uniform PyVista faces array into an (M, 3) triangle array.
-
-    Polygons with more than 3 vertices are fan-triangulated from the first
-    vertex.  This is a fallback for meshes that are not all-triangle.
-    """
-    triangles: list[tuple[int, int, int]] = []
-    i = 0
-    while i < len(faces_arr):
-        n = int(faces_arr[i])
-        verts = faces_arr[i + 1 : i + 1 + n]
-        for k in range(1, n - 1):
-            triangles.append((int(verts[0]), int(verts[k]), int(verts[k + 1])))
-        i += n + 1
-    if not triangles:
-        return np.empty((0, 3), dtype=np.int64)
-    return np.array(triangles, dtype=np.int64)
 
 
 def blur_mesh_geometry(
     mesh_points: np.ndarray,
     face_mask: np.ndarray,
     mesh_faces: np.ndarray,
-    n_passes: int = 30,
-    relax: float = 0.25,
+    n_iter: int = 500,
+    pass_band: float = 0.01,
 ) -> np.ndarray:
-    """Return a copy of *mesh_points* with face vertex positions Laplacian-smoothed.
+    """Lisse les positions 3D des vertices du visage via Taubin smoothing (PyVista).
 
-    Applies iterative Laplacian smoothing to the 3-D positions of all vertices
-    flagged by ``face_mask``, deforming the geometry to anonymise the scan.
-    All topological neighbours (inside and outside the mask) contribute to the
-    average so that boundary vertices do not shrink toward the interior.
-
-    The averaging matrix is built once from the mesh topology using a scipy
-    sparse matrix and then applied in a tight loop (no Python per-vertex loop).
+    Utilise l'implémentation C++ de PyVista (vtkSmoothPolyDataFilter Taubin) :
+    - Pas de rétrécissement (Taubin = alternance +/- relaxation)
+    - boundary_smoothing=False : les vertices au bord du masque ne bougent pas → pas de déchirure
+    - mesh.clean(tolerance=0.5) : soude les coutures UV avant lissage → pas de lignes noires
 
     Parameters
     ----------
@@ -256,102 +238,53 @@ def blur_mesh_geometry(
         PyVista flat faces array (1-D int): ``[3, v0, v1, v2, 3, v3, v4, v5, …]``
         for an all-triangle mesh (the format returned by ``pyvista.PolyData.faces``
         for BodyLoop GLB output).
-    n_passes:
-        Number of Laplacian smoothing passes (more → stronger deformation).
-    relax:
-        Relaxation factor λ ∈ (0, 1]:
-        ``new_pos = (1 - λ) * old_pos + λ * mean(neighbours)``.
+    n_iter:
+        Number of Taubin smoothing iterations (more → stronger deformation).
+    pass_band:
+        Pass-band frequency for Taubin smoothing (lower → more smoothing).
 
     Returns
     -------
     np.ndarray, shape (N, 3) — copy of *mesh_points*; only vertices where
     ``face_mask`` is True are modified.
     """
+    import pyvista as pv
+
     pts = np.asarray(mesh_points, dtype=np.float64).copy()
     mask_bool = np.asarray(face_mask, dtype=bool)
-    N = len(pts)
-
     mask_indices = np.where(mask_bool)[0]
     if len(mask_indices) == 0:
         return pts
 
-    faces_arr = np.asarray(mesh_faces)
+    # Construire le PolyData complet
+    full_mesh = pv.PolyData(pts, np.asarray(mesh_faces))
 
-    # ---- Parse triangles from PyVista faces array -----------------------
-    # BodyLoop meshes are all-triangle → reshape to (T, 4) and drop count col.
-    try:
-        triangles = faces_arr.reshape(-1, 4)[:, 1:]  # (T, 3) int
-    except ValueError:
-        # Non-uniform face sizes: parse manually with fan-triangulation.
-        triangles = _parse_pyvista_faces(faces_arr)
+    # Extraire la sous-région visage (avec les cellules adjacentes pour la topologie)
+    face_sub = full_mesh.extract_points(mask_indices, include_cells=True)
 
+    # Souder les coutures UV (vertices coïncidents → un seul vertex dans le graphe)
+    face_clean = face_sub.clean(tolerance=0.5)
+
+    # Taubin smoothing : lisse sans rétrécir ; boundaries fixes pour éviter la déchirure
+    smoothed = face_clean.smooth_taubin(
+        n_iter=n_iter,
+        pass_band=pass_band,
+        boundary_smoothing=False,
+        normalize_coordinates=False,
+    )
+
+    # Mapper les positions lissées vers les vertices originaux :
+    # face_sub.point_data["vtkOriginalPointIds"] donne les indices globaux
+    # Chaque vertex original -> trouver le plus proche dans le mesh soudé (face_clean)
+    orig_global_ids = face_sub.point_data["vtkOriginalPointIds"]  # (n_sub,) int
     if _SCIPY:
-        # ---- Build row-normalised averaging (Laplacian) matrix ----------
-        # Enumerate all directed edges so each undirected edge appears twice.
-        v0, v1, v2 = triangles[:, 0], triangles[:, 1], triangles[:, 2]
-        rows = np.concatenate([v0, v1, v1, v2, v0, v2])
-        cols = np.concatenate([v1, v0, v2, v1, v2, v0])
-        data = np.ones(len(rows), dtype=np.float64)
-
-        # ---- Weld UV-seam vertices (same 3-D position, different UV) ----
-        # At UV seams a vertex is duplicated into two indices with identical
-        # positions but different UV coordinates.  The topology graph has no
-        # edge between them, so Laplacian smoothing moves them independently,
-        # creating a small gap that renders as a black grid line.  Detect all
-        # such pairs within the face mask and add a unit edge so they are
-        # treated as neighbours.
-        face_pts = pts[mask_indices]
-        weld_tree = KDTree(face_pts)
-        weld_pairs = weld_tree.query_pairs(r=0.5)   # 0.5 mm tolerance
-        if weld_pairs:
-            wp_arr = np.array(list(weld_pairs), dtype=np.int64)
-            gi = mask_indices[wp_arr[:, 0]]
-            gj = mask_indices[wp_arr[:, 1]]
-            rows = np.concatenate([rows, gi, gj])
-            cols = np.concatenate([cols, gj, gi])
-            data = np.concatenate([data, np.ones(len(gi), dtype=np.float64),
-                                         np.ones(len(gj), dtype=np.float64)])
-
-        L_raw = csr_matrix((data, (rows, cols)), shape=(N, N))
-
-        # Row-normalise: each non-zero entry becomes 1 / degree(i).
-        row_sums = np.asarray(L_raw.sum(axis=1)).ravel()
-        row_sums[row_sums == 0] = 1.0          # guard against isolated vertices
-        L_norm = diags(1.0 / row_sums) @ L_raw  # row-stochastic, shape (N, N)
-
-        # ---- Soft boundary weights ---------------------------------------
-        # Vertices at the mask boundary get a smaller effective relax so the
-        # transition is smooth rather than a hard tear.
-        # soft_weight[i] = fraction of topological neighbours inside the mask,
-        # remapped from [0.3, 0.8] → [0, 1] and clamped.
-        mask_float = mask_bool.astype(np.float64)
-        nbr_mask_frac = np.asarray(L_norm.dot(mask_float)).ravel()     # (N,)
-        soft_weight = np.clip((nbr_mask_frac - 0.3) / 0.5, 0.0, 1.0)  # (N,)
-        # Shape (n_mask, 1) for broadcasting against (n_mask, 3) positions.
-        w = (relax * soft_weight[mask_bool])[:, np.newaxis]
-
-        # ---- Laplacian smoothing passes ---------------------------------
-        for _ in range(n_passes):
-            # avg[i] = mean of all topological neighbours of vertex i.
-            # Non-masked vertices keep their original positions (fixed anchors)
-            # → boundary vertices are pulled toward the surface edge, not inside.
-            avg = L_norm.dot(pts)                   # (N, 3)
-            pts[mask_bool] = (1.0 - w) * pts[mask_bool] + w * avg[mask_bool]
-
+        tree = KDTree(face_clean.points)
+        _, nn_idx = tree.query(face_sub.points)   # (n_sub,) → index in face_clean
+        pts[orig_global_ids] = smoothed.points[nn_idx]
     else:  # pragma: no cover
-        # Pure-numpy fallback — builds adjacency as a dict, slow for large meshes.
-        adj: dict[int, set[int]] = collections.defaultdict(set)
-        for v0i, v1i, v2i in triangles:
-            adj[int(v0i)].update((int(v1i), int(v2i)))
-            adj[int(v1i)].update((int(v0i), int(v2i)))
-            adj[int(v2i)].update((int(v0i), int(v1i)))
-
-        for _ in range(n_passes):
-            new_pts = pts.copy()
-            for i in mask_indices:
-                nbrs = list(adj[i])
-                if nbrs:
-                    new_pts[i] = (1.0 - relax) * pts[i] + relax * pts[nbrs].mean(axis=0)
-            pts = new_pts
+        # fallback numpy
+        for local_i, global_i in enumerate(orig_global_ids):
+            dists = np.linalg.norm(face_clean.points - face_sub.points[local_i], axis=1)
+            pts[global_i] = smoothed.points[int(dists.argmin())]
 
     return pts
