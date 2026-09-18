@@ -232,8 +232,8 @@ def blur_mesh_geometry(
     mesh_points: np.ndarray,
     face_mask: np.ndarray,
     mesh_faces: np.ndarray,
-    n_passes: int = 8,
-    relax: float = 0.4,
+    n_passes: int = 20,
+    relax: float = 0.2,
 ) -> np.ndarray:
     """Return a copy of *mesh_points* with face vertex positions Laplacian-smoothed.
 
@@ -300,13 +300,24 @@ def blur_mesh_geometry(
         row_sums[row_sums == 0] = 1.0          # guard against isolated vertices
         L_norm = diags(1.0 / row_sums) @ L_raw  # row-stochastic, shape (N, N)
 
+        # ---- Soft boundary weights ---------------------------------------
+        # Vertices at the mask boundary get a smaller effective relax so the
+        # transition is smooth rather than a hard tear.
+        # soft_weight[i] = fraction of topological neighbours inside the mask,
+        # remapped from [0.3, 0.8] → [0, 1] and clamped.
+        mask_float = mask_bool.astype(np.float64)
+        nbr_mask_frac = np.asarray(L_norm.dot(mask_float)).ravel()     # (N,)
+        soft_weight = np.clip((nbr_mask_frac - 0.3) / 0.5, 0.0, 1.0)  # (N,)
+        # Shape (n_mask, 1) for broadcasting against (n_mask, 3) positions.
+        w = (relax * soft_weight[mask_bool])[:, np.newaxis]
+
         # ---- Laplacian smoothing passes ---------------------------------
         for _ in range(n_passes):
             # avg[i] = mean of all topological neighbours of vertex i.
-            # Non-masked vertices keep their original positions, but they still
-            # contribute as neighbours → no boundary shrinkage.
-            avg = L_norm.dot(pts)                          # (N, 3)
-            pts[mask_bool] = (1.0 - relax) * pts[mask_bool] + relax * avg[mask_bool]
+            # Non-masked vertices keep their original positions (fixed anchors)
+            # → boundary vertices are pulled toward the surface edge, not inside.
+            avg = L_norm.dot(pts)                   # (N, 3)
+            pts[mask_bool] = (1.0 - w) * pts[mask_bool] + w * avg[mask_bool]
 
     else:  # pragma: no cover
         # Pure-numpy fallback — builds adjacency as a dict, slow for large meshes.
