@@ -855,6 +855,7 @@ class LandmarkViewer(QWidget):
         self._vertex_colors = self._colors_blurred
         if self._points_blurred is not None:
             self._mesh.points = self._points_blurred
+            self._mesh.compute_normals(inplace=True)
         self._face_blurred = True
         self._blur_face_btn.setText("Visage : flouté")
         self._blur_face_btn.setEnabled(True)
@@ -865,6 +866,7 @@ class LandmarkViewer(QWidget):
         # Restaurer les points originaux
         if self._points_original is not None:
             self._mesh.points = self._points_original
+            self._mesh.compute_normals(inplace=True)
         # Restaurer les couleurs selon l'état actuel des toggles
         if self._sticker_btn.isChecked():
             self._vertex_colors = self._vertex_colors_clean
