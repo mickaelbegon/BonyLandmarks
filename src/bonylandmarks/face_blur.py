@@ -32,13 +32,9 @@ _FACE_LANDMARK_CODES = [
 def _head_mask_from_bounds(
     pts: np.ndarray,
     ground_truth: dict[str, np.ndarray],
+    acromion_offset: float = 60.0,
 ) -> np.ndarray:
-    """Improved fallback: select the head region above the shoulder level.
-
-    Uses acromion or C7 landmarks (when available) to locate the shoulder
-    line, then selects only the vertices above it.  The selection is further
-    restricted to the anterior 65 % along the depth axis so that the back of
-    the skull is excluded from the blur zone.
+    """Select the head/face region above the shoulder line.
 
     Parameters
     ----------
@@ -46,6 +42,9 @@ def _head_mask_from_bounds(
         Shape (N, 3) float64 — mesh vertex positions.
     ground_truth:
         Dict mapping landmark code → 3-D position array.
+    acromion_offset:
+        Distance in mesh units (mm) above the highest acromion landmark
+        where the mask starts.  Smaller values include more of the face/neck.
     """
     extents = pts.max(axis=0) - pts.min(axis=0)
     up_axis = int(extents.argmax())
@@ -53,7 +52,6 @@ def _head_mask_from_bounds(
     up_min = float(pts[:, up_axis].min())
     body_height = up_max - up_min
 
-    # ---- Lower bound for the head region --------------------------------
     acromion_positions = [
         np.asarray(ground_truth[c], dtype=np.float64)
         for c in ("acromion_left", "acromion_right")
@@ -62,16 +60,13 @@ def _head_mask_from_bounds(
 
     if acromion_positions:
         acromion_up = max(float(p[up_axis]) for p in acromion_positions)
-        lower_bound = acromion_up + 120.0       # 120 mm above the highest acromion (above the neck)
+        lower_bound = acromion_up + float(acromion_offset)
     elif "C7_spinous" in ground_truth:
         c7 = np.asarray(ground_truth["C7_spinous"], dtype=np.float64)
-        lower_bound = float(c7[up_axis]) + 80.0
+        lower_bound = float(c7[up_axis]) + float(acromion_offset) * 0.6
     else:
-        lower_bound = up_max - body_height * 0.10  # top 10 % of body height (head only)
+        lower_bound = up_max - body_height * 0.13  # top 13 % of body height
 
-    # Everything above the shoulder line is the head — front + back.
-    # Restricting by depth axis is unreliable because the anterior direction
-    # varies per scan orientation; blurring the full head is the safe default.
     return pts[:, up_axis] >= lower_bound
 
 
@@ -79,6 +74,7 @@ def build_face_mask(
     mesh_points: np.ndarray,
     ground_truth: dict[str, np.ndarray],
     margin_factor: float = 1.3,
+    acromion_offset: float = 60.0,
 ) -> np.ndarray:
     """Return a boolean mask (N,) where True = vertex belongs to the face/head zone.
 
@@ -110,8 +106,7 @@ def build_face_mask(
     ]
 
     if len(face_positions) < 2:
-        # Not enough face landmarks — use improved anatomical fallback
-        return _head_mask_from_bounds(pts, ground_truth)
+        return _head_mask_from_bounds(pts, ground_truth, acromion_offset=acromion_offset)
 
     positions = np.stack(face_positions)
     centroid = positions.mean(axis=0)
@@ -134,8 +129,8 @@ def blur_vertex_colors(
     colors: np.ndarray,
     face_mask: np.ndarray,
     mesh_points: np.ndarray,
-    k_neighbours: int = 20,
-    n_passes: int = 10,
+    k_neighbours: int = 40,
+    n_passes: int = 15,
 ) -> np.ndarray:
     """Return a copy of *colors* with the face zone blurred.
 
@@ -232,8 +227,8 @@ def blur_mesh_geometry(
     mesh_points: np.ndarray,
     face_mask: np.ndarray,
     mesh_faces: np.ndarray,
-    n_iter: int = 500,
-    pass_band: float = 0.01,
+    n_iter: int = 750,
+    pass_band: float = 0.005,
 ) -> np.ndarray:
     """Lisse les positions 3D des vertices du visage via Taubin smoothing (PyVista).
 

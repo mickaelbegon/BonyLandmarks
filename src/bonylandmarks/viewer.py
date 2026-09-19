@@ -119,17 +119,19 @@ class _BlurWorker(QThread):
     result_ready = Signal(object, object, object)  # (mask, blurred_colors, blurred_points)
     error = Signal(str)
 
-    def __init__(self, mesh_points, mesh_faces, ground_truth, base_colors):
+    def __init__(self, mesh_points, mesh_faces, ground_truth, base_colors, acromion_offset: int = 60):
         super().__init__()
         self._mesh_points = mesh_points
         self._mesh_faces = mesh_faces
         self._ground_truth = ground_truth
         self._base_colors = base_colors
+        self._acromion_offset = acromion_offset
 
     def run(self):
         try:
             from .face_blur import build_face_mask, blur_vertex_colors, blur_mesh_geometry
-            mask = build_face_mask(self._mesh_points, self._ground_truth)
+            mask = build_face_mask(self._mesh_points, self._ground_truth,
+                                   acromion_offset=float(self._acromion_offset))
             blurred_colors = blur_vertex_colors(self._base_colors.copy(), mask, self._mesh_points)
             blurred_points = blur_mesh_geometry(self._mesh_points.copy(), mask, self._mesh_faces)
             self.result_ready.emit(mask, blurred_colors, blurred_points)
@@ -186,6 +188,7 @@ class LandmarkViewer(QWidget):
         self._points_blurred: np.ndarray | None = None   # lissage géométrique mis en cache
         self._points_original: np.ndarray | None = None  # positions originales (sauvegardées)
         self._blur_worker: _BlurWorker | None = None      # thread actif
+        self._blur_zone_offset: int = 60                  # mm above acromions (slider)
 
         self._build_ui()
         self._setup_scene()
@@ -444,6 +447,25 @@ class LandmarkViewer(QWidget):
         self._blur_face_btn.setVisible(self._vertex_colors is not None)
         self._blur_face_btn.clicked.connect(self._on_blur_face_toggled)
         panel.addWidget(self._blur_face_btn)
+
+        # Zone slider (visible with blur button)
+        _zone_row = QHBoxLayout()
+        _zone_lbl = QLabel("Zone :")
+        _zone_lbl.setFixedWidth(46)
+        self._blur_zone_slider = QSlider(Qt.Horizontal)
+        self._blur_zone_slider.setRange(0, 200)
+        self._blur_zone_slider.setValue(self._blur_zone_offset)
+        self._blur_zone_val_lbl = QLabel(f"{self._blur_zone_offset} mm")
+        self._blur_zone_val_lbl.setFixedWidth(46)
+        self._blur_zone_slider.valueChanged.connect(self._on_blur_zone_changed)
+        _zone_row.addWidget(_zone_lbl)
+        _zone_row.addWidget(self._blur_zone_slider)
+        _zone_row.addWidget(self._blur_zone_val_lbl)
+        _zone_widget = QWidget()
+        _zone_widget.setLayout(_zone_row)
+        _zone_widget.setVisible(self._vertex_colors is not None)
+        panel.addWidget(_zone_widget)
+        self._blur_zone_widget = _zone_widget
 
         panel_widget = QWidget()
         panel_widget.setLayout(panel)
@@ -826,6 +848,7 @@ class LandmarkViewer(QWidget):
             mesh_faces=np.asarray(self._mesh.faces).copy(),
             ground_truth=self._ground_truth,
             base_colors=base.copy(),
+            acromion_offset=self._blur_zone_offset,
         )
         self._blur_worker.result_ready.connect(self._on_blur_computed)
         self._blur_worker.error.connect(self._on_blur_error)
@@ -842,6 +865,16 @@ class LandmarkViewer(QWidget):
         else:
             # L'utilisateur a décoché pendant le calcul
             self._blur_face_btn.setText("Visage : affiché")
+
+    def _on_blur_zone_changed(self, value: int) -> None:
+        self._blur_zone_offset = value
+        self._blur_zone_val_lbl.setText(f"{value} mm")
+        # Invalidate cache so next click recomputes with new zone
+        self._colors_blurred = None
+        self._points_blurred = None
+        if self._face_blurred:
+            self._remove_blur()
+            self._blur_face_btn.setChecked(False)
 
     def _on_blur_error(self, msg: str) -> None:
         """Appelé si le calcul échoue."""
