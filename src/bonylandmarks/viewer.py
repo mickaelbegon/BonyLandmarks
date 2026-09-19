@@ -457,7 +457,8 @@ class LandmarkViewer(QWidget):
         self._blur_zone_slider.setValue(self._blur_zone_offset)
         self._blur_zone_val_lbl = QLabel(f"{self._blur_zone_offset} mm")
         self._blur_zone_val_lbl.setFixedWidth(46)
-        self._blur_zone_slider.valueChanged.connect(self._on_blur_zone_changed)
+        self._blur_zone_slider.valueChanged.connect(self._on_blur_zone_label)
+        self._blur_zone_slider.sliderReleased.connect(self._on_blur_zone_released)
         _zone_row.addWidget(_zone_lbl)
         _zone_row.addWidget(self._blur_zone_slider)
         _zone_row.addWidget(self._blur_zone_val_lbl)
@@ -866,15 +867,20 @@ class LandmarkViewer(QWidget):
             # L'utilisateur a décoché pendant le calcul
             self._blur_face_btn.setText("Visage : affiché")
 
-    def _on_blur_zone_changed(self, value: int) -> None:
+    def _on_blur_zone_label(self, value: int) -> None:
+        """Met à jour le label pendant le drag sans relancer le calcul."""
         self._blur_zone_offset = value
         self._blur_zone_val_lbl.setText(f"{value} mm")
-        # Invalidate cache so next click recomputes with new zone
+
+    def _on_blur_zone_released(self) -> None:
+        """Relance le calcul au relâchement du slider."""
         self._colors_blurred = None
         self._points_blurred = None
         if self._face_blurred:
+            # Restaurer l'original puis relancer avec la nouvelle zone
             self._remove_blur()
-            self._blur_face_btn.setChecked(False)
+            self._blur_face_btn.setChecked(True)
+            self._start_blur_computation()
 
     def _on_blur_error(self, msg: str) -> None:
         """Appelé si le calcul échoue."""
