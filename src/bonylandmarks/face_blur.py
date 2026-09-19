@@ -142,7 +142,9 @@ def gray_face_colors(
     face_indices = np.where(face_mask)[0]
     if len(face_indices) == 0:
         return result
-    result[face_indices] = np.array([gray, gray, gray], dtype=result.dtype)
+    n_channels = result.shape[1] if result.ndim > 1 else 3
+    fill = [gray] * min(n_channels, 3) + [255] * max(0, n_channels - 3)
+    result[face_indices] = np.array(fill, dtype=result.dtype)
     return result
 
 
