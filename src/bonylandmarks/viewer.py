@@ -116,7 +116,7 @@ def _body_icon(filename: str, size: int = 44) -> QIcon:
 class _BlurWorker(QThread):
     """Calcule le blur du visage dans un thread de fond."""
 
-    result_ready = Signal(object, object, object)  # (mask, blurred_colors, blurred_points)
+    result_ready = Signal(object, object, object, object)  # (mask, blurred_colors, gray_colors, blurred_points)
     error = Signal(str)
 
     def __init__(self, mesh_points, mesh_faces, ground_truth, base_colors, acromion_offset: int = 60):
@@ -129,12 +129,13 @@ class _BlurWorker(QThread):
 
     def run(self):
         try:
-            from .face_blur import build_face_mask, blur_vertex_colors, blur_mesh_geometry
+            from .face_blur import build_face_mask, blur_vertex_colors, blur_mesh_geometry, gray_face_colors
             mask = build_face_mask(self._mesh_points, self._ground_truth,
                                    acromion_offset=float(self._acromion_offset))
             blurred_colors = blur_vertex_colors(self._base_colors.copy(), mask, self._mesh_points)
+            gray_colors = gray_face_colors(self._base_colors.copy(), mask)
             blurred_points = blur_mesh_geometry(self._mesh_points.copy(), mask, self._mesh_faces)
-            self.result_ready.emit(mask, blurred_colors, blurred_points)
+            self.result_ready.emit(mask, blurred_colors, gray_colors, blurred_points)
         except Exception as exc:
             import traceback
             traceback.print_exc()
@@ -184,11 +185,13 @@ class LandmarkViewer(QWidget):
 
         # Face-blur state
         self._face_blurred: bool = False
+        self._face_gray: bool = False
         self._colors_blurred: np.ndarray | None = None  # cached blur result
+        self._colors_gray: np.ndarray | None = None      # cached gray result
         self._points_blurred: np.ndarray | None = None   # lissage géométrique mis en cache
         self._points_original: np.ndarray | None = None  # positions originales (sauvegardées)
         self._blur_worker: _BlurWorker | None = None      # thread actif
-        self._blur_zone_offset: int = 60                  # mm above acromions (slider)
+        self._blur_zone_offset: int = 35                  # mm above acromions (slider)
 
         self._build_ui()
         self._setup_scene()
@@ -441,14 +444,22 @@ class LandmarkViewer(QWidget):
         panel.addWidget(self._sticker_btn)
 
         # Face blur toggle (only visible when vertex colors are available)
-        self._blur_face_btn = QPushButton("Visage : affiché")
+        self._blur_face_btn = QPushButton("Lissage visage : non")
         self._blur_face_btn.setCheckable(True)
         self._blur_face_btn.setChecked(False)
         self._blur_face_btn.setVisible(self._vertex_colors is not None)
         self._blur_face_btn.clicked.connect(self._on_blur_face_toggled)
         panel.addWidget(self._blur_face_btn)
 
-        # Zone slider (visible with blur button)
+        # Mode gris toggle (supprime la texture du visage)
+        self._gray_face_btn = QPushButton("Mode gris visage : non")
+        self._gray_face_btn.setCheckable(True)
+        self._gray_face_btn.setChecked(False)
+        self._gray_face_btn.setVisible(self._vertex_colors is not None)
+        self._gray_face_btn.clicked.connect(self._on_gray_face_toggled)
+        panel.addWidget(self._gray_face_btn)
+
+        # Zone slider (visible with blur buttons)
         _zone_row = QHBoxLayout()
         _zone_lbl = QLabel("Zone :")
         _zone_lbl.setFixedWidth(46)
@@ -464,7 +475,7 @@ class LandmarkViewer(QWidget):
         _zone_row.addWidget(self._blur_zone_val_lbl)
         _zone_widget = QWidget()
         _zone_widget.setLayout(_zone_row)
-        _zone_widget.setVisible(self._vertex_colors is not None)
+        _zone_widget.setVisible(self._vertex_colors is not None)  # same condition as blur buttons
         panel.addWidget(_zone_widget)
         self._blur_zone_widget = _zone_widget
 
@@ -781,23 +792,33 @@ class LandmarkViewer(QWidget):
             self._plotter.render()
 
     def _on_texture_toggled(self, checked: bool) -> None:
-        self._colors_blurred = None  # invalidate blur cache (base colors changed)
-        self._points_blurred = None  # invalider aussi le cache géométrique
+        self._colors_blurred = None
+        self._colors_gray = None
+        self._points_blurred = None
         if self._face_blurred:
             self._blur_face_btn.setChecked(False)
             self._face_blurred = False
-            self._blur_face_btn.setText("Visage : affiché")
+            self._blur_face_btn.setText("Lissage visage : non")
+        if self._face_gray:
+            self._gray_face_btn.setChecked(False)
+            self._face_gray = False
+            self._gray_face_btn.setText("Mode gris visage : non")
         self._texture_btn.setText("Mode : Texturé" if checked else "Mode : Gris")
         self._add_body_mesh(textured=checked)
         self._plotter.render()
 
     def _on_sticker_toggled(self, checked: bool) -> None:
-        self._colors_blurred = None  # invalidate blur cache (base colors changed)
-        self._points_blurred = None  # invalider aussi le cache géométrique
+        self._colors_blurred = None
+        self._colors_gray = None
+        self._points_blurred = None
         if self._face_blurred:
             self._blur_face_btn.setChecked(False)
             self._face_blurred = False
-            self._blur_face_btn.setText("Visage : affiché")
+            self._blur_face_btn.setText("Lissage visage : non")
+        if self._face_gray:
+            self._gray_face_btn.setChecked(False)
+            self._face_gray = False
+            self._gray_face_btn.setText("Mode gris visage : non")
         self._sticker_btn.setText("Stickers : masqués" if checked else "Stickers : visibles")
         self._vertex_colors = self._vertex_colors_clean if checked else self._vertex_colors_raw
         self._add_body_mesh(textured=self._texture_btn.isChecked())
@@ -815,13 +836,14 @@ class LandmarkViewer(QWidget):
             self._plotter.render()
 
     def _on_blur_face_toggled(self, checked: bool) -> None:
-        """Apply or remove face blurring."""
+        """Apply or remove face blurring (mutual exclusion with gray mode)."""
         if checked:
+            if self._face_gray:
+                self._remove_gray()
+                self._gray_face_btn.setChecked(False)
             if self._colors_blurred is not None and self._points_blurred is not None:
-                # Cache disponible — appliquer immédiatement
                 self._apply_blur()
             else:
-                # Lancer le calcul en arrière-plan
                 self._start_blur_computation()
         else:
             self._remove_blur()
@@ -841,7 +863,119 @@ class LandmarkViewer(QWidget):
         if self._points_original is None:
             self._points_original = np.asarray(self._mesh.points, dtype=np.float64).copy()
 
-        self._blur_face_btn.setText("Visage : calcul...")
+        self._blur_face_btn.setText("Lissage : calcul...")
+        self._blur_face_btn.setEnabled(False)
+        self._gray_face_btn.setEnabled(False)
+
+        self._blur_worker = _BlurWorker(
+            mesh_points=self._points_original.copy(),
+            mesh_faces=np.asarray(self._mesh.faces).copy(),
+            ground_truth=self._ground_truth,
+            base_colors=base.copy(),
+            acromion_offset=self._blur_zone_offset,
+        )
+        self._blur_worker.result_ready.connect(self._on_blur_computed)
+        self._blur_worker.error.connect(self._on_blur_error)
+        self._blur_worker.start()
+
+    def _on_blur_computed(self, mask, blurred_colors, gray_colors, blurred_points) -> None:
+        """Appelé dans le thread principal quand le calcul est terminé."""
+        self._colors_blurred = blurred_colors
+        self._colors_gray = gray_colors
+        self._points_blurred = blurred_points
+        self._blur_face_btn.setEnabled(True)
+        self._gray_face_btn.setEnabled(True)
+        if self._blur_face_btn.isChecked():
+            self._apply_blur()
+        elif self._gray_face_btn.isChecked():
+            self._apply_gray()
+        else:
+            self._blur_face_btn.setText("Lissage visage : non")
+
+    def _on_blur_zone_label(self, value: int) -> None:
+        """Met à jour le label pendant le drag sans relancer le calcul."""
+        self._blur_zone_offset = value
+        self._blur_zone_val_lbl.setText(f"{value} mm")
+
+    def _on_blur_zone_released(self) -> None:
+        """Relance le calcul au relâchement du slider."""
+        self._colors_blurred = None
+        self._colors_gray = None
+        self._points_blurred = None
+        was_blur = self._face_blurred
+        was_gray = self._face_gray
+        if was_blur:
+            self._remove_blur()
+            self._blur_face_btn.setChecked(True)
+            self._start_blur_computation()
+        elif was_gray:
+            self._remove_gray()
+            self._gray_face_btn.setChecked(True)
+            self._start_gray_computation()
+
+    def _on_blur_error(self, msg: str) -> None:
+        """Appelé si le calcul échoue."""
+        print(f"[face_blur] erreur : {msg}")
+        self._blur_face_btn.setChecked(False)
+        self._blur_face_btn.setText("Lissage visage : non")
+        self._blur_face_btn.setEnabled(True)
+        self._gray_face_btn.setChecked(False)
+        self._gray_face_btn.setText("Mode gris visage : non")
+        self._gray_face_btn.setEnabled(True)
+
+    def _apply_blur(self) -> None:
+        """Applique les couleurs floutées + géométrie lissée (cache disponible)."""
+        self._vertex_colors = self._colors_blurred
+        if self._points_blurred is not None:
+            self._mesh.points = self._points_blurred
+            self._mesh.compute_normals(inplace=True)
+        self._face_blurred = True
+        self._blur_face_btn.setText("Lissage visage : oui")
+        self._blur_face_btn.setEnabled(True)
+        self._refresh_mesh_colors()
+
+    def _remove_blur(self) -> None:
+        """Restaure les couleurs et la géométrie originales."""
+        if self._points_original is not None:
+            self._mesh.points = self._points_original
+            self._mesh.compute_normals(inplace=True)
+        if self._sticker_btn.isChecked():
+            self._vertex_colors = self._vertex_colors_clean
+        else:
+            self._vertex_colors = self._vertex_colors_raw
+        self._face_blurred = False
+        self._blur_face_btn.setText("Lissage visage : non")
+        self._refresh_mesh_colors()
+
+    def _on_gray_face_toggled(self, checked: bool) -> None:
+        """Apply or remove gray face mode (mutual exclusion with blur mode)."""
+        if checked:
+            if self._face_blurred:
+                self._remove_blur()
+                self._blur_face_btn.setChecked(False)
+            if self._colors_gray is not None and self._points_blurred is not None:
+                self._apply_gray()
+            else:
+                self._start_gray_computation()
+        else:
+            self._remove_gray()
+
+    def _start_gray_computation(self) -> None:
+        """Lance le calcul (blur + gray) dans un QThread de fond pour le mode gris."""
+        if self._blur_worker is not None and self._blur_worker.isRunning():
+            return
+
+        base = self._vertex_colors_clean if self._vertex_colors_clean is not None \
+               else self._vertex_colors
+        if base is None:
+            self._gray_face_btn.setChecked(False)
+            return
+
+        if self._points_original is None:
+            self._points_original = np.asarray(self._mesh.points, dtype=np.float64).copy()
+
+        self._gray_face_btn.setText("Mode gris : calcul...")
+        self._gray_face_btn.setEnabled(False)
         self._blur_face_btn.setEnabled(False)
 
         self._blur_worker = _BlurWorker(
@@ -855,64 +989,28 @@ class LandmarkViewer(QWidget):
         self._blur_worker.error.connect(self._on_blur_error)
         self._blur_worker.start()
 
-    def _on_blur_computed(self, mask, blurred_colors, blurred_points) -> None:
-        """Appelé dans le thread principal quand le calcul est terminé."""
-        self._colors_blurred = blurred_colors
-        self._points_blurred = blurred_points
-        self._blur_face_btn.setEnabled(True)
-        # Le bouton est déjà coché (l'utilisateur a cliqué) — appliquer
-        if self._blur_face_btn.isChecked():
-            self._apply_blur()
-        else:
-            # L'utilisateur a décoché pendant le calcul
-            self._blur_face_btn.setText("Visage : affiché")
-
-    def _on_blur_zone_label(self, value: int) -> None:
-        """Met à jour le label pendant le drag sans relancer le calcul."""
-        self._blur_zone_offset = value
-        self._blur_zone_val_lbl.setText(f"{value} mm")
-
-    def _on_blur_zone_released(self) -> None:
-        """Relance le calcul au relâchement du slider."""
-        self._colors_blurred = None
-        self._points_blurred = None
-        if self._face_blurred:
-            # Restaurer l'original puis relancer avec la nouvelle zone
-            self._remove_blur()
-            self._blur_face_btn.setChecked(True)
-            self._start_blur_computation()
-
-    def _on_blur_error(self, msg: str) -> None:
-        """Appelé si le calcul échoue."""
-        print(f"[face_blur] erreur : {msg}")
-        self._blur_face_btn.setChecked(False)
-        self._blur_face_btn.setText("Visage : affiché")
-        self._blur_face_btn.setEnabled(True)
-
-    def _apply_blur(self) -> None:
-        """Applique les couleurs et la géométrie floutées (cache disponible)."""
-        self._vertex_colors = self._colors_blurred
+    def _apply_gray(self) -> None:
+        """Applique la texture grise uniforme + géométrie lissée."""
+        self._vertex_colors = self._colors_gray
         if self._points_blurred is not None:
             self._mesh.points = self._points_blurred
             self._mesh.compute_normals(inplace=True)
-        self._face_blurred = True
-        self._blur_face_btn.setText("Visage : flouté")
-        self._blur_face_btn.setEnabled(True)
+        self._face_gray = True
+        self._gray_face_btn.setText("Mode gris visage : oui")
+        self._gray_face_btn.setEnabled(True)
         self._refresh_mesh_colors()
 
-    def _remove_blur(self) -> None:
-        """Restaure les couleurs et la géométrie originales."""
-        # Restaurer les points originaux
+    def _remove_gray(self) -> None:
+        """Restaure les couleurs et la géométrie originales (mode gris → normal)."""
         if self._points_original is not None:
             self._mesh.points = self._points_original
             self._mesh.compute_normals(inplace=True)
-        # Restaurer les couleurs selon l'état actuel des toggles
         if self._sticker_btn.isChecked():
             self._vertex_colors = self._vertex_colors_clean
         else:
             self._vertex_colors = self._vertex_colors_raw
-        self._face_blurred = False
-        self._blur_face_btn.setText("Visage : affiché")
+        self._face_gray = False
+        self._gray_face_btn.setText("Mode gris visage : non")
         self._refresh_mesh_colors()
 
     def _on_confirm_if_enabled(self) -> None:

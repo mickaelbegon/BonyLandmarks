@@ -125,6 +125,27 @@ def build_face_mask(
     return mask
 
 
+def gray_face_colors(
+    colors: np.ndarray,
+    face_mask: np.ndarray,
+    gray: int = 160,
+) -> np.ndarray:
+    """Remplace les couleurs de la zone visage par un gris uniforme (anonymisation totale).
+
+    Parameters
+    ----------
+    colors:  Shape (N, 3), dtype uint8 ou float.
+    face_mask: Shape (N,), dtype bool.
+    gray: Valeur de gris 0-255 (défaut 160 = gris neutre).
+    """
+    result = colors.copy()
+    face_indices = np.where(face_mask)[0]
+    if len(face_indices) == 0:
+        return result
+    result[face_indices] = np.array([gray, gray, gray], dtype=result.dtype)
+    return result
+
+
 def blur_vertex_colors(
     colors: np.ndarray,
     face_mask: np.ndarray,
