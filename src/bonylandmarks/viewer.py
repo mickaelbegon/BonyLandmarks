@@ -28,6 +28,7 @@ from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QPushButton,
+    QScrollArea,
     QSizePolicy,
     QSlider,
     QTableWidget,
@@ -478,6 +479,27 @@ class LandmarkViewer(QWidget):
         _zone_widget.setVisible(self._vertex_colors is not None)  # same condition as blur buttons
         panel.addWidget(_zone_widget)
         self._blur_zone_widget = _zone_widget
+
+        # Biomechanics measurements section (collapsible)
+        sep_biom = QFrame()
+        sep_biom.setFrameShape(QFrame.HLine)
+        sep_biom.setFrameShadow(QFrame.Sunken)
+        panel.addWidget(sep_biom)
+
+        self._biom_toggle_btn = QPushButton("Mesures biomécaniques ▸")
+        self._biom_toggle_btn.setCheckable(True)
+        self._biom_toggle_btn.setChecked(False)
+        self._biom_toggle_btn.setStyleSheet("text-align: left; padding: 4px 8px;")
+        self._biom_toggle_btn.clicked.connect(self._on_biom_toggled)
+        panel.addWidget(self._biom_toggle_btn)
+
+        self._biom_scroll = QScrollArea()
+        self._biom_scroll.setWidgetResizable(True)
+        self._biom_scroll.setMaximumHeight(340)
+        self._biom_scroll.setVisible(False)
+        self._biom_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        panel.addWidget(self._biom_scroll)
+        self._biom_initialized: bool = False
 
         panel_widget = QWidget()
         panel_widget.setLayout(panel)
@@ -1012,6 +1034,84 @@ class LandmarkViewer(QWidget):
         self._face_gray = False
         self._gray_face_btn.setText("Mode gris visage : non")
         self._refresh_mesh_colors()
+
+    # ── Biomechanics panel ────────────────────────────────────────────────────
+
+    def _on_biom_toggled(self, checked: bool) -> None:
+        self._biom_toggle_btn.setText(
+            "Mesures biomécaniques ▾" if checked else "Mesures biomécaniques ▸"
+        )
+        if checked and not self._biom_initialized:
+            self._init_biom_widget()
+        self._biom_scroll.setVisible(checked)
+
+    def _init_biom_widget(self) -> None:
+        """Build and populate the biomechanics measurements table (lazy, once)."""
+        from .biomechanics import compute_all, Measurement
+
+        measures = compute_all(self._ground_truth)
+        self._biom_initialized = True
+
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(4, 4, 4, 4)
+        layout.setSpacing(2)
+
+        _STATUS_COLORS = {
+            "normal":    ("#1a7a40", "#d4edda"),  # text, bg
+            "attention": ("#7a5c00", "#fff3cd"),
+            "alerte":    ("#8b1a1a", "#f8d7da"),
+            "info":      ("#1a4a7a", "#d1ecf1"),
+        }
+
+        current_category = None
+        for m in measures:
+            if m.category != current_category:
+                current_category = m.category
+                cat_lbl = QLabel(m.category.upper())
+                cat_lbl.setStyleSheet(
+                    "font-size: 10px; font-weight: bold; color: #666;"
+                    "padding: 6px 4px 2px 4px; letter-spacing: 1px;"
+                )
+                layout.addWidget(cat_lbl)
+
+            row = QWidget()
+            row_layout = QHBoxLayout(row)
+            row_layout.setContentsMargins(4, 2, 4, 2)
+            row_layout.setSpacing(6)
+
+            # Label + side
+            name_text = m.label
+            if m.side:
+                name_text += f" ({m.side})"
+            name_lbl = QLabel(name_text)
+            name_lbl.setWordWrap(True)
+            name_lbl.setStyleSheet("font-size: 11px;")
+            name_lbl.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+            # Value chip
+            txt_color, bg_color = _STATUS_COLORS.get(m.status, _STATUS_COLORS["info"])
+            val_lbl = QLabel(m.value_str)
+            val_lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            val_lbl.setStyleSheet(
+                f"font-size: 11px; font-weight: bold;"
+                f"color: {txt_color}; background: {bg_color};"
+                f"border-radius: 3px; padding: 1px 5px;"
+            )
+            val_lbl.setToolTip(m.note)
+            val_lbl.setFixedWidth(72)
+
+            row_layout.addWidget(name_lbl)
+            row_layout.addWidget(val_lbl)
+            layout.addWidget(row)
+
+        if not measures:
+            layout.addWidget(QLabel("Repères insuffisants pour calculer les mesures."))
+
+        layout.addStretch()
+        self._biom_scroll.setWidget(container)
+
+    # ── Confirm / Redo ────────────────────────────────────────────────────────
 
     def _on_confirm_if_enabled(self) -> None:
         if self._confirm_btn.isEnabled():
