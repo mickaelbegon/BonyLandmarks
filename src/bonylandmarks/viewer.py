@@ -317,16 +317,6 @@ class LandmarkViewer(QWidget):
         btn_row.addWidget(self._redo_btn)
         panel.addLayout(btn_row)
 
-        # Dev-mode skip button (not shown in production)
-        if self._dev_mode:
-            self._skip_btn = QPushButton("⏭ Passer (dev)")
-            self._skip_btn.setStyleSheet(
-                "font-size: 11px; color: #aaa; padding: 2px 8px;"
-                "border: 1px dashed #666; border-radius: 3px;"
-            )
-            self._skip_btn.clicked.connect(self._on_skip_landmark)
-            panel.addWidget(self._skip_btn)
-
         # Results table (grows as landmarks are confirmed)
         self._sep2 = QFrame()
         self._sep2.setFrameShape(QFrame.HLine)
@@ -502,6 +492,9 @@ class LandmarkViewer(QWidget):
         panel_widget.setFixedWidth(320)
         root.addWidget(panel_widget)
 
+        # Floating overlay for landmark navigation (left edge of viewport)
+        self._build_landmark_nav_overlay()
+
         # Floating overlay for texture/blur controls (bottom-left of viewport)
         self._build_blur_overlay()
 
@@ -592,6 +585,8 @@ class LandmarkViewer(QWidget):
             self._nav_overlay.raise_()
         if hasattr(self, "_blur_overlay"):
             self._blur_overlay.raise_()
+        if hasattr(self, "_lm_nav_overlay"):
+            self._lm_nav_overlay.raise_()
 
     # ── Navigation toolbar ────────────────────────────────────────────────────
 
@@ -772,6 +767,70 @@ class LandmarkViewer(QWidget):
         self._blur_overlay.move(x, y)
         self._blur_overlay.raise_()
 
+    def _build_landmark_nav_overlay(self) -> None:
+        """Floating ◀ ▶ navigator — left edge of the 3D viewport, always visible."""
+        container = self._plotter.interactor
+        overlay = QWidget(container)
+        overlay.setObjectName("lm_nav_overlay")
+        overlay.setAttribute(Qt.WA_TranslucentBackground)
+        overlay.setStyleSheet("""
+            QWidget#lm_nav_overlay { background: transparent; }
+            QPushButton {
+                background-color: rgba(26, 26, 46, 180);
+                color: #e0e0e0;
+                border: 1px solid rgba(255,255,255,0.15);
+                border-radius: 6px;
+                font-size: 20px;
+                font-weight: bold;
+                min-width: 44px;
+                max-width: 44px;
+                min-height: 44px;
+                max-height: 44px;
+                padding: 0px;
+            }
+            QPushButton:hover {
+                background-color: rgba(60, 80, 140, 210);
+                border-color: rgba(100,160,255,0.6);
+            }
+            QPushButton:pressed {
+                background-color: rgba(30, 60, 120, 230);
+            }
+            QPushButton:disabled {
+                color: #555;
+                background-color: rgba(26, 26, 46, 80);
+            }
+        """)
+        layout = QVBoxLayout(overlay)
+        layout.setSpacing(6)
+        layout.setContentsMargins(6, 6, 6, 6)
+
+        self._lm_prev_btn = QPushButton("◀")
+        self._lm_prev_btn.setToolTip("Repère précédent")
+        self._lm_prev_btn.clicked.connect(self._on_prev_landmark)
+        self._lm_next_btn = QPushButton("▶")
+        self._lm_next_btn.setToolTip("Repère suivant")
+        self._lm_next_btn.clicked.connect(self._on_skip_landmark)
+
+        layout.addWidget(self._lm_prev_btn)
+        layout.addWidget(self._lm_next_btn)
+
+        overlay.adjustSize()
+        self._lm_nav_overlay = overlay
+        self._position_landmark_nav_overlay()
+
+    def _position_landmark_nav_overlay(self) -> None:
+        """Centre the nav overlay on the left edge of the 3D viewport."""
+        if not hasattr(self, "_lm_nav_overlay"):
+            return
+        container = self._plotter.interactor
+        margin = 10
+        w = self._lm_nav_overlay.width() or self._lm_nav_overlay.sizeHint().width()
+        h = self._lm_nav_overlay.height() or self._lm_nav_overlay.sizeHint().height()
+        x = margin
+        y = (container.height() - h) // 2
+        self._lm_nav_overlay.move(x, y)
+        self._lm_nav_overlay.raise_()
+
     def _setup_nav_shortcuts(self) -> None:
         """Register keyboard shortcuts for the 6 navigation views (called after axes are set)."""
         shortcuts = [
@@ -792,6 +851,7 @@ class LandmarkViewer(QWidget):
         super().resizeEvent(event)
         self._position_nav_overlay()
         self._position_blur_overlay()
+        self._position_landmark_nav_overlay()
 
     # ── Interaction callbacks ─────────────────────────────────────────────────
 
@@ -1202,8 +1262,36 @@ class LandmarkViewer(QWidget):
         self._redo_btn.setEnabled(False)
         self._error_label.setText("")
 
+    def _on_prev_landmark(self) -> None:
+        """Navigate to the previous landmark without scoring."""
+        self._plotter.remove_actor("candidate_sphere", render=False)
+        self._candidate_point = None
+        self._confirm_btn.setEnabled(False)
+        self._redo_btn.setEnabled(False)
+        self._error_label.setText("")
+
+        if self._inverse_mode:
+            if self._session.inverse_go_back():
+                self._show_inverse_landmark()
+        elif self._session.retry_mode:
+            pass  # no back in retry mode
+        else:
+            if self._session.go_back():
+                lm = self._session.current_landmark()
+                # Remove visual markers placed for this landmark
+                self._plotter.remove_actor(
+                    f"{_ACTOR_PREFIX_CONFIRMED}{lm.code}", render=False
+                )
+                self._plotter.remove_actor(f"guide_{lm.code}", render=False)
+                # Remove last row from results table
+                n = self._results_table.rowCount()
+                if n > 0:
+                    self._results_table.removeRow(n - 1)
+                self._plotter.render()
+                self._update_instruction_panel()
+
     def _on_skip_landmark(self) -> None:
-        """Dev-mode: advance to the next landmark without scoring."""
+        """Navigate to the next landmark without scoring."""
         self._plotter.remove_actor("candidate_sphere", render=False)
         self._candidate_point = None
         self._confirm_btn.setEnabled(False)

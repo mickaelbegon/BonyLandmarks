@@ -182,6 +182,22 @@ class SessionController:
         self._index += 1
         return self.placement_finished()
 
+    def go_back(self) -> bool:
+        """Move to the previous placement landmark (dev navigation).
+
+        Undoes the last recorded result for that landmark so it can be
+        re-attempted.  Returns True if the index was decremented.
+        """
+        if self._index <= 0:
+            return False
+        self._index -= 1
+        lm_code = self._landmarks[self._index].code
+        if self._results and self._results[-1].code == lm_code:
+            popped = self._results.pop()
+            if self._best_results.get(lm_code) is popped:
+                del self._best_results[lm_code]
+        return True
+
     # ── Task C — D-grade retry ───────────────────────────────────────────────
 
     def needs_retry(self) -> bool:
@@ -266,6 +282,16 @@ class SessionController:
         """
         self._inverse_index += 1
         return self.inverse_finished()
+
+    def inverse_go_back(self) -> bool:
+        """Move to the previous inverse landmark. Returns True if moved."""
+        if self._inverse_index <= 0:
+            return False
+        self._inverse_index -= 1
+        self._inverse_correct_codes.discard(
+            self._inverse_queue[self._inverse_index].code
+        )
+        return True
 
     def record_inverse_correct(self, code: str) -> None:
         """Mark *code* as correctly identified during the inverse phase."""
