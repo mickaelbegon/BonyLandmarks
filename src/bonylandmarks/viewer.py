@@ -158,10 +158,12 @@ class LandmarkViewer(QWidget):
         vertex_colors_raw: np.ndarray | None = None,
         all_markers: dict[str, np.ndarray] | None = None,
         tutorial_mode: bool = False,
+        dev_mode: bool = False,
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
         self._tutorial_mode = tutorial_mode
+        self._dev_mode = dev_mode
         self._mesh = mesh
         self._vertex_colors_clean = vertex_colors
         self._vertex_colors_raw = vertex_colors_raw
@@ -315,11 +317,21 @@ class LandmarkViewer(QWidget):
         btn_row.addWidget(self._redo_btn)
         panel.addLayout(btn_row)
 
+        # Dev-mode skip button (not shown in production)
+        if self._dev_mode:
+            self._skip_btn = QPushButton("⏭ Passer (dev)")
+            self._skip_btn.setStyleSheet(
+                "font-size: 11px; color: #aaa; padding: 2px 8px;"
+                "border: 1px dashed #666; border-radius: 3px;"
+            )
+            self._skip_btn.clicked.connect(self._on_skip_landmark)
+            panel.addWidget(self._skip_btn)
+
         # Results table (grows as landmarks are confirmed)
-        sep2 = QFrame()
-        sep2.setFrameShape(QFrame.HLine)
-        sep2.setFrameShadow(QFrame.Sunken)
-        panel.addWidget(sep2)
+        self._sep2 = QFrame()
+        self._sep2.setFrameShape(QFrame.HLine)
+        self._sep2.setFrameShadow(QFrame.Sunken)
+        panel.addWidget(self._sep2)
 
         self._results_table = QTableWidget(0, 3)
         self._results_table.setHorizontalHeaderLabels(["Repère / Landmark", "mm", "Score"])
@@ -426,44 +438,30 @@ class LandmarkViewer(QWidget):
         opacity_row.addWidget(self._opacity_slider)
         panel.addLayout(opacity_row)
 
-        # Texture toggle (only visible when vertex colors are available)
+        # Texture / sticker / blur controls — created here, displayed in _build_blur_overlay()
         self._texture_btn = QPushButton("Mode : Texturé")
         self._texture_btn.setCheckable(True)
         self._texture_btn.setChecked(True)
-        self._texture_btn.setVisible(self._vertex_colors is not None)
         self._texture_btn.clicked.connect(self._on_texture_toggled)
-        panel.addWidget(self._texture_btn)
 
-        # Sticker toggle (only visible when both clean and raw colors are available)
         self._sticker_btn = QPushButton("Stickers : masqués")
         self._sticker_btn.setCheckable(True)
         self._sticker_btn.setChecked(True)
-        self._sticker_btn.setVisible(
-            self._vertex_colors_clean is not None and self._vertex_colors_raw is not None
-        )
         self._sticker_btn.clicked.connect(self._on_sticker_toggled)
-        panel.addWidget(self._sticker_btn)
 
-        # Face blur toggle (only visible when vertex colors are available)
         self._blur_face_btn = QPushButton("Lissage visage : non")
         self._blur_face_btn.setCheckable(True)
         self._blur_face_btn.setChecked(False)
-        self._blur_face_btn.setVisible(self._vertex_colors is not None)
         self._blur_face_btn.clicked.connect(self._on_blur_face_toggled)
-        panel.addWidget(self._blur_face_btn)
 
-        # Mode gris toggle (supprime la texture du visage)
         self._gray_face_btn = QPushButton("Mode gris visage : non")
         self._gray_face_btn.setCheckable(True)
         self._gray_face_btn.setChecked(False)
-        self._gray_face_btn.setVisible(self._vertex_colors is not None)
         self._gray_face_btn.clicked.connect(self._on_gray_face_toggled)
-        panel.addWidget(self._gray_face_btn)
 
-        # Zone slider (visible with blur buttons)
         _zone_row = QHBoxLayout()
         _zone_lbl = QLabel("Zone :")
-        _zone_lbl.setFixedWidth(46)
+        _zone_lbl.setFixedWidth(40)
         self._blur_zone_slider = QSlider(Qt.Horizontal)
         self._blur_zone_slider.setRange(0, 200)
         self._blur_zone_slider.setValue(self._blur_zone_offset)
@@ -476,8 +474,6 @@ class LandmarkViewer(QWidget):
         _zone_row.addWidget(self._blur_zone_val_lbl)
         _zone_widget = QWidget()
         _zone_widget.setLayout(_zone_row)
-        _zone_widget.setVisible(self._vertex_colors is not None)  # same condition as blur buttons
-        panel.addWidget(_zone_widget)
         self._blur_zone_widget = _zone_widget
 
         # Biomechanics measurements section (collapsible)
@@ -505,6 +501,9 @@ class LandmarkViewer(QWidget):
         panel_widget.setLayout(panel)
         panel_widget.setFixedWidth(320)
         root.addWidget(panel_widget)
+
+        # Floating overlay for texture/blur controls (bottom-left of viewport)
+        self._build_blur_overlay()
 
     # ── Scene setup ───────────────────────────────────────────────────────────
 
@@ -588,9 +587,11 @@ class LandmarkViewer(QWidget):
         # Wire keyboard shortcuts now that axes are known
         self._setup_nav_shortcuts()
 
-        # Ensure overlay stays on top after the plotter renders
+        # Ensure overlays stay on top after the plotter renders
         if hasattr(self, "_nav_overlay"):
             self._nav_overlay.raise_()
+        if hasattr(self, "_blur_overlay"):
+            self._blur_overlay.raise_()
 
     # ── Navigation toolbar ────────────────────────────────────────────────────
 
@@ -696,6 +697,81 @@ class LandmarkViewer(QWidget):
         self._nav_overlay.move(x, y)
         self._nav_overlay.raise_()
 
+    def _build_blur_overlay(self) -> None:
+        """Create a floating panel for texture/blur controls, anchored bottom-left."""
+        container = self._plotter.interactor
+        overlay = QWidget(container)
+        overlay.setObjectName("blur_overlay")
+        overlay.setAttribute(Qt.WA_TranslucentBackground)
+        overlay.setStyleSheet("""
+            QWidget#blur_overlay {
+                background: rgba(18, 18, 28, 170);
+                border-radius: 6px;
+            }
+            QLabel {
+                color: #aaa;
+                font-size: 10px;
+            }
+            QPushButton {
+                background-color: rgba(45, 45, 65, 210);
+                color: #ccc;
+                border: 1px solid rgba(255,255,255,0.10);
+                border-radius: 4px;
+                font-size: 10px;
+                padding: 3px 7px;
+                min-height: 22px;
+            }
+            QPushButton:checked {
+                background-color: rgba(25, 90, 170, 220);
+                color: #fff;
+                border-color: rgba(100,170,255,0.55);
+            }
+            QPushButton:hover {
+                background-color: rgba(60, 60, 100, 230);
+            }
+            QPushButton:disabled {
+                color: #666;
+            }
+        """)
+        layout = QVBoxLayout(overlay)
+        layout.setSpacing(3)
+        layout.setContentsMargins(8, 6, 8, 6)
+
+        has_colors = self._vertex_colors is not None
+        has_both = (
+            self._vertex_colors_clean is not None
+            and self._vertex_colors_raw is not None
+        )
+
+        self._texture_btn.setVisible(has_colors)
+        self._sticker_btn.setVisible(has_both)
+        self._blur_face_btn.setVisible(has_colors)
+        self._gray_face_btn.setVisible(has_colors)
+        self._blur_zone_widget.setVisible(has_colors)
+
+        layout.addWidget(self._texture_btn)
+        layout.addWidget(self._sticker_btn)
+        layout.addWidget(self._blur_face_btn)
+        layout.addWidget(self._gray_face_btn)
+        layout.addWidget(self._blur_zone_widget)
+
+        overlay.adjustSize()
+        self._blur_overlay = overlay
+        self._position_blur_overlay()
+
+    def _position_blur_overlay(self) -> None:
+        """Move the blur overlay to the bottom-left corner of the 3D viewport."""
+        if not hasattr(self, "_blur_overlay"):
+            return
+        container = self._plotter.interactor
+        margin = 10
+        w = self._blur_overlay.width() or self._blur_overlay.sizeHint().width()
+        h = self._blur_overlay.height() or self._blur_overlay.sizeHint().height()
+        x = margin
+        y = container.height() - h - margin
+        self._blur_overlay.move(x, y)
+        self._blur_overlay.raise_()
+
     def _setup_nav_shortcuts(self) -> None:
         """Register keyboard shortcuts for the 6 navigation views (called after axes are set)."""
         shortcuts = [
@@ -715,6 +791,7 @@ class LandmarkViewer(QWidget):
     def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self._position_nav_overlay()
+        self._position_blur_overlay()
 
     # ── Interaction callbacks ─────────────────────────────────────────────────
 
@@ -1125,6 +1202,32 @@ class LandmarkViewer(QWidget):
         self._redo_btn.setEnabled(False)
         self._error_label.setText("")
 
+    def _on_skip_landmark(self) -> None:
+        """Dev-mode: advance to the next landmark without scoring."""
+        self._plotter.remove_actor("candidate_sphere", render=False)
+        self._candidate_point = None
+        self._confirm_btn.setEnabled(False)
+        self._redo_btn.setEnabled(False)
+        self._error_label.setText("")
+
+        if self._inverse_mode:
+            self._session.inverse_advance()
+            self._show_inverse_landmark()
+        elif self._session.retry_mode:
+            if self._session.advance_retry(None):
+                self._finish_session()
+            else:
+                self._update_instruction_panel()
+        else:
+            lm = self._current_landmark()
+            if self._session.advance():
+                self._finish_session()
+            else:
+                next_lm = self._session.current_landmark()
+                shown = self._maybe_show_category_transition(lm, next_lm)
+                if not shown:
+                    self._update_instruction_panel()
+
     # ── Task A — Debrief overlay ──────────────────────────────────────────────
 
     def _show_landmark_debrief(
@@ -1250,6 +1353,17 @@ class LandmarkViewer(QWidget):
     # ── Helpers ───────────────────────────────────────────────────────────────
 
     def _update_instruction_panel(self) -> None:
+        # Establish the placement/retry layout regardless of how we got here.
+        # This makes the method safe to call after leaving inverse mode or
+        # any other context that may have hidden some of these widgets.
+        self._confirm_btn.setVisible(True)
+        self._redo_btn.setVisible(True)
+        self._instr_label.setVisible(True)
+        self._hint_text.setVisible(False)   # hint is revealed only inside the debrief dialog
+        self._inverse_panel.setVisible(False)
+        self._sep2.setVisible(True)
+        self._results_table.setVisible(True)
+
         if self._session.retry_mode:
             if self._session.retry_finished():
                 return
@@ -1343,6 +1457,11 @@ class LandmarkViewer(QWidget):
         self._instr_label.setVisible(False)
         self._hint_text.setVisible(False)
         self._application_text.setVisible(False)
+        # Hide results table and its separator — irrelevant during identification
+        self._sep2.setVisible(False)
+        self._results_table.setVisible(False)
+        # Hide theme badge — it is meaningless while the landmark name is concealed
+        self._theme_badge.setVisible(False)
         self._inverse_panel.setVisible(True)
 
         self._show_inverse_landmark()
@@ -1366,12 +1485,19 @@ class LandmarkViewer(QWidget):
         self._confirm_btn.setVisible(True)
         self._redo_btn.setVisible(True)
         self._instr_label.setVisible(True)
-        self._hint_text.setVisible(True)
+        # _hint_text visibility is left to _update_instruction_panel
+        self._sep2.setVisible(True)
+        self._results_table.setVisible(True)
         self._inverse_panel.setVisible(False)
 
         if self._mode_btn.isChecked():
             self._mode_btn.setChecked(False)
         self._inverse_mode = False
+
+        # Refresh the instruction panel so all placement widgets (including
+        # theme_badge) are restored to their correct state regardless of the
+        # path that led here (toggle off, standalone finish, or mixed finish).
+        self._update_instruction_panel()
 
     def _orbit_camera_to(self, point: np.ndarray) -> None:
         """Orbit the camera around the body axis to face *point*."""
@@ -1491,14 +1617,9 @@ class LandmarkViewer(QWidget):
                 "font-size: 14px; font-weight: bold; color: #2e7d32;"
             )
             self._inverse_validate_btn.setEnabled(False)
-
-            def _advance() -> None:
-                self._session.inverse_advance()
-                self._show_inverse_landmark()
-
-            QTimer.singleShot(1000, _advance)
+            self._show_inverse_debrief(lm)
         else:
-            # Incorrect — highlight selection red, correct item orange, advance after 2 s
+            # Incorrect — highlight selection red, correct item orange, then debrief
             item.setBackground(QColor("#b71c1c"))
             item.setForeground(QColor("#ffffff"))
 
@@ -1524,12 +1645,25 @@ class LandmarkViewer(QWidget):
                 "font-size: 13px; font-weight: bold; color: #c62828;"
             )
             self._inverse_validate_btn.setEnabled(False)
+            self._show_inverse_debrief(lm)
 
-            def _advance_after_wrong() -> None:
-                self._session.inverse_advance()
-                self._show_inverse_landmark()
+    def _show_inverse_debrief(self, lm: "Landmark") -> None:
+        """Show the hint/biom debrief after an inverse identification answer.
 
-            QTimer.singleShot(2000, _advance_after_wrong)
+        Advancing the inverse queue happens when the dialog closes.
+        """
+        from .biomechanics import measures_for_landmark
+        biom = measures_for_landmark(self._ground_truth, lm.code)
+        dlg = build_debrief_dialog(
+            lm, None, self._lang, self, self._center_dialog,
+            biom_measures=biom or None,
+        )
+
+        def _advance() -> None:
+            self._session.inverse_advance()
+            self._show_inverse_landmark()
+
+        dlg.finished.connect(lambda _: _advance())
 
     def _finish_inverse_session(self) -> None:
         """Called when all inverse landmarks have been identified.

@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
     def start(self) -> None:
         import os
         dev_scan = os.environ.get("BONY_DEV_SCAN")
+        dev_mode = bool(dev_scan)
         if dev_scan:
             avatar_bytes = Path(dev_scan).read_bytes()
             matricule = "dev"
@@ -132,6 +133,7 @@ class MainWindow(QMainWindow):
                         all_markers,
                         landmark_codes,
                         matricule,
+                        dev_mode=dev_mode,
                     ),
                 )
 
@@ -147,6 +149,7 @@ class MainWindow(QMainWindow):
                 all_markers,
                 landmark_codes,
                 matricule,
+                dev_mode=dev_mode,
             )
 
     def _launch_session(
@@ -158,6 +161,7 @@ class MainWindow(QMainWindow):
         all_markers,
         landmark_codes,
         matricule: str,
+        dev_mode: bool = False,
     ) -> None:
         """Create the graded LandmarkViewer and make it the central widget.
 
@@ -172,6 +176,7 @@ class MainWindow(QMainWindow):
             vertex_colors=vertex_colors,
             vertex_colors_raw=vertex_colors_raw,
             all_markers=all_markers,
+            dev_mode=dev_mode,
         )
         viewer.session_complete.connect(
             lambda score: self._on_session_done(score, matricule)
