@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (
     QDialog,
     QFrame,
     QHBoxLayout,
+    QHeaderView,
     QLabel,
     QLineEdit,
     QListWidget,
@@ -260,7 +261,7 @@ class LandmarkViewer(QWidget):
         # Progress label
         self._progress_label = QLabel()
         self._progress_label.setAlignment(Qt.AlignCenter)
-        self._progress_label.setStyleSheet("font-size: 13px; color: #555;")
+        self._progress_label.setStyleSheet("font-size: 11px; color: #666;")
         panel.addWidget(self._progress_label)
 
         # Theme badge
@@ -276,7 +277,7 @@ class LandmarkViewer(QWidget):
         # Landmark name
         self._name_label = QLabel()
         self._name_label.setWordWrap(True)
-        self._name_label.setStyleSheet("font-size: 15px; font-weight: bold;")
+        self._name_label.setStyleSheet("font-size: 13px; font-weight: bold; color: #999;")
         panel.addWidget(self._name_label)
 
         # Hint text
@@ -412,25 +413,59 @@ class LandmarkViewer(QWidget):
         isb_layout.setSpacing(6)
 
         isb_title = QLabel("Repères locaux ISB")
-        isb_title.setStyleSheet("font-size: 13px; font-weight: bold; color: #3399ff;")
+        isb_title.setStyleSheet("font-size: 14px; font-weight: bold; color: #3399ff;")
         isb_layout.addWidget(isb_title)
 
+        isb_title_sep = QFrame()
+        isb_title_sep.setFrameShape(QFrame.HLine)
+        isb_title_sep.setStyleSheet(
+            "border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 2px 0px;"
+        )
+        isb_layout.addWidget(isb_title_sep)
+
+        _isb_list_frame = QFrame()
+        _isb_list_frame.setStyleSheet(
+            "QFrame { background: rgba(255,255,255,0.05); border-radius: 4px; }"
+        )
+        _isb_list_frame_layout = QVBoxLayout(_isb_list_frame)
+        _isb_list_frame_layout.setContentsMargins(2, 2, 2, 2)
+        _isb_list_frame_layout.setSpacing(0)
         self._isb_segment_list = QListWidget()
         self._isb_segment_list.setMaximumHeight(150)
-        self._isb_segment_list.setStyleSheet("font-size: 12px;")
+        self._isb_segment_list.setStyleSheet(
+            "font-size: 12px; background: transparent; border: none;"
+        )
         self._isb_segment_list.currentRowChanged.connect(
             lambda _: self._on_isb_segment_selected()
         )
-        isb_layout.addWidget(self._isb_segment_list)
+        _isb_list_frame_layout.addWidget(self._isb_segment_list)
+        isb_layout.addWidget(_isb_list_frame)
 
+        _isb_info_frame = QFrame()
+        _isb_info_frame.setStyleSheet(
+            "QFrame { background: rgba(51,153,255,0.08); border-left: 3px solid #3399ff; "
+            "border-radius: 0px 4px 4px 0px; }"
+        )
+        _isb_info_layout = QVBoxLayout(_isb_info_frame)
+        _isb_info_layout.setContentsMargins(8, 6, 6, 6)
+        _isb_info_layout.setSpacing(0)
         self._isb_info_label = QLabel()
         self._isb_info_label.setWordWrap(True)
-        self._isb_info_label.setStyleSheet("font-size: 11px; color: #444;")
+        self._isb_info_label.setStyleSheet(
+            "font-size: 11px; color: #bbb; background: transparent;"
+        )
         self._isb_info_label.setMinimumHeight(60)
-        isb_layout.addWidget(self._isb_info_label)
+        _isb_info_layout.addWidget(self._isb_info_label)
+        isb_layout.addWidget(_isb_info_frame)
 
         self._isb_guided_btn = QPushButton("Mode guidé : non")
         self._isb_guided_btn.setCheckable(True)
+        self._isb_guided_btn.setStyleSheet(
+            "QPushButton { background: rgba(255,255,255,0.07); border-radius: 6px; "
+            "padding: 5px 10px; color: #ccc; border: 1px solid rgba(255,255,255,0.10); }"
+            "QPushButton:checked { background: #3399ff; color: white; border-color: #3399ff; }"
+            "QPushButton:hover { background: rgba(255,255,255,0.12); }"
+        )
         self._isb_guided_btn.clicked.connect(self._on_isb_guided_toggled)
         isb_layout.addWidget(self._isb_guided_btn)
 
@@ -451,20 +486,29 @@ class LandmarkViewer(QWidget):
         anthro_layout.setSpacing(6)
 
         anthro_title = QLabel("Mesures anthropométriques")
-        anthro_title.setStyleSheet("font-size: 13px; font-weight: bold; color: #cc6600;")
+        anthro_title.setStyleSheet("font-size: 14px; font-weight: bold; color: #cc6600;")
         anthro_layout.addWidget(anthro_title)
+
+        anthro_title_sep = QFrame()
+        anthro_title_sep.setFrameShape(QFrame.HLine)
+        anthro_title_sep.setStyleSheet(
+            "border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 2px 0px;"
+        )
+        anthro_layout.addWidget(anthro_title_sep)
 
         self._anthro_table = QTableWidget(0, 3)
         self._anthro_table.setHorizontalHeaderLabels(["Mesure", "Valeur", "Statut"])
         self._anthro_table.horizontalHeader().setStretchLastSection(False)
-        self._anthro_table.setColumnWidth(0, 140)
+        self._anthro_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self._anthro_table.setColumnWidth(1, 60)
         self._anthro_table.setColumnWidth(2, 70)
         self._anthro_table.verticalHeader().setVisible(False)
         self._anthro_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self._anthro_table.setSelectionBehavior(QTableWidget.SelectRows)
-        self._anthro_table.setStyleSheet("font-size: 11px;")
-        self._anthro_table.setMaximumHeight(200)
+        self._anthro_table.setStyleSheet(
+            "QTableWidget { font-size: 11px; gridline-color: rgba(255,255,255,0.10); }"
+        )
+        self._anthro_table.setMaximumHeight(300)
         self._anthro_table.currentCellChanged.connect(
             lambda row, *_: self._on_anthro_measure_selected()
         )
@@ -472,6 +516,12 @@ class LandmarkViewer(QWidget):
 
         self._anthro_guided_btn = QPushButton("Mode guidé : non")
         self._anthro_guided_btn.setCheckable(True)
+        self._anthro_guided_btn.setStyleSheet(
+            "QPushButton { background: rgba(255,255,255,0.07); border-radius: 6px; "
+            "padding: 5px 10px; color: #ccc; border: 1px solid rgba(255,255,255,0.10); }"
+            "QPushButton:checked { background: #3399ff; color: white; border-color: #3399ff; }"
+            "QPushButton:hover { background: rgba(255,255,255,0.12); }"
+        )
         self._anthro_guided_btn.clicked.connect(self._on_anthro_guided_toggled)
         anthro_layout.addWidget(self._anthro_guided_btn)
 
@@ -587,6 +637,9 @@ class LandmarkViewer(QWidget):
         # Floating overlay for texture/blur controls (bottom-left of viewport)
         self._build_blur_overlay()
 
+        # HUD — titre exercice + nom du repère, centré en haut du viewport
+        self._build_hud_overlay()
+
     # ── Scene setup ───────────────────────────────────────────────────────────
 
     def _add_body_mesh(self, textured: bool = True) -> None:
@@ -676,6 +729,8 @@ class LandmarkViewer(QWidget):
             self._blur_overlay.raise_()
         if hasattr(self, "_lm_nav_overlay"):
             self._lm_nav_overlay.raise_()
+        if hasattr(self, "_hud_overlay"):
+            self._hud_overlay.raise_()
 
     # ── Navigation toolbar ────────────────────────────────────────────────────
 
@@ -856,6 +911,74 @@ class LandmarkViewer(QWidget):
         self._blur_overlay.move(x, y)
         self._blur_overlay.raise_()
 
+    def _build_hud_overlay(self) -> None:
+        """HUD semi-transparent centré en haut du viewport : titre exercice + nom repère."""
+        container = self._plotter.interactor
+        overlay = QWidget(container)
+        overlay.setObjectName("hud_overlay")
+        overlay.setAttribute(Qt.WA_TranslucentBackground)
+        overlay.setStyleSheet("""
+            QWidget#hud_overlay {
+                background: rgba(18, 18, 38, 175);
+                border-radius: 10px;
+                border: 1px solid rgba(255,255,255,0.10);
+            }
+            QLabel#hud_title {
+                color: rgba(160, 190, 255, 200);
+                font-size: 11px;
+                letter-spacing: 1px;
+            }
+            QLabel#hud_lm {
+                color: #f0f0f0;
+                font-size: 18px;
+                font-weight: bold;
+            }
+        """)
+        layout = QVBoxLayout(overlay)
+        layout.setSpacing(2)
+        layout.setContentsMargins(20, 10, 20, 10)
+        layout.setAlignment(Qt.AlignCenter)
+
+        self._hud_title_label = QLabel("")
+        self._hud_title_label.setObjectName("hud_title")
+        self._hud_title_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._hud_title_label)
+
+        self._hud_lm_label = QLabel("")
+        self._hud_lm_label.setObjectName("hud_lm")
+        self._hud_lm_label.setAlignment(Qt.AlignCenter)
+        self._hud_lm_label.setWordWrap(True)
+        layout.addWidget(self._hud_lm_label)
+
+        overlay.adjustSize()
+        self._hud_overlay = overlay
+        self._hud_overlay.setVisible(False)
+        self._position_hud_overlay()
+
+    def _position_hud_overlay(self) -> None:
+        """Centre le HUD en haut du viewport, 14 px sous le bord."""
+        if not hasattr(self, "_hud_overlay"):
+            return
+        container = self._plotter.interactor
+        overlay = self._hud_overlay
+        overlay.adjustSize()
+        w = overlay.sizeHint().width()
+        x = max(0, (container.width() - w) // 2)
+        overlay.move(x, 14)
+        overlay.raise_()
+
+    def _update_hud(self, title: str = "", lm_name: str = "") -> None:
+        """Met à jour le HUD et l'affiche/cache selon le contenu."""
+        if not hasattr(self, "_hud_overlay"):
+            return
+        self._hud_title_label.setText(title.upper())
+        self._hud_lm_label.setText(lm_name)
+        self._hud_lm_label.setVisible(bool(lm_name))
+        visible = bool(title or lm_name)
+        self._hud_overlay.setVisible(visible)
+        if visible:
+            self._position_hud_overlay()
+
     def _build_landmark_nav_overlay(self) -> None:
         """Floating ◀ ▶ navigator — left edge of the 3D viewport, always visible."""
         container = self._plotter.interactor
@@ -941,6 +1064,7 @@ class LandmarkViewer(QWidget):
         self._position_nav_overlay()
         self._position_blur_overlay()
         self._position_landmark_nav_overlay()
+        self._position_hud_overlay()
 
     # ── Interaction callbacks ─────────────────────────────────────────────────
 
@@ -1524,6 +1648,7 @@ class LandmarkViewer(QWidget):
         self._progress_label.setText("")
         self._theme_badge.setVisible(False)
         self._application_text.setVisible(False)
+        self._update_hud("Session terminée")
         self.session_complete.emit(score)
 
     def _emit_final_session(self) -> None:
@@ -1612,6 +1737,10 @@ class LandmarkViewer(QWidget):
 
         self._instr_label.setText(tr("instructions", self._lang))
         self._error_label.setText("")
+
+        # HUD 3-D
+        hud_title = self._progress_label.text()
+        self._update_hud(hud_title, lm.name(self._lang))
 
         self._plotter.render()
 
@@ -1754,10 +1883,10 @@ class LandmarkViewer(QWidget):
 
         # Update side panel (name hidden so as not to reveal the answer)
         n = len(self._session.inverse_queue)
-        self._progress_label.setText(
-            f"Identification — {self._session.inverse_index + 1} / {n}"
-        )
+        inv_progress = f"Identification — {self._session.inverse_index + 1} / {n}"
+        self._progress_label.setText(inv_progress)
         self._name_label.setText("?")
+        self._update_hud(inv_progress, "?")
         self._hint_text.setText("")
         self._application_text.setText("")
         self._error_label.setText("")
@@ -1951,6 +2080,7 @@ class LandmarkViewer(QWidget):
 
         self._progress_label.setText("Exercice ISB — Repères locaux")
         self._name_label.setText("Sélectionnez un segment")
+        self._update_hud("Exercice ISB — Repères locaux", "Sélectionnez un segment")
         self._error_label.setText("")
 
         # Compute ISB local coordinate systems from ground truth
@@ -2012,6 +2142,7 @@ class LandmarkViewer(QWidget):
                 f"<span style='color:#c00;'><i>Manquants :</i> {missing}</span>"
             )
         self._isb_info_label.setText(info)
+        self._update_hud("Exercice ISB — Repères locaux", seg.name)
 
         # Draw 3-D axes
         self._update_isb_axes(seg)
@@ -2084,6 +2215,7 @@ class LandmarkViewer(QWidget):
 
         self._progress_label.setText("Exercice — Mesures anthropométriques")
         self._name_label.setText("Sélectionnez une mesure")
+        self._update_hud("Mesures anthropométriques", "Sélectionnez une mesure")
         self._error_label.setText("")
 
         # Compute all 20 measures against ground truth
@@ -2139,8 +2271,10 @@ class LandmarkViewer(QWidget):
         row = self._anthro_table.currentRow()
         if row < 0 or self._anthro_results is None:
             return
+        measure = self._anthro_results[row].measure
+        self._update_hud("Mesures anthropométriques", measure.name_fr)
         if self._anthro_guided_btn.isChecked():
-            self._show_anthro_steps(self._anthro_results[row].measure)
+            self._show_anthro_steps(measure)
 
     def _on_anthro_guided_toggled(self, checked: bool) -> None:
         """Show or hide the step-by-step guide for the selected anthropo measure."""
