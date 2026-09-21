@@ -198,6 +198,16 @@ class SessionController:
                 del self._best_results[lm_code]
         return True
 
+    def restart_inverse(self) -> None:
+        """Reset the inverse identification phase to the beginning (dev navigation)."""
+        self._inverse_index = 0
+        self._inverse_correct_codes = set()
+
+    def exit_retry_to_placement(self) -> None:
+        """Dev: exit retry mode and reset placement to the beginning."""
+        self._retry_mode = False
+        self._index = 0
+
     # ── Task C — D-grade retry ───────────────────────────────────────────────
 
     def needs_retry(self) -> bool:
