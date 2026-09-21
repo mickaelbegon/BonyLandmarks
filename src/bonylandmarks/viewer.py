@@ -465,8 +465,8 @@ class LandmarkViewer(QWidget):
         self._anthro_table.setSelectionBehavior(QTableWidget.SelectRows)
         self._anthro_table.setStyleSheet("font-size: 11px;")
         self._anthro_table.setMaximumHeight(200)
-        self._anthro_table.currentRowChanged.connect(
-            lambda _: self._on_anthro_measure_selected()
+        self._anthro_table.currentCellChanged.connect(
+            lambda row, *_: self._on_anthro_measure_selected()
         )
         anthro_layout.addWidget(self._anthro_table)
 
