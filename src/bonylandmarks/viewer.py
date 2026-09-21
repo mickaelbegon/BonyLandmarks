@@ -805,11 +805,11 @@ class LandmarkViewer(QWidget):
         layout.setContentsMargins(6, 6, 6, 6)
 
         self._lm_prev_btn = QPushButton("◀")
-        self._lm_prev_btn.setToolTip("Repère précédent")
-        self._lm_prev_btn.clicked.connect(self._on_prev_landmark)
+        self._lm_prev_btn.setToolTip("Exercice précédent")
+        self._lm_prev_btn.clicked.connect(self._on_prev_exercise)
         self._lm_next_btn = QPushButton("▶")
-        self._lm_next_btn.setToolTip("Repère suivant")
-        self._lm_next_btn.clicked.connect(self._on_skip_landmark)
+        self._lm_next_btn.setToolTip("Exercice suivant")
+        self._lm_next_btn.clicked.connect(self._on_next_exercise)
 
         layout.addWidget(self._lm_prev_btn)
         layout.addWidget(self._lm_next_btn)
@@ -1262,8 +1262,8 @@ class LandmarkViewer(QWidget):
         self._redo_btn.setEnabled(False)
         self._error_label.setText("")
 
-    def _on_prev_landmark(self) -> None:
-        """Navigate to the previous landmark without scoring."""
+    def _on_prev_exercise(self) -> None:
+        """Jump to the previous exercise phase."""
         self._plotter.remove_actor("candidate_sphere", render=False)
         self._candidate_point = None
         self._confirm_btn.setEnabled(False)
@@ -1271,27 +1271,20 @@ class LandmarkViewer(QWidget):
         self._error_label.setText("")
 
         if self._inverse_mode:
-            if self._session.inverse_go_back():
-                self._show_inverse_landmark()
-        elif self._session.retry_mode:
-            pass  # no back in retry mode
-        else:
-            if self._session.go_back():
-                lm = self._session.current_landmark()
-                # Remove visual markers placed for this landmark
-                self._plotter.remove_actor(
-                    f"{_ACTOR_PREFIX_CONFIRMED}{lm.code}", render=False
-                )
-                self._plotter.remove_actor(f"guide_{lm.code}", render=False)
-                # Remove last row from results table
-                n = self._results_table.rowCount()
-                if n > 0:
-                    self._results_table.removeRow(n - 1)
-                self._plotter.render()
-                self._update_instruction_panel()
+            return  # already at the first exercise
 
-    def _on_skip_landmark(self) -> None:
-        """Navigate to the next landmark without scoring."""
+        if self._session.retry_mode:
+            # Exit retry → restart placement from the beginning
+            self._session.exit_retry_to_placement()
+            self._update_instruction_panel()
+        elif self._session.mixed_session:
+            # Placement phase → go back to inverse identification
+            self._session.restart_inverse()
+            self._start_inverse_session(queue=self._session.inverse_landmarks)
+        # else: standalone placement only — nothing before it
+
+    def _on_next_exercise(self) -> None:
+        """Jump to the next exercise phase, skipping all remaining items."""
         self._plotter.remove_actor("candidate_sphere", render=False)
         self._candidate_point = None
         self._confirm_btn.setEnabled(False)
@@ -1299,22 +1292,23 @@ class LandmarkViewer(QWidget):
         self._error_label.setText("")
 
         if self._inverse_mode:
-            self._session.inverse_advance()
-            self._show_inverse_landmark()
-        elif self._session.retry_mode:
-            if self._session.advance_retry(None):
-                self._finish_session()
+            # Skip remaining inverse → go to placement phase
+            if self._inverse_shown_actor is not None:
+                self._plotter.remove_actor(self._inverse_shown_actor, render=False)
+                self._inverse_shown_actor = None
+            self._plotter.render()
+            if self._session.mixed_session:
+                self._stop_inverse_session()
+                self._show_phase2_transition()
             else:
+                self._stop_inverse_session()
                 self._update_instruction_panel()
+        elif self._session.retry_mode:
+            # Skip remaining retry → finish
+            self._emit_final_session()
         else:
-            lm = self._current_landmark()
-            if self._session.advance():
-                self._finish_session()
-            else:
-                next_lm = self._session.current_landmark()
-                shown = self._maybe_show_category_transition(lm, next_lm)
-                if not shown:
-                    self._update_instruction_panel()
+            # Skip remaining placement → retry or finish
+            self._finish_session()
 
     # ── Task A — Debrief overlay ──────────────────────────────────────────────
 
