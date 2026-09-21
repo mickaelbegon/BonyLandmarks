@@ -183,6 +183,15 @@ class LandmarkViewer(QWidget):
         self._inverse_mode: bool = False
         self._inverse_shown_actor: str | None = None  # PyVista actor name of the shown sphere
 
+        # ISB and Anthropo exercise modes
+        self._isb_mode: bool = False
+        self._anthro_mode: bool = False
+        self._placement_done: bool = False
+        self._isb_actors: list = []
+        self._isb_result = None
+        self._isb_defs: dict = {}
+        self._anthro_results = None
+
         self._candidate_point: np.ndarray | None = None
         self._redo_count: int = 0
 
@@ -395,6 +404,86 @@ class LandmarkViewer(QWidget):
 
         self._inverse_panel.setVisible(False)
         panel.addWidget(self._inverse_panel)
+
+        # ISB exercise panel (hidden by default)
+        self._isb_panel = QWidget()
+        isb_layout = QVBoxLayout(self._isb_panel)
+        isb_layout.setContentsMargins(0, 0, 0, 0)
+        isb_layout.setSpacing(6)
+
+        isb_title = QLabel("Repères locaux ISB")
+        isb_title.setStyleSheet("font-size: 13px; font-weight: bold; color: #3399ff;")
+        isb_layout.addWidget(isb_title)
+
+        self._isb_segment_list = QListWidget()
+        self._isb_segment_list.setMaximumHeight(150)
+        self._isb_segment_list.setStyleSheet("font-size: 12px;")
+        self._isb_segment_list.currentRowChanged.connect(
+            lambda _: self._on_isb_segment_selected()
+        )
+        isb_layout.addWidget(self._isb_segment_list)
+
+        self._isb_info_label = QLabel()
+        self._isb_info_label.setWordWrap(True)
+        self._isb_info_label.setStyleSheet("font-size: 11px; color: #444;")
+        self._isb_info_label.setMinimumHeight(60)
+        isb_layout.addWidget(self._isb_info_label)
+
+        self._isb_guided_btn = QPushButton("Mode guidé : non")
+        self._isb_guided_btn.setCheckable(True)
+        self._isb_guided_btn.clicked.connect(self._on_isb_guided_toggled)
+        isb_layout.addWidget(self._isb_guided_btn)
+
+        self._isb_steps_text = QTextEdit()
+        self._isb_steps_text.setReadOnly(True)
+        self._isb_steps_text.setFixedHeight(110)
+        self._isb_steps_text.setStyleSheet("font-size: 11px;")
+        self._isb_steps_text.setVisible(False)
+        isb_layout.addWidget(self._isb_steps_text)
+
+        self._isb_panel.setVisible(False)
+        panel.addWidget(self._isb_panel)
+
+        # Anthropo exercise panel (hidden by default)
+        self._anthro_panel = QWidget()
+        anthro_layout = QVBoxLayout(self._anthro_panel)
+        anthro_layout.setContentsMargins(0, 0, 0, 0)
+        anthro_layout.setSpacing(6)
+
+        anthro_title = QLabel("Mesures anthropométriques")
+        anthro_title.setStyleSheet("font-size: 13px; font-weight: bold; color: #cc6600;")
+        anthro_layout.addWidget(anthro_title)
+
+        self._anthro_table = QTableWidget(0, 3)
+        self._anthro_table.setHorizontalHeaderLabels(["Mesure", "Valeur", "Statut"])
+        self._anthro_table.horizontalHeader().setStretchLastSection(False)
+        self._anthro_table.setColumnWidth(0, 140)
+        self._anthro_table.setColumnWidth(1, 60)
+        self._anthro_table.setColumnWidth(2, 70)
+        self._anthro_table.verticalHeader().setVisible(False)
+        self._anthro_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self._anthro_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self._anthro_table.setStyleSheet("font-size: 11px;")
+        self._anthro_table.setMaximumHeight(200)
+        self._anthro_table.currentRowChanged.connect(
+            lambda _: self._on_anthro_measure_selected()
+        )
+        anthro_layout.addWidget(self._anthro_table)
+
+        self._anthro_guided_btn = QPushButton("Mode guidé : non")
+        self._anthro_guided_btn.setCheckable(True)
+        self._anthro_guided_btn.clicked.connect(self._on_anthro_guided_toggled)
+        anthro_layout.addWidget(self._anthro_guided_btn)
+
+        self._anthro_steps_text = QTextEdit()
+        self._anthro_steps_text.setReadOnly(True)
+        self._anthro_steps_text.setFixedHeight(90)
+        self._anthro_steps_text.setStyleSheet("font-size: 11px;")
+        self._anthro_steps_text.setVisible(False)
+        anthro_layout.addWidget(self._anthro_steps_text)
+
+        self._anthro_panel.setVisible(False)
+        panel.addWidget(self._anthro_panel)
 
         # Enter key confirms (works even when the 3-D view has focus)
         for key in (Qt.Key_Return, Qt.Key_Enter):
@@ -1270,6 +1359,17 @@ class LandmarkViewer(QWidget):
         self._redo_btn.setEnabled(False)
         self._error_label.setText("")
 
+        if self._anthro_mode:
+            # Anthropo → back to ISB
+            self._stop_anthro_session()
+            self._start_isb_session()
+            return
+
+        if self._isb_mode:
+            # ISB → back to session-complete view
+            self._stop_isb_session()
+            return
+
         if self._inverse_mode:
             return  # already at the first exercise
 
@@ -1291,7 +1391,19 @@ class LandmarkViewer(QWidget):
         self._redo_btn.setEnabled(False)
         self._error_label.setText("")
 
-        if self._inverse_mode:
+        if self._anthro_mode:
+            return  # already at the last exercise
+
+        elif self._isb_mode:
+            # ISB → Anthropo
+            self._stop_isb_session()
+            self._start_anthro_session()
+
+        elif self._placement_done:
+            # Session complete → ISB exercise
+            self._start_isb_session()
+
+        elif self._inverse_mode:
             # Skip remaining inverse → go to placement phase
             if self._inverse_shown_actor is not None:
                 self._plotter.remove_actor(self._inverse_shown_actor, render=False)
@@ -1303,9 +1415,11 @@ class LandmarkViewer(QWidget):
             else:
                 self._stop_inverse_session()
                 self._update_instruction_panel()
+
         elif self._session.retry_mode:
             # Skip remaining retry → finish
             self._emit_final_session()
+
         else:
             # Skip remaining placement → retry or finish
             self._finish_session()
@@ -1388,6 +1502,7 @@ class LandmarkViewer(QWidget):
 
     def _display_session_complete(self, score: SessionScore) -> None:
         """Update all result widgets and emit session_complete."""
+        self._placement_done = True
         self._name_label.setText(
             tr("session_complete", self._lang, mean=score.mean_error_mm)
         )
@@ -1443,6 +1558,8 @@ class LandmarkViewer(QWidget):
         self._instr_label.setVisible(True)
         self._hint_text.setVisible(False)   # hint is revealed only inside the debrief dialog
         self._inverse_panel.setVisible(False)
+        self._isb_panel.setVisible(False)
+        self._anthro_panel.setVisible(False)
         self._sep2.setVisible(True)
         self._results_table.setVisible(True)
 
@@ -1807,3 +1924,235 @@ class LandmarkViewer(QWidget):
             center_fn=self._center_dialog,
         )
         dlg.finished.connect(lambda _: self._update_instruction_panel())
+
+    # ── ISB exercise panel ────────────────────────────────────────────────────
+
+    def _start_isb_session(self) -> None:
+        """Enter ISB exercise mode: show segment list and 3-D axes."""
+        from .isb_exercise import compute_isb_lcs, get_all_segment_definitions
+
+        self._isb_mode = True
+
+        # Cache segment definitions (key → dict with method text)
+        self._isb_defs = {d["key"]: d for d in get_all_segment_definitions()}
+
+        # Hide placement / inverse widgets
+        self._confirm_btn.setVisible(False)
+        self._redo_btn.setVisible(False)
+        self._instr_label.setVisible(False)
+        self._hint_text.setVisible(False)
+        self._application_text.setVisible(False)
+        self._sep2.setVisible(False)
+        self._results_table.setVisible(False)
+        self._theme_badge.setVisible(False)
+        self._inverse_panel.setVisible(False)
+        self._anthro_panel.setVisible(False)
+        self._isb_panel.setVisible(True)
+
+        self._progress_label.setText("Exercice ISB — Repères locaux")
+        self._name_label.setText("Sélectionnez un segment")
+        self._error_label.setText("")
+
+        # Compute ISB local coordinate systems from ground truth
+        result = compute_isb_lcs(self._ground_truth)
+        self._isb_result = result
+
+        # Populate segment list
+        self._isb_segment_list.clear()
+        for seg in result.segments:
+            status = "✓" if seg.present else "✗"
+            item = QListWidgetItem(f"{status}  {seg.name}")
+            if not seg.present:
+                item.setForeground(QColor("#888888"))
+            self._isb_segment_list.addItem(item)
+
+        # Auto-select the first computable segment
+        for i, seg in enumerate(result.segments):
+            if seg.present:
+                self._isb_segment_list.setCurrentRow(i)
+                break
+        else:
+            if result.segments:
+                self._isb_segment_list.setCurrentRow(0)
+
+    def _stop_isb_session(self) -> None:
+        """Leave ISB exercise mode: clean up actors and hide the panel."""
+        self._clear_isb_actors()
+        self._isb_mode = False
+        self._isb_panel.setVisible(False)
+        self._isb_result = None
+        self._isb_guided_btn.setChecked(False)
+        self._isb_guided_btn.setText("Mode guidé : non")
+        self._isb_steps_text.setVisible(False)
+
+    def _on_isb_segment_selected(self) -> None:
+        """Update the info panel and 3-D axes when a segment row is selected."""
+        if not self._isb_mode:
+            return
+        row = self._isb_segment_list.currentRow()
+        if row < 0 or self._isb_result is None:
+            return
+        seg = self._isb_result.segments[row]
+
+        # Build the info HTML
+        lm_list = ", ".join(seg.required_landmarks)
+        if seg.present:
+            meta = self._isb_defs.get(seg.key, {})
+            method = meta.get("method_fr", "")
+            info = (
+                f"<b>{seg.name}</b><br>"
+                f"<span style='color:#555;'><i>Landmarks :</i> {lm_list}</span><br>"
+                f"<span style='color:#336;'><i>Méthode :</i> {method}</span>"
+            )
+        else:
+            missing = ", ".join(seg.missing_landmarks) if seg.missing_landmarks else "?"
+            info = (
+                f"<b>{seg.name}</b> — <span style='color:#c00;'>non calculable</span><br>"
+                f"<span style='color:#555;'><i>Requis :</i> {lm_list}</span><br>"
+                f"<span style='color:#c00;'><i>Manquants :</i> {missing}</span>"
+            )
+        self._isb_info_label.setText(info)
+
+        # Draw 3-D axes
+        self._update_isb_axes(seg)
+
+        # Refresh guided steps if the mode is active
+        if self._isb_guided_btn.isChecked():
+            self._show_isb_steps(seg)
+
+    def _update_isb_axes(self, seg) -> None:
+        """Add coloured arrows X/Y/Z for the selected ISB segment to the plotter."""
+        self._clear_isb_actors()
+        if not seg.present:
+            return
+        scale = 0.1  # 10 cm in meter-based GLB coordinates
+        for color, direction in [("red", seg.x), ("green", seg.y), ("blue", seg.z)]:
+            arrow = pv.Arrow(
+                start=tuple(float(v) for v in seg.origin),
+                direction=tuple(float(v) for v in direction),
+                scale=scale,
+            )
+            actor = self._plotter.add_mesh(arrow, color=color, render=False)
+            self._isb_actors.append(actor)
+        self._plotter.render()
+
+    def _clear_isb_actors(self) -> None:
+        """Remove all ISB axis arrows from the 3-D view."""
+        for actor in self._isb_actors:
+            try:
+                self._plotter.remove_actor(actor, render=False)
+            except Exception:
+                pass
+        self._isb_actors = []
+        self._plotter.render()
+
+    def _on_isb_guided_toggled(self, checked: bool) -> None:
+        """Show or hide the ISB step-by-step guide for the selected segment."""
+        self._isb_guided_btn.setText("Mode guidé : oui" if checked else "Mode guidé : non")
+        self._isb_steps_text.setVisible(checked)
+        if checked:
+            row = self._isb_segment_list.currentRow()
+            if row >= 0 and self._isb_result is not None:
+                self._show_isb_steps(self._isb_result.segments[row])
+
+    def _show_isb_steps(self, seg) -> None:
+        """Populate the ISB guided-steps text area for *seg*."""
+        from .isb_exercise import segment_step_guide
+        steps = segment_step_guide(seg.key, self._lang)
+        self._isb_steps_text.setPlainText("\n\n".join(steps))
+
+    # ── Anthropo exercise panel ───────────────────────────────────────────────
+
+    def _start_anthro_session(self) -> None:
+        """Enter anthropometric exercise mode: show the 20-measure table."""
+        from .anthro_measures_exercise import compute_available
+
+        self._anthro_mode = True
+
+        # Hide placement / ISB widgets
+        self._confirm_btn.setVisible(False)
+        self._redo_btn.setVisible(False)
+        self._instr_label.setVisible(False)
+        self._hint_text.setVisible(False)
+        self._application_text.setVisible(False)
+        self._sep2.setVisible(False)
+        self._results_table.setVisible(False)
+        self._theme_badge.setVisible(False)
+        self._inverse_panel.setVisible(False)
+        self._isb_panel.setVisible(False)
+        self._anthro_panel.setVisible(True)
+
+        self._progress_label.setText("Exercice — Mesures anthropométriques")
+        self._name_label.setText("Sélectionnez une mesure")
+        self._error_label.setText("")
+
+        # Compute all 20 measures against ground truth
+        results = compute_available(self._ground_truth)
+        self._anthro_results = results
+
+        _STATUS_COLORS: dict[str, tuple[str, str]] = {
+            "normal":    ("#2e7d32", "#d4edda"),
+            "attention": ("#7a5c00", "#fff3cd"),
+            "alerte":    ("#8b1a1a", "#f8d7da"),
+            "info":      ("#555555", "#e8e8e8"),
+        }
+
+        self._anthro_table.setRowCount(0)
+        for r in results:
+            row = self._anthro_table.rowCount()
+            self._anthro_table.insertRow(row)
+
+            name_item = QTableWidgetItem(r.measure.name_fr)
+            name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+            val_item = QTableWidgetItem(r.value_str)
+            val_item.setTextAlignment(Qt.AlignCenter)
+
+            status_item = QTableWidgetItem(r.status)
+            status_item.setTextAlignment(Qt.AlignCenter)
+
+            txt_color, bg_color = _STATUS_COLORS.get(r.status, _STATUS_COLORS["info"])
+            for item in (val_item, status_item):
+                item.setForeground(QColor(txt_color))
+                item.setBackground(QColor(bg_color))
+
+            self._anthro_table.setItem(row, 0, name_item)
+            self._anthro_table.setItem(row, 1, val_item)
+            self._anthro_table.setItem(row, 2, status_item)
+
+        if results:
+            self._anthro_table.selectRow(0)
+
+    def _stop_anthro_session(self) -> None:
+        """Leave anthropometric exercise mode."""
+        self._anthro_mode = False
+        self._anthro_panel.setVisible(False)
+        self._anthro_results = None
+        self._anthro_guided_btn.setChecked(False)
+        self._anthro_guided_btn.setText("Mode guidé : non")
+        self._anthro_steps_text.setVisible(False)
+
+    def _on_anthro_measure_selected(self) -> None:
+        """Refresh guided steps when the selected measure changes."""
+        if not self._anthro_mode:
+            return
+        row = self._anthro_table.currentRow()
+        if row < 0 or self._anthro_results is None:
+            return
+        if self._anthro_guided_btn.isChecked():
+            self._show_anthro_steps(self._anthro_results[row].measure)
+
+    def _on_anthro_guided_toggled(self, checked: bool) -> None:
+        """Show or hide the step-by-step guide for the selected anthropo measure."""
+        self._anthro_guided_btn.setText("Mode guidé : oui" if checked else "Mode guidé : non")
+        self._anthro_steps_text.setVisible(checked)
+        if checked:
+            row = self._anthro_table.currentRow()
+            if row >= 0 and self._anthro_results is not None:
+                self._show_anthro_steps(self._anthro_results[row].measure)
+
+    def _show_anthro_steps(self, measure) -> None:
+        """Populate the guided-steps text area for *measure*."""
+        from .anthro_measures_exercise import measure_step_guide
+        steps = measure_step_guide(measure.code, self._lang)
+        self._anthro_steps_text.setPlainText("\n\n".join(steps))
