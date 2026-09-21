@@ -32,6 +32,7 @@ class Measurement:
     side: str = ""      # "D", "G", "D/G", ou ""
     category: str = ""  # "Posture", "Longueur", "ISAK", "ISB", "SENIAM"
     note: str = ""      # détail méthodologique
+    landmark_codes: list[str] = field(default_factory=list)  # repères impliqués
 
     @property
     def status(self) -> str:
@@ -105,7 +106,6 @@ def pectoralis_minor_index(gt: dict) -> Measurement | None:
     if pts is None:
         return None
     coracoid, xiphoid, jugular = pts
-    # Origine approx : 40 % du vecteur xiphoid→jugular (côtes 3-5)
     origin = xiphoid + 0.4 * (jugular - xiphoid)
     length = _dist(origin, coracoid)
     thorax_height = _dist(xiphoid, jugular)
@@ -117,6 +117,8 @@ def pectoralis_minor_index(gt: dict) -> Measurement | None:
         unit="%", norm_low=6.5, norm_high=8.8, side=side,
         category="Longueur",
         note="Borstad 2006 — norme ♂ 7.65 ± 0.6 %",
+        landmark_codes=["coracoid_process_right", "coracoid_process_left",
+                        "xiphoid_process", "suprasternal_notch"],
     )
 
 
@@ -129,6 +131,7 @@ def deltoid_length(gt: dict) -> Measurement | None:
                 code=f"deltoid_{side}", label="Long. deltoïde", value=_dist(*pts),
                 unit="mm", side=side, category="Longueur",
                 note="Acromial angle → grand tubercule",
+                landmark_codes=[f"acromial_angle{sfx}", f"greater_tubercle{sfx}"],
             )
     return None
 
@@ -142,6 +145,7 @@ def biceps_length(gt: dict) -> Measurement | None:
                 code=f"biceps_{side}", label="Long. biceps brachial", value=_dist(*pts),
                 unit="mm", side=side, category="Longueur",
                 note="Angle sup. scapula → tête radiale",
+                landmark_codes=[f"scapula_superior_angle{sfx}", f"radiale{sfx}"],
             )
     return None
 
@@ -155,6 +159,7 @@ def upper_limb_length(gt: dict) -> Measurement | None:
                 code=f"upper_limb_{side}", label="Long. membre sup.", value=_dist(*pts),
                 unit="mm", side=side, category="Longueur",
                 note="Acromion → styloïde radial",
+                landmark_codes=[f"acromion{sfx}", f"radial_styloid{sfx}"],
             )
     return None
 
@@ -168,6 +173,7 @@ def thigh_length(gt: dict) -> Measurement | None:
                 code=f"thigh_{side}", label="Long. cuisse", value=_dist(*pts),
                 unit="mm", side=side, category="Longueur",
                 note="Grand trochanter → épicondyle lat. fémur",
+                landmark_codes=[f"greater_trochanter{sfx}", f"lateral_knee{sfx}"],
             )
     return None
 
@@ -181,6 +187,7 @@ def shank_length(gt: dict) -> Measurement | None:
                 code=f"shank_{side}", label="Long. jambe", value=_dist(*pts),
                 unit="mm", side=side, category="Longueur",
                 note="Épicondyle lat. fémur → malléole lat.",
+                landmark_codes=[f"lateral_knee{sfx}", f"lateral_malleolus{sfx}"],
             )
     return None
 
@@ -195,7 +202,7 @@ def pelvic_tilt(gt: dict) -> Measurement | None:
         if pts is None:
             continue
         asis, psis = pts
-        vec = asis - psis  # pointe vers l'avant et le haut en version ant.
+        vec = asis - psis
         angle = _angle_with_horizontal(vec, up)
         return Measurement(
             code="pelvic_tilt", label="Tilt pelvien",
@@ -203,6 +210,7 @@ def pelvic_tilt(gt: dict) -> Measurement | None:
             norm_low=7.0, norm_high=13.0, side=side,
             category="Posture",
             note="ASIS–PSIS / horizontal. + = version ant.",
+            landmark_codes=["ASIS_right", "ASIS_left", "PSIS_right", "PSIS_left"],
         )
     return None
 
@@ -221,6 +229,7 @@ def pelvic_obliquity(gt: dict) -> Measurement | None:
         norm_low=0.0, norm_high=10.0, side="G/D",
         category="Posture",
         note=f"ASIS {'gauche' if delta > 0 else 'droit'} plus haut de {abs(delta):.0f} mm",
+        landmark_codes=["ASIS_left", "ASIS_right"],
     )
 
 
@@ -231,7 +240,6 @@ def lateral_spine_shift(gt: dict) -> Measurement | None:
         return None
     up = _infer_up_axis(gt)
     c7, psis_l, psis_r = pts
-    # Lateral axes = the two non-up axes; take the remaining one
     axes = [i for i in range(3) if i != up]
     mid_psis = (psis_l + psis_r) / 2.0
     delta_lat = float(c7[axes[0]] - mid_psis[axes[0]])
@@ -241,6 +249,7 @@ def lateral_spine_shift(gt: dict) -> Measurement | None:
         norm_low=0.0, norm_high=20.0, side="",
         category="Posture",
         note="C7 vs mi-PSIS. > 20 mm = scoliose fonctionnelle",
+        landmark_codes=["C7_spinous", "PSIS_left", "PSIS_right"],
     )
 
 
@@ -258,6 +267,7 @@ def scapular_height_asymmetry(gt: dict) -> Measurement | None:
         norm_low=0.0, norm_high=15.0, side="G/D",
         category="Posture",
         note=f"Angle inf. scapula {'gauche' if delta > 0 else 'droit'} plus haut",
+        landmark_codes=["scapula_inferior_angle_left", "scapula_inferior_angle_right"],
     )
 
 
@@ -275,6 +285,7 @@ def shoulder_height_asymmetry(gt: dict) -> Measurement | None:
         norm_low=0.0, norm_high=15.0, side="G/D",
         category="Posture",
         note=f"Acromion {'gauche' if delta > 0 else 'droit'} plus haut",
+        landmark_codes=["acromion_left", "acromion_right"],
     )
 
 
@@ -291,6 +302,7 @@ def acromiale_radiale_length(gt: dict) -> Measurement | None:
                 norm_low=300.0, norm_high=380.0, side=side,
                 category="ISAK",
                 note="Acromion → tête radiale (point mi-acr.-rad. = milieu)",
+                landmark_codes=[f"acromion{sfx}", f"radiale{sfx}"],
             )
     return None
 
@@ -306,6 +318,7 @@ def humerus_bicondylar(gt: dict) -> Measurement | None:
                 norm_low=50.0, norm_high=80.0, side=side,
                 category="ISAK",
                 note="Épicondyle lat. → épicondyle méd.",
+                landmark_codes=[f"lateral_epicondyle{sfx}", f"medial_epicondyle{sfx}"],
             )
     return None
 
@@ -321,6 +334,7 @@ def femur_bicondylar(gt: dict) -> Measurement | None:
                 norm_low=80.0, norm_high=110.0, side=side,
                 category="ISAK",
                 note="Épicondyle lat. → épicondyle méd. fémur",
+                landmark_codes=[f"lateral_knee{sfx}", f"medial_knee{sfx}"],
             )
     return None
 
@@ -328,7 +342,7 @@ def femur_bicondylar(gt: dict) -> Measurement | None:
 # ── Sites EMG SENIAM ──────────────────────────────────────────────────────────
 
 def seniam_vastus_lateralis(gt: dict) -> Measurement | None:
-    """Position SENIAM vaste latéral — 1/3 distal ASIS→épicondyle lat. (D)."""
+    """Position SENIAM vaste latéral — 1/3 distal ASIS→épicondyle lat."""
     for side, sfx in (("D", "_right"), ("G", "_left")):
         pts = _get(gt, f"ASIS{sfx}", f"lateral_knee{sfx}")
         if pts is None:
@@ -341,12 +355,13 @@ def seniam_vastus_lateralis(gt: dict) -> Measurement | None:
             value=round(d_from_asis, 1), unit="mm",
             side=side, category="SENIAM",
             note="Site à 1/3 distal ASIS–épicondyle lat. (SENIAM)",
+            landmark_codes=[f"ASIS{sfx}", f"lateral_knee{sfx}"],
         )
     return None
 
 
 def seniam_biceps_brachii(gt: dict) -> Measurement | None:
-    """Position SENIAM biceps brachial — 1/3 distal acromion→fossa cubitale (D)."""
+    """Position SENIAM biceps brachial — 1/3 distal acromion→fossa cubitale."""
     for side, sfx in (("D", "_right"), ("G", "_left")):
         pts = _get(gt, f"acromion{sfx}", f"medial_epicondyle{sfx}")
         if pts is None:
@@ -359,6 +374,7 @@ def seniam_biceps_brachii(gt: dict) -> Measurement | None:
             value=round(d_from_acromion, 1), unit="mm",
             side=side, category="SENIAM",
             note="Site à 1/3 distal acromion–fosse cubitale (SENIAM)",
+            landmark_codes=[f"acromion{sfx}", f"medial_epicondyle{sfx}"],
         )
     return None
 
@@ -405,3 +421,8 @@ def compute_all(ground_truth: dict) -> list[Measurement]:
         _CATEGORY_ORDER.index(m.category) if m.category in _CATEGORY_ORDER else 99,
         m.label,
     ))
+
+
+def measures_for_landmark(ground_truth: dict, lm_code: str) -> list[Measurement]:
+    """Return computed measurements that involve *lm_code* as a defining landmark."""
+    return [m for m in compute_all(ground_truth) if lm_code in m.landmark_codes]

@@ -1134,7 +1134,10 @@ class LandmarkViewer(QWidget):
 
         Advancement to the next landmark happens when the dialog closes.
         """
-        dlg = build_debrief_dialog(lm, result, self._lang, self, self._center_dialog)
+        from .biomechanics import measures_for_landmark
+        biom = measures_for_landmark(self._ground_truth, lm.code)
+        dlg = build_debrief_dialog(lm, result, self._lang, self, self._center_dialog,
+                                   biom_measures=biom or None)
         dlg.finished.connect(lambda _result: self._advance_after_debrief(lm, result))
 
     def _advance_after_debrief(

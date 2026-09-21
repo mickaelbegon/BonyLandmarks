@@ -75,6 +75,7 @@ def build_debrief_dialog(
     lang: Language,
     parent: QWidget,
     center_fn: Callable[[QDialog], None],
+    biom_measures: list | None = None,
 ) -> QDialog:
     """Build, show, and return the post-confirmation debrief overlay.
 
@@ -148,6 +149,41 @@ def build_debrief_dialog(
             "background: #e8edf8; border: 1px solid #90a4d4; border-radius: 4px;"
         )
         layout.addWidget(app_box)
+
+    # Biomechanical measurements involving this landmark
+    if biom_measures:
+        _STATUS_COLORS = {
+            "normal":    ("#1a7a40", "#d4edda"),
+            "attention": ("#7a5c00", "#fff3cd"),
+            "alerte":    ("#8b1a1a", "#f8d7da"),
+            "info":      ("#1a4a7a", "#d1ecf1"),
+        }
+        biom_title = QLabel(
+            "<b>Mesures associées</b>" if lang == "fr" else "<b>Related measurements</b>"
+        )
+        biom_title.setStyleSheet("font-size: 12px; color: #ccc; margin-top: 4px;")
+        layout.addWidget(biom_title)
+
+        for m in biom_measures:
+            row = QWidget()
+            row_layout = QHBoxLayout(row)
+            row_layout.setContentsMargins(0, 1, 0, 1)
+            row_layout.setSpacing(8)
+            name_text = m.label + (f" ({m.side})" if m.side else "")
+            name_lbl = QLabel(name_text)
+            name_lbl.setStyleSheet("font-size: 11px; color: #ddd;")
+            name_lbl.setToolTip(m.note)
+            txt_color, bg_color = _STATUS_COLORS.get(m.status, _STATUS_COLORS["info"])
+            val_lbl = QLabel(m.value_str)
+            val_lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            val_lbl.setStyleSheet(
+                f"font-size: 11px; font-weight: bold; color: {txt_color};"
+                f"background: {bg_color}; border-radius: 3px; padding: 1px 6px;"
+            )
+            val_lbl.setFixedWidth(78)
+            row_layout.addWidget(name_lbl, stretch=1)
+            row_layout.addWidget(val_lbl)
+            layout.addWidget(row)
 
     # Continue button
     continue_btn = QPushButton(
