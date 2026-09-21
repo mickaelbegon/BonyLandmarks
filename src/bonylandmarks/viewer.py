@@ -14,16 +14,19 @@ Workflow per landmark:
 
 from __future__ import annotations
 
+import html
+
 import numpy as np
 import pyvista as pv
 from pyvistaqt import QtInteractor
 from PySide6.QtCore import QSize, Qt, QThread, QTimer, Signal
 from PySide6.QtGui import QColor, QIcon, QImage, QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
+    QButtonGroup,
+    QComboBox,
     QDialog,
     QFrame,
     QHBoxLayout,
-    QHeaderView,
     QLabel,
     QLineEdit,
     QListWidget,
@@ -73,6 +76,75 @@ _INVERSE_CAT_COLORS: dict[str, str] = {
     "SKINFOLD": "#b0f0c0",
     "ANTHRO":   "#e0b0ff",
 }
+
+# ─── Guided-workshop widget styles (ISB / anthropometry panels) ──────────────
+
+_FEEDBACK_OK_STYLE = (
+    "font-size: 11px; color: #7fe08a; background: rgba(46,125,50,0.15); "
+    "border-left: 3px solid #4caf50; padding: 5px 6px;"
+)
+_FEEDBACK_ERR_STYLE = (
+    "font-size: 11px; color: #ff9a9a; background: rgba(139,26,26,0.18); "
+    "border-left: 3px solid #e05555; padding: 5px 6px;"
+)
+_FEEDBACK_NEUTRAL_STYLE = (
+    "font-size: 11px; color: #bbb; background: rgba(255,255,255,0.04); "
+    "border-left: 3px solid rgba(255,255,255,0.18); padding: 5px 6px;"
+)
+_SECTION_LABEL_STYLE = "font-size: 10px; color: #9aa; font-weight: bold;"
+_LIST_STYLE = (
+    "QListWidget { font-size: 11px; background: rgba(255,255,255,0.05); "
+    "border: 1px solid rgba(255,255,255,0.10); border-radius: 4px; }"
+    "QListWidget::item { padding: 2px 4px; }"
+    "QListWidget::item:selected { background: rgba(51,153,255,0.45); color: white; }"
+)
+_COMBO_STYLE = (
+    "QComboBox { font-size: 12px; padding: 4px 6px; border-radius: 4px; "
+    "background: rgba(255,255,255,0.07); color: #ddd; "
+    "border: 1px solid rgba(255,255,255,0.12); }"
+)
+_PRIMARY_BTN_STYLE = (
+    "QPushButton { background: #3399ff; color: white; border: none; "
+    "border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: bold; }"
+    "QPushButton:hover { background: #4aa5ff; }"
+    "QPushButton:disabled { background: rgba(255,255,255,0.08); color: #777; }"
+)
+_SECONDARY_BTN_STYLE = (
+    "QPushButton { background: rgba(255,255,255,0.07); color: #ccc; "
+    "border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; "
+    "padding: 4px 10px; font-size: 11px; }"
+    "QPushButton:hover { background: rgba(255,255,255,0.13); }"
+)
+_OP_BTN_STYLE = (
+    "QPushButton { background: rgba(255,255,255,0.06); color: #ccc; "
+    "border: 1px solid rgba(255,255,255,0.10); border-radius: 5px; "
+    "padding: 4px 2px; font-size: 10px; }"
+    "QPushButton:checked { background: #3399ff; color: white; border-color: #3399ff; }"
+    "QPushButton:hover { background: rgba(255,255,255,0.12); }"
+)
+_MINI_BTN_STYLE = (
+    "QPushButton { background: rgba(255,255,255,0.08); color: #ddd; "
+    "border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; "
+    "font-size: 10px; padding: 0px; }"
+    "QPushButton:hover { background: rgba(224,85,85,0.55); }"
+)
+
+#: Human-readable name of each :mod:`isb_step_engine` step kind.
+_ISB_OP_LABELS: dict[str, str] = {
+    "pick_landmark": "Sélectionner",
+    "midpoint": "Midpoint",
+    "vector": "Vecteur",
+    "cross_product": "Produit ×",
+    "validate_frame": "Valider le repère",
+}
+
+#: 3-D colour of an ISB axis vector, by workspace name.
+_ISB_AXIS_COLORS: dict[str, str] = {"X": "red", "Y": "green", "Z": "blue"}
+_ISB_POINT_COLOR = "white"
+_ISB_POINT_RADIUS = 8.0
+#: Arrow length as a fraction of the body's largest extent (unit-agnostic).
+_ISB_ARROW_SCALE = 0.08
+_ANTHRO_LINE_COLOR = "#ffb347"
 
 # ─── Navigation overlay — PNG body silhouette icons ──────────────────────────
 
@@ -189,9 +261,17 @@ class LandmarkViewer(QWidget):
         self._anthro_mode: bool = False
         self._placement_done: bool = False
         self._isb_actors: list = []
+        self._anthro_actors: list = []
         self._isb_result = None
         self._isb_defs: dict = {}
         self._anthro_results = None
+
+        # Guided workshops (interactive step engines)
+        self._isb_engine = None              # isb_step_engine.StepEngine
+        self._isb_segment_key: str = ""
+        self._anthro_engine = None           # anthro_step_engine.AnthroStepEngine
+        self._anthro_recipe = None           # anthro_recipes.AnthroRecipe
+        self._anthro_selected_code: str = ""
 
         self._candidate_point: np.ndarray | None = None
         self._redo_count: int = 0
@@ -423,58 +503,133 @@ class LandmarkViewer(QWidget):
         )
         isb_layout.addWidget(isb_title_sep)
 
-        _isb_list_frame = QFrame()
-        _isb_list_frame.setStyleSheet(
-            "QFrame { background: rgba(255,255,255,0.05); border-radius: 4px; }"
+        # Segment chooser + start button (always visible in ISB mode)
+        self._isb_segment_combo = QComboBox()
+        self._isb_segment_combo.setStyleSheet(_COMBO_STYLE)
+        self._isb_segment_combo.currentIndexChanged.connect(
+            lambda _: self._on_isb_segment_changed()
         )
-        _isb_list_frame_layout = QVBoxLayout(_isb_list_frame)
-        _isb_list_frame_layout.setContentsMargins(2, 2, 2, 2)
-        _isb_list_frame_layout.setSpacing(0)
-        self._isb_segment_list = QListWidget()
-        self._isb_segment_list.setMaximumHeight(150)
-        self._isb_segment_list.setStyleSheet(
-            "font-size: 12px; background: transparent; border: none;"
-        )
-        self._isb_segment_list.currentRowChanged.connect(
-            lambda _: self._on_isb_segment_selected()
-        )
-        _isb_list_frame_layout.addWidget(self._isb_segment_list)
-        isb_layout.addWidget(_isb_list_frame)
+        isb_layout.addWidget(self._isb_segment_combo)
 
-        _isb_info_frame = QFrame()
-        _isb_info_frame.setStyleSheet(
-            "QFrame { background: rgba(51,153,255,0.08); border-left: 3px solid #3399ff; "
-            "border-radius: 0px 4px 4px 0px; }"
+        self._isb_meta_label = QLabel()
+        self._isb_meta_label.setWordWrap(True)
+        self._isb_meta_label.setStyleSheet(
+            "font-size: 10px; color: #9aa; background: transparent;"
         )
-        _isb_info_layout = QVBoxLayout(_isb_info_frame)
-        _isb_info_layout.setContentsMargins(8, 6, 6, 6)
-        _isb_info_layout.setSpacing(0)
-        self._isb_info_label = QLabel()
-        self._isb_info_label.setWordWrap(True)
-        self._isb_info_label.setStyleSheet(
-            "font-size: 11px; color: #bbb; background: transparent;"
-        )
-        self._isb_info_label.setMinimumHeight(60)
-        _isb_info_layout.addWidget(self._isb_info_label)
-        isb_layout.addWidget(_isb_info_frame)
+        isb_layout.addWidget(self._isb_meta_label)
 
-        self._isb_guided_btn = QPushButton("Mode guidé : non")
-        self._isb_guided_btn.setCheckable(True)
-        self._isb_guided_btn.setStyleSheet(
-            "QPushButton { background: rgba(255,255,255,0.07); border-radius: 6px; "
-            "padding: 5px 10px; color: #ccc; border: 1px solid rgba(255,255,255,0.10); }"
-            "QPushButton:checked { background: #3399ff; color: white; border-color: #3399ff; }"
-            "QPushButton:hover { background: rgba(255,255,255,0.12); }"
-        )
-        self._isb_guided_btn.clicked.connect(self._on_isb_guided_toggled)
-        isb_layout.addWidget(self._isb_guided_btn)
+        self._isb_start_btn = QPushButton("Démarrer")
+        self._isb_start_btn.setStyleSheet(_PRIMARY_BTN_STYLE)
+        self._isb_start_btn.clicked.connect(self._on_isb_start)
+        isb_layout.addWidget(self._isb_start_btn)
 
-        self._isb_steps_text = QTextEdit()
-        self._isb_steps_text.setReadOnly(True)
-        self._isb_steps_text.setFixedHeight(110)
-        self._isb_steps_text.setStyleSheet("font-size: 11px;")
-        self._isb_steps_text.setVisible(False)
-        isb_layout.addWidget(self._isb_steps_text)
+        # ── Workshop area — visible only while a segment is being built ───────
+        self._isb_work = QWidget()
+        isb_work_layout = QVBoxLayout(self._isb_work)
+        isb_work_layout.setContentsMargins(0, 4, 0, 0)
+        isb_work_layout.setSpacing(4)
+
+        self._isb_progress_label = QLabel()
+        self._isb_progress_label.setStyleSheet(
+            "font-size: 11px; font-weight: bold; color: #3399ff;"
+        )
+        isb_work_layout.addWidget(self._isb_progress_label)
+
+        self._isb_instruction_label = QLabel()
+        self._isb_instruction_label.setWordWrap(True)
+        self._isb_instruction_label.setStyleSheet(
+            "font-size: 11px; color: #ddd; background: rgba(51,153,255,0.08); "
+            "border-left: 3px solid #3399ff; padding: 5px 6px;"
+        )
+        self._isb_instruction_label.setMinimumHeight(44)
+        isb_work_layout.addWidget(self._isb_instruction_label)
+
+        isb_step_sep = QFrame()
+        isb_step_sep.setFrameShape(QFrame.HLine)
+        isb_step_sep.setStyleSheet(
+            "border: none; border-top: 1px solid rgba(255,255,255,0.12); margin: 2px 0px;"
+        )
+        isb_work_layout.addWidget(isb_step_sep)
+
+        _ws_label = QLabel("Objets disponibles :")
+        _ws_label.setStyleSheet(_SECTION_LABEL_STYLE)
+        isb_work_layout.addWidget(_ws_label)
+
+        self._isb_workspace_list = QListWidget()
+        self._isb_workspace_list.setMinimumHeight(110)
+        self._isb_workspace_list.setMaximumHeight(160)
+        self._isb_workspace_list.setStyleSheet(_LIST_STYLE)
+        self._isb_workspace_list.itemDoubleClicked.connect(
+            lambda item: self._isb_add_to_selection(item)
+        )
+        isb_work_layout.addWidget(self._isb_workspace_list)
+
+        _sel_row = QHBoxLayout()
+        _sel_row.setContentsMargins(0, 0, 0, 0)
+        _sel_label = QLabel("Sélection actuelle :")
+        _sel_label.setStyleSheet(_SECTION_LABEL_STYLE)
+        _sel_row.addWidget(_sel_label)
+        _sel_row.addStretch()
+        self._isb_clear_sel_btn = QPushButton("✕")
+        self._isb_clear_sel_btn.setFixedSize(22, 20)
+        self._isb_clear_sel_btn.setToolTip("Vider la sélection")
+        self._isb_clear_sel_btn.setStyleSheet(_MINI_BTN_STYLE)
+        self._isb_clear_sel_btn.clicked.connect(self._isb_clear_selection)
+        _sel_row.addWidget(self._isb_clear_sel_btn)
+        isb_work_layout.addLayout(_sel_row)
+
+        self._isb_selection_list = QListWidget()
+        self._isb_selection_list.setFixedHeight(48)
+        self._isb_selection_list.setStyleSheet(_LIST_STYLE)
+        self._isb_selection_list.setToolTip(
+            "Double-clic sur un élément pour le retirer de la sélection"
+        )
+        self._isb_selection_list.itemDoubleClicked.connect(
+            lambda item: self._isb_remove_from_selection(item)
+        )
+        isb_work_layout.addWidget(self._isb_selection_list)
+
+        # Operation buttons — the student declares which operation to apply
+        _op_row = QHBoxLayout()
+        _op_row.setContentsMargins(0, 0, 0, 0)
+        _op_row.setSpacing(3)
+        self._isb_op_group = QButtonGroup(self)
+        self._isb_op_group.setExclusive(True)
+        self._isb_op_buttons: dict[str, QPushButton] = {}
+        for op_key, op_text, op_tip in (
+            ("pick_landmark", "Sélectionner", "Choisir un landmark du ground truth"),
+            ("midpoint", "Midpoint", "Milieu de 2 points"),
+            ("vector", "Vecteur", "Vecteur orienté entre 2 points (origine puis extrémité)"),
+            ("cross_product", "Produit ×", "Produit vectoriel de 2 vecteurs (A × B)"),
+        ):
+            btn = QPushButton(op_text)
+            btn.setCheckable(True)
+            btn.setToolTip(op_tip)
+            btn.setStyleSheet(_OP_BTN_STYLE)
+            self._isb_op_group.addButton(btn)
+            self._isb_op_buttons[op_key] = btn
+            _op_row.addWidget(btn)
+        isb_work_layout.addLayout(_op_row)
+
+        self._isb_exec_btn = QPushButton("Exécuter")
+        self._isb_exec_btn.setStyleSheet(_PRIMARY_BTN_STYLE)
+        self._isb_exec_btn.clicked.connect(self._on_isb_execute)
+        isb_work_layout.addWidget(self._isb_exec_btn)
+
+        self._isb_feedback_label = QLabel()
+        self._isb_feedback_label.setWordWrap(True)
+        self._isb_feedback_label.setStyleSheet("font-size: 11px; color: #bbb;")
+        self._isb_feedback_label.setMinimumHeight(40)
+        self._isb_feedback_label.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+        isb_work_layout.addWidget(self._isb_feedback_label)
+
+        self._isb_reset_btn = QPushButton("Recommencer")
+        self._isb_reset_btn.setStyleSheet(_SECONDARY_BTN_STYLE)
+        self._isb_reset_btn.clicked.connect(self._on_isb_reset)
+        isb_work_layout.addWidget(self._isb_reset_btn)
+
+        self._isb_work.setVisible(False)
+        isb_layout.addWidget(self._isb_work)
 
         self._isb_panel.setVisible(False)
         panel.addWidget(self._isb_panel)
@@ -496,41 +651,101 @@ class LandmarkViewer(QWidget):
         )
         anthro_layout.addWidget(anthro_title_sep)
 
-        self._anthro_table = QTableWidget(0, 3)
-        self._anthro_table.setHorizontalHeaderLabels(["Mesure", "Valeur", "Statut"])
-        self._anthro_table.horizontalHeader().setStretchLastSection(False)
-        self._anthro_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-        self._anthro_table.setColumnWidth(1, 60)
-        self._anthro_table.setColumnWidth(2, 70)
-        self._anthro_table.verticalHeader().setVisible(False)
-        self._anthro_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self._anthro_table.setSelectionBehavior(QTableWidget.SelectRows)
-        self._anthro_table.setStyleSheet(
-            "QTableWidget { font-size: 11px; gridline-color: rgba(255,255,255,0.10); }"
+        self._anthro_measure_combo = QComboBox()
+        self._anthro_measure_combo.setStyleSheet(_COMBO_STYLE)
+        self._anthro_measure_combo.currentIndexChanged.connect(
+            lambda _: self._on_anthro_measure_changed()
         )
-        self._anthro_table.setMaximumHeight(300)
-        self._anthro_table.currentCellChanged.connect(
-            lambda row, *_: self._on_anthro_measure_selected()
-        )
-        anthro_layout.addWidget(self._anthro_table)
+        anthro_layout.addWidget(self._anthro_measure_combo)
 
-        self._anthro_guided_btn = QPushButton("Mode guidé : non")
-        self._anthro_guided_btn.setCheckable(True)
-        self._anthro_guided_btn.setStyleSheet(
-            "QPushButton { background: rgba(255,255,255,0.07); border-radius: 6px; "
-            "padding: 5px 10px; color: #ccc; border: 1px solid rgba(255,255,255,0.10); }"
-            "QPushButton:checked { background: #3399ff; color: white; border-color: #3399ff; }"
-            "QPushButton:hover { background: rgba(255,255,255,0.12); }"
+        self._anthro_meta_label = QLabel()
+        self._anthro_meta_label.setWordWrap(True)
+        self._anthro_meta_label.setStyleSheet(
+            "font-size: 10px; color: #9aa; background: transparent;"
         )
-        self._anthro_guided_btn.clicked.connect(self._on_anthro_guided_toggled)
-        anthro_layout.addWidget(self._anthro_guided_btn)
+        anthro_layout.addWidget(self._anthro_meta_label)
 
-        self._anthro_steps_text = QTextEdit()
-        self._anthro_steps_text.setReadOnly(True)
-        self._anthro_steps_text.setFixedHeight(90)
-        self._anthro_steps_text.setStyleSheet("font-size: 11px;")
-        self._anthro_steps_text.setVisible(False)
-        anthro_layout.addWidget(self._anthro_steps_text)
+        self._anthro_start_btn = QPushButton("Démarrer")
+        self._anthro_start_btn.setStyleSheet(_PRIMARY_BTN_STYLE)
+        self._anthro_start_btn.clicked.connect(self._on_anthro_start)
+        anthro_layout.addWidget(self._anthro_start_btn)
+
+        # ── Workshop area — visible only while a measure is in progress ──────
+        self._anthro_work = QWidget()
+        anthro_work_layout = QVBoxLayout(self._anthro_work)
+        anthro_work_layout.setContentsMargins(0, 4, 0, 0)
+        anthro_work_layout.setSpacing(4)
+
+        self._anthro_progress_label = QLabel()
+        self._anthro_progress_label.setStyleSheet(
+            "font-size: 11px; font-weight: bold; color: #cc6600;"
+        )
+        anthro_work_layout.addWidget(self._anthro_progress_label)
+
+        self._anthro_instruction_label = QLabel()
+        self._anthro_instruction_label.setWordWrap(True)
+        self._anthro_instruction_label.setStyleSheet(
+            "font-size: 11px; color: #ddd; background: rgba(204,102,0,0.10); "
+            "border-left: 3px solid #cc6600; padding: 5px 6px;"
+        )
+        self._anthro_instruction_label.setMinimumHeight(44)
+        anthro_work_layout.addWidget(self._anthro_instruction_label)
+
+        _alm_label = QLabel("Landmarks disponibles :")
+        _alm_label.setStyleSheet(_SECTION_LABEL_STYLE)
+        anthro_work_layout.addWidget(_alm_label)
+
+        self._anthro_lm_list = QListWidget()
+        self._anthro_lm_list.setMinimumHeight(110)
+        self._anthro_lm_list.setMaximumHeight(170)
+        self._anthro_lm_list.setStyleSheet(_LIST_STYLE)
+        self._anthro_lm_list.itemDoubleClicked.connect(
+            lambda item: self._anthro_set_selection(item)
+        )
+        self._anthro_lm_list.itemSelectionChanged.connect(
+            self._on_anthro_lm_selection_changed
+        )
+        anthro_work_layout.addWidget(self._anthro_lm_list)
+
+        _asel_label = QLabel("Sélection :")
+        _asel_label.setStyleSheet(_SECTION_LABEL_STYLE)
+        anthro_work_layout.addWidget(_asel_label)
+
+        self._anthro_selection_label = QLabel("—")
+        self._anthro_selection_label.setWordWrap(True)
+        self._anthro_selection_label.setStyleSheet(
+            "font-size: 11px; color: #eee; background: rgba(255,255,255,0.05); "
+            "border-radius: 4px; padding: 4px 6px;"
+        )
+        anthro_work_layout.addWidget(self._anthro_selection_label)
+
+        self._anthro_calc_btn = QPushButton("Calculer")
+        self._anthro_calc_btn.setStyleSheet(_PRIMARY_BTN_STYLE)
+        self._anthro_calc_btn.clicked.connect(self._on_anthro_calculate)
+        anthro_work_layout.addWidget(self._anthro_calc_btn)
+
+        self._anthro_result_label = QLabel()
+        self._anthro_result_label.setWordWrap(True)
+        self._anthro_result_label.setAlignment(Qt.AlignCenter)
+        self._anthro_result_label.setStyleSheet(
+            "font-size: 14px; font-weight: bold; color: #ffc078;"
+        )
+        anthro_work_layout.addWidget(self._anthro_result_label)
+
+        self._anthro_feedback_label = QLabel()
+        self._anthro_feedback_label.setWordWrap(True)
+        self._anthro_feedback_label.setStyleSheet("font-size: 11px; color: #bbb;")
+        self._anthro_feedback_label.setMinimumHeight(40)
+        self._anthro_feedback_label.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+        anthro_work_layout.addWidget(self._anthro_feedback_label)
+
+        self._anthro_reset_btn = QPushButton("Recommencer")
+        self._anthro_reset_btn.setStyleSheet(_SECONDARY_BTN_STYLE)
+        self._anthro_reset_btn.clicked.connect(self._on_anthro_reset)
+        anthro_work_layout.addWidget(self._anthro_reset_btn)
+
+        self._anthro_work.setVisible(False)
+        anthro_layout.addWidget(self._anthro_work)
 
         self._anthro_panel.setVisible(False)
         panel.addWidget(self._anthro_panel)
@@ -2054,16 +2269,56 @@ class LandmarkViewer(QWidget):
         )
         dlg.finished.connect(lambda _: self._update_instruction_panel())
 
-    # ── ISB exercise panel ────────────────────────────────────────────────────
+    # ── Shared helpers for the guided workshops ───────────────────────────────
+
+    def _lm_label(self, code: str) -> str:
+        """Readable landmark label ``Nom (code)``, or the raw code."""
+        from .landmarks_extended import LANDMARK_BY_CODE
+        lm = LANDMARK_BY_CODE.get(code)
+        return f"{lm.name(self._lang)}  ({code})" if lm is not None else code
+
+    def _model_scale(self) -> float:
+        """Largest extent of the body mesh, used to size 3-D annotations."""
+        try:
+            b = self._mesh.bounds
+            return float(max(b[1] - b[0], b[3] - b[2], b[5] - b[4]))
+        except Exception:                                # pragma: no cover
+            return 1000.0
+
+    def _add_label_actor(self, pos, text: str, color: str = "white"):
+        """Add a floating 3-D text label; returns the actor or ``None``."""
+        try:
+            return self._plotter.add_point_labels(
+                np.asarray([pos], dtype=float),
+                [text],
+                font_size=12,
+                text_color=color,
+                shape=None,
+                always_visible=True,
+                render=False,
+            )
+        except Exception:                                # pragma: no cover
+            return None
+
+    @staticmethod
+    def _rich(msg: str) -> str:
+        """Escape *msg* and turn newlines into ``<br>`` for a QLabel."""
+        return html.escape(msg).replace("\n", "<br>")
+
+    # ── ISB guided workshop ───────────────────────────────────────────────────
 
     def _start_isb_session(self) -> None:
-        """Enter ISB exercise mode: show segment list and 3-D axes."""
-        from .isb_exercise import compute_isb_lcs, get_all_segment_definitions
+        """Enter ISB workshop mode: pick a segment, then build its frame step by step."""
+        from .isb_exercise import get_all_segment_definitions
+        from .isb_recipes import ISB_RECIPE_META, RECIPE_KEYS, required_landmarks
 
         self._isb_mode = True
 
-        # Cache segment definitions (key → dict with method text)
-        self._isb_defs = {d["key"]: d for d in get_all_segment_definitions()}
+        # Cache segment definitions (key → dict with the method description)
+        try:
+            self._isb_defs = {d["key"]: d for d in get_all_segment_definitions()}
+        except Exception:                                # pragma: no cover
+            self._isb_defs = {}
 
         # Hide placement / inverse widgets
         self._confirm_btn.setVisible(False)
@@ -2083,92 +2338,428 @@ class LandmarkViewer(QWidget):
         self._update_hud("Exercice ISB — Repères locaux", "Sélectionnez un segment")
         self._error_label.setText("")
 
-        # Compute ISB local coordinate systems from ground truth
-        result = compute_isb_lcs(self._ground_truth)
-        self._isb_result = result
+        # Populate the segment chooser: constructible segments first
+        combo = self._isb_segment_combo
+        combo.blockSignals(True)
+        combo.clear()
+        first_available = -1
+        for key in RECIPE_KEYS:
+            missing = [
+                code for code in required_landmarks(key)
+                if self._ground_truth.get(code) is None
+            ]
+            label = ISB_RECIPE_META.get(key, {}).get("name_fr", key)
+            combo.addItem(f"{'✓' if not missing else '✗'}  {label}", key)
+            if not missing and first_available < 0:
+                first_available = combo.count() - 1
+        combo.blockSignals(False)
 
-        # Populate segment list
-        self._isb_segment_list.clear()
-        for seg in result.segments:
-            status = "✓" if seg.present else "✗"
-            item = QListWidgetItem(f"{status}  {seg.name}")
-            if not seg.present:
-                item.setForeground(QColor("#888888"))
-            self._isb_segment_list.addItem(item)
-
-        # Auto-select the first computable segment
-        for i, seg in enumerate(result.segments):
-            if seg.present:
-                self._isb_segment_list.setCurrentRow(i)
-                break
-        else:
-            if result.segments:
-                self._isb_segment_list.setCurrentRow(0)
+        if combo.count():
+            combo.setCurrentIndex(max(0, first_available))
+        self._on_isb_segment_changed()
 
     def _stop_isb_session(self) -> None:
-        """Leave ISB exercise mode: clean up actors and hide the panel."""
-        self._clear_isb_actors()
+        """Leave ISB workshop mode: clean up actors and hide the panel."""
+        self._isb_teardown_workshop()
         self._isb_mode = False
         self._isb_panel.setVisible(False)
         self._isb_result = None
-        self._isb_guided_btn.setChecked(False)
-        self._isb_guided_btn.setText("Mode guidé : non")
-        self._isb_steps_text.setVisible(False)
 
-    def _on_isb_segment_selected(self) -> None:
-        """Update the info panel and 3-D axes when a segment row is selected."""
+    def _isb_teardown_workshop(self) -> None:
+        """Drop the running engine, clear the 3-D overlay and the workshop widgets."""
+        self._isb_engine = None
+        self._isb_segment_key = ""
+        self._isb_work.setVisible(False)
+        self._isb_workspace_list.clear()
+        self._isb_selection_list.clear()
+        self._isb_progress_label.setText("")
+        self._isb_instruction_label.setText("")
+        self._isb_feedback_label.setText("")
+        self._isb_reset_op_buttons()
+        self._clear_isb_actors()
+
+    def _on_isb_segment_changed(self) -> None:
+        """Describe the selected segment and enable/disable the start button."""
         if not self._isb_mode:
             return
-        row = self._isb_segment_list.currentRow()
-        if row < 0 or self._isb_result is None:
-            return
-        seg = self._isb_result.segments[row]
+        self._isb_teardown_workshop()
 
-        # Build the info HTML
-        lm_list = ", ".join(seg.required_landmarks)
-        if seg.present:
-            meta = self._isb_defs.get(seg.key, {})
-            method = meta.get("method_fr", "")
-            info = (
-                f"<b>{seg.name}</b><br>"
-                f"<span style='color:#555;'><i>Landmarks :</i> {lm_list}</span><br>"
-                f"<span style='color:#336;'><i>Méthode :</i> {method}</span>"
+        from .isb_recipes import ISB_RECIPE_META, get_recipe, required_landmarks
+
+        key = self._isb_segment_combo.currentData()
+        if not key:
+            self._isb_meta_label.setText("")
+            self._isb_start_btn.setEnabled(False)
+            return
+
+        meta = ISB_RECIPE_META.get(key, {})
+        label = meta.get("name_fr", key)
+        needed = required_landmarks(key)
+        missing = [c for c in needed if self._ground_truth.get(c) is None]
+
+        if missing:
+            self._isb_meta_label.setText(
+                f"<b>{label}</b> — <span style='color:#e05555;'>non constructible</span><br>"
+                f"Landmarks manquants : {', '.join(missing)}"
             )
+            self._isb_start_btn.setEnabled(False)
         else:
-            missing = ", ".join(seg.missing_landmarks) if seg.missing_landmarks else "?"
-            info = (
-                f"<b>{seg.name}</b> — <span style='color:#c00;'>non calculable</span><br>"
-                f"<span style='color:#555;'><i>Requis :</i> {lm_list}</span><br>"
-                f"<span style='color:#c00;'><i>Manquants :</i> {missing}</span>"
+            method = self._isb_defs.get(key, {}).get("method_fr", "")
+            text = (
+                f"<b>{label}</b> — {meta.get('reference', '')} · "
+                f"{len(get_recipe(key))} étapes<br>"
+                f"Landmarks : {', '.join(needed)}"
             )
-        self._isb_info_label.setText(info)
-        self._update_hud("Exercice ISB — Repères locaux", seg.name)
+            if method:
+                text += f"<br><i>{method}</i>"
+            self._isb_meta_label.setText(text)
+            self._isb_start_btn.setEnabled(True)
 
-        # Draw 3-D axes
-        self._update_isb_axes(seg)
+        self._update_hud("Exercice ISB — Repères locaux", label)
 
-        # Refresh guided steps if the mode is active
-        if self._isb_guided_btn.isChecked():
-            self._show_isb_steps(seg)
+    def _on_isb_start(self) -> None:
+        """Create a :class:`StepEngine` for the selected segment and open the workshop."""
+        from .isb_recipes import make_engine, recipe_label
 
-    def _update_isb_axes(self, seg) -> None:
-        """Add coloured arrows X/Y/Z for the selected ISB segment to the plotter."""
-        self._clear_isb_actors()
-        if not seg.present:
+        key = self._isb_segment_combo.currentData()
+        if not key:
             return
-        scale = 0.1  # 10 cm in meter-based GLB coordinates
-        for color, direction in [("red", seg.x), ("green", seg.y), ("blue", seg.z)]:
-            arrow = pv.Arrow(
-                start=tuple(float(v) for v in seg.origin),
-                direction=tuple(float(v) for v in direction),
-                scale=scale,
+
+        self._clear_isb_actors()
+        try:
+            engine = make_engine(key, self._ground_truth)
+        except Exception as exc:                          # pragma: no cover
+            self._isb_work.setVisible(True)
+            self._isb_set_feedback(False, f"Impossible de démarrer ce segment : {exc}")
+            return
+
+        self._isb_engine = engine
+        self._isb_segment_key = key
+        self._isb_work.setVisible(True)
+        self._isb_clear_selection()
+        self._isb_reset_op_buttons()
+        self._isb_draw_existing()
+        self._isb_refresh_workspace()
+        self._isb_update_step_ui()
+        self._isb_set_feedback(
+            None,
+            "Double-clique les objets dans « Objets disponibles », choisis "
+            "l'opération, puis « Exécuter ».",
+        )
+        self._name_label.setText(recipe_label(key, self._lang))
+
+    def _on_isb_reset(self) -> None:
+        """Restart the current segment from step 1."""
+        engine = self._isb_engine
+        if engine is None:
+            return
+        engine.reset()
+        self._clear_isb_actors()
+        self._isb_clear_selection()
+        self._isb_reset_op_buttons()
+        self._isb_draw_existing()
+        self._isb_refresh_workspace()
+        self._isb_update_step_ui()
+        self._isb_set_feedback(None, "Construction réinitialisée — retour à l'étape 1.")
+
+    # ── ISB — selection handling ──────────────────────────────────────────────
+
+    def _isb_reset_op_buttons(self) -> None:
+        """Uncheck every operation button (the group is exclusive)."""
+        self._isb_op_group.setExclusive(False)
+        for btn in self._isb_op_buttons.values():
+            btn.setChecked(False)
+        self._isb_op_group.setExclusive(True)
+
+    def _isb_current_op(self) -> str:
+        """Key of the operation the student declared, or ``""``."""
+        for op_key, btn in self._isb_op_buttons.items():
+            if btn.isChecked():
+                return op_key
+        return ""
+
+    def _isb_selection_names(self) -> list[str]:
+        """Workspace names currently in the selection list, in order."""
+        out: list[str] = []
+        for row in range(self._isb_selection_list.count()):
+            name = self._isb_selection_list.item(row).data(Qt.UserRole)
+            if name:
+                out.append(str(name))
+        return out
+
+    def _isb_add_to_selection(self, item: QListWidgetItem) -> None:
+        """Double-click on the workspace list → append the object to the selection."""
+        if item is None or self._isb_engine is None:
+            return
+        name = item.data(Qt.UserRole)
+        if not name:
+            return
+        if name in self._isb_selection_names():
+            self._isb_set_feedback(
+                False, f"« {name} » est déjà dans ta sélection."
             )
-            actor = self._plotter.add_mesh(arrow, color=color, render=False)
-            self._isb_actors.append(actor)
+            return
+        if self._isb_selection_list.count() >= 2:
+            self._isb_set_feedback(
+                False,
+                "Deux objets au maximum. Double-clique un élément de la sélection "
+                "pour le retirer (ou utilise ✕).",
+            )
+            return
+        new_item = QListWidgetItem(item.text())
+        new_item.setData(Qt.UserRole, name)
+        new_item.setForeground(item.foreground())
+        self._isb_selection_list.addItem(new_item)
+
+    def _isb_remove_from_selection(self, item: QListWidgetItem) -> None:
+        """Double-click on the selection list → remove that object."""
+        if item is None:
+            return
+        self._isb_selection_list.takeItem(self._isb_selection_list.row(item))
+
+    def _isb_clear_selection(self) -> None:
+        self._isb_selection_list.clear()
+
+    def _isb_refresh_workspace(self) -> None:
+        """Rebuild the list of objects the student can select."""
+        from .isb_recipes import required_landmarks
+
+        self._isb_workspace_list.clear()
+        engine = self._isb_engine
+        if engine is None:
+            return
+
+        try:
+            codes = required_landmarks(self._isb_segment_key)
+        except Exception:                                # pragma: no cover
+            codes = []
+
+        ws = engine.workspace
+        gt_codes = set(self._ground_truth)
+        shown: set[str] = set()
+
+        for code in codes:
+            if code in ws.points and code not in shown:
+                shown.add(code)
+                self._isb_add_workspace_item(code, self._lm_label(code), "#b0d0ff")
+
+        for name in ws.points:
+            if name in shown or name in gt_codes:
+                continue
+            shown.add(name)
+            self._isb_add_workspace_item(name, f"●  {name}   (point)", "#ffffff")
+
+        for name in ws.vectors:
+            if name in shown:
+                continue
+            shown.add(name)
+            color = {"X": "#ff7777", "Y": "#77dd77", "Z": "#77aaff"}.get(name, "#dddddd")
+            self._isb_add_workspace_item(name, f"→  {name}   (vecteur)", color)
+
+    def _isb_add_workspace_item(self, name: str, text: str, color: str) -> None:
+        item = QListWidgetItem(text)
+        item.setData(Qt.UserRole, name)
+        item.setForeground(QColor(color))
+        self._isb_workspace_list.addItem(item)
+
+    # ── ISB — step execution ──────────────────────────────────────────────────
+
+    def _isb_update_step_ui(self) -> None:
+        """Refresh the progress label, the instruction and the execute button."""
+        from .isb_recipes import recipe_label
+        from .isb_step_engine import ValidateFrame
+
+        engine = self._isb_engine
+        if engine is None:
+            return
+        index, total = engine.progress()
+        seg_name = recipe_label(self._isb_segment_key, self._lang)
+
+        if engine.finished:
+            self._isb_progress_label.setText(f"Étape {total}/{total} — construction terminée")
+            self._isb_instruction_label.setText(
+                "Repère terminé. Utilise « Recommencer » pour refaire la construction, "
+                "ou le sélecteur ci-dessus pour changer de segment."
+            )
+            self._isb_exec_btn.setEnabled(False)
+            self._update_hud(f"Exercice ISB — {seg_name}", "Terminé")
+            return
+
+        step = engine.current_step
+        self._isb_exec_btn.setEnabled(True)
+        self._isb_progress_label.setText(f"Étape {index + 1}/{total}")
+        self._isb_instruction_label.setText(getattr(step, "instruction_fr", ""))
+        self._isb_exec_btn.setText(
+            "Valider le repère" if isinstance(step, ValidateFrame) else "Exécuter"
+        )
+        self._update_hud(f"Exercice ISB — {seg_name}", f"Étape {index + 1}/{total}")
+
+    def _on_isb_execute(self) -> None:
+        """Run the current step with the student's selection and report the outcome."""
+        from .isb_step_engine import ValidateFrame
+
+        engine = self._isb_engine
+        if engine is None or engine.finished:
+            return
+
+        step = engine.current_step
+        step_kind = getattr(step, "kind", "")
+        op = self._isb_current_op()
+        if op and op != step_kind:
+            self._isb_set_feedback(
+                False,
+                f"Cette étape attend l'opération « {_ISB_OP_LABELS.get(step_kind, step_kind)} », "
+                f"pas « {_ISB_OP_LABELS.get(op, op)} ». Relis la consigne.",
+            )
+            return
+
+        ok, msg = engine.try_execute(self._isb_selection_names())
+        self._isb_set_feedback(ok, msg)
+
+        if isinstance(step, ValidateFrame):
+            # Always draw the final triad — even a wrong frame is worth seeing.
+            self._isb_draw_frame(step)
+            self._isb_clear_selection()
+            self._isb_reset_op_buttons()
+        elif ok:
+            self._isb_clear_selection()
+            self._isb_reset_op_buttons()
+            self._isb_draw_step_result(step)
+
+        if ok:
+            self._isb_refresh_workspace()
+        self._isb_update_step_ui()
+
+    # ── ISB — 3-D visualisation ───────────────────────────────────────────────
+
+    def _isb_arrow_length(self) -> float:
+        """Arrow length: a fraction of the body's largest extent (unit-agnostic)."""
+        return _ISB_ARROW_SCALE * self._model_scale()
+
+    def _isb_frame_origin(self):
+        """Best anchor point for vector arrows (the recipe's frame origin)."""
+        engine = self._isb_engine
+        if engine is None:
+            return None
+        from .isb_step_engine import ValidateFrame
+        ws = engine.workspace
+        for st in engine.steps:
+            if isinstance(st, ValidateFrame) and st.origin_name:
+                pt = ws.points.get(st.origin_name)
+                if pt is not None:
+                    return pt
+        gt_codes = set(self._ground_truth)
+        for name, pt in ws.points.items():
+            if name not in gt_codes:
+                return pt
+        return None
+
+    def _isb_draw_point(self, name: str, pos) -> None:
+        """White sphere + label for a landmark or a constructed midpoint."""
+        center = tuple(float(v) for v in np.asarray(pos, dtype=float).reshape(3))
+        sphere = pv.Sphere(radius=_ISB_POINT_RADIUS, center=center)
+        self._isb_actors.append(
+            self._plotter.add_mesh(sphere, color=_ISB_POINT_COLOR, render=False)
+        )
+        label = self._add_label_actor(center, name)
+        if label is not None:
+            self._isb_actors.append(label)
+
+    def _isb_draw_vector(self, name: str, direction, start) -> None:
+        """Arrow for a normalised vector (red=X, green=Y, blue=Z, white otherwise)."""
+        vec = np.asarray(direction, dtype=float).reshape(3)
+        if float(np.linalg.norm(vec)) < 1e-9:
+            return
+        color = _ISB_AXIS_COLORS.get(name, "white")
+        arrow = pv.Arrow(
+            start=tuple(float(v) for v in np.asarray(start, dtype=float).reshape(3)),
+            direction=tuple(float(v) for v in vec),
+            scale=self._isb_arrow_length(),
+        )
+        self._isb_actors.append(
+            self._plotter.add_mesh(arrow, color=color, render=False)
+        )
+
+    def _isb_draw_step_result(self, step) -> None:
+        """Draw the object produced by *step* (point or vector)."""
+        from .isb_step_engine import (
+            ComputeCrossProduct,
+            ComputeMidpoint,
+            ComputeVector,
+            PickLandmark,
+        )
+        engine = self._isb_engine
+        if engine is None:
+            return
+        ws = engine.workspace
+        name = getattr(step, "result_name", "")
+
+        if isinstance(step, (PickLandmark, ComputeMidpoint)):
+            pos = ws.points.get(name)
+            if pos is not None:
+                self._isb_draw_point(name, pos)
+        elif isinstance(step, ComputeVector):
+            vec = ws.vectors.get(name)
+            start = ws.points.get(step.expected_from)
+            if vec is not None and start is not None:
+                self._isb_draw_vector(name, vec, start)
+        elif isinstance(step, ComputeCrossProduct):
+            vec = ws.vectors.get(name)
+            start = self._isb_frame_origin()
+            if vec is not None and start is not None:
+                self._isb_draw_vector(name, vec, start)
+
         self._plotter.render()
 
+    def _isb_draw_existing(self) -> None:
+        """Draw every derived object already in the workspace (auto steps, reset)."""
+        engine = self._isb_engine
+        if engine is None:
+            return
+        ws = engine.workspace
+        gt_codes = set(self._ground_truth)
+        for name, pos in ws.points.items():
+            if name not in gt_codes:
+                self._isb_draw_point(name, pos)
+        origin = self._isb_frame_origin()
+        if origin is not None:
+            for name, vec in ws.vectors.items():
+                self._isb_draw_vector(name, vec, origin)
+        self._plotter.render()
+
+    def _isb_draw_frame(self, step) -> None:
+        """Show only the final triad X/Y/Z at the frame origin."""
+        engine = self._isb_engine
+        if engine is None:
+            return
+        self._clear_isb_actors()
+        ws = engine.workspace
+        origin = ws.points.get(step.origin_name) if step.origin_name else None
+        if origin is None:
+            origin = self._isb_frame_origin()
+        if origin is None:
+            return
+        self._isb_draw_point(step.origin_name or "O", origin)
+        for axis, ws_name in (("X", step.x_name), ("Y", step.y_name), ("Z", step.z_name)):
+            vec = ws.vectors.get(ws_name) if ws_name else None
+            if vec is not None:
+                self._isb_draw_vector(axis, vec, origin)
+        self._plotter.render()
+
+    def _isb_set_feedback(self, ok, msg: str) -> None:
+        """Colour-code the ISB feedback label (``True`` green / ``False`` red / ``None`` neutral)."""
+        self._isb_feedback_label.setTextFormat(Qt.RichText)
+        if ok is True:
+            prefix, style = "✓ ", _FEEDBACK_OK_STYLE
+        elif ok is False:
+            prefix, style = "✗ ", _FEEDBACK_ERR_STYLE
+        else:
+            prefix, style = "", _FEEDBACK_NEUTRAL_STYLE
+        self._isb_feedback_label.setStyleSheet(style)
+        self._isb_feedback_label.setText(prefix + self._rich(msg))
+
     def _clear_isb_actors(self) -> None:
-        """Remove all ISB axis arrows from the 3-D view."""
+        """Remove every ISB overlay actor from the 3-D view."""
         for actor in self._isb_actors:
             try:
                 self._plotter.remove_actor(actor, render=False)
@@ -2177,26 +2768,12 @@ class LandmarkViewer(QWidget):
         self._isb_actors = []
         self._plotter.render()
 
-    def _on_isb_guided_toggled(self, checked: bool) -> None:
-        """Show or hide the ISB step-by-step guide for the selected segment."""
-        self._isb_guided_btn.setText("Mode guidé : oui" if checked else "Mode guidé : non")
-        self._isb_steps_text.setVisible(checked)
-        if checked:
-            row = self._isb_segment_list.currentRow()
-            if row >= 0 and self._isb_result is not None:
-                self._show_isb_steps(self._isb_result.segments[row])
-
-    def _show_isb_steps(self, seg) -> None:
-        """Populate the ISB guided-steps text area for *seg*."""
-        from .isb_exercise import segment_step_guide
-        steps = segment_step_guide(seg.key, self._lang)
-        self._isb_steps_text.setPlainText("\n\n".join(steps))
-
-    # ── Anthropo exercise panel ───────────────────────────────────────────────
+    # ── Anthropometry guided workshop ─────────────────────────────────────────
 
     def _start_anthro_session(self) -> None:
-        """Enter anthropometric exercise mode: show the 20-measure table."""
+        """Enter anthropometry workshop mode: pick a measure, then build it step by step."""
         from .anthro_measures_exercise import compute_available
+        from .anthro_recipes import ANTHRO_RECIPES
 
         self._anthro_mode = True
 
@@ -2218,75 +2795,388 @@ class LandmarkViewer(QWidget):
         self._update_hud("Mesures anthropométriques", "Sélectionnez une mesure")
         self._error_label.setText("")
 
-        # Compute all 20 measures against ground truth
-        results = compute_available(self._ground_truth)
-        self._anthro_results = results
+        # Reference values pre-computed by the non-interactive module
+        try:
+            self._anthro_results = compute_available(self._ground_truth)
+        except Exception:                                # pragma: no cover
+            self._anthro_results = None
 
-        _STATUS_COLORS: dict[str, tuple[str, str]] = {
-            "normal":    ("#2e7d32", "#d4edda"),
-            "attention": ("#7a5c00", "#fff3cd"),
-            "alerte":    ("#8b1a1a", "#f8d7da"),
-            "info":      ("#555555", "#e8e8e8"),
-        }
-
-        self._anthro_table.setRowCount(0)
-        for r in results:
-            row = self._anthro_table.rowCount()
-            self._anthro_table.insertRow(row)
-
-            name_item = QTableWidgetItem(r.measure.name_fr)
-            name_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
-            val_item = QTableWidgetItem(r.value_str)
-            val_item.setTextAlignment(Qt.AlignCenter)
-
-            status_item = QTableWidgetItem(r.status)
-            status_item.setTextAlignment(Qt.AlignCenter)
-
-            txt_color, bg_color = _STATUS_COLORS.get(r.status, _STATUS_COLORS["info"])
-            for item in (val_item, status_item):
-                item.setForeground(QColor(txt_color))
-                item.setBackground(QColor(bg_color))
-
-            self._anthro_table.setItem(row, 0, name_item)
-            self._anthro_table.setItem(row, 1, val_item)
-            self._anthro_table.setItem(row, 2, status_item)
-
-        if results:
-            self._anthro_table.selectRow(0)
+        combo = self._anthro_measure_combo
+        combo.blockSignals(True)
+        combo.clear()
+        for code, recipe in ANTHRO_RECIPES.items():
+            combo.addItem(f"{recipe.name_fr}  ({recipe.unit})", code)
+        combo.blockSignals(False)
+        if combo.count():
+            combo.setCurrentIndex(0)
+        self._on_anthro_measure_changed()
 
     def _stop_anthro_session(self) -> None:
-        """Leave anthropometric exercise mode."""
+        """Leave anthropometry workshop mode."""
+        self._anthro_teardown_workshop()
         self._anthro_mode = False
         self._anthro_panel.setVisible(False)
         self._anthro_results = None
-        self._anthro_guided_btn.setChecked(False)
-        self._anthro_guided_btn.setText("Mode guidé : non")
-        self._anthro_steps_text.setVisible(False)
 
-    def _on_anthro_measure_selected(self) -> None:
-        """Refresh guided steps when the selected measure changes."""
+    def _anthro_teardown_workshop(self) -> None:
+        """Drop the running engine, clear the 3-D overlay and the workshop widgets."""
+        self._anthro_engine = None
+        self._anthro_recipe = None
+        self._anthro_selected_code = ""
+        self._anthro_work.setVisible(False)
+        self._anthro_lm_list.clear()
+        self._anthro_selection_label.setText("—")
+        self._anthro_progress_label.setText("")
+        self._anthro_instruction_label.setText("")
+        self._anthro_result_label.setText("")
+        self._anthro_feedback_label.setText("")
+        self._clear_anthro_actors()
+
+    @staticmethod
+    def _anthro_required_codes(recipe) -> list[str]:
+        """Landmark codes a recipe asks the student to pick, without duplicates."""
+        from .anthro_step_engine import PickLandmark as APickLandmark
+        out: list[str] = []
+        for st in recipe.steps:
+            if isinstance(st, APickLandmark) and st.expected_code not in out:
+                out.append(st.expected_code)
+        return out
+
+    def _anthro_measure_result(self, recipe):
+        """The :class:`AnthroMeasureResult` matching *recipe*, or ``None``."""
+        if not self._anthro_results or not recipe.measure_code:
+            return None
+        for res in self._anthro_results:
+            if res.measure.code == recipe.measure_code:
+                return res
+        return None
+
+    def _on_anthro_measure_changed(self) -> None:
+        """Describe the selected measure and enable/disable the start button."""
         if not self._anthro_mode:
             return
-        row = self._anthro_table.currentRow()
-        if row < 0 or self._anthro_results is None:
+        self._anthro_teardown_workshop()
+
+        from .anthro_recipes import ANTHRO_RECIPES
+
+        code = self._anthro_measure_combo.currentData()
+        recipe = ANTHRO_RECIPES.get(code) if code else None
+        if recipe is None:
+            self._anthro_meta_label.setText("")
+            self._anthro_start_btn.setEnabled(False)
             return
-        measure = self._anthro_results[row].measure
-        self._update_hud("Mesures anthropométriques", measure.name_fr)
-        if self._anthro_guided_btn.isChecked():
-            self._show_anthro_steps(measure)
 
-    def _on_anthro_guided_toggled(self, checked: bool) -> None:
-        """Show or hide the step-by-step guide for the selected anthropo measure."""
-        self._anthro_guided_btn.setText("Mode guidé : oui" if checked else "Mode guidé : non")
-        self._anthro_steps_text.setVisible(checked)
-        if checked:
-            row = self._anthro_table.currentRow()
-            if row >= 0 and self._anthro_results is not None:
-                self._show_anthro_steps(self._anthro_results[row].measure)
+        needed = self._anthro_required_codes(recipe)
+        missing = [c for c in needed if self._ground_truth.get(c) is None]
 
-    def _show_anthro_steps(self, measure) -> None:
-        """Populate the guided-steps text area for *measure*."""
-        from .anthro_measures_exercise import measure_step_guide
-        steps = measure_step_guide(measure.code, self._lang)
-        self._anthro_steps_text.setPlainText("\n\n".join(steps))
+        if missing:
+            self._anthro_meta_label.setText(
+                f"<b>{recipe.name_fr}</b> — "
+                f"<span style='color:#e05555;'>non calculable</span><br>"
+                f"Landmarks manquants : {', '.join(missing)}"
+            )
+            self._anthro_start_btn.setEnabled(False)
+        else:
+            res = self._anthro_measure_result(recipe)
+            norm = ""
+            if res is not None:
+                m = res.measure
+                if m.norm_low is not None and m.norm_high is not None:
+                    norm = (
+                        f" · norme {m.value_str(m.norm_low)} – "
+                        f"{m.value_str(m.norm_high)}"
+                    )
+            self._anthro_meta_label.setText(
+                f"<b>{recipe.name_fr}</b> — {len(recipe.steps)} étapes{norm}<br>"
+                f"Landmarks : {', '.join(needed)}"
+            )
+            self._anthro_start_btn.setEnabled(True)
+
+        self._update_hud("Mesures anthropométriques", recipe.name_fr)
+
+    def _on_anthro_start(self) -> None:
+        """Create an :class:`AnthroStepEngine` for the selected measure."""
+        from .anthro_recipes import ANTHRO_RECIPES
+        from .anthro_step_engine import AnthroStepEngine
+
+        code = self._anthro_measure_combo.currentData()
+        recipe = ANTHRO_RECIPES.get(code) if code else None
+        if recipe is None:
+            return
+
+        self._clear_anthro_actors()
+        self._anthro_recipe = recipe
+        self._anthro_engine = AnthroStepEngine(recipe, self._ground_truth)
+        self._anthro_work.setVisible(True)
+        self._anthro_selected_code = ""
+        self._anthro_selection_label.setText("—")
+        self._anthro_result_label.setText("")
+        self._anthro_populate_landmarks()
+        self._anthro_update_step_ui()
+        self._anthro_set_feedback(
+            None,
+            "Double-clique un landmark dans la liste, puis « Calculer ».",
+        )
+        self._name_label.setText(recipe.name_fr)
+
+    def _on_anthro_reset(self) -> None:
+        """Restart the current measure from step 1 (the engine has no in-place reset)."""
+        if self._anthro_recipe is None:
+            return
+        self._on_anthro_start()
+        self._anthro_set_feedback(None, "Mesure réinitialisée — retour à l'étape 1.")
+
+    # ── Anthropometry — selection handling ────────────────────────────────────
+
+    def _anthro_populate_landmarks(self) -> None:
+        """Fill the landmark list with every code available in the ground truth."""
+        self._anthro_lm_list.clear()
+        codes = sorted(
+            (c for c, v in self._ground_truth.items() if v is not None),
+            key=lambda c: self._lm_label(c).lower(),
+        )
+        for code in codes:
+            item = QListWidgetItem(self._lm_label(code))
+            item.setData(Qt.UserRole, code)
+            self._anthro_lm_list.addItem(item)
+
+    def _anthro_set_selection(self, item: QListWidgetItem) -> None:
+        """Record the landmark the student picked."""
+        if item is None:
+            return
+        code = item.data(Qt.UserRole)
+        if not code:
+            return
+        self._anthro_selected_code = str(code)
+        self._anthro_selection_label.setText(item.text())
+
+    def _on_anthro_lm_selection_changed(self) -> None:
+        """Single click also records the selection (double-click stays the documented way)."""
+        items = self._anthro_lm_list.selectedItems()
+        if items:
+            self._anthro_set_selection(items[0])
+
+    # ── Anthropometry — step execution ────────────────────────────────────────
+
+    def _anthro_update_step_ui(self) -> None:
+        """Refresh progress, instruction and the Calculate button."""
+        from .anthro_step_engine import PickLandmark as APickLandmark
+
+        engine = self._anthro_engine
+        recipe = self._anthro_recipe
+        if engine is None or recipe is None:
+            return
+        total = len(recipe.steps)
+
+        if engine.finished:
+            self._anthro_progress_label.setText(f"Étape {total}/{total} — mesure terminée")
+            self._anthro_instruction_label.setText(recipe.interpretation_fr)
+            self._anthro_calc_btn.setEnabled(False)
+            self._anthro_lm_list.setEnabled(False)
+            self._update_hud("Mesures anthropométriques", f"{recipe.name_fr} — terminé")
+            return
+
+        step = engine.current_step
+        is_pick = isinstance(step, APickLandmark)
+        self._anthro_progress_label.setText(f"Étape {engine.step_index + 1}/{total}")
+        self._anthro_instruction_label.setText(getattr(step, "instruction_fr", ""))
+        self._anthro_lm_list.setEnabled(is_pick)
+        self._anthro_calc_btn.setEnabled(True)
+        self._anthro_calc_btn.setText("Valider le repère" if is_pick else "Calculer")
+        self._update_hud(
+            "Mesures anthropométriques",
+            f"{recipe.name_fr} — étape {engine.step_index + 1}/{total}",
+        )
+
+    def _on_anthro_calculate(self) -> None:
+        """Run the current step and show its result."""
+        engine = self._anthro_engine
+        if engine is None or engine.finished:
+            return
+
+        step = engine.current_step
+        selection = [self._anthro_selected_code] if self._anthro_selected_code else []
+        ok, msg = engine.try_execute(selection)
+        self._anthro_set_feedback(ok, msg)
+
+        if ok:
+            self._anthro_draw_step(step)
+            self._anthro_selected_code = ""
+            self._anthro_selection_label.setText("—")
+            self._anthro_lm_list.clearSelection()
+            value = engine.workspace.get(getattr(step, "result_name", ""))
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                self._anthro_result_label.setText(
+                    f"{step.result_name} = {float(value):.1f}"
+                )
+
+        self._anthro_update_step_ui()
+        if engine.finished:
+            self._anthro_show_final()
+
+    def _anthro_show_final(self) -> None:
+        """Display the final value, the norm verdict and the reference comparison."""
+        engine = self._anthro_engine
+        recipe = self._anthro_recipe
+        if engine is None or recipe is None:
+            return
+
+        value = engine.final_result()
+        if value is None:
+            self._anthro_result_label.setText("Résultat indisponible")
+            self._anthro_set_feedback(
+                False, "Le résultat final n'a pas pu être extrait du workspace."
+            )
+            return
+
+        res = self._anthro_measure_result(recipe)
+        measure = res.measure if res is not None else None
+        shown = measure.value_str(value) if measure is not None else (
+            f"{value:.1f} {recipe.unit}"
+        )
+        self._anthro_result_label.setText(f"{recipe.name_fr} = {shown}")
+
+        verdict = None
+        lines: list[str] = []
+        if measure is not None:
+            status = measure.status_for(value)
+            if measure.norm_low is not None and measure.norm_high is not None:
+                norm = (
+                    f"{measure.value_str(measure.norm_low)} – "
+                    f"{measure.value_str(measure.norm_high)}"
+                )
+                verdict = status == "normal"
+                lines.append(
+                    f"Dans la norme ({norm})" if verdict
+                    else f"Hors norme ({norm}) — statut : {status}"
+                )
+            else:
+                lines.append("Mesure informative : pas de norme de référence.")
+            if res is not None and res.value is not None:
+                lines.append(
+                    f"Valeur calculée par le module de référence : "
+                    f"{measure.value_str(res.value)} "
+                    f"(écart {abs(res.value - value):.1f})."
+                )
+        lines.append(recipe.interpretation_fr)
+        self._anthro_set_feedback(verdict, "\n".join(lines))
+
+    # ── Anthropometry — 3-D visualisation ─────────────────────────────────────
+
+    def _anthro_draw_point(self, pos, label: str = "") -> None:
+        center = tuple(float(v) for v in np.asarray(pos, dtype=float).reshape(3))
+        sphere = pv.Sphere(radius=_ISB_POINT_RADIUS, center=center)
+        self._anthro_actors.append(
+            self._plotter.add_mesh(sphere, color=_ISB_POINT_COLOR, render=False)
+        )
+        if label:
+            actor = self._add_label_actor(center, label)
+            if actor is not None:
+                self._anthro_actors.append(actor)
+
+    def _anthro_draw_line(self, a, b, label: str = "") -> None:
+        pa = np.asarray(a, dtype=float).reshape(3)
+        pb = np.asarray(b, dtype=float).reshape(3)
+        line = pv.Line(tuple(float(v) for v in pa), tuple(float(v) for v in pb))
+        self._anthro_actors.append(
+            self._plotter.add_mesh(
+                line, color=_ANTHRO_LINE_COLOR, line_width=4, render=False
+            )
+        )
+        if label:
+            actor = self._add_label_actor((pa + pb) / 2.0, label, color="#ffd9a0")
+            if actor is not None:
+                self._anthro_actors.append(actor)
+
+    def _anthro_draw_step(self, step) -> None:
+        """Draw the geometry of the step that was just executed."""
+        from .anthro_step_engine import (
+            ComputeAngle3Pts,
+            ComputeAnglePlane,
+            ComputeAsymmetry,
+            ComputeAxisAngle,
+            ComputeDistance,
+            ComputeMidpoint as AComputeMidpoint,
+            ComputeProjection,
+            PickLandmark as APickLandmark,
+        )
+        engine = self._anthro_engine
+        if engine is None:
+            return
+        ws = engine.workspace
+        name = getattr(step, "result_name", "")
+        value = ws.get(name)
+        unit = self._anthro_recipe.unit if self._anthro_recipe is not None else ""
+
+        def _num_label() -> str:
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                return f"{float(value):.1f} {unit}".strip()
+            return ""
+
+        if isinstance(step, APickLandmark):
+            pt = ws.get(name)
+            if pt is not None:
+                self._anthro_draw_point(pt, name)
+
+        elif isinstance(step, AComputeMidpoint):
+            a, b = ws.get(step.expected_a), ws.get(step.expected_b)
+            mid = ws.get(name)
+            if a is not None and b is not None:
+                self._anthro_draw_line(a, b)
+            if mid is not None:
+                self._anthro_draw_point(mid, name)
+
+        elif isinstance(step, (ComputeDistance, ComputeAnglePlane, ComputeProjection)):
+            a, b = ws.get(step.expected_a), ws.get(step.expected_b)
+            if a is not None and b is not None:
+                self._anthro_draw_line(a, b, _num_label())
+
+        elif isinstance(step, ComputeAngle3Pts):
+            a = ws.get(step.expected_a)
+            vertex = ws.get(step.expected_vertex)
+            c = ws.get(step.expected_c)
+            if vertex is not None and a is not None:
+                self._anthro_draw_line(vertex, a)
+            if vertex is not None and c is not None:
+                self._anthro_draw_line(vertex, c)
+            if vertex is not None and _num_label():
+                actor = self._add_label_actor(vertex, _num_label(), color="#ffd9a0")
+                if actor is not None:
+                    self._anthro_actors.append(actor)
+
+        elif isinstance(step, ComputeAxisAngle):
+            a1, a2 = ws.get(step.expected_a1), ws.get(step.expected_a2)
+            b1, b2 = ws.get(step.expected_b1), ws.get(step.expected_b2)
+            if a1 is not None and a2 is not None:
+                self._anthro_draw_line(a1, a2, _num_label())
+            if b1 is not None and b2 is not None:
+                self._anthro_draw_line(b1, b2)
+
+        elif isinstance(step, ComputeAsymmetry):
+            left, right = ws.get(step.expected_left), ws.get(step.expected_right)
+            if isinstance(left, np.ndarray) and isinstance(right, np.ndarray):
+                self._anthro_draw_line(left, right, _num_label())
+
+        self._plotter.render()
+
+    def _anthro_set_feedback(self, ok, msg: str) -> None:
+        """Colour-code the anthropometry feedback label."""
+        self._anthro_feedback_label.setTextFormat(Qt.RichText)
+        if ok is True:
+            prefix, style = "✓ ", _FEEDBACK_OK_STYLE
+        elif ok is False:
+            prefix, style = "✗ ", _FEEDBACK_ERR_STYLE
+        else:
+            prefix, style = "", _FEEDBACK_NEUTRAL_STYLE
+        self._anthro_feedback_label.setStyleSheet(style)
+        self._anthro_feedback_label.setText(prefix + self._rich(msg))
+
+    def _clear_anthro_actors(self) -> None:
+        """Remove every anthropometry overlay actor from the 3-D view."""
+        for actor in self._anthro_actors:
+            try:
+                self._plotter.remove_actor(actor, render=False)
+            except Exception:
+                pass
+        self._anthro_actors = []
+        self._plotter.render()
