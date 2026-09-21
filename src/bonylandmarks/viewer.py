@@ -477,11 +477,12 @@ class LandmarkViewer(QWidget):
         )
         panel.addWidget(self._application_text)
 
-        # Separator
-        sep = QFrame()
-        sep.setFrameShape(QFrame.HLine)
-        sep.setFrameShadow(QFrame.Sunken)
-        panel.addWidget(sep)
+        # Separator (between hint/application widgets and the instruction label;
+        # assigned to self so it can be hidden during ISB / anthro modes)
+        self._sep = QFrame()
+        self._sep.setFrameShape(QFrame.HLine)
+        self._sep.setFrameShadow(QFrame.Sunken)
+        panel.addWidget(self._sep)
 
         # Instructions
         self._instr_label = QLabel(tr("instructions", self._lang))
@@ -2351,6 +2352,9 @@ class LandmarkViewer(QWidget):
         self._isb_panel.setVisible(False)
         self._anthro_panel.setVisible(False)
         self._hide_workshop_overlay()
+        self._sep.setVisible(True)
+        self._error_label.setVisible(True)
+        self._mode_btn.setVisible(not self._session.mixed_session)
         self._sep2.setVisible(True)
         self._results_table.setVisible(True)
 
@@ -2778,6 +2782,9 @@ class LandmarkViewer(QWidget):
         self._instr_label.setVisible(False)
         self._hint_text.setVisible(False)
         self._application_text.setVisible(False)
+        self._sep.setVisible(False)
+        self._error_label.setVisible(False)
+        self._mode_btn.setVisible(False)
         self._sep2.setVisible(False)
         self._results_table.setVisible(False)
         self._theme_badge.setVisible(False)
@@ -2788,7 +2795,6 @@ class LandmarkViewer(QWidget):
         self._progress_label.setText("Exercice ISB — Repères locaux")
         self._name_label.setText("Sélectionnez un segment")
         self._update_hud("Exercice ISB — Repères locaux", "Sélectionnez un segment")
-        self._error_label.setText("")
 
         # Populate the segment chooser: constructible segments first
         combo = self._isb_segment_combo
@@ -2817,6 +2823,10 @@ class LandmarkViewer(QWidget):
         self._isb_panel.setVisible(False)
         self._isb_result = None
         self._hide_workshop_overlay()
+        # Restore widgets that were hidden when entering ISB mode
+        self._sep.setVisible(True)
+        self._error_label.setVisible(True)
+        self._mode_btn.setVisible(not self._session.mixed_session)
 
     def _isb_teardown_workshop(self) -> None:
         """Drop the running engine, clear the 3-D overlay and the workshop widgets."""
@@ -3063,6 +3073,9 @@ class LandmarkViewer(QWidget):
         self._instr_label.setVisible(False)
         self._hint_text.setVisible(False)
         self._application_text.setVisible(False)
+        self._sep.setVisible(False)
+        self._error_label.setVisible(False)
+        self._mode_btn.setVisible(False)
         self._sep2.setVisible(False)
         self._results_table.setVisible(False)
         self._theme_badge.setVisible(False)
@@ -3098,6 +3111,10 @@ class LandmarkViewer(QWidget):
         self._anthro_panel.setVisible(False)
         self._anthro_results = None
         self._hide_workshop_overlay()
+        # Restore widgets that were hidden when entering anthro mode
+        self._sep.setVisible(True)
+        self._error_label.setVisible(True)
+        self._mode_btn.setVisible(not self._session.mixed_session)
 
     def _anthro_teardown_workshop(self) -> None:
         """Drop the running engine, clear the 3-D overlay and the workshop widgets."""
