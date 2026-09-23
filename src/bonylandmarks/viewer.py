@@ -1130,7 +1130,6 @@ class LandmarkViewer(QWidget):
             QLabel#hud_title {
                 color: rgba(160, 190, 255, 200);
                 font-size: 11px;
-                letter-spacing: 1px;
             }
             QLabel#hud_lm {
                 color: #f0f0f0;

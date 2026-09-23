@@ -162,9 +162,15 @@ def load_avatar_glb(
     body_tm = _largest_trimesh(scene)
 
     # pygltflib needs a file path, write to a temp file
-    with tempfile.NamedTemporaryFile(suffix=".glb", delete=False) as tmp:
-        tmp.write(glb_bytes)
-        tmp_path = tmp.name
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".glb", delete=False) as tmp:
+            tmp.write(glb_bytes)
+            tmp_path = tmp.name
+    except OSError as exc:
+        raise RuntimeError(
+            f"Impossible d'écrire le fichier GLB temporaire ({exc}). "
+            "Libérez de l'espace disque et réessayez."
+        ) from exc
     try:
         gltf = pygltflib.GLTF2().load(tmp_path)
     finally:
