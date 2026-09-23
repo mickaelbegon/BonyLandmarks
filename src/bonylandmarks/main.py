@@ -60,6 +60,11 @@ class MainWindow(QMainWindow):
                 if result == QDialog.Rejected:
                     sys.exit(0)
 
+                if result == SplashDialog.ANNOTATOR_RESULT:
+                    # Teacher tool: independent window, no server session.
+                    self._open_annotator()
+                    return
+
                 tutorial_mode = (result == SplashDialog.TUTORIAL_RESULT)
                 matricule = splash.matricule
 
@@ -151,6 +156,19 @@ class MainWindow(QMainWindow):
                 matricule,
                 dev_mode=dev_mode,
             )
+
+    def _open_annotator(self) -> None:
+        """Open the stand-alone manual annotation tool (teacher / researcher).
+
+        The window is kept on ``self`` so it is not garbage-collected; the
+        MainWindow itself stays hidden, so closing the annotator quits the app.
+        """
+        from .annotator import AnnotatorWindow
+
+        self._annotator = AnnotatorWindow()
+        self._annotator.show()
+        self._annotator.raise_()
+        self._annotator.activateWindow()
 
     def _launch_session(
         self,
