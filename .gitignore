@@ -16,6 +16,9 @@ manifest_private*.xlsx
 *.private.json
 BonyLandmarks_reperes.xlsx
 dev_landmarks.json
+LOCAL_landmarks.json
+# Manual annotation output (bonylandmarks_annotation documents)
+*_annotation.json
 .pytest_cache/
 .coverage
 htmlcov/

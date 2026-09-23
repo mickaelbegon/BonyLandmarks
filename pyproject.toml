@@ -29,6 +29,7 @@ dev = [
 
 [project.scripts]
 bonylandmarks = "bonylandmarks.main:main"
+bonylandmarks-annotate = "bonylandmarks.annotator:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/bonylandmarks"]

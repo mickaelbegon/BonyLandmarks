@@ -55,10 +55,12 @@ class SplashDialog(QDialog):
         QDialog.Accepted (1) — normal start (credentials validated, or a
                                local ``.glb`` file was chosen)
         2                    — tutorial mode
+        3                    — teacher annotation tool (no login required)
         QDialog.Rejected (0) — user closed the window
     """
 
     TUTORIAL_RESULT: int = 2
+    ANNOTATOR_RESULT: int = 3
 
     def __init__(
         self,
@@ -337,6 +339,16 @@ class SplashDialog(QDialog):
         self._local_btn.clicked.connect(self._on_load_local)
         btn_row.addWidget(self._local_btn)
 
+        # Teacher/researcher tool — opens without any server connection.
+        self._annotator_btn = QPushButton()
+        self._annotator_btn.setAutoDefault(False)
+        self._annotator_btn.setStyleSheet(
+            f"font-size: 11px; padding: 8px 12px; background-color: {_CARD_BG}; "
+            f"color: {_TEXT_MUTED}; border: 1px solid #333366; border-radius: 4px;"
+        )
+        self._annotator_btn.clicked.connect(self._on_annotator)
+        btn_row.addWidget(self._annotator_btn)
+
         btn_row.addStretch()
 
         self._tutorial_btn = QPushButton()
@@ -427,6 +439,14 @@ class SplashDialog(QDialog):
             "📂  Charger un fichier local..."
             if fr else
             "📂  Load a local file..."
+        )
+        self._annotator_btn.setText(
+            "🎯  Outil d'annotation" if fr else "🎯  Annotation tool"
+        )
+        self._annotator_btn.setToolTip(
+            "Placer manuellement les repères sur un scan vierge (enseignant)"
+            if fr else
+            "Manually place landmarks on a blank scan (teacher)"
         )
         self._tutorial_btn.setText("Mode tutoriel" if fr else "Tutorial mode")
         self._start_btn.setText("Commencer →" if fr else "Start →")
@@ -523,6 +543,11 @@ class SplashDialog(QDialog):
     def _on_tutorial(self) -> None:
         if self._validate_login():
             self.done(SplashDialog.TUTORIAL_RESULT)
+
+    def _on_annotator(self) -> None:
+        """Leave the splash to open the annotation tool — no credentials needed."""
+        self._error_label.hide()
+        self.done(SplashDialog.ANNOTATOR_RESULT)
 
     def _on_load_local(self) -> None:
         caption = (
