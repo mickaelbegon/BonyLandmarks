@@ -92,7 +92,13 @@ Cliquer **Exporter JSON** pour sauvegarder vos résultats dans un fichier `.json
 
 ---
 
-## 3. Repères anatomiques (24 total)
+## 3. Repères anatomiques
+
+L'application utilise deux référentiels de repères distincts.
+
+### 3a. Repères de palpation virtuelle (exercice 1 — scan BodyLoop)
+
+24 repères osseux détectés automatiquement par BodyLoop dans le scan `avatar_3d`. Ils servent de **vérité terrain** pour évaluer l'erreur de placement de l'étudiant.
 
 | Code | Français | English | Côté |
 |---|---|---|---|
@@ -108,6 +114,53 @@ Cliquer **Exporter JSON** pour sauvegarder vos résultats dans un fichier `.json
 | `lateral_malleolus_left/right` | Malléole latérale | Lateral malleolus | G/D |
 | `medial_malleolus_left/right` | Malléole médiale | Medial malleolus | G/D |
 | `heel_left/right` | Talon | Heel | G/D |
+
+### 3b. Référentiel anatomique complet (`data/landmarks.json`)
+
+Le fichier [`src/bonylandmarks/data/landmarks.json`](src/bonylandmarks/data/landmarks.json) contient **182 repères osseux** bilingues (FR/EN) utilisés pour les exercices ISB et anthropométriques. Chaque repère inclut :
+
+| Champ | Type | Description |
+|---|---|---|
+| `code` | `string` | Identifiant unique snake_case (ex. `ASIS_left`) |
+| `category` | `string` | Toujours `"BONE"` (réservé pour extension future) |
+| `name_fr` / `name_en` | `string` | Nom anatomique bilingue |
+| `hint_fr` / `hint_en` | `string` | Description précise de palpation (2–5 phrases) |
+| `body_side` | `"left"` \| `"right"` \| `"midline"` | Latéralité du repère |
+| `theme` | `string` | Thème clinique / domaine d'application |
+| `application_fr` / `application_en` | `string` | Rôle clinique et applications biomécaniques (optionnel) |
+
+**Thèmes disponibles :**
+
+| Thème | Repères | Domaine |
+|---|---|---|
+| `anatomy` | 81 | Repères généraux de palpation |
+| `shoulder` | 26 | Épaule et ceinture scapulaire |
+| `gait` | 20 | Analyse de la marche |
+| `posture` | 19 | Analyse posturale |
+| `upper_limb` | 12 | Membre supérieur |
+| `core` | 11 | Tronc et rachis |
+| `knee_rehab` | 10 | Genou et réhabilitation |
+| `lower_limb` | 2 | Membre inférieur |
+| `cpr` | 1 | Réanimation cardio-pulmonaire |
+
+**Exemple d'entrée :**
+
+```json
+{
+  "code": "acromion_left",
+  "category": "BONE",
+  "name_fr": "Acromion gauche",
+  "name_en": "Left acromion",
+  "hint_fr": "Processus plat et large de la scapula formant le sommet de l'épaule gauche…",
+  "hint_en": "Flat, broad process of the left scapula forming the tip of the shoulder…",
+  "body_side": "left",
+  "theme": "anatomy",
+  "application_fr": "",
+  "application_en": ""
+}
+```
+
+Pour **ajouter ou modifier un repère**, éditer directement ce fichier JSON — aucun redémarrage Python n'est nécessaire, le fichier est chargé à l'exécution. Les repères sans entrée dans `data/landmarks.json` ne seront pas proposés dans les exercices ISB/anthropo.
 
 ---
 
@@ -180,16 +233,27 @@ Les exécutables Windows et macOS sont produits automatiquement par GitHub Actio
 
 ```
 src/bonylandmarks/
-├── main.py          # Point d'entrée : fenêtre de login → viewer → export
-├── login_dialog.py  # Dialogue de connexion (matricule + DDN + URL serveur)
-├── mesh_loader.py   # Chargement GLB : corps 3D + AutoMarkers BodyLoop
-├── viewer.py        # Widget 3D PySide6/PyVista : picking de surface
-├── landmarks.py     # 24 Landmark (code, nom FR/EN, indice FR/EN)
-├── scoring.py       # Calcul erreur euclidienne + feedback couleur
-├── export.py        # Export JSON (format Moodle)
-├── client.py        # Client HTTP : téléchargement + déchiffrement du scan
-├── crypto.py        # AES-256-GCM déchiffrement
-└── i18n.py          # Traductions FR/EN
+├── main.py               # Point d'entrée : fenêtre de login → viewer → export
+├── login_dialog.py       # Dialogue de connexion (matricule + DDN + URL serveur)
+├── mesh_loader.py        # Chargement GLB : corps 3D + AutoMarkers BodyLoop
+├── viewer.py             # Widget 3D PySide6/PyVista : picking, exercices ISB/anthropo
+├── landmarks.py          # 24 Landmark hardcodés (code, nom FR/EN, indice FR/EN)
+│                         #   → liés aux AutoMarkers BodyLoop (vérité terrain exercice 1)
+├── data/
+│   └── landmarks.json    # 182 repères osseux bilingues (9 thèmes, palpation + applications)
+│                         #   → référentiel des exercices ISB et anthropométriques
+├── isb_recipes.py        # Recettes déclaratives pour les repères ISB (7 segments)
+├── isb_step_engine.py    # Moteur guidé ISB : pick → vecteur → produit vectoriel → repère
+├── frame_template.py     # Templates déclaratifs FrameTemplate → steps (source de vérité)
+├── anthro_recipes.py     # 20 recettes de mesures anthropométriques
+├── anthro_step_engine.py # Moteur guidé anthropo (distances, angles, asymétries…)
+├── joint_centers/        # Centres articulaires non palpables (HJC Bell/Harrington, GHJC Meskers/Sobral)
+├── isb_exercise.py       # Définitions et métadonnées des exercices ISB
+├── scoring.py            # Calcul erreur euclidienne + feedback couleur
+├── export.py             # Export JSON (format Moodle)
+├── client.py             # Client HTTP : téléchargement + déchiffrement du scan
+├── crypto.py             # AES-256-GCM déchiffrement
+└── i18n.py               # Traductions FR/EN
 ```
 
 ### Chiffrement
