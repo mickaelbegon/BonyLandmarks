@@ -692,7 +692,6 @@ class AnnotatorWindow(QMainWindow):
         if checked:
             self._apply_curvature()
         else:
-            self._plotter.remove_actor(self._mesh_actor, reset_camera=False)
             self._add_body_mesh()
             self._plotter.render()
         self._nav_overlay.adjustSize()
@@ -712,7 +711,6 @@ class AnnotatorWindow(QMainWindow):
             finally:
                 QApplication.restoreOverrideCursor()
         self._mesh.point_data["Mean_Curvature"] = self._curvature_cache
-        self._plotter.remove_actor(self._mesh_actor, reset_camera=False)
         clim = float(np.percentile(np.abs(self._curvature_cache), percentile))
         clim = max(clim, 1e-9)
         self._mesh_actor = self._plotter.add_mesh(
