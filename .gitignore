@@ -22,3 +22,7 @@ LOCAL_landmarks.json
 .pytest_cache/
 .coverage
 htmlcov/
+# Bone reference meshes — CC BY-SA 2.1 JP (BodyParts3D/DBCLS), too large for git
+# Download and rename per src/bonylandmarks/data/bones/README.md
+src/bonylandmarks/data/bones/*.obj
+src/bonylandmarks/data/bones/*.stl
