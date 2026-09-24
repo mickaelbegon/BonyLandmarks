@@ -45,6 +45,7 @@ from PySide6.QtGui import QAction, QColor, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
     QComboBox,
+    QDockWidget,
     QFileDialog,
     QFrame,
     QGridLayout,
@@ -63,8 +64,11 @@ from PySide6.QtWidgets import (
 )
 from pyvistaqt import QtInteractor
 
+from .bone_map import BONE_LABEL_FR, LANDMARK_BONE
 from .landmarks_extended import LANDMARKS, THEME_LABELS, Landmark
 from .mesh_loader import load_avatar_glb, load_glb_mesh
+
+_BONES_DIR = Path(__file__).parent / "data" / "bones"
 
 # ─── Annotation file format ──────────────────────────────────────────────────
 
@@ -234,6 +238,7 @@ class AnnotatorWindow(QMainWindow):
         self._vertex_colors: np.ndarray | None = None
         self._mesh_actor = None
         self._curvature_cache: np.ndarray | None = None
+        self._bone_cache: dict[str, pv.PolyData] = {}
         self._glb_path: Path | None = None
         self._json_path: Path | None = None
         self._dirty: bool = False
@@ -251,6 +256,7 @@ class AnnotatorWindow(QMainWindow):
         self._build_toolbar()
         self._build_hud_overlay()
         self._build_nav_overlay()
+        self._build_bone_dock()
         self._setup_shortcuts()
 
         self._refresh_filters()
@@ -735,6 +741,99 @@ class AnnotatorWindow(QMainWindow):
         self._curv_perc_lbl.setText(f"Seuil : P{value}")
         self._apply_curvature()
 
+    def _build_bone_dock(self) -> None:
+        """QDockWidget (right) showing the reference bone for the active landmark."""
+        self._bone_dock = QDockWidget("Os de référence", self)
+        self._bone_dock.setAllowedAreas(
+            Qt.RightDockWidgetArea | Qt.BottomDockWidgetArea
+        )
+        self._bone_dock.setMinimumWidth(240)
+
+        content = QWidget()
+        vl = QVBoxLayout(content)
+        vl.setContentsMargins(6, 6, 6, 6)
+        vl.setSpacing(4)
+
+        self._bone_name_lbl = QLabel("Sélectionner un repère")
+        self._bone_name_lbl.setStyleSheet(
+            "font-size: 11px; font-weight: bold; color: #7cb9ff; background: transparent;"
+        )
+        self._bone_name_lbl.setAlignment(Qt.AlignCenter)
+        vl.addWidget(self._bone_name_lbl)
+
+        self._bone_missing_lbl = QLabel("")
+        self._bone_missing_lbl.setStyleSheet(
+            "font-size: 10px; color: #666688; background: transparent;"
+        )
+        self._bone_missing_lbl.setAlignment(Qt.AlignCenter)
+        self._bone_missing_lbl.setWordWrap(True)
+        self._bone_missing_lbl.setVisible(False)
+        vl.addWidget(self._bone_missing_lbl)
+
+        self._bone_plotter = QtInteractor(content)
+        self._bone_plotter.set_background(_BG_COLOR)
+        self._bone_plotter.enable_3_lights()
+        self._bone_plotter.setMinimumHeight(240)
+        vl.addWidget(self._bone_plotter.interactor, stretch=1)
+
+        self._bone_dock.setWidget(content)
+        self.addDockWidget(Qt.RightDockWidgetArea, self._bone_dock)
+
+    def _load_bone_for(self, code: str | None) -> None:
+        """Load and display the reference bone mesh for the given landmark code."""
+        if code is None:
+            self._bone_name_lbl.setText("Sélectionner un repère")
+            self._bone_missing_lbl.setVisible(False)
+            self._bone_plotter.clear()
+            self._bone_plotter.render()
+            return
+
+        stem = LANDMARK_BONE.get(code)
+        label = BONE_LABEL_FR.get(stem or "", "(aucun os de référence)") if stem else "(aucun os de référence)"
+        self._bone_name_lbl.setText(label)
+
+        if stem is None:
+            self._bone_missing_lbl.setVisible(False)
+            self._bone_plotter.clear()
+            self._bone_plotter.render()
+            return
+
+        if stem not in self._bone_cache:
+            bone_path = None
+            for ext in (".stl", ".obj", ".STL", ".OBJ"):
+                p = _BONES_DIR / f"{stem}{ext}"
+                if p.exists():
+                    bone_path = p
+                    break
+            if bone_path is None:
+                self._bone_missing_lbl.setText(
+                    f"Fichier manquant : {stem}.stl\nVoir data/bones/README.md"
+                )
+                self._bone_missing_lbl.setVisible(True)
+                self._bone_plotter.clear()
+                self._bone_plotter.render()
+                return
+            try:
+                self._bone_cache[stem] = pv.read(str(bone_path))
+            except Exception as exc:
+                self._bone_missing_lbl.setText(f"Erreur : {exc}")
+                self._bone_missing_lbl.setVisible(True)
+                self._bone_plotter.clear()
+                self._bone_plotter.render()
+                return
+
+        self._bone_missing_lbl.setVisible(False)
+        self._bone_plotter.clear()
+        self._bone_plotter.enable_3_lights()
+        self._bone_plotter.add_mesh(
+            self._bone_cache[stem],
+            color="#e8d5b8", smooth_shading=True,
+            ambient=0.3, diffuse=0.9, specular=0.2,
+            show_scalar_bar=False,
+        )
+        self._bone_plotter.reset_camera()
+        self._bone_plotter.render()
+
     def _setup_shortcuts(self) -> None:
         shortcuts = [
             (QKeySequence(Qt.Key_Delete), self._clear_active),
@@ -781,6 +880,10 @@ class AnnotatorWindow(QMainWindow):
             if answer == QMessageBox.Save and not self._on_save():
                 event.ignore()
                 return
+        try:
+            self._bone_plotter.close()
+        except Exception:                                # pragma: no cover
+            pass
         try:
             self._plotter.close()
         except Exception:                                # pragma: no cover
@@ -1078,6 +1181,7 @@ class AnnotatorWindow(QMainWindow):
             self._coord_label.setText("Non placé")
             self._clear_btn.setEnabled(False)
             self._hud_overlay.setVisible(False)
+            self._load_bone_for(None)
             return
 
         self._name_label.setText(lm.name_fr)
@@ -1108,6 +1212,7 @@ class AnnotatorWindow(QMainWindow):
         self._hud_name_label.setText(lm.name_fr)
         self._hud_overlay.setVisible(True)
         self._position_hud_overlay()
+        self._load_bone_for(lm.code)
 
     def _update_progress(self) -> None:
         n_filtered_done = sum(1 for lm in self._filtered if lm.code in self._placed)

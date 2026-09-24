@@ -1,0 +1,266 @@
+"""Mapping landmark code → bone STL filename stem.
+
+The file is looked up in ``data/bones/<stem>.stl`` (or ``.obj``).
+A value of ``None`` means no bone reference is available for that landmark.
+"""
+
+from __future__ import annotations
+
+#: landmark code → bone filename stem (without extension)
+LANDMARK_BONE: dict[str, str | None] = {
+    # ── Crâne ───────────────────────────────────────────────────────────────
+    "vertex":                           "skull",
+    "glabella":                         "skull",
+    "external_occipital_protuberance":  "skull",
+    "external_acoustic_meatus_left":    "skull",
+    "external_acoustic_meatus_right":   "skull",
+    "mastoid_process_left":             "skull",
+    "mastoid_process_right":            "skull",
+
+    # ── Sternum ─────────────────────────────────────────────────────────────
+    "suprasternal_notch":               "sternum",
+    "xiphoid_process":                  "sternum",
+    "sternal_angle_louis":              "sternum",
+
+    # ── Rachis ──────────────────────────────────────────────────────────────
+    "C7_spinous":                       "cervical_vertebrae",
+    "T1_spinous":                       "thoracic_vertebrae",
+    "T4_spinous":                       "thoracic_vertebrae",
+    "T7_spinous":                       "thoracic_vertebrae",
+    "T8_spinous":                       "thoracic_vertebrae",
+    "T10_spinous":                      "thoracic_vertebrae",
+    "T12_spinous":                      "thoracic_vertebrae",
+    "L1_spinous":                       "lumbar_vertebrae",
+    "L5_spinous":                       "lumbar_vertebrae",
+    "S1_spinous":                       "sacrum",
+
+    # ── Côtes ───────────────────────────────────────────────────────────────
+    "rib12_tip_left":                   "rib_left",
+    "rib12_tip_right":                  "rib_right",
+
+    # ── Scapula ─────────────────────────────────────────────────────────────
+    "acromion_left":                    "scapula_left",
+    "acromion_right":                   "scapula_right",
+    "acromial_angle_left":              "scapula_left",
+    "acromial_angle_right":             "scapula_right",
+    "scapula_trigonum_left":            "scapula_left",
+    "scapula_trigonum_right":           "scapula_right",
+    "scapula_inferior_angle_left":      "scapula_left",
+    "scapula_inferior_angle_right":     "scapula_right",
+    "scapular_spine_left":              "scapula_left",
+    "scapular_spine_right":             "scapula_right",
+    "scapula_superior_angle_left":      "scapula_left",
+    "scapula_superior_angle_right":     "scapula_right",
+    "coracoid_process_left":            "scapula_left",
+    "coracoid_process_right":           "scapula_right",
+    "acromioclavicular_joint_left":     "scapula_left",
+    "acromioclavicular_joint_right":    "scapula_right",
+
+    # ── Clavicule ───────────────────────────────────────────────────────────
+    "sternoclavicular_joint_left":      "clavicle_left",
+    "sternoclavicular_joint_right":     "clavicle_right",
+
+    # ── Humérus ─────────────────────────────────────────────────────────────
+    "greater_tubercle_left":            "humerus_left",
+    "greater_tubercle_right":           "humerus_right",
+    "deltoid_tuberosity_left":          "humerus_left",
+    "deltoid_tuberosity_right":         "humerus_right",
+    "lateral_epicondyle_left":          "humerus_left",
+    "lateral_epicondyle_right":         "humerus_right",
+    "medial_epicondyle_left":           "humerus_left",
+    "medial_epicondyle_right":          "humerus_right",
+    "radiale_left":                     "humerus_left",
+    "radiale_right":                    "humerus_right",
+
+    # ── Radius ──────────────────────────────────────────────────────────────
+    "radial_styloid_left":              "radius_left",
+    "radial_styloid_right":             "radius_right",
+
+    # ── Ulna ────────────────────────────────────────────────────────────────
+    "olecranon_left":                   "ulna_left",
+    "olecranon_right":                  "ulna_right",
+    "ulnar_styloid_left":               "ulna_left",
+    "ulnar_styloid_right":              "ulna_right",
+
+    # ── Pelvis / os coxal ───────────────────────────────────────────────────
+    "ASIS_left":                        "pelvis",
+    "ASIS_right":                       "pelvis",
+    "AIIS_left":                        "pelvis",
+    "AIIS_right":                       "pelvis",
+    "PSIS_left":                        "pelvis",
+    "PSIS_right":                       "pelvis",
+    "iliac_crest_left":                 "pelvis",
+    "iliac_crest_right":                "pelvis",
+    "ischial_tuberosity_left":          "pelvis",
+    "ischial_tuberosity_right":         "pelvis",
+    "pubic_symphysis":                  "pelvis",
+
+    # ── Sacrum ──────────────────────────────────────────────────────────────
+    "sacrum_S2":                        "sacrum",
+
+    # ── Fémur ───────────────────────────────────────────────────────────────
+    "greater_trochanter_left":          "femur_left",
+    "greater_trochanter_right":         "femur_right",
+    "lateral_knee_left":                "femur_left",
+    "lateral_knee_right":               "femur_right",
+    "medial_knee_left":                 "femur_left",
+    "medial_knee_right":                "femur_right",
+    "adductor_tubercle_left":           "femur_left",
+    "adductor_tubercle_right":          "femur_right",
+
+    # ── Patella ─────────────────────────────────────────────────────────────
+    "patella_superior_left":            "patella_left",
+    "patella_superior_right":           "patella_right",
+    "patella_center_left":              "patella_left",
+    "patella_center_right":             "patella_right",
+
+    # ── Tibia ───────────────────────────────────────────────────────────────
+    "tibial_tuberosity_left":           "tibia_left",
+    "tibial_tuberosity_right":          "tibia_right",
+    "gerdy_tubercle_left":              "tibia_left",
+    "gerdy_tubercle_right":             "tibia_right",
+    "pes_anserinus_left":               "tibia_left",
+    "pes_anserinus_right":              "tibia_right",
+    "medial_malleolus_left":            "tibia_left",
+    "medial_malleolus_right":           "tibia_right",
+
+    # ── Fibula ──────────────────────────────────────────────────────────────
+    "fibular_head_left":                "fibula_left",
+    "fibular_head_right":               "fibula_right",
+    "lateral_malleolus_left":           "fibula_left",
+    "lateral_malleolus_right":          "fibula_right",
+
+    # ── Calcanéus / pied ────────────────────────────────────────────────────
+    "heel_left":                        "calcaneus_left",
+    "heel_right":                       "calcaneus_right",
+    "navicular_tuberosity_left":        "foot_left",
+    "navicular_tuberosity_right":       "foot_right",
+    "fifth_metatarsal_base_left":       "foot_left",
+    "fifth_metatarsal_base_right":      "foot_right",
+    "fifth_metatarsal_head_left":       "foot_left",
+    "fifth_metatarsal_head_right":      "foot_right",
+    "first_metatarsal_head_left":       "foot_left",
+    "first_metatarsal_head_right":      "foot_right",
+    "second_metatarsal_head_left":      "foot_left",
+    "second_metatarsal_head_right":     "foot_right",
+
+    # ── EMG — électrodes musculaires (os de référence proximal) ─────────────
+    "EMG_rectus_femoris_left":          "femur_left",
+    "EMG_rectus_femoris_right":         "femur_right",
+    "EMG_vastus_lateralis_left":        "femur_left",
+    "EMG_vastus_lateralis_right":       "femur_right",
+    "EMG_vastus_medialis_left":         "femur_left",
+    "EMG_vastus_medialis_right":        "femur_right",
+    "EMG_biceps_femoris_left":          "femur_left",
+    "EMG_biceps_femoris_right":         "femur_right",
+    "EMG_semitendinosus_left":          "femur_left",
+    "EMG_semitendinosus_right":         "femur_right",
+    "EMG_gastrocnemius_medialis_left":  "tibia_left",
+    "EMG_gastrocnemius_medialis_right": "tibia_right",
+    "EMG_gastrocnemius_lateralis_left": "tibia_left",
+    "EMG_gastrocnemius_lateralis_right":"tibia_right",
+    "EMG_soleus_left":                  "tibia_left",
+    "EMG_soleus_right":                 "tibia_right",
+    "EMG_tibialis_anterior_left":       "tibia_left",
+    "EMG_tibialis_anterior_right":      "tibia_right",
+    "EMG_peroneus_longus_left":         "fibula_left",
+    "EMG_peroneus_longus_right":        "fibula_right",
+    "EMG_gluteus_maximus_left":         "pelvis",
+    "EMG_gluteus_maximus_right":        "pelvis",
+    "EMG_gluteus_medius_left":          "pelvis",
+    "EMG_gluteus_medius_right":         "pelvis",
+    "EMG_tensor_fasciae_latae_left":    "pelvis",
+    "EMG_tensor_fasciae_latae_right":   "pelvis",
+    "EMG_deltoid_anterior_left":        "humerus_left",
+    "EMG_deltoid_anterior_right":       "humerus_right",
+    "EMG_deltoid_medius_left":          "humerus_left",
+    "EMG_deltoid_medius_right":         "humerus_right",
+    "EMG_deltoid_posterior_left":       "humerus_left",
+    "EMG_deltoid_posterior_right":      "humerus_right",
+    "EMG_biceps_brachii_left":          "humerus_left",
+    "EMG_biceps_brachii_right":         "humerus_right",
+    "EMG_triceps_brachii_long_left":    "humerus_left",
+    "EMG_triceps_brachii_long_right":   "humerus_right",
+    "EMG_triceps_brachii_lateral_left": "humerus_left",
+    "EMG_triceps_brachii_lateral_right":"humerus_right",
+    "EMG_brachioradialis_left":         "radius_left",
+    "EMG_brachioradialis_right":        "radius_right",
+    "EMG_wrist_extensors_left":         "radius_left",
+    "EMG_wrist_extensors_right":        "radius_right",
+    "EMG_wrist_flexors_left":           "ulna_left",
+    "EMG_wrist_flexors_right":          "ulna_right",
+    "EMG_trapezius_descendens_left":    "scapula_left",
+    "EMG_trapezius_descendens_right":   "scapula_right",
+    "EMG_trapezius_transversalis_left": "scapula_left",
+    "EMG_trapezius_transversalis_right":"scapula_right",
+    "EMG_trapezius_ascendens_left":     "scapula_left",
+    "EMG_trapezius_ascendens_right":    "scapula_right",
+    "EMG_erector_spinae_longissimus_left":    "thoracic_vertebrae",
+    "EMG_erector_spinae_longissimus_right":   "thoracic_vertebrae",
+    "EMG_erector_spinae_iliocostalis_left":   "thoracic_vertebrae",
+    "EMG_erector_spinae_iliocostalis_right":  "thoracic_vertebrae",
+    "EMG_obliquus_externus_left":       "pelvis",
+    "EMG_obliquus_externus_right":      "pelvis",
+    "EMG_rectus_abdominis_left":        "sternum",
+    "EMG_rectus_abdominis_right":       "sternum",
+    "EMG_serratus_anterior_left":       "scapula_left",
+    "EMG_serratus_anterior_right":      "scapula_right",
+    "EMG_pectoralis_major_sternal_left":  "sternum",
+    "EMG_pectoralis_major_sternal_right": "sternum",
+
+    # ── Plis cutanés ────────────────────────────────────────────────────────
+    "SKINFOLD_triceps_right":           "humerus_right",
+    "SKINFOLD_subscapular_right":       "scapula_right",
+    "SKINFOLD_biceps_right":            "humerus_right",
+    "SKINFOLD_iliac_crest_right":       "pelvis",
+    "SKINFOLD_supraspinale_right":      "pelvis",
+    "SKINFOLD_abdominal_right":         None,
+    "SKINFOLD_front_thigh_right":       "femur_right",
+    "SKINFOLD_medial_calf_right":       "tibia_right",
+
+    # ── Anthropométrie ──────────────────────────────────────────────────────
+    "anthro_mid_acromiale_radiale_right": "humerus_right",
+    "anthro_omphalion":                   None,
+    "anthro_arm_flexed_girth_right":      "humerus_right",
+    "anthro_forearm_girth_right":         "radius_right",
+    "anthro_thigh_girth_right":           "femur_right",
+    "anthro_calf_girth_right":            "tibia_right",
+    "anthro_humerus_breadth_right":       "humerus_right",
+    "anthro_femur_breadth_right":         "femur_right",
+}
+
+
+# Human-readable bone names (for display in the panel)
+BONE_LABEL_FR: dict[str, str] = {
+    "skull":                "Crâne",
+    "sternum":              "Sternum",
+    "clavicle_left":        "Clavicule gauche",
+    "clavicle_right":       "Clavicule droite",
+    "scapula_left":         "Scapula gauche",
+    "scapula_right":        "Scapula droite",
+    "humerus_left":         "Humérus gauche",
+    "humerus_right":        "Humérus droit",
+    "radius_left":          "Radius gauche",
+    "radius_right":         "Radius droit",
+    "ulna_left":            "Ulna gauche",
+    "ulna_right":           "Ulna droit",
+    "pelvis":               "Pelvis",
+    "sacrum":               "Sacrum",
+    "femur_left":           "Fémur gauche",
+    "femur_right":          "Fémur droit",
+    "patella_left":         "Patella gauche",
+    "patella_right":        "Patella droite",
+    "tibia_left":           "Tibia gauche",
+    "tibia_right":          "Tibia droit",
+    "fibula_left":          "Fibula gauche",
+    "fibula_right":         "Fibula droite",
+    "calcaneus_left":       "Calcanéus gauche",
+    "calcaneus_right":      "Calcanéus droit",
+    "foot_left":            "Pied gauche",
+    "foot_right":           "Pied droit",
+    "cervical_vertebrae":   "Vertèbres cervicales",
+    "thoracic_vertebrae":   "Vertèbres thoraciques",
+    "lumbar_vertebrae":     "Vertèbres lombaires",
+    "rib_left":             "Côtes gauches",
+    "rib_right":            "Côtes droites",
+}
