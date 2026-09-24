@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QFrame,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -961,6 +962,34 @@ class LandmarkViewer(QWidget):
         """Return to the initial full-body front view."""
         self._set_view(self._front_axis, -1)
 
+    def _pan_camera(self, dx: float, dy: float) -> None:
+        """Translate the camera laterally by (dx, dy) steps.
+
+        dx > 0 = right, dy > 0 = up. One step = 5 % of the
+        camera-to-focal-point distance, so the pan feels the same regardless
+        of zoom level.
+        """
+        cam = self._plotter.camera
+        pos = np.asarray(cam.position, dtype=float)
+        fpt = np.asarray(cam.focal_point, dtype=float)
+        up  = np.asarray(cam.up, dtype=float)
+        view_dir = fpt - pos
+        dist = float(np.linalg.norm(view_dir))
+        if dist < 1e-9:
+            return
+        view_dir /= dist
+        right = np.cross(view_dir, up)
+        r_norm = float(np.linalg.norm(right))
+        if r_norm < 1e-9:
+            return
+        right /= r_norm
+        up_perp = np.cross(right, view_dir)
+        step = dist * 0.05
+        delta = right * dx * step + up_perp * dy * step
+        cam.position    = tuple(pos + delta)
+        cam.focal_point = tuple(fpt + delta)
+        self._plotter.render()
+
     def _build_nav_overlay(self) -> None:
         """Create a semi-transparent floating toolbar anchored to the 3D viewport."""
         container = self._plotter.interactor
@@ -1017,6 +1046,59 @@ class LandmarkViewer(QWidget):
                 btn.setStyleSheet(btn.styleSheet() + "font-size: 20px;")
             btn.clicked.connect(cb)
             layout.addWidget(btn)
+
+        # ── Séparateur + boutons de translation ──────────────────────────────
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setStyleSheet(
+            "background: rgba(255,255,255,0.12); border: none; max-height: 1px;"
+        )
+        layout.addWidget(sep)
+
+        _pan_tip = (
+            "Translation · aussi : Shift + clic-gauche glisser\n"
+            "Zoom : molette  ·  Rotation : clic-gauche glisser"
+        )
+        _pan_btns = [
+            # (row, col, symbol, dx, dy)
+            (0, 1, "▲", 0,  1),
+            (1, 0, "◀", -1, 0),
+            (1, 2, "▶", +1, 0),
+            (2, 1, "▼", 0, -1),
+        ]
+        pan_w = QWidget()
+        pan_w.setAttribute(Qt.WA_TranslucentBackground)
+        grid = QGridLayout(pan_w)
+        grid.setSpacing(2)
+        grid.setContentsMargins(0, 0, 0, 0)
+        for row, col, sym, dx, dy in _pan_btns:
+            b = QPushButton(sym)
+            b.setFixedSize(36, 36)
+            b.setStyleSheet(
+                "QPushButton { background-color: rgba(26,26,46,180); color: #e0e0e0; "
+                "border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; "
+                "font-size: 14px; }"
+                "QPushButton:hover { background-color: rgba(60,80,140,210); "
+                "border-color: rgba(100,160,255,0.6); }"
+                "QPushButton:pressed { background-color: rgba(30,60,120,230); }"
+            )
+            b.setToolTip(_pan_tip)
+            b.clicked.connect(lambda _=None, _dx=dx, _dy=dy: self._pan_camera(_dx, _dy))
+            grid.addWidget(b, row, col)
+        layout.addWidget(pan_w)
+
+        # ── Légende des contrôles souris ──────────────────────────────────────
+        mouse_info = QLabel(
+            "🖱 Rotation : clic\n"
+            "↕ Zoom : molette\n"
+            "⟺ Déplacement : Shift+clic"
+        )
+        mouse_info.setStyleSheet(
+            "font-size: 9px; color: rgba(180,180,220,0.75); "
+            "background: transparent; padding: 3px 2px;"
+        )
+        mouse_info.setAlignment(Qt.AlignCenter)
+        layout.addWidget(mouse_info)
 
         overlay.adjustSize()
         self._nav_overlay = overlay

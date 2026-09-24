@@ -452,20 +452,49 @@ class AnnotatorWindow(QMainWindow):
         _act("⬇  Exporter JSON…", self._on_export, "Ctrl+Shift+S")
         bar.addSeparator()
 
-        for label, slot in (
-            ("Face", lambda: self._set_view(self._front_axis, +1)),
-            ("Dos", lambda: self._set_view(self._front_axis, -1)),
-            ("G", lambda: self._set_view(self._side_axis, -1)),
-            ("D", lambda: self._set_view(self._side_axis, +1)),
-            ("Haut", self._view_top),
-            ("Reset", self._reset_view),
+        _mouse_tip = (
+            "🖱 Rotation : clic-gauche glisser\n"
+            "↕ Zoom : molette  ·  Shift+clic : translation\n"
+            "Clic droit glisser : zoom alternatif"
+        )
+        for label, tip, slot in (
+            ("Face",  "Vue avant [1]",   lambda: self._set_view(self._front_axis, +1)),
+            ("Dos",   "Vue arrière [2]", lambda: self._set_view(self._front_axis, -1)),
+            ("G",     "Vue gauche [3]",  lambda: self._set_view(self._side_axis, -1)),
+            ("D",     "Vue droite [4]",  lambda: self._set_view(self._side_axis, +1)),
+            ("Haut",  "Vue dessus [5]",  self._view_top),
+            ("Reset", "Réinitialiser [R]", self._reset_view),
         ):
             btn = QPushButton(label)
             btn.setStyleSheet(_SECONDARY_BTN_STYLE)
+            btn.setToolTip(tip)
             btn.clicked.connect(slot)
             bar.addWidget(btn)
 
         bar.addSeparator()
+
+        _pan_tip = (
+            "Translation (déplacement latéral)\n"
+            "Aussi : Shift + clic-gauche glisser\n"
+            "Zoom : molette  ·  Rotation : clic-gauche glisser"
+        )
+        for sym, dx, dy in (("◀", -1, 0), ("▶", +1, 0), ("▲", 0, +1), ("▼", 0, -1)):
+            btn = QPushButton(sym)
+            btn.setFixedWidth(32)
+            btn.setStyleSheet(_SECONDARY_BTN_STYLE)
+            btn.setToolTip(_pan_tip)
+            btn.clicked.connect(
+                lambda _=None, _dx=dx, _dy=dy: self._pan_camera(_dx, _dy)
+            )
+            bar.addWidget(btn)
+
+        bar.addSeparator()
+        bar.addWidget(QLabel(" "))   # espace visuel
+        _tip_lbl = QLabel("🖱 clic=rotation · molette=zoom · Shift+clic=déplacement")
+        _tip_lbl.setStyleSheet("font-size: 10px; color: #8888aa;")
+        bar.addWidget(_tip_lbl)
+        bar.addSeparator()
+
         self._file_label = QLabel("  Aucun scan chargé")
         self._file_label.setStyleSheet("font-size: 11px; color: #a0a0c0;")
         bar.addWidget(self._file_label)
@@ -688,6 +717,31 @@ class AnnotatorWindow(QMainWindow):
 
     def _reset_view(self) -> None:
         self._set_view(self._front_axis, -1)
+
+    def _pan_camera(self, dx: float, dy: float) -> None:
+        """Translate the camera laterally; dx > 0 = right, dy > 0 = up."""
+        if self._mesh is None:
+            return
+        cam = self._plotter.camera
+        pos = np.asarray(cam.position, dtype=float)
+        fpt = np.asarray(cam.focal_point, dtype=float)
+        up  = np.asarray(cam.up, dtype=float)
+        view_dir = fpt - pos
+        dist = float(np.linalg.norm(view_dir))
+        if dist < 1e-9:
+            return
+        view_dir /= dist
+        right = np.cross(view_dir, up)
+        r_norm = float(np.linalg.norm(right))
+        if r_norm < 1e-9:
+            return
+        right /= r_norm
+        up_perp = np.cross(right, view_dir)
+        step = dist * 0.05
+        delta = right * dx * step + up_perp * dy * step
+        cam.position    = tuple(pos + delta)
+        cam.focal_point = tuple(fpt + delta)
+        self._plotter.render()
 
     # ── Landmark list & filters ───────────────────────────────────────────────
 
