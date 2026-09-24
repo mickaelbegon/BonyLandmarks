@@ -232,6 +232,7 @@ class AnnotatorWindow(QMainWindow):
         self._mesh: pv.PolyData | None = None
         self._vertex_colors: np.ndarray | None = None
         self._mesh_actor = None
+        self._curvature_cache: np.ndarray | None = None
         self._glb_path: Path | None = None
         self._json_path: Path | None = None
         self._dirty: bool = False
@@ -518,7 +519,7 @@ class AnnotatorWindow(QMainWindow):
         overlay.raise_()
 
     def _build_nav_overlay(self) -> None:
-        """Floating panel (top-right of 3D viewport) with pan arrows + mouse legend."""
+        """Floating panel (top-right of 3D viewport) with curvature toggle, pan arrows, mouse legend."""
         container = self._plotter.interactor
         overlay = QWidget(container)
         overlay.setObjectName("annot_nav_overlay")
@@ -528,6 +529,41 @@ class AnnotatorWindow(QMainWindow):
         layout = QVBoxLayout(overlay)
         layout.setSpacing(4)
         layout.setContentsMargins(6, 6, 6, 6)
+
+        # ── Bouton heatmap de courbure ────────────────────────────────────────
+        _curv_btn_base = (
+            "QPushButton { background-color: rgba(26,26,46,180); color: #e0e0e0; "
+            "border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; "
+            "font-size: 11px; padding: 4px 8px; }"
+            "QPushButton:hover { background-color: rgba(60,80,140,210); "
+            "border-color: rgba(100,160,255,0.6); }"
+            "QPushButton:checked { background-color: rgba(120,60,20,210); "
+            "border-color: rgba(255,160,60,0.8); color: #ffcc88; }"
+        )
+        self._curv_btn = QPushButton("🌡 Courbure")
+        self._curv_btn.setCheckable(True)
+        self._curv_btn.setStyleSheet(_curv_btn_base)
+        self._curv_btn.setToolTip(
+            "Heatmap de courbure moyenne\n"
+            "Rouge = saillant (éminence osseuse)\n"
+            "Bleu = creux (sillon, tissu mou)"
+        )
+        self._curv_btn.toggled.connect(self._toggle_curvature)
+        layout.addWidget(self._curv_btn)
+
+        self._curv_legend = QLabel("Rouge = saillant · Bleu = creux")
+        self._curv_legend.setStyleSheet(
+            "font-size: 9px; color: rgba(255,180,80,0.85); "
+            "background: transparent; padding: 1px 2px;"
+        )
+        self._curv_legend.setAlignment(Qt.AlignCenter)
+        self._curv_legend.setVisible(False)
+        layout.addWidget(self._curv_legend)
+
+        sep0 = QFrame()
+        sep0.setFrameShape(QFrame.HLine)
+        sep0.setStyleSheet("background: rgba(255,255,255,0.12); border: none; max-height: 1px;")
+        layout.addWidget(sep0)
 
         _pan_tip = (
             "Translation · aussi : Shift + clic-gauche glisser\n"
@@ -587,6 +623,38 @@ class AnnotatorWindow(QMainWindow):
         y = margin
         self._nav_overlay.move(x, y)
         self._nav_overlay.raise_()
+
+    def _toggle_curvature(self, checked: bool) -> None:
+        """Switch between original mesh colours and mean-curvature heatmap."""
+        if self._mesh is None:
+            self._curv_btn.setChecked(False)
+            return
+
+        if checked:
+            if self._curvature_cache is None:
+                QApplication.setOverrideCursor(Qt.WaitCursor)
+                try:
+                    self._curvature_cache = self._mesh.curvature("mean")
+                finally:
+                    QApplication.restoreOverrideCursor()
+            self._mesh.point_data["Mean_Curvature"] = self._curvature_cache
+            self._plotter.remove_actor(self._mesh_actor, reset_camera=False)
+            clim = float(np.percentile(np.abs(self._curvature_cache), 95))
+            clim = max(clim, 1e-9)
+            self._mesh_actor = self._plotter.add_mesh(
+                self._mesh, scalars="Mean_Curvature", cmap="RdBu_r",
+                clim=[-clim, clim], smooth_shading=True,
+                show_scalar_bar=False, ambient=0.4, diffuse=0.8, name="body",
+            )
+            self._curv_legend.setVisible(True)
+        else:
+            self._plotter.remove_actor(self._mesh_actor, reset_camera=False)
+            self._add_body_mesh()
+            self._curv_legend.setVisible(False)
+
+        self._nav_overlay.adjustSize()
+        self._position_nav_overlay()
+        self._plotter.render()
 
     def _setup_shortcuts(self) -> None:
         shortcuts = [
@@ -671,6 +739,10 @@ class AnnotatorWindow(QMainWindow):
         self._vertex_colors = colors
         self._glb_path = path
         self._sphere_radius = max(4.0, self._model_scale() * 0.006)
+        self._curvature_cache = None
+        if hasattr(self, "_curv_btn"):
+            self._curv_btn.setChecked(False)
+            self._curv_legend.setVisible(False)
 
         self._plotter.clear()
         # Plotter.clear() also removes every light — restore the 3-point setup.
