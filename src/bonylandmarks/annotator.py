@@ -47,6 +47,7 @@ from PySide6.QtWidgets import (
     QComboBox,
     QFileDialog,
     QFrame,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -247,6 +248,7 @@ class AnnotatorWindow(QMainWindow):
         self._build_ui()
         self._build_toolbar()
         self._build_hud_overlay()
+        self._build_nav_overlay()
         self._setup_shortcuts()
 
         self._refresh_filters()
@@ -473,28 +475,6 @@ class AnnotatorWindow(QMainWindow):
 
         bar.addSeparator()
 
-        _pan_tip = (
-            "Translation (déplacement latéral)\n"
-            "Aussi : Shift + clic-gauche glisser\n"
-            "Zoom : molette  ·  Rotation : clic-gauche glisser"
-        )
-        for sym, dx, dy in (("◀", -1, 0), ("▶", +1, 0), ("▲", 0, +1), ("▼", 0, -1)):
-            btn = QPushButton(sym)
-            btn.setFixedWidth(32)
-            btn.setStyleSheet(_SECONDARY_BTN_STYLE)
-            btn.setToolTip(_pan_tip)
-            btn.clicked.connect(
-                lambda _=None, _dx=dx, _dy=dy: self._pan_camera(_dx, _dy)
-            )
-            bar.addWidget(btn)
-
-        bar.addSeparator()
-        bar.addWidget(QLabel(" "))   # espace visuel
-        _tip_lbl = QLabel("🖱 clic=rotation · molette=zoom · Shift+clic=déplacement")
-        _tip_lbl.setStyleSheet("font-size: 10px; color: #8888aa;")
-        bar.addWidget(_tip_lbl)
-        bar.addSeparator()
-
         self._file_label = QLabel("  Aucun scan chargé")
         self._file_label.setStyleSheet("font-size: 11px; color: #a0a0c0;")
         bar.addWidget(self._file_label)
@@ -537,6 +517,77 @@ class AnnotatorWindow(QMainWindow):
         overlay.move(x, 12)
         overlay.raise_()
 
+    def _build_nav_overlay(self) -> None:
+        """Floating panel (top-right of 3D viewport) with pan arrows + mouse legend."""
+        container = self._plotter.interactor
+        overlay = QWidget(container)
+        overlay.setObjectName("annot_nav_overlay")
+        overlay.setAttribute(Qt.WA_TranslucentBackground)
+        overlay.setStyleSheet("QWidget#annot_nav_overlay { background: transparent; }")
+
+        layout = QVBoxLayout(overlay)
+        layout.setSpacing(4)
+        layout.setContentsMargins(6, 6, 6, 6)
+
+        _pan_tip = (
+            "Translation · aussi : Shift + clic-gauche glisser\n"
+            "Zoom : molette  ·  Rotation : clic-gauche glisser"
+        )
+        _pan_btn_style = (
+            "QPushButton { background-color: rgba(26,26,46,180); color: #e0e0e0; "
+            "border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; "
+            "font-size: 14px; }"
+            "QPushButton:hover { background-color: rgba(60,80,140,210); "
+            "border-color: rgba(100,160,255,0.6); }"
+            "QPushButton:pressed { background-color: rgba(30,60,120,230); }"
+        )
+        pan_w = QWidget()
+        pan_w.setAttribute(Qt.WA_TranslucentBackground)
+        grid = QGridLayout(pan_w)
+        grid.setSpacing(2)
+        grid.setContentsMargins(0, 0, 0, 0)
+        for row, col, sym, dx, dy in (
+            (0, 1, "▲", 0, +1),
+            (1, 0, "◀", -1, 0),
+            (1, 2, "▶", +1, 0),
+            (2, 1, "▼", 0, -1),
+        ):
+            b = QPushButton(sym)
+            b.setFixedSize(36, 36)
+            b.setStyleSheet(_pan_btn_style)
+            b.setToolTip(_pan_tip)
+            b.clicked.connect(lambda _=None, _dx=dx, _dy=dy: self._pan_camera(_dx, _dy))
+            grid.addWidget(b, row, col)
+        layout.addWidget(pan_w)
+
+        mouse_info = QLabel(
+            "🖱 Rotation : clic\n"
+            "↕ Zoom : molette\n"
+            "⟺ Déplacement : Shift+clic"
+        )
+        mouse_info.setStyleSheet(
+            "font-size: 9px; color: rgba(180,180,220,0.75); "
+            "background: transparent; padding: 3px 2px;"
+        )
+        mouse_info.setAlignment(Qt.AlignCenter)
+        layout.addWidget(mouse_info)
+
+        overlay.adjustSize()
+        self._nav_overlay = overlay
+        self._position_nav_overlay()
+
+    def _position_nav_overlay(self) -> None:
+        if not hasattr(self, "_nav_overlay"):
+            return
+        container = self._plotter.interactor
+        margin = 10
+        w = self._nav_overlay.width() or self._nav_overlay.sizeHint().width()
+        h = self._nav_overlay.height() or self._nav_overlay.sizeHint().height()
+        x = container.width() - w - margin
+        y = margin
+        self._nav_overlay.move(x, y)
+        self._nav_overlay.raise_()
+
     def _setup_shortcuts(self) -> None:
         shortcuts = [
             (QKeySequence(Qt.Key_Delete), self._clear_active),
@@ -559,11 +610,13 @@ class AnnotatorWindow(QMainWindow):
     def eventFilter(self, obj, event) -> bool:  # noqa: N802 (Qt naming)
         if obj is self._plotter.interactor and event.type() == QEvent.Resize:
             self._position_hud_overlay()
+            self._position_nav_overlay()
         return super().eventFilter(obj, event)
 
     def resizeEvent(self, event) -> None:  # noqa: N802 (Qt naming)
         super().resizeEvent(event)
         self._position_hud_overlay()
+        self._position_nav_overlay()
 
     def closeEvent(self, event) -> None:  # noqa: N802 (Qt naming)
         if self._dirty and self._placed:
