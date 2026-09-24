@@ -57,6 +57,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QScrollArea,
+    QSlider,
     QVBoxLayout,
     QWidget,
 )
@@ -560,6 +561,63 @@ class AnnotatorWindow(QMainWindow):
         self._curv_legend.setVisible(False)
         layout.addWidget(self._curv_legend)
 
+        # ── Sliders de réglage (visibles uniquement quand courbure active) ────
+        _slider_lbl_style = (
+            "font-size: 9px; color: rgba(200,200,230,0.9); background: transparent;"
+        )
+        _slider_style = (
+            "QSlider::groove:horizontal { height: 4px; background: rgba(255,255,255,0.15); "
+            "border-radius: 2px; }"
+            "QSlider::handle:horizontal { width: 12px; height: 12px; margin: -4px 0; "
+            "background: rgba(180,140,80,0.9); border-radius: 6px; }"
+            "QSlider::sub-page:horizontal { background: rgba(255,160,60,0.5); border-radius: 2px; }"
+        )
+        self._curv_controls = QWidget()
+        self._curv_controls.setAttribute(Qt.WA_TranslucentBackground)
+        ctrl = QVBoxLayout(self._curv_controls)
+        ctrl.setContentsMargins(2, 2, 2, 2)
+        ctrl.setSpacing(2)
+
+        self._curv_smooth_lbl = QLabel("Lissage : 100 iter.")
+        self._curv_smooth_lbl.setStyleSheet(_slider_lbl_style)
+        ctrl.addWidget(self._curv_smooth_lbl)
+        self._curv_smooth_slider = QSlider(Qt.Horizontal)
+        self._curv_smooth_slider.setRange(0, 300)
+        self._curv_smooth_slider.setValue(100)
+        self._curv_smooth_slider.setSingleStep(10)
+        self._curv_smooth_slider.setFixedHeight(18)
+        self._curv_smooth_slider.setStyleSheet(_slider_style)
+        self._curv_smooth_slider.setToolTip(
+            "Lissage du mesh avant le calcul de courbure\n"
+            "Augmenter pour réduire le bruit de surface"
+        )
+        self._curv_smooth_slider.valueChanged.connect(
+            lambda v: self._curv_smooth_lbl.setText(f"Lissage : {v} iter.")
+        )
+        self._curv_smooth_slider.sliderReleased.connect(self._on_curv_smooth_released)
+        ctrl.addWidget(self._curv_smooth_slider)
+
+        self._curv_perc_lbl = QLabel("Seuil : P99")
+        self._curv_perc_lbl.setStyleSheet(_slider_lbl_style)
+        ctrl.addWidget(self._curv_perc_lbl)
+        self._curv_perc_slider = QSlider(Qt.Horizontal)
+        self._curv_perc_slider.setRange(50, 99)
+        self._curv_perc_slider.setValue(99)
+        self._curv_perc_slider.setFixedHeight(18)
+        self._curv_perc_slider.setStyleSheet(_slider_style)
+        self._curv_perc_slider.setToolTip(
+            "Percentile de saturation de la colormap\n"
+            "Diminuer pour étaler les couleurs sur une plage plus large"
+        )
+        self._curv_perc_slider.valueChanged.connect(
+            lambda v: self._curv_perc_lbl.setText(f"Seuil : P{v}")
+        )
+        self._curv_perc_slider.sliderReleased.connect(self._on_curv_perc_released)
+        ctrl.addWidget(self._curv_perc_slider)
+
+        self._curv_controls.setVisible(False)
+        layout.addWidget(self._curv_controls)
+
         sep0 = QFrame()
         sep0.setFrameShape(QFrame.HLine)
         sep0.setStyleSheet("background: rgba(255,255,255,0.12); border: none; max-height: 1px;")
@@ -629,32 +687,49 @@ class AnnotatorWindow(QMainWindow):
         if self._mesh is None:
             self._curv_btn.setChecked(False)
             return
-
+        self._curv_legend.setVisible(checked)
+        self._curv_controls.setVisible(checked)
         if checked:
-            if self._curvature_cache is None:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                try:
-                    self._curvature_cache = self._mesh.curvature("mean")
-                finally:
-                    QApplication.restoreOverrideCursor()
-            self._mesh.point_data["Mean_Curvature"] = self._curvature_cache
-            self._plotter.remove_actor(self._mesh_actor, reset_camera=False)
-            clim = float(np.percentile(np.abs(self._curvature_cache), 95))
-            clim = max(clim, 1e-9)
-            self._mesh_actor = self._plotter.add_mesh(
-                self._mesh, scalars="Mean_Curvature", cmap="RdBu_r",
-                clim=[-clim, clim], smooth_shading=True,
-                show_scalar_bar=False, ambient=0.4, diffuse=0.8, name="body",
-            )
-            self._curv_legend.setVisible(True)
+            self._apply_curvature()
         else:
             self._plotter.remove_actor(self._mesh_actor, reset_camera=False)
             self._add_body_mesh()
-            self._curv_legend.setVisible(False)
-
+            self._plotter.render()
         self._nav_overlay.adjustSize()
         self._position_nav_overlay()
+
+    def _apply_curvature(self) -> None:
+        """(Re)compute curvature on a smoothed mesh and update the 3D actor."""
+        if self._mesh is None or not self._curv_btn.isChecked():
+            return
+        n_iter = self._curv_smooth_slider.value()
+        percentile = self._curv_perc_slider.value()
+        if self._curvature_cache is None:
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+            try:
+                src = self._mesh.smooth(n_iter=n_iter, relaxation_factor=0.1) if n_iter > 0 else self._mesh
+                self._curvature_cache = src.curvature("mean")
+            finally:
+                QApplication.restoreOverrideCursor()
+        self._mesh.point_data["Mean_Curvature"] = self._curvature_cache
+        self._plotter.remove_actor(self._mesh_actor, reset_camera=False)
+        clim = float(np.percentile(np.abs(self._curvature_cache), percentile))
+        clim = max(clim, 1e-9)
+        self._mesh_actor = self._plotter.add_mesh(
+            self._mesh, scalars="Mean_Curvature", cmap="RdBu_r",
+            clim=[-clim, clim], smooth_shading=True,
+            show_scalar_bar=False, ambient=0.4, diffuse=0.8, name="body",
+        )
         self._plotter.render()
+
+    def _on_curv_smooth_released(self) -> None:
+        """Smooth slider released → invalidate cache and recompute."""
+        self._curvature_cache = None
+        self._apply_curvature()
+
+    def _on_curv_perc_released(self) -> None:
+        """Percentile slider released → re-apply clim (no mesh recompute)."""
+        self._apply_curvature()
 
     def _setup_shortcuts(self) -> None:
         shortcuts = [
@@ -743,6 +818,9 @@ class AnnotatorWindow(QMainWindow):
         if hasattr(self, "_curv_btn"):
             self._curv_btn.setChecked(False)
             self._curv_legend.setVisible(False)
+            self._curv_controls.setVisible(False)
+            self._curv_smooth_slider.setValue(100)
+            self._curv_perc_slider.setValue(99)
 
         self._plotter.clear()
         # Plotter.clear() also removes every light — restore the 3-point setup.
