@@ -40,7 +40,7 @@ from pathlib import Path
 
 import numpy as np
 import pyvista as pv
-from PySide6.QtCore import QEvent, Qt
+from PySide6.QtCore import QEvent, Qt, QTimer
 from PySide6.QtGui import QAction, QColor, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
@@ -591,11 +591,13 @@ class AnnotatorWindow(QMainWindow):
             "Lissage du mesh avant le calcul de courbure\n"
             "Augmenter pour réduire le bruit de surface"
         )
-        self._curv_smooth_slider.valueChanged.connect(
-            lambda v: self._curv_smooth_lbl.setText(f"Lissage : {v} iter.")
-        )
-        self._curv_smooth_slider.sliderReleased.connect(self._on_curv_smooth_released)
+        self._curv_smooth_slider.valueChanged.connect(self._on_curv_smooth_changed)
         ctrl.addWidget(self._curv_smooth_slider)
+
+        # Timer de debounce pour le lissage (évite de relancer smooth() à chaque tick)
+        self._curv_smooth_timer = QTimer(self)
+        self._curv_smooth_timer.setSingleShot(True)
+        self._curv_smooth_timer.timeout.connect(self._on_curv_smooth_timeout)
 
         self._curv_perc_lbl = QLabel("Seuil : P99")
         self._curv_perc_lbl.setStyleSheet(_slider_lbl_style)
@@ -609,10 +611,7 @@ class AnnotatorWindow(QMainWindow):
             "Percentile de saturation de la colormap\n"
             "Diminuer pour étaler les couleurs sur une plage plus large"
         )
-        self._curv_perc_slider.valueChanged.connect(
-            lambda v: self._curv_perc_lbl.setText(f"Seuil : P{v}")
-        )
-        self._curv_perc_slider.sliderReleased.connect(self._on_curv_perc_released)
+        self._curv_perc_slider.valueChanged.connect(self._on_curv_perc_changed)
         ctrl.addWidget(self._curv_perc_slider)
 
         self._curv_controls.setVisible(False)
@@ -711,6 +710,7 @@ class AnnotatorWindow(QMainWindow):
             finally:
                 QApplication.restoreOverrideCursor()
         self._mesh.point_data["Mean_Curvature"] = self._curvature_cache
+        self._mesh.Modified()  # force VTK to invalidate its render cache
         clim = float(np.percentile(np.abs(self._curvature_cache), percentile))
         clim = max(clim, 1e-9)
         self._mesh_actor = self._plotter.add_mesh(
@@ -720,13 +720,19 @@ class AnnotatorWindow(QMainWindow):
         )
         self._plotter.render()
 
-    def _on_curv_smooth_released(self) -> None:
-        """Smooth slider released → invalidate cache and recompute."""
+    def _on_curv_smooth_changed(self, value: int) -> None:
+        """Every tick: update label and (re)start debounce timer."""
+        self._curv_smooth_lbl.setText(f"Lissage : {value} iter.")
+        self._curv_smooth_timer.start(600)
+
+    def _on_curv_smooth_timeout(self) -> None:
+        """600 ms after last slider move: invalidate cache and recompute."""
         self._curvature_cache = None
         self._apply_curvature()
 
-    def _on_curv_perc_released(self) -> None:
-        """Percentile slider released → re-apply clim (no mesh recompute)."""
+    def _on_curv_perc_changed(self, value: int) -> None:
+        """Every tick: update label and re-apply clim (no mesh recompute)."""
+        self._curv_perc_lbl.setText(f"Seuil : P{value}")
         self._apply_curvature()
 
     def _setup_shortcuts(self) -> None:
