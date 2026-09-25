@@ -805,8 +805,13 @@ class AnnotatorWindow(QMainWindow):
         vl.addWidget(self._bone_edit_btn)
 
         self._active_bone_code: str | None = None
-        self._pick_obs_id: int | None = None
-        self._saved_interactor_style = None
+        # landmark-edit picking state (all must stay alive while observers active)
+        self._lm_picker: vtk.vtkCellPicker | None = None
+        self._lm_press_xy: tuple[int, int] | None = None
+        self._press_cb = None
+        self._release_cb = None
+        self._press_obs: int | None = None
+        self._release_obs: int | None = None
 
         self._bone_dock.setWidget(content)
         self.addDockWidget(Qt.RightDockWidgetArea, self._bone_dock)
@@ -898,43 +903,57 @@ class AnnotatorWindow(QMainWindow):
             self._exit_landmark_edit()
 
     def _start_landmark_edit(self) -> None:
-        """Switch bone plotter to pick-one-point mode (disables camera rotation)."""
+        """Arm two VTK observers (press + release) for one clean-click pick.
+
+        A drag (> 5 px movement) is ignored so camera rotation still works.
+        Callbacks are stored on self to prevent garbage collection.
+        """
         iren = self._bone_plotter.iren
-        self._saved_interactor_style = iren.GetInteractorStyle()
-        iren.SetInteractorStyle(vtk.vtkInteractorStyleUser())
+        self._lm_picker = vtk.vtkCellPicker()
+        self._lm_picker.SetTolerance(0.005)
+        self._lm_press_xy = None
 
-        picker = vtk.vtkCellPicker()
-        picker.SetTolerance(0.005)
-        iren.SetPicker(picker)
+        def _on_press(caller, event):
+            self._lm_press_xy = iren.GetEventPosition()
 
-        def _on_click(*_):
-            click_pos = iren.GetEventPosition()
-            picker.Pick(click_pos[0], click_pos[1], 0,
-                        self._bone_plotter.renderer)
-            world = picker.GetPickPosition()
-            if world != (0.0, 0.0, 0.0):
-                self._on_bone_pick_done(list(world))
+        def _on_release(caller, event):
+            if self._lm_press_xy is None:
+                return
+            rx, ry = iren.GetEventPosition()
+            px, py = self._lm_press_xy
+            self._lm_press_xy = None
+            if (rx - px) ** 2 + (ry - py) ** 2 > 25:   # drag -> skip
+                return
+            # Clean click: pick surface point
+            self._lm_picker.Pick(rx, ry, 0, self._bone_plotter.renderer)
+            if self._lm_picker.GetCellId() >= 0:
+                self._on_bone_pick_done(list(self._lm_picker.GetPickPosition()))
             self._exit_landmark_edit()
 
-        self._pick_obs_id = iren.AddObserver("LeftButtonPressEvent", _on_click)
+        # Store on self to keep strong Python references (prevents GC)
+        self._press_cb   = _on_press
+        self._release_cb = _on_release
+        self._press_obs   = iren.AddObserver("LeftButtonPressEvent",   self._press_cb)
+        self._release_obs = iren.AddObserver("LeftButtonReleaseEvent", self._release_cb)
         self._bone_edit_btn.setText("⭕ Cliquer sur l'os…")
 
     def _exit_landmark_edit(self) -> None:
-        """Restore normal camera-navigation interactor style."""
-        if self._pick_obs_id is not None:
-            try:
-                self._bone_plotter.iren.RemoveObserver(self._pick_obs_id)
-            except Exception:
-                pass
-            self._pick_obs_id = None
-        if self._saved_interactor_style is not None:
-            try:
-                self._bone_plotter.iren.SetInteractorStyle(
-                    self._saved_interactor_style
-                )
-            except Exception:
-                pass
-            self._saved_interactor_style = None
+        """Remove observers and reset button state."""
+        if not hasattr(self, "_bone_plotter"):
+            return
+        iren = self._bone_plotter.iren
+        for attr in ("_press_obs", "_release_obs"):
+            obs_id = getattr(self, attr, None)
+            if obs_id is not None:
+                try:
+                    iren.RemoveObserver(obs_id)
+                except Exception:
+                    pass
+                setattr(self, attr, None)
+        self._press_cb = None
+        self._release_cb = None
+        self._lm_picker = None
+        self._lm_press_xy = None
         if hasattr(self, "_bone_edit_btn"):
             self._bone_edit_btn.blockSignals(True)
             self._bone_edit_btn.setChecked(False)
