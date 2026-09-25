@@ -26,3 +26,4 @@ htmlcov/
 # Download and rename per src/bonylandmarks/data/bones/README.md
 src/bonylandmarks/data/bones/*.obj
 src/bonylandmarks/data/bones/*.stl
+src/bonylandmarks/data/bones/validation/

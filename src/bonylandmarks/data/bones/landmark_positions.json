@@ -1,0 +1,522 @@
+{
+  "vertex": [
+    -0.1339,
+    -76.0455,
+    1636.27
+  ],
+  "glabella": [
+    -6.7034,
+    18.001,
+    1550.28
+  ],
+  "external_occipital_protuberance": [
+    -8.6866,
+    -183.708,
+    1501.26
+  ],
+  "external_acoustic_meatus_right": [
+    -73.4774,
+    -65.1683,
+    1534.08
+  ],
+  "external_acoustic_meatus_left": [
+    71.9668,
+    -64.9261,
+    1533.92
+  ],
+  "mastoid_process_right": [
+    -42.1247,
+    -156.555,
+    1489.21
+  ],
+  "mastoid_process_left": [
+    40.438,
+    -156.237,
+    1489.13
+  ],
+  "suprasternal_notch": [
+    -12.859,
+    -137.537,
+    1325.25
+  ],
+  "xiphoid_process": [
+    -1.288,
+    -205.886,
+    1164.02
+  ],
+  "sternal_angle_louis": [
+    -3.3382,
+    -159.405,
+    1285.95
+  ],
+  "C7_spinous": [
+    -0.5578,
+    -90.0319,
+    1377.08
+  ],
+  "T1_spinous": [
+    -0.4848,
+    -86.8719,
+    1360.11
+  ],
+  "T4_spinous": [
+    -1.2834,
+    -69.0011,
+    1297.33
+  ],
+  "T7_spinous": [
+    -0.4241,
+    -69.337,
+    1196.13
+  ],
+  "T8_spinous": [
+    -0.1335,
+    -77.6529,
+    1161.48
+  ],
+  "T10_spinous": [
+    -2.0745,
+    -92.2687,
+    1108.34
+  ],
+  "T12_spinous": [
+    1.6843,
+    -101.385,
+    1077.89
+  ],
+  "L1_spinous": [
+    -0.8823,
+    -112.478,
+    1036.72
+  ],
+  "L5_spinous": [
+    -1.8815,
+    -102.251,
+    939.028
+  ],
+  "S1_spinous": [
+    -0.4364,
+    -81.3964,
+    895.987
+  ],
+  "rib12_tip_right": [
+    -107.627,
+    -91.1804,
+    1008.9
+  ],
+  "rib12_tip_left": [
+    106.338,
+    -91.6461,
+    1008.95
+  ],
+  "acromion_right": [
+    -166.464,
+    -58.062,
+    1342.96
+  ],
+  "acromial_angle_right": [
+    -138.168,
+    -100.298,
+    1324.17
+  ],
+  "scapula_trigonum_right": [
+    -126.366,
+    -100.303,
+    1325.17
+  ],
+  "scapula_inferior_angle_right": [
+    -94.4418,
+    -5.2805,
+    1183.96
+  ],
+  "scapula_superior_angle_right": [
+    -72.4722,
+    -26.2638,
+    1336.19
+  ],
+  "scapular_spine_right": [
+    -132.749,
+    -102.856,
+    1322.92
+  ],
+  "coracoid_process_right": [
+    -69.9549,
+    -23.3927,
+    1330.52
+  ],
+  "acromioclavicular_joint_right": [
+    -165.828,
+    -57.0788,
+    1346.88
+  ],
+  "acromion_left": [
+    166.464,
+    -56.78,
+    1344.81
+  ],
+  "acromial_angle_left": [
+    138.253,
+    -100.215,
+    1324.19
+  ],
+  "scapula_trigonum_left": [
+    126.139,
+    -100.092,
+    1325.5
+  ],
+  "scapula_inferior_angle_left": [
+    94.4257,
+    -5.2553,
+    1183.95
+  ],
+  "scapula_superior_angle_left": [
+    72.0762,
+    -26.0659,
+    1335.77
+  ],
+  "scapular_spine_left": [
+    132.999,
+    -102.845,
+    1323.1
+  ],
+  "coracoid_process_left": [
+    69.5649,
+    -23.284,
+    1330.15
+  ],
+  "acromioclavicular_joint_left": [
+    165.806,
+    -57.2816,
+    1346.9
+  ],
+  "sternoclavicular_joint_right": [
+    -9.6616,
+    -128.662,
+    1317.82
+  ],
+  "sternoclavicular_joint_left": [
+    8.3787,
+    -129.835,
+    1319.67
+  ],
+  "greater_tubercle_right": [
+    -188.912,
+    -80.3448,
+    1312.16
+  ],
+  "deltoid_tuberosity_right": [
+    -216.487,
+    -56.1907,
+    1115.86
+  ],
+  "lateral_epicondyle_right": [
+    -239.414,
+    -71.8278,
+    1045.38
+  ],
+  "medial_epicondyle_right": [
+    -177.909,
+    -68.1388,
+    1047.31
+  ],
+  "radiale_right": [
+    -239.693,
+    -59.6492,
+    1050.38
+  ],
+  "greater_tubercle_left": [
+    188.652,
+    -78.408,
+    1312.8
+  ],
+  "deltoid_tuberosity_left": [
+    228.273,
+    -53.2017,
+    1082.58
+  ],
+  "lateral_epicondyle_left": [
+    239.428,
+    -72.0048,
+    1045.53
+  ],
+  "medial_epicondyle_left": [
+    178.218,
+    -65.7637,
+    1046.27
+  ],
+  "radiale_left": [
+    239.83,
+    -59.8349,
+    1050.37
+  ],
+  "radial_styloid_right": [
+    -279.36,
+    -116.025,
+    810.856
+  ],
+  "radial_styloid_left": [
+    278.74,
+    -117.599,
+    807.903
+  ],
+  "olecranon_right": [
+    -211.227,
+    -80.9082,
+    1033.3
+  ],
+  "olecranon_left": [
+    211.323,
+    -80.8412,
+    1033.02
+  ],
+  "ulnar_styloid_right": [
+    -234.751,
+    -110.945,
+    806.02
+  ],
+  "ulnar_styloid_left": [
+    235.249,
+    -112.654,
+    805.341
+  ],
+  "ASIS_right": [
+    -54.7782,
+    -13.3282,
+    927.846
+  ],
+  "AIIS_right": [
+    -48.312,
+    -34.1737,
+    817.711
+  ],
+  "PSIS_right": [
+    -132.844,
+    -119.352,
+    924.853
+  ],
+  "iliac_crest_right": [
+    -101.283,
+    -58.7321,
+    957.869
+  ],
+  "ischial_tuberosity_right": [
+    -19.2954,
+    -135.367,
+    794.169
+  ],
+  "ASIS_left": [
+    54.3257,
+    -15.1828,
+    930.007
+  ],
+  "AIIS_left": [
+    47.7797,
+    -34.2533,
+    817.32
+  ],
+  "PSIS_left": [
+    133.023,
+    -117.328,
+    926.964
+  ],
+  "iliac_crest_left": [
+    104.852,
+    -59.9949,
+    958.09
+  ],
+  "ischial_tuberosity_left": [
+    19.5306,
+    -135.488,
+    794.124
+  ],
+  "pubic_symphysis": [
+    -24.764,
+    -100.467,
+    789.784
+  ],
+  "sacrum_S2": [
+    -7.5015,
+    -72.359,
+    891.871
+  ],
+  "greater_trochanter_right": [
+    -146.957,
+    -76.4244,
+    795.938
+  ],
+  "lateral_knee_right": [
+    -110.581,
+    -78.7992,
+    387.322
+  ],
+  "medial_knee_right": [
+    -32.861,
+    -77.178,
+    386.436
+  ],
+  "adductor_tubercle_right": [
+    -32.2529,
+    -75.8094,
+    398.277
+  ],
+  "greater_trochanter_left": [
+    146.07,
+    -73.2208,
+    798.519
+  ],
+  "lateral_knee_left": [
+    110.749,
+    -77.7237,
+    387.786
+  ],
+  "medial_knee_left": [
+    33.2134,
+    -77.2004,
+    385.117
+  ],
+  "adductor_tubercle_left": [
+    32.4054,
+    -68.9364,
+    396.568
+  ],
+  "patella_superior_right": [
+    -85.2623,
+    -112.673,
+    400.796
+  ],
+  "patella_center_right": [
+    -82.8971,
+    -111.6812,
+    381.0039
+  ],
+  "patella_superior_left": [
+    85.5881,
+    -113.187,
+    400.763
+  ],
+  "patella_center_left": [
+    82.9808,
+    -111.5492,
+    382.4383
+  ],
+  "tibial_tuberosity_right": [
+    -88.0824,
+    -58.4011,
+    362.043
+  ],
+  "gerdy_tubercle_right": [
+    -104.884,
+    -61.134,
+    361.319
+  ],
+  "pes_anserinus_right": [
+    -51.7169,
+    -56.8942,
+    359.923
+  ],
+  "medial_malleolus_right": [
+    -44.8717,
+    -79.7368,
+    1.7825
+  ],
+  "tibial_tuberosity_left": [
+    58.4231,
+    -58.3581,
+    361.895
+  ],
+  "gerdy_tubercle_left": [
+    105.828,
+    -62.2382,
+    359.785
+  ],
+  "pes_anserinus_left": [
+    51.5294,
+    -59.1103,
+    360.841
+  ],
+  "medial_malleolus_left": [
+    44.8487,
+    -77.7206,
+    2.8575
+  ],
+  "fibular_head_right": [
+    -119.71,
+    -67.4063,
+    342.544
+  ],
+  "fibular_head_left": [
+    120.108,
+    -63.8389,
+    342.584
+  ],
+  "lateral_malleolus_right": [
+    -103.79,
+    -55.7852,
+    -13.5065
+  ],
+  "lateral_malleolus_left": [
+    103.814,
+    -56.1902,
+    -13.7169
+  ],
+  "heel_right": [
+    -91.2329,
+    -85.3893,
+    -48.7379
+  ],
+  "heel_left": [
+    92.4609,
+    -85.212,
+    -48.511
+  ],
+  "navicular_tuberosity_right": [
+    -59.6852,
+    -112.033,
+    -22.5476
+  ],
+  "fifth_metatarsal_base_right": [
+    -136.456,
+    -129.414,
+    -59.0668
+  ],
+  "fifth_metatarsal_head_right": [
+    -123.759,
+    -103.537,
+    -53.0876
+  ],
+  "first_metatarsal_head_right": [
+    -44.8758,
+    -44.2342,
+    -54.8628
+  ],
+  "second_metatarsal_head_right": [
+    -81.0652,
+    -74.9137,
+    -35.638
+  ],
+  "navicular_tuberosity_left": [
+    59.7254,
+    -111.978,
+    -25.5976
+  ],
+  "fifth_metatarsal_base_left": [
+    137.192,
+    -129.993,
+    -58.1788
+  ],
+  "fifth_metatarsal_head_left": [
+    123.816,
+    -103.864,
+    -52.9917
+  ],
+  "first_metatarsal_head_left": [
+    45.01,
+    -42.9701,
+    -55.9989
+  ],
+  "second_metatarsal_head_left": [
+    81.009,
+    -75.0448,
+    -36.9075
+  ]
+}
