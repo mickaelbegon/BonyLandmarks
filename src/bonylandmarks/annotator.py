@@ -635,7 +635,7 @@ class AnnotatorWindow(QMainWindow):
         _pan_btn_style = (
             "QPushButton { background-color: rgba(26,26,46,180); color: #e0e0e0; "
             "border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; "
-            "font-size: 14px; }"
+            "font-size: 12px; }"
             "QPushButton:hover { background-color: rgba(60,80,140,210); "
             "border-color: rgba(100,160,255,0.6); }"
             "QPushButton:pressed { background-color: rgba(30,60,120,230); }"
@@ -652,21 +652,17 @@ class AnnotatorWindow(QMainWindow):
             (2, 1, "▼", 0, -1),
         ):
             b = QPushButton(sym)
-            b.setFixedSize(36, 36)
+            b.setFixedSize(28, 28)
             b.setStyleSheet(_pan_btn_style)
             b.setToolTip(_pan_tip)
             b.clicked.connect(lambda _=None, _dx=dx, _dy=dy: self._pan_camera(_dx, _dy))
             grid.addWidget(b, row, col)
         layout.addWidget(pan_w)
 
-        mouse_info = QLabel(
-            "🖱 Rotation : clic\n"
-            "↕ Zoom : molette\n"
-            "⟺ Déplacement : Shift+clic"
-        )
+        mouse_info = QLabel("🖱 clic · ↕ molette · Shift+clic")
         mouse_info.setStyleSheet(
-            "font-size: 9px; color: rgba(180,180,220,0.75); "
-            "background: transparent; padding: 3px 2px;"
+            "font-size: 8px; color: rgba(180,180,220,0.65); "
+            "background: transparent; padding: 2px 1px;"
         )
         mouse_info.setAlignment(Qt.AlignCenter)
         layout.addWidget(mouse_info)
