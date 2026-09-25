@@ -40,6 +40,7 @@ from pathlib import Path
 
 import numpy as np
 import pyvista as pv
+import vtk
 from PySide6.QtCore import QEvent, Qt, QTimer
 from PySide6.QtGui import QAction, QColor, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
@@ -787,14 +788,39 @@ class AnnotatorWindow(QMainWindow):
         self._bone_plotter.setMinimumHeight(240)
         vl.addWidget(self._bone_plotter.interactor, stretch=1)
 
+        self._bone_edit_btn = QPushButton("✏ Modifier position")
+        self._bone_edit_btn.setCheckable(True)
+        self._bone_edit_btn.setEnabled(False)
+        self._bone_edit_btn.setToolTip(
+            "Cliquer pour activer, puis cliquer sur l'os pour déplacer le repère"
+        )
+        self._bone_edit_btn.setStyleSheet(
+            "QPushButton { font-size: 10px; padding: 3px 8px; background: #2a2a4a; "
+            "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
+            "QPushButton:checked { background: #4a3a00; color: #FFD700; "
+            "border-color: #FFD700; }"
+            "QPushButton:hover { background: #3a3a5a; }"
+        )
+        self._bone_edit_btn.toggled.connect(self._on_bone_edit_toggled)
+        vl.addWidget(self._bone_edit_btn)
+
+        self._active_bone_code: str | None = None
+        self._pick_obs_id: int | None = None
+        self._saved_interactor_style = None
+
         self._bone_dock.setWidget(content)
         self.addDockWidget(Qt.RightDockWidgetArea, self._bone_dock)
 
     def _load_bone_for(self, code: str | None) -> None:
         """Load and display the reference bone mesh for the given landmark code."""
+        self._exit_landmark_edit()
+        self._active_bone_code = code
+
         if code is None:
             self._bone_name_lbl.setText("Sélectionner un repère")
             self._bone_missing_lbl.setVisible(False)
+            self._bone_edit_btn.setEnabled(False)
+            self._bone_edit_btn.setChecked(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -805,6 +831,7 @@ class AnnotatorWindow(QMainWindow):
 
         if stem is None:
             self._bone_missing_lbl.setVisible(False)
+            self._bone_edit_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -821,6 +848,7 @@ class AnnotatorWindow(QMainWindow):
                     f"Fichier manquant : {stem}.stl\nVoir data/bones/README.md"
                 )
                 self._bone_missing_lbl.setVisible(True)
+                self._bone_edit_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -829,6 +857,7 @@ class AnnotatorWindow(QMainWindow):
             except Exception as exc:
                 self._bone_missing_lbl.setText(f"Erreur : {exc}")
                 self._bone_missing_lbl.setVisible(True)
+                self._bone_edit_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -850,8 +879,78 @@ class AnnotatorWindow(QMainWindow):
                 color="#FFD700", ambient=1.0, diffuse=0.3, specular=0.0,
                 show_scalar_bar=False,
             )
+        self._bone_plotter.add_axes(
+            xlabel="X  G/D", ylabel="Y  Post/Ant", zlabel="Z  Sup/Inf",
+            line_width=2,
+        )
         self._bone_plotter.reset_camera()
         self._bone_plotter.render()
+        self._bone_edit_btn.setEnabled(True)
+        self._bone_edit_btn.setChecked(False)
+        self._bone_edit_btn.setText("✏ Modifier position")
+
+    # ── Landmark position editing on bone mesh ──────────────────────────────
+
+    def _on_bone_edit_toggled(self, checked: bool) -> None:
+        if checked:
+            self._start_landmark_edit()
+        else:
+            self._exit_landmark_edit()
+
+    def _start_landmark_edit(self) -> None:
+        """Switch bone plotter to pick-one-point mode (disables camera rotation)."""
+        iren = self._bone_plotter.iren
+        self._saved_interactor_style = iren.GetInteractorStyle()
+        iren.SetInteractorStyle(vtk.vtkInteractorStyleUser())
+
+        picker = vtk.vtkCellPicker()
+        picker.SetTolerance(0.005)
+        iren.SetPicker(picker)
+
+        def _on_click(*_):
+            click_pos = iren.GetEventPosition()
+            picker.Pick(click_pos[0], click_pos[1], 0,
+                        self._bone_plotter.renderer)
+            world = picker.GetPickPosition()
+            if world != (0.0, 0.0, 0.0):
+                self._on_bone_pick_done(list(world))
+            self._exit_landmark_edit()
+
+        self._pick_obs_id = iren.AddObserver("LeftButtonPressEvent", _on_click)
+        self._bone_edit_btn.setText("⭕ Cliquer sur l'os…")
+
+    def _exit_landmark_edit(self) -> None:
+        """Restore normal camera-navigation interactor style."""
+        if self._pick_obs_id is not None:
+            try:
+                self._bone_plotter.iren.RemoveObserver(self._pick_obs_id)
+            except Exception:
+                pass
+            self._pick_obs_id = None
+        if self._saved_interactor_style is not None:
+            try:
+                self._bone_plotter.iren.SetInteractorStyle(
+                    self._saved_interactor_style
+                )
+            except Exception:
+                pass
+            self._saved_interactor_style = None
+        if hasattr(self, "_bone_edit_btn"):
+            self._bone_edit_btn.blockSignals(True)
+            self._bone_edit_btn.setChecked(False)
+            self._bone_edit_btn.setText("✏ Modifier position")
+            self._bone_edit_btn.blockSignals(False)
+
+    def _on_bone_pick_done(self, world_pos: list) -> None:
+        """Save picked position for the active landmark and refresh."""
+        code = self._active_bone_code
+        if not code:
+            return
+        lm = _lm_positions()
+        lm[code] = [round(float(v), 4) for v in world_pos]
+        with _LM_POSITIONS_FILE.open("w", encoding="utf-8") as f:
+            json.dump(lm, f, indent=2, ensure_ascii=False)
+        self._load_bone_for(code)
 
     def _setup_shortcuts(self) -> None:
         shortcuts = [
