@@ -910,31 +910,31 @@ class AnnotatorWindow(QMainWindow):
         """
         iren = self._bone_plotter.iren
         self._lm_picker = vtk.vtkCellPicker()
-        self._lm_picker.SetTolerance(0.005)
+        self._lm_picker.set_tolerance(0.005)
         self._lm_press_xy = None
 
         def _on_press(caller, event):
-            self._lm_press_xy = iren.GetEventPosition()
+            self._lm_press_xy = iren.get_event_position()
 
         def _on_release(caller, event):
             if self._lm_press_xy is None:
                 return
-            rx, ry = iren.GetEventPosition()
+            rx, ry = iren.get_event_position()
             px, py = self._lm_press_xy
             self._lm_press_xy = None
             if (rx - px) ** 2 + (ry - py) ** 2 > 25:   # drag -> skip
                 return
             # Clean click: pick surface point
-            self._lm_picker.Pick(rx, ry, 0, self._bone_plotter.renderer)
-            if self._lm_picker.GetCellId() >= 0:
-                self._on_bone_pick_done(list(self._lm_picker.GetPickPosition()))
+            self._lm_picker.pick(rx, ry, 0, self._bone_plotter.renderer)
+            if self._lm_picker.get_cell_id() >= 0:
+                self._on_bone_pick_done(list(self._lm_picker.get_pick_position()))
             self._exit_landmark_edit()
 
         # Store on self to keep strong Python references (prevents GC)
         self._press_cb   = _on_press
         self._release_cb = _on_release
-        self._press_obs   = iren.AddObserver("LeftButtonPressEvent",   self._press_cb)
-        self._release_obs = iren.AddObserver("LeftButtonReleaseEvent", self._release_cb)
+        self._press_obs   = iren.add_observer("LeftButtonPressEvent",   self._press_cb)
+        self._release_obs = iren.add_observer("LeftButtonReleaseEvent", self._release_cb)
         self._bone_edit_btn.setText("⭕ Cliquer sur l'os…")
 
     def _exit_landmark_edit(self) -> None:
@@ -946,7 +946,7 @@ class AnnotatorWindow(QMainWindow):
             obs_id = getattr(self, attr, None)
             if obs_id is not None:
                 try:
-                    iren.RemoveObserver(obs_id)
+                    iren.remove_observer(obs_id)
                 except Exception:
                     pass
                 setattr(self, attr, None)
