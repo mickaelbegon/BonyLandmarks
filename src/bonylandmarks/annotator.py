@@ -69,6 +69,21 @@ from .landmarks_extended import LANDMARKS, THEME_LABELS, Landmark
 from .mesh_loader import load_avatar_glb, load_glb_mesh
 
 _BONES_DIR = Path(__file__).parent / "data" / "bones"
+_LM_POSITIONS_FILE = _BONES_DIR / "landmark_positions.json"
+
+_lm_positions_cache: dict[str, list[float]] | None = None
+
+
+def _lm_positions() -> dict[str, list[float]]:
+    global _lm_positions_cache
+    if _lm_positions_cache is None:
+        if _LM_POSITIONS_FILE.exists():
+            with _LM_POSITIONS_FILE.open(encoding="utf-8") as _f:
+                _lm_positions_cache = json.load(_f)
+        else:
+            _lm_positions_cache = {}
+    return _lm_positions_cache
+
 
 # ─── Annotation file format ──────────────────────────────────────────────────
 
@@ -827,6 +842,14 @@ class AnnotatorWindow(QMainWindow):
             ambient=0.3, diffuse=0.9, specular=0.2,
             show_scalar_bar=False,
         )
+        pos = _lm_positions().get(code)
+        if pos is not None:
+            r = self._bone_cache[stem].length * 0.013
+            self._bone_plotter.add_mesh(
+                pv.Sphere(radius=r, center=pos),
+                color="#FFD700", ambient=1.0, diffuse=0.3, specular=0.0,
+                show_scalar_bar=False,
+            )
         self._bone_plotter.reset_camera()
         self._bone_plotter.render()
 
