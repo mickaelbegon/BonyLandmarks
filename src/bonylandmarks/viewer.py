@@ -991,63 +991,64 @@ class LandmarkViewer(QWidget):
         self._plotter.render()
 
     def _build_nav_overlay(self) -> None:
-        """Create a semi-transparent floating toolbar anchored to the 3D viewport."""
+        """Create a compact floating toolbar anchored to the 3D viewport."""
         container = self._plotter.interactor
 
         overlay = QWidget(container)
         overlay.setObjectName("nav_overlay")
         overlay.setAttribute(Qt.WA_TranslucentBackground)
-        overlay.setStyleSheet("""
-            QWidget#nav_overlay {
-                background: transparent;
-            }
-            QPushButton {
-                background-color: rgba(26, 26, 46, 180);
-                color: #e0e0e0;
-                border: 1px solid rgba(255,255,255,0.15);
-                border-radius: 6px;
-                font-size: 11px;
-                padding: 0px;
-                min-width: 84px;
-                min-height: 84px;
-                max-width: 84px;
-                max-height: 84px;
-            }
-            QPushButton:hover {
-                background-color: rgba(60, 80, 140, 210);
-                border-color: rgba(100,160,255,0.6);
-            }
-            QPushButton:pressed {
-                background-color: rgba(30, 60, 120, 230);
-            }
-        """)
+
+        _btn_ss = (
+            "QPushButton { background-color: rgba(26,26,46,180); color: #e0e0e0; "
+            "border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; "
+            "font-size: 11px; padding: 0px; }"
+            "QPushButton:hover { background-color: rgba(60,80,140,210); "
+            "border-color: rgba(100,160,255,0.6); }"
+            "QPushButton:pressed { background-color: rgba(30,60,120,230); }"
+        )
+
         layout = QVBoxLayout(overlay)
-        layout.setSpacing(4)
-        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(3)
+        layout.setContentsMargins(5, 5, 5, 5)
 
-        # (png_filename_or_None, tooltip_fr, callback)
-        buttons = [
-            ("view_front.png",      "Vue avant [1]",     lambda: self._set_view(self._front_axis, -1)),
-            ("view_back.png",       "Vue arrière [2]",   lambda: self._set_view(self._front_axis, +1)),
-            ("view_side_right.png", "Vue droite [3]",    lambda: self._set_view(self._side_axis, -1)),
-            ("view_side_left.png",  "Vue gauche [4]",    lambda: self._set_view(self._side_axis, +1)),
-            ("view_top.png",        "Vue dessus [5]",    self._view_top),
-            (None,                  "Réinitialiser [R]", self._reset_view),
+        # ── Vues preset : grille 2 × 3 (46×46 px par bouton) ─────────────────
+        # row 0: front | back
+        # row 1: right | left
+        # row 2: top   | reset
+        _BTN_SZ = 46
+        _ICON_SZ = 34
+        view_w = QWidget()
+        view_w.setAttribute(Qt.WA_TranslucentBackground)
+        vgrid = QGridLayout(view_w)
+        vgrid.setSpacing(3)
+        vgrid.setContentsMargins(0, 0, 0, 0)
+
+        view_defs = [
+            # (row, col, icon_file_or_None, label, tooltip, callback)
+            (0, 0, "view_front.png",      "Av",  "Vue avant [1]",     lambda: self._set_view(self._front_axis, -1)),
+            (0, 1, "view_back.png",       "Ar",  "Vue arrière [2]",   lambda: self._set_view(self._front_axis, +1)),
+            (1, 0, "view_side_right.png", "D",   "Vue droite [3]",    lambda: self._set_view(self._side_axis, -1)),
+            (1, 1, "view_side_left.png",  "G",   "Vue gauche [4]",    lambda: self._set_view(self._side_axis, +1)),
+            (2, 0, "view_top.png",        "↑",   "Vue dessus [5]",    self._view_top),
+            (2, 1, None,                  "↺",   "Réinitialiser [R]", self._reset_view),
         ]
-        for filename, tooltip, cb in buttons:
+        for row, col, fname, label, tip, cb in view_defs:
             btn = QPushButton()
-            btn.setToolTip(tooltip)
-            if filename is not None:
-                icon = _body_icon(filename, size=66)
+            btn.setFixedSize(_BTN_SZ, _BTN_SZ)
+            btn.setToolTip(tip)
+            btn.setStyleSheet(_btn_ss)
+            if fname is not None:
+                icon = _body_icon(fname, size=_ICON_SZ)
                 btn.setIcon(icon)
-                btn.setIconSize(QSize(66, 66))
+                btn.setIconSize(QSize(_ICON_SZ, _ICON_SZ))
             else:
-                btn.setText("↺")
-                btn.setStyleSheet(btn.styleSheet() + "font-size: 20px;")
+                btn.setText(label)
+                btn.setStyleSheet(_btn_ss + "font-size: 18px;")
             btn.clicked.connect(cb)
-            layout.addWidget(btn)
+            vgrid.addWidget(btn, row, col)
+        layout.addWidget(view_w)
 
-        # ── Séparateur + boutons de translation ──────────────────────────────
+        # ── Séparateur ────────────────────────────────────────────────────────
         sep = QFrame()
         sep.setFrameShape(QFrame.HLine)
         sep.setStyleSheet(
@@ -1055,47 +1056,35 @@ class LandmarkViewer(QWidget):
         )
         layout.addWidget(sep)
 
+        # ── Boutons de translation (croix directionnelle 28×28) ───────────────
         _pan_tip = (
             "Translation · aussi : Shift + clic-gauche glisser\n"
             "Zoom : molette  ·  Rotation : clic-gauche glisser"
         )
-        _pan_btns = [
-            # (row, col, symbol, dx, dy)
+        pan_w = QWidget()
+        pan_w.setAttribute(Qt.WA_TranslucentBackground)
+        pgrid = QGridLayout(pan_w)
+        pgrid.setSpacing(2)
+        pgrid.setContentsMargins(0, 0, 0, 0)
+        for row, col, sym, dx, dy in (
             (0, 1, "▲", 0,  1),
             (1, 0, "◀", -1, 0),
             (1, 2, "▶", +1, 0),
             (2, 1, "▼", 0, -1),
-        ]
-        pan_w = QWidget()
-        pan_w.setAttribute(Qt.WA_TranslucentBackground)
-        grid = QGridLayout(pan_w)
-        grid.setSpacing(2)
-        grid.setContentsMargins(0, 0, 0, 0)
-        for row, col, sym, dx, dy in _pan_btns:
+        ):
             b = QPushButton(sym)
-            b.setFixedSize(36, 36)
-            b.setStyleSheet(
-                "QPushButton { background-color: rgba(26,26,46,180); color: #e0e0e0; "
-                "border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; "
-                "font-size: 14px; }"
-                "QPushButton:hover { background-color: rgba(60,80,140,210); "
-                "border-color: rgba(100,160,255,0.6); }"
-                "QPushButton:pressed { background-color: rgba(30,60,120,230); }"
-            )
+            b.setFixedSize(28, 28)
+            b.setStyleSheet(_btn_ss + "font-size: 12px;")
             b.setToolTip(_pan_tip)
             b.clicked.connect(lambda _=None, _dx=dx, _dy=dy: self._pan_camera(_dx, _dy))
-            grid.addWidget(b, row, col)
+            pgrid.addWidget(b, row, col)
         layout.addWidget(pan_w)
 
-        # ── Légende des contrôles souris ──────────────────────────────────────
-        mouse_info = QLabel(
-            "🖱 Rotation : clic\n"
-            "↕ Zoom : molette\n"
-            "⟺ Déplacement : Shift+clic"
-        )
+        # ── Légende souris (une seule ligne compacte) ─────────────────────────
+        mouse_info = QLabel("🖱 clic · ↕ molette · Shift+clic")
         mouse_info.setStyleSheet(
-            "font-size: 9px; color: rgba(180,180,220,0.75); "
-            "background: transparent; padding: 3px 2px;"
+            "font-size: 8px; color: rgba(180,180,220,0.65); "
+            "background: transparent; padding: 2px 1px;"
         )
         mouse_info.setAlignment(Qt.AlignCenter)
         layout.addWidget(mouse_info)
