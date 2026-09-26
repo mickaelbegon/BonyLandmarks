@@ -108,6 +108,7 @@ _ACTOR_PREFIX = "lm_"
 _LABEL_PREFIX = "lbl_"
 _EMG_REF_ACTOR_PREFIX = "emg_ref_"
 _EMG_LINE_ACTOR = "emg_line"
+_PUBIC_TEMP_ACTOR = "pubic_temp"
 
 # ─── Widget styles ───────────────────────────────────────────────────────────
 
@@ -266,6 +267,9 @@ class AnnotatorWindow(QMainWindow):
         self._dirty: bool = False
         self._updating_list: bool = False
         self._sphere_radius: float = 8.0
+
+        # Two-click placement state (pubic_symphysis only)
+        self._pubic_first: np.ndarray | None = None
 
         # Camera geometry, filled by _setup_camera()
         self._up_axis: int = 2
@@ -1779,11 +1783,21 @@ class AnnotatorWindow(QMainWindow):
             "Placer  (clic sur le corps)" if checked
             else "Placement désactivé  (rotation libre)"
         )
-        self.statusBar().showMessage(
-            "Mode placement actif : cliquez sur le corps."
-            if checked else
-            "Mode placement désactivé : le clic ne fait que tourner la vue."
-        )
+        lm = self._current_landmark()
+        if checked and lm is not None and lm.code == "pubic_symphysis":
+            msg = "Symphyse pubienne : clic 2/2 — palper le bord droit" if self._pubic_first is not None \
+                else "Symphyse pubienne : clic 1/2 — palper le bord gauche"
+        elif checked:
+            msg = "Mode placement actif : cliquez sur le corps."
+        else:
+            # Toggling off: discard any pending first click for pubic_symphysis
+            if self._pubic_first is not None:
+                self._pubic_first = None
+                self._plotter.remove_actor(_PUBIC_TEMP_ACTOR, render=False)
+                self._plotter.remove_actor(f"{_PUBIC_TEMP_ACTOR}_lbl", render=False)
+                self._plotter.render()
+            msg = "Mode placement désactivé : le clic ne fait que tourner la vue."
+        self.statusBar().showMessage(msg)
 
     def _on_surface_pick(self, point) -> None:
         """PyVista callback: the user clicked a point on the body surface."""
@@ -1798,6 +1812,53 @@ class AnnotatorWindow(QMainWindow):
             )
             return
 
+        # ── Two-click placement for pubic_symphysis ───────────────────────────
+        if lm.code == "pubic_symphysis":
+            pt = np.array(point, dtype=float).ravel()[:3]
+            if self._pubic_first is None:
+                # First click: store temp point, show yellow semi-transparent sphere
+                self._pubic_first = pt
+                self._plotter.remove_actor(_PUBIC_TEMP_ACTOR, render=False)
+                temp_sphere = pv.Sphere(radius=self._sphere_radius, center=pt)
+                self._plotter.add_mesh(
+                    temp_sphere,
+                    color="#ffdd00", opacity=0.55,
+                    name=_PUBIC_TEMP_ACTOR, pickable=False, render=False,
+                )
+                try:
+                    self._plotter.add_point_labels(
+                        np.asarray([pt], dtype=float),
+                        ["1/2 — clic gauche"],
+                        name=f"{_PUBIC_TEMP_ACTOR}_lbl",
+                        font_size=11, text_color="#ffdd00",
+                        shape=None, always_visible=True, render=False,
+                    )
+                except Exception:  # pragma: no cover
+                    pass
+                self._plotter.render()
+                self.statusBar().showMessage(
+                    "Symphyse pubienne : clic 1/2 — palper le bord gauche"
+                )
+                return
+            else:
+                # Second click: average the two points → final placement
+                midpoint = (self._pubic_first + pt) / 2.0
+                self._pubic_first = None
+                self._plotter.remove_actor(_PUBIC_TEMP_ACTOR, render=False)
+                self._plotter.remove_actor(f"{_PUBIC_TEMP_ACTOR}_lbl", render=False)
+                self._placed[lm.code] = midpoint
+                self._draw_marker(lm.code)
+                self._plotter.render()
+                self._mark_dirty()
+                self._refresh_list()
+                self._update_info_panel()
+                pos = self._placed[lm.code]
+                self.statusBar().showMessage(
+                    f"{lm.code} placé à ({pos[0]:.1f}, {pos[1]:.1f}, {pos[2]:.1f}) mm"
+                )
+                return
+
+        # ── Standard single-click placement ───────────────────────────────────
         self._placed[lm.code] = np.array(point, dtype=float).ravel()[:3]
         self._draw_marker(lm.code)
         self._plotter.render()
@@ -1814,6 +1875,17 @@ class AnnotatorWindow(QMainWindow):
         if isinstance(QApplication.focusWidget(), QLineEdit):
             return
         code = self._active_code
+
+        # Reset two-click state for pubic_symphysis if interrupted
+        if self._pubic_first is not None:
+            self._pubic_first = None
+            self._plotter.remove_actor(_PUBIC_TEMP_ACTOR, render=False)
+            self._plotter.remove_actor(f"{_PUBIC_TEMP_ACTOR}_lbl", render=False)
+            if code == "pubic_symphysis" and code not in self._placed:
+                self._plotter.render()
+                self.statusBar().showMessage("Placement symphyse pubienne annulé.")
+                return
+
         if code is None or code not in self._placed:
             return
         del self._placed[code]
