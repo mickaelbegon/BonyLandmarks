@@ -42,7 +42,7 @@ import numpy as np
 import pyvista as pv
 import vtk
 from PySide6.QtCore import QEvent, Qt, QTimer
-from PySide6.QtGui import QAction, QColor, QKeySequence, QShortcut
+from PySide6.QtGui import QAction, QColor, QCursor, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -57,6 +57,7 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QMainWindow,
     QMessageBox,
+    QMenu,
     QPushButton,
     QScrollArea,
     QSlider,
@@ -798,6 +799,7 @@ class AnnotatorWindow(QMainWindow):
         self._bone_plotter.enable_3_lights()
         self._bone_plotter.setMinimumHeight(240)
         vl.addWidget(self._bone_plotter.interactor, stretch=1)
+        self._setup_muscle_pick_observer()
 
         self._bone_edit_btn = QPushButton("✏ Modifier position")
         self._bone_edit_btn.setCheckable(True)
@@ -920,6 +922,9 @@ class AnnotatorWindow(QMainWindow):
         self._muscle_list_populated: bool = False
         self._muscle_names: dict[int, str] = {}
         self._muscle_index: dict[int, Path] | None = None
+        self._muscle_actors: dict[int, object] = {}
+        self._muscle_press_xy: tuple[int, int] | None = None
+        self._muscle_picker: object = None
         from .muscle_map import build_muscle_index, find_bp3d_dir
         self._bp3d_dir: Path | None = find_bp3d_dir()
         if self._bp3d_dir is not None:
@@ -1004,6 +1009,7 @@ class AnnotatorWindow(QMainWindow):
 
         self._bone_missing_lbl.setVisible(False)
         self._bone_plotter.clear()
+        self._muscle_actors.clear()
         self._bone_plotter.enable_3_lights()
         if self._bone_show_curv:
             if stem not in self._bone_curv_cache:
@@ -1038,18 +1044,22 @@ class AnnotatorWindow(QMainWindow):
             )
         self._add_bone_overlay(stem)
         if self._muscle_index is not None and self._muscle_mode != "none":
-            from .muscle_map import get_muscle_paths
+            from .muscle_map import BONE_MUSCLES
             if self._muscle_mode == "auto":
-                mpaths = get_muscle_paths(stem, self._bp3d_dir, self._muscle_index)
+                fids = BONE_MUSCLES.get(stem, [])
             else:
-                mpaths = [self._muscle_index[fid] for fid in self._custom_muscle_ids if fid in self._muscle_index]
-            for mpath in mpaths:
+                fids = list(self._custom_muscle_ids)
+            for fid in fids:
+                mpath = self._muscle_index.get(fid)
+                if mpath is None:
+                    continue
                 try:
                     mmesh = pv.read(str(mpath))
-                    self._bone_plotter.add_mesh(
+                    actor = self._bone_plotter.add_mesh(
                         mmesh, color="#cc7744", opacity=0.22,
                         smooth_shading=True, show_scalar_bar=False,
                     )
+                    self._muscle_actors[fid] = actor
                 except Exception:
                     pass
         self._bone_plotter.add_axes(
@@ -1202,6 +1212,74 @@ class AnnotatorWindow(QMainWindow):
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
+
+    # ── Muscle picking (clic gauche sur un muscle → désactiver) ─────────────
+
+    def _setup_muscle_pick_observer(self) -> None:
+        self._muscle_picker = vtk.vtkPropPicker()
+        iren = self._bone_plotter.iren.GetInteractor()
+
+        def _on_press(obj, _event):
+            if self._bone_edit_btn.isChecked():
+                return
+            self._muscle_press_xy = obj.GetEventPosition()
+
+        def _on_release(obj, _event):
+            if self._bone_edit_btn.isChecked() or not self._muscle_actors:
+                return
+            rx, ry = obj.GetEventPosition()
+            if self._muscle_press_xy is None:
+                return
+            px, py = self._muscle_press_xy
+            if abs(rx - px) > 5 or abs(ry - py) > 5:
+                return  # drag, pas un clic
+            self._muscle_picker.Pick(rx, ry, 0, self._bone_plotter.renderer)
+            actor = self._muscle_picker.GetActor()
+            if actor is None:
+                return
+            for fma_id, a in self._muscle_actors.items():
+                if a is actor:
+                    self._show_muscle_context_menu(fma_id)
+                    break
+
+        iren.AddObserver("LeftButtonPressEvent", _on_press)
+        iren.AddObserver("LeftButtonReleaseEvent", _on_release)
+
+    def _show_muscle_context_menu(self, fma_id: int) -> None:
+        name = self._muscle_names.get(fma_id, f"FMA{fma_id}")
+        menu = QMenu(self)
+        act = menu.addAction(f"Désactiver « {name} »")
+        if menu.exec(QCursor.pos()) is act:
+            self._deactivate_muscle(fma_id)
+
+    def _deactivate_muscle(self, fma_id: int) -> None:
+        if self._muscle_mode == "auto":
+            from .muscle_map import BONE_MUSCLES
+            stem = LANDMARK_BONE.get(self._active_bone_code or "")
+            self._custom_muscle_ids = set(BONE_MUSCLES.get(stem or "", [])) - {fma_id}
+            self._muscle_mode_combo.blockSignals(True)
+            self._muscle_mode_combo.setCurrentIndex(2)
+            self._muscle_mode_combo.blockSignals(False)
+            self._muscle_mode = "custom"
+            self._muscle_list.setVisible(True)
+            if not self._muscle_list_populated:
+                self._populate_muscle_list()
+            self._sync_list_from_custom_ids()
+        elif self._muscle_mode == "custom":
+            self._custom_muscle_ids.discard(fma_id)
+            self._sync_list_from_custom_ids()
+        if self._active_bone_code:
+            cam = self._bone_plotter.camera_position
+            self._load_bone_for(self._active_bone_code)
+            self._bone_plotter.camera_position = cam
+
+    def _sync_list_from_custom_ids(self) -> None:
+        self._muscle_list.blockSignals(True)
+        for i in range(self._muscle_list.count()):
+            item = self._muscle_list.item(i)
+            state = Qt.Checked if item.data(Qt.UserRole) in self._custom_muscle_ids else Qt.Unchecked
+            item.setCheckState(state)
+        self._muscle_list.blockSignals(False)
 
     # ── Landmark position editing on bone mesh ──────────────────────────────
 
