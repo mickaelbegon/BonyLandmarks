@@ -199,9 +199,10 @@ for s in ("right", "left"):
 
 # ── Clavicule  ────────────────────────────────────────────────────────────────
 def _ac_joint(p, l):
-    # Scapula acromion lateral face: the acromion is most lateral + superior in scapula
-    mask = pct_mask(p, AX_Z, 80, 100)
-    return p[score_extreme(p, [(AX_X, l), (AX_Z, SUP)], mask=mask)].tolist()
+    # ACJ: medial end of acromion at the very top of the scapula (articular face with clavicle)
+    # Most MEDIAL (-l direction) and ANTERIOR in the top 4% Z → finds the clavicular facet
+    mask = pct_mask(p, AX_Z, 96, 100)
+    return p[score_extreme(p, [(AX_X, -l), (AX_Y, ANT)], mask=mask)].tolist()
 
 def _sc_joint(p, l):
     # Medial end of clavicle: most medial, then anterior + superior (articular face)
@@ -222,20 +223,28 @@ def _greater_tubercle(p, l):
     return p[score_extreme(p, [(AX_X, l * 3), (AX_Z, SUP)], mask=mask)].tolist()
 
 def _deltoid_tub(p, l):
-    mask = pct_mask(p, AX_Z, 40, 62)
-    return p[extreme(p, AX_X, l, mask=mask)].tolist()
+    # Deltoid tuberosity: mid-to-upper shaft, most LATERAL + preferring LOWER Z
+    # Mask: above 57% of humeral length (excludes lower shaft and the narrow elbow region)
+    # Score lX - Z: prefer lateral and then the lowest possible Z in that band
+    # This identifies the tuberosity as the most prominent lateral bump just above mid-shaft
+    z = p[:, AX_Z]
+    zmin, zmax = z.min(), z.max()
+    mask = z >= zmin + 0.57 * (zmax - zmin)
+    return p[score_extreme(p, [(AX_X, l), (AX_Z, -SUP)], mask=mask)].tolist()
 
 def _lat_epicondyle(p, l):
-    mask = pct_mask(p, AX_Z, 0, 18)
-    return p[extreme(p, AX_X, l, mask=mask)].tolist()
+    # Lateral epicondyle is on the postero-lateral face → add posterior weight, extend Z range
+    mask = pct_mask(p, AX_Z, 0, 22)
+    return p[score_extreme(p, [(AX_X, l * 2), (AX_Y, -ANT)], mask=mask)].tolist()
 
 def _med_epicondyle(p, l):
     mask = pct_mask(p, AX_Z, 0, 18)
     return p[extreme(p, AX_X, -l, mask=mask)].tolist()
 
 def _radiale(p, l):
-    mask = pct_mask(p, AX_Z, 0, 22)
-    return p[score_extreme(p, [(AX_X, l), (AX_Y, ANT)], mask=mask)].tolist()
+    # Radiale = radial head = proximal end of the radius: highest Z point (lateral tiebreaker)
+    mask = pct_mask(p, AX_Z, 88, 100)
+    return p[score_extreme(p, [(AX_Z, SUP * 5), (AX_X, l)], mask=mask)].tolist()
 
 for s in ("right", "left"):
     l = lat(s)
@@ -243,7 +252,7 @@ for s in ("right", "left"):
     RULES[f"deltoid_tuberosity_{s}"] = (f"humerus_{s}", lambda p, _l=l: _deltoid_tub(p, _l))
     RULES[f"lateral_epicondyle_{s}"] = (f"humerus_{s}", lambda p, _l=l: _lat_epicondyle(p, _l))
     RULES[f"medial_epicondyle_{s}"]  = (f"humerus_{s}", lambda p, _l=l: _med_epicondyle(p, _l))
-    RULES[f"radiale_{s}"]            = (f"humerus_{s}", lambda p, _l=l: _radiale(p, _l))
+    RULES[f"radiale_{s}"]            = (f"radius_{s}",  lambda p, _l=l: _radiale(p, _l))
 
 # ── Radius  ───────────────────────────────────────────────────────────────────
 def _radial_styloid(p, l):
