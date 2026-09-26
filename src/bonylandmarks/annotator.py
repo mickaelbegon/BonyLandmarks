@@ -73,6 +73,9 @@ from .mesh_loader import load_avatar_glb, load_glb_mesh
 _BONES_DIR = Path(__file__).parent / "data" / "bones"
 _LM_POSITIONS_FILE = _BONES_DIR / "landmark_positions.json"
 
+# Lookup rapide code → nom français
+_LM_NAME_FR: dict[str, str] = {lm.code: lm.name_fr for lm in LANDMARKS}
+
 _lm_positions_cache: dict[str, list[float]] | None = None
 
 
@@ -1600,6 +1603,7 @@ class AnnotatorWindow(QMainWindow):
         self._position_hud_overlay()
         self._load_bone_for(lm.code)
         self._draw_emg_refs(lm)
+        self._add_emg_bone_refs(lm)
 
     def _update_progress(self) -> None:
         n_filtered_done = sum(1 for lm in self._filtered if lm.code in self._placed)
@@ -1697,10 +1701,11 @@ class AnnotatorWindow(QMainWindow):
                 pickable=False,
                 render=False,
             )
+            label = _LM_NAME_FR.get(code, code)
             try:
                 self._plotter.add_point_labels(
                     np.asarray([pos], dtype=float),
-                    [code],
+                    [label],
                     name=f"{_EMG_REF_ACTOR_PREFIX}lbl_{i}",
                     font_size=10,
                     text_color=color,
@@ -1723,6 +1728,49 @@ class AnnotatorWindow(QMainWindow):
                 opacity=0.75,
             )
         self._plotter.render()
+
+    def _add_emg_bone_refs(self, lm: "Landmark") -> None:
+        """Overlay reference bones + colored spheres in the bone dock for EMG landmarks."""
+        if lm.category != "EMG":
+            return
+        ref_codes = EMG_REFERENCES.get(lm.code, [])
+        positions = _lm_positions()
+        main_stem = LANDMARK_BONE.get(lm.code)
+        main_mesh = self._bone_cache.get(main_stem) if main_stem else None
+        r = main_mesh.length * 0.013 if main_mesh is not None else self._sphere_radius
+        added_any = False
+        for i, code in enumerate(ref_codes):
+            pos = positions.get(code)
+            if pos is None:
+                continue
+            color = EMG_REF_COLORS[i] if i < len(EMG_REF_COLORS) else "#ffffff"
+            ref_stem = LANDMARK_BONE.get(code)
+            if ref_stem is not None and ref_stem != main_stem:
+                if ref_stem not in self._bone_cache:
+                    for ext in (".stl", ".obj", ".STL", ".OBJ"):
+                        p = _BONES_DIR / f"{ref_stem}{ext}"
+                        if p.exists():
+                            try:
+                                self._bone_cache[ref_stem] = pv.read(str(p))
+                            except Exception:
+                                pass
+                            break
+                ref_mesh = self._bone_cache.get(ref_stem)
+                if ref_mesh is not None:
+                    self._bone_plotter.add_mesh(
+                        ref_mesh,
+                        color="#aaaaaa", opacity=0.28, smooth_shading=True,
+                        show_scalar_bar=False,
+                    )
+            self._bone_plotter.add_mesh(
+                pv.Sphere(radius=r * 1.2, center=pos),
+                color=color, ambient=1.0, diffuse=0.3, specular=0.0,
+                show_scalar_bar=False,
+            )
+            added_any = True
+        if added_any:
+            self._bone_plotter.reset_camera()
+            self._bone_plotter.render()
 
     # ── Placement callbacks ───────────────────────────────────────────────────
 
