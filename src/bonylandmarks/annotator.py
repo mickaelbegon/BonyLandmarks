@@ -817,30 +817,34 @@ class AnnotatorWindow(QMainWindow):
         self._bone_edit_btn.toggled.connect(self._on_bone_edit_toggled)
         vl.addWidget(self._bone_edit_btn)
 
-        _ovl_ss = (
-            "QPushButton { font-size: 10px; padding: 3px 6px; background: #2a2a4a; "
-            "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
-            "QPushButton:checked { background: #002244; color: #66aaee; border-color: #66aaee; }"
-            "QPushButton:hover { background: #3a3a5a; }"
-            "QPushButton:disabled { color: #555566; border-color: #333355; }"
+        self._overlay_combo = QComboBox()
+        self._overlay_combo.addItems(["🦴 Os — Aucun", "🦴 Os — Adjacents", "🦴 Os — Tous", "🦴 Os — Personnalisé…"])
+        self._overlay_combo.setEnabled(False)
+        self._overlay_combo.setToolTip(
+            "Aucun : aucun os supplémentaire\n"
+            "Adjacents : os partageant une articulation avec l'os courant\n"
+            "Tous : squelette complet en transparence\n"
+            "Personnalisé : choisir librement les os à afficher"
         )
-        ovl_row = QHBoxLayout()
-        ovl_row.setSpacing(4)
-        self._skel_btn = QPushButton("🦴 Squelette")
-        self._skel_btn.setCheckable(True)
-        self._skel_btn.setEnabled(False)
-        self._skel_btn.setToolTip("Afficher tout le squelette en transparence")
-        self._skel_btn.setStyleSheet(_ovl_ss)
-        self._skel_btn.toggled.connect(self._on_skel_toggled)
-        self._adj_btn = QPushButton("🔗 Adjacents")
-        self._adj_btn.setCheckable(True)
-        self._adj_btn.setEnabled(False)
-        self._adj_btn.setToolTip("Afficher les os partageant une articulation avec cet os")
-        self._adj_btn.setStyleSheet(_ovl_ss)
-        self._adj_btn.toggled.connect(self._on_adj_toggled)
-        ovl_row.addWidget(self._skel_btn)
-        ovl_row.addWidget(self._adj_btn)
-        vl.addLayout(ovl_row)
+        self._overlay_combo.setStyleSheet(
+            "QComboBox { font-size: 10px; padding: 3px 6px; background: #2a2a4a; "
+            "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
+            "QComboBox:disabled { color: #555566; border-color: #333355; }"
+            "QComboBox::drop-down { border: none; }"
+        )
+        self._overlay_combo.currentIndexChanged.connect(self._on_overlay_mode_changed)
+        vl.addWidget(self._overlay_combo)
+
+        self._overlay_list = QListWidget()
+        self._overlay_list.setVisible(False)
+        self._overlay_list.setMaximumHeight(150)
+        self._overlay_list.setStyleSheet(
+            "QListWidget { font-size: 9px; background: #1a1a2e; color: #aaaacc; "
+            "border: 1px solid #3a3a5a; border-radius: 2px; }"
+            "QListWidget::item:hover { background: #2a2a4a; }"
+        )
+        self._overlay_list.itemChanged.connect(self._on_overlay_item_changed)
+        vl.addWidget(self._overlay_list)
 
         self._bone_curv_btn = QPushButton("∿ Courbure")
         self._bone_curv_btn.setCheckable(True)
@@ -913,7 +917,9 @@ class AnnotatorWindow(QMainWindow):
         self._bone_curv_thresh_slider.setVisible(False)
         vl.addWidget(self._bone_curv_thresh_slider)
 
-        self._overlay_mode: str | None = None
+        self._overlay_mode: str = "none"  # "none"|"adjacent"|"skeleton"|"custom"
+        self._custom_overlay_stems: set[str] = set()
+        self._overlay_list_populated: bool = False
         self._bone_show_curv: bool = False
         self._bone_curv_cache: dict[str, tuple[pv.PolyData, np.ndarray]] = {}
         self._active_bone_code: str | None = None
@@ -950,8 +956,7 @@ class AnnotatorWindow(QMainWindow):
             self._bone_missing_lbl.setVisible(False)
             self._bone_edit_btn.setEnabled(False)
             self._bone_edit_btn.setChecked(False)
-            self._skel_btn.setEnabled(False)
-            self._adj_btn.setEnabled(False)
+            self._overlay_combo.setEnabled(False)
             self._bone_curv_btn.setEnabled(False)
             self._muscle_mode_combo.setEnabled(False)
             self._bone_plotter.clear()
@@ -965,8 +970,7 @@ class AnnotatorWindow(QMainWindow):
         if stem is None:
             self._bone_missing_lbl.setVisible(False)
             self._bone_edit_btn.setEnabled(False)
-            self._skel_btn.setEnabled(False)
-            self._adj_btn.setEnabled(False)
+            self._overlay_combo.setEnabled(False)
             self._bone_curv_btn.setEnabled(False)
             self._muscle_mode_combo.setEnabled(False)
             self._bone_plotter.clear()
@@ -986,8 +990,7 @@ class AnnotatorWindow(QMainWindow):
                 )
                 self._bone_missing_lbl.setVisible(True)
                 self._bone_edit_btn.setEnabled(False)
-                self._skel_btn.setEnabled(False)
-                self._adj_btn.setEnabled(False)
+                self._overlay_combo.setEnabled(False)
                 self._bone_curv_btn.setEnabled(False)
                 self._muscle_mode_combo.setEnabled(False)
                 self._bone_plotter.clear()
@@ -999,8 +1002,7 @@ class AnnotatorWindow(QMainWindow):
                 self._bone_missing_lbl.setText(f"Erreur : {exc}")
                 self._bone_missing_lbl.setVisible(True)
                 self._bone_edit_btn.setEnabled(False)
-                self._skel_btn.setEnabled(False)
-                self._adj_btn.setEnabled(False)
+                self._overlay_combo.setEnabled(False)
                 self._bone_curv_btn.setEnabled(False)
                 self._muscle_mode_combo.setEnabled(False)
                 self._bone_plotter.clear()
@@ -1071,20 +1073,21 @@ class AnnotatorWindow(QMainWindow):
         self._bone_edit_btn.setEnabled(True)
         self._bone_edit_btn.setChecked(False)
         self._bone_edit_btn.setText("✏ Modifier position")
-        self._skel_btn.setEnabled(True)
-        self._adj_btn.setEnabled(True)
+        self._overlay_combo.setEnabled(True)
         self._bone_curv_btn.setEnabled(True)
         self._muscle_mode_combo.setEnabled(self._bp3d_dir is not None or self._muscle_index is not None)
 
     # ── Bone overlay (skeleton / adjacent) ──────────────────────────────────
 
     def _add_bone_overlay(self, current_stem: str) -> None:
-        if self._overlay_mode is None:
+        if self._overlay_mode == "none":
             return
         if self._overlay_mode == "skeleton":
             extra = [s for s in BONE_LABEL_FR if s != current_stem]
-        else:  # "adjacent"
+        elif self._overlay_mode == "adjacent":
             extra = BONE_JOINTS.get(current_stem, [])
+        else:  # "custom"
+            extra = [s for s in self._custom_overlay_stems if s != current_stem]
         for s in extra:
             if s not in self._bone_cache:
                 for ext in (".stl", ".obj", ".STL", ".OBJ"):
@@ -1104,28 +1107,39 @@ class AnnotatorWindow(QMainWindow):
                 show_scalar_bar=False,
             )
 
-    def _on_skel_toggled(self, checked: bool) -> None:
-        if checked:
-            self._adj_btn.blockSignals(True)
-            self._adj_btn.setChecked(False)
-            self._adj_btn.blockSignals(False)
-            self._overlay_mode = "skeleton"
-        else:
-            self._overlay_mode = None
+    def _on_overlay_mode_changed(self, index: int) -> None:
+        modes = ["none", "adjacent", "skeleton", "custom"]
+        self._overlay_mode = modes[index]
+        is_custom = self._overlay_mode == "custom"
+        self._overlay_list.setVisible(is_custom)
+        if is_custom and not self._overlay_list_populated:
+            self._populate_overlay_list()
         if self._active_bone_code:
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
 
-    def _on_adj_toggled(self, checked: bool) -> None:
-        if checked:
-            self._skel_btn.blockSignals(True)
-            self._skel_btn.setChecked(False)
-            self._skel_btn.blockSignals(False)
-            self._overlay_mode = "adjacent"
+    def _populate_overlay_list(self) -> None:
+        if self._overlay_list_populated:
+            return
+        self._overlay_list.blockSignals(True)
+        self._overlay_list.clear()
+        for stem in sorted(BONE_LABEL_FR, key=lambda s: BONE_LABEL_FR[s]):
+            item = QListWidgetItem(BONE_LABEL_FR[stem])
+            item.setData(Qt.UserRole, stem)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(Qt.Unchecked)
+            self._overlay_list.addItem(item)
+        self._overlay_list.blockSignals(False)
+        self._overlay_list_populated = True
+
+    def _on_overlay_item_changed(self, item: QListWidgetItem) -> None:
+        stem = item.data(Qt.UserRole)
+        if item.checkState() == Qt.Checked:
+            self._custom_overlay_stems.add(stem)
         else:
-            self._overlay_mode = None
-        if self._active_bone_code:
+            self._custom_overlay_stems.discard(stem)
+        if self._active_bone_code and self._overlay_mode == "custom":
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
