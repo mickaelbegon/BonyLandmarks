@@ -69,8 +69,8 @@ LANDMARK_BONE: dict[str, str | None] = {
     "lateral_epicondyle_right":         "humerus_right",
     "medial_epicondyle_left":           "humerus_left",
     "medial_epicondyle_right":          "humerus_right",
-    "radiale_left":                     "humerus_left",
-    "radiale_right":                    "humerus_right",
+    "radiale_left":                     "radius_left",
+    "radiale_right":                    "radius_right",
 
     # ── Radius ──────────────────────────────────────────────────────────────
     "radial_styloid_left":              "radius_left",
