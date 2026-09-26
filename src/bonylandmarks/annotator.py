@@ -910,7 +910,7 @@ class AnnotatorWindow(QMainWindow):
         """
         iren = self._bone_plotter.iren
         self._lm_picker = vtk.vtkCellPicker()
-        self._lm_picker.set_tolerance(0.005)
+        self._lm_picker.SetTolerance(0.005)
         self._lm_press_xy = None
 
         def _on_press(caller, event):
@@ -925,9 +925,9 @@ class AnnotatorWindow(QMainWindow):
             if (rx - px) ** 2 + (ry - py) ** 2 > 25:   # drag -> skip
                 return
             # Clean click: pick surface point
-            self._lm_picker.pick(rx, ry, 0, self._bone_plotter.renderer)
-            if self._lm_picker.get_cell_id() >= 0:
-                self._on_bone_pick_done(list(self._lm_picker.get_pick_position()))
+            self._lm_picker.Pick(rx, ry, 0, self._bone_plotter.renderer)
+            if self._lm_picker.GetCellId() >= 0:
+                self._on_bone_pick_done(list(self._lm_picker.GetPickPosition()))
             self._exit_landmark_edit()
 
         # Store on self to keep strong Python references (prevents GC)
