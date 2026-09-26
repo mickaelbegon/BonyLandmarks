@@ -81,4 +81,78 @@ EMG_REFERENCES: dict[str, list[str]] = {
 
 # Couleurs des sphères de référence EMG (par index 0 → point 1, index 1 → point 2)
 EMG_REF_COLORS = ["#00e5ff", "#ff6f00"]   # cyan électrique, orange brûlé
-EMG_LINE_COLOR  = "#ffe066"               # jaune doux pour la ligne muscle
+EMG_LINE_COLOR  = "#ffe066"               # jaune doux pour la ligne géodésique
+
+# FMA concept ID du muscle BodyParts3D correspondant à chaque électrode EMG.
+# None = muscle absent de BONE_MUSCLES ou FMA inconnu (pas de géodésique tracée).
+EMG_MUSCLE_FMA: dict[str, int | None] = {
+    # ── Membres inférieurs ────────────────────────────────────────────────────
+    "EMG_rectus_femoris_left":           38929,
+    "EMG_rectus_femoris_right":          38928,
+    "EMG_vastus_lateralis_left":         38931,
+    "EMG_vastus_lateralis_right":        38930,
+    "EMG_vastus_medialis_left":          38933,
+    "EMG_vastus_medialis_right":         38932,
+    "EMG_biceps_femoris_left":           45889,   # long head
+    "EMG_biceps_femoris_right":          45888,
+    "EMG_semitendinosus_left":           22359,
+    "EMG_semitendinosus_right":          22358,
+    "EMG_gastrocnemius_medialis_left":   45958,
+    "EMG_gastrocnemius_medialis_right":  45957,
+    "EMG_gastrocnemius_lateralis_left":  45961,
+    "EMG_gastrocnemius_lateralis_right": 45960,
+    "EMG_soleus_left":                   22559,
+    "EMG_soleus_right":                  22558,
+    "EMG_tibialis_anterior_left":        22545,
+    "EMG_tibialis_anterior_right":       22544,
+    "EMG_peroneus_longus_left":          22553,
+    "EMG_peroneus_longus_right":         22552,
+    # ── Hanches ───────────────────────────────────────────────────────────────
+    "EMG_gluteus_maximus_left":          22329,
+    "EMG_gluteus_maximus_right":         22328,
+    "EMG_gluteus_medius_left":           22331,
+    "EMG_gluteus_medius_right":          22330,
+    "EMG_tensor_fasciae_latae_left":     22426,
+    "EMG_tensor_fasciae_latae_right":    22425,
+    # ── Épaule / deltoïde ─────────────────────────────────────────────────────
+    "EMG_deltoid_anterior_left":         34681,   # partie claviculaire gauche
+    "EMG_deltoid_anterior_right":        34680,
+    "EMG_deltoid_medius_left":           34683,   # partie acromiale gauche
+    "EMG_deltoid_medius_right":          34682,
+    "EMG_deltoid_posterior_left":        34685,   # partie spinale gauche
+    "EMG_deltoid_posterior_right":       34684,
+    # ── Bras ──────────────────────────────────────────────────────────────────
+    "EMG_biceps_brachii_left":           37685,   # long head
+    "EMG_biceps_brachii_right":          37684,
+    "EMG_triceps_brachii_long_left":     37700,
+    "EMG_triceps_brachii_long_right":    37699,
+    "EMG_triceps_brachii_lateral_left":  37696,
+    "EMG_triceps_brachii_lateral_right": 37695,
+    # ── Avant-bras ────────────────────────────────────────────────────────────
+    "EMG_wrist_extensors_left":          38499,   # ECRB gauche
+    "EMG_wrist_extensors_right":         38498,
+    "EMG_wrist_flexors_left":            38461,   # FCR gauche
+    "EMG_wrist_flexors_right":           38460,
+    "EMG_brachioradialis_left":          38487,
+    "EMG_brachioradialis_right":         38486,
+    # ── Tronc / Trapèze ───────────────────────────────────────────────────────
+    "EMG_trapezius_descendens_left":     33587,
+    "EMG_trapezius_descendens_right":    33586,
+    "EMG_trapezius_transversalis_left":  33585,
+    "EMG_trapezius_transversalis_right": 33584,
+    "EMG_trapezius_ascendens_left":      33583,
+    "EMG_trapezius_ascendens_right":     33581,
+    "EMG_erector_spinae_longissimus_left":    22753,
+    "EMG_erector_spinae_longissimus_right":   22751,
+    "EMG_erector_spinae_iliocostalis_left":   22741,
+    "EMG_erector_spinae_iliocostalis_right":  22740,
+    "EMG_obliquus_externus_left":        13337,
+    "EMG_obliquus_externus_right":       13336,
+    "EMG_pectoralis_major_sternal_left": 13039,
+    "EMG_pectoralis_major_sternal_right":13039,
+    # ── FMA inconnu / absent ──────────────────────────────────────────────────
+    "EMG_serratus_anterior_left":        None,
+    "EMG_serratus_anterior_right":       None,
+    "EMG_rectus_abdominis_left":         None,
+    "EMG_rectus_abdominis_right":        None,
+}

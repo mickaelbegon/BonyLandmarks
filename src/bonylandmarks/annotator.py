@@ -67,7 +67,7 @@ from PySide6.QtWidgets import (
 from pyvistaqt import QtInteractor
 
 from .bone_map import BONE_JOINTS, BONE_LABEL_FR, LANDMARK_BONE
-from .emg_references import EMG_LINE_COLOR, EMG_REF_COLORS, EMG_REFERENCES
+from .emg_references import EMG_LINE_COLOR, EMG_MUSCLE_FMA, EMG_REF_COLORS, EMG_REFERENCES
 from .landmarks_extended import LANDMARKS, THEME_LABELS, Landmark
 from .mesh_loader import load_avatar_glb, load_glb_mesh
 
@@ -1889,19 +1889,23 @@ class AnnotatorWindow(QMainWindow):
         self._plotter.render()
 
     def _add_emg_bone_refs(self, lm: "Landmark") -> None:
-        """Overlay reference bones + colored spheres in the bone dock for EMG landmarks."""
+        """Overlay reference bones + colored spheres + geodesic muscle path in the bone dock."""
         if lm.category != "EMG":
             return
         ref_codes = EMG_REFERENCES.get(lm.code, [])
-        positions = _lm_positions()
+        lm_pos = _lm_positions()
         main_stem = LANDMARK_BONE.get(lm.code)
         main_mesh = self._bone_cache.get(main_stem) if main_stem else None
         r = main_mesh.length * 0.013 if main_mesh is not None else self._sphere_radius
+
         added_any = False
+        found_positions: list[np.ndarray] = []
+
         for i, code in enumerate(ref_codes):
-            pos = positions.get(code)
+            pos = lm_pos.get(code)
             if pos is None:
                 continue
+            found_positions.append(np.asarray(pos, dtype=float))
             color = EMG_REF_COLORS[i] if i < len(EMG_REF_COLORS) else "#ffffff"
             ref_stem = LANDMARK_BONE.get(code)
             if ref_stem is not None and ref_stem != main_stem:
@@ -1927,6 +1931,35 @@ class AnnotatorWindow(QMainWindow):
                 show_scalar_bar=False,
             )
             added_any = True
+
+        # ── Géodésique sur la surface du muscle ─────────────────────────────
+        if len(found_positions) == 2 and self._muscle_index is not None:
+            fma_id = EMG_MUSCLE_FMA.get(lm.code)
+            if fma_id is not None:
+                mpath = self._muscle_index.get(fma_id)
+                if mpath is not None:
+                    try:
+                        mmesh = pv.read(str(mpath))
+                        pts = mmesh.points
+                        idx0 = int(np.argmin(np.linalg.norm(pts - found_positions[0], axis=1)))
+                        idx1 = int(np.argmin(np.linalg.norm(pts - found_positions[1], axis=1)))
+                        # Muscle en transparence pour contexte
+                        self._bone_plotter.add_mesh(
+                            mmesh, color="#cc7744", opacity=0.18,
+                            smooth_shading=True, show_scalar_bar=False, pickable=False,
+                        )
+                        # Chemin géodésique (Dijkstra sur le graphe de surface)
+                        geo_path = mmesh.geodesic(idx0, idx1)
+                        tube = geo_path.tube(radius=r * 0.32)
+                        self._bone_plotter.add_mesh(
+                            tube, color=EMG_LINE_COLOR, opacity=0.95,
+                            ambient=1.0, diffuse=0.3, specular=0.3,
+                            show_scalar_bar=False, pickable=False,
+                        )
+                        added_any = True
+                    except Exception:
+                        pass  # mesh disconnecté ou FMA absent → dégradation silencieuse
+
         if added_any:
             self._bone_plotter.reset_camera()
             self._bone_plotter.render()
