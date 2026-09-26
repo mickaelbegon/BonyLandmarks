@@ -854,22 +854,33 @@ class AnnotatorWindow(QMainWindow):
         self._bone_curv_btn.toggled.connect(self._on_bone_curv_toggled)
         vl.addWidget(self._bone_curv_btn)
 
-        self._muscle_btn = QPushButton("💪 Muscles")
-        self._muscle_btn.setCheckable(True)
-        self._muscle_btn.setEnabled(False)
-        self._muscle_btn.setToolTip(
-            "Afficher les muscles associés à cet os en transparence\n"
-            "(nécessite le dossier BodyParts3D)"
+        self._muscle_mode_combo = QComboBox()
+        self._muscle_mode_combo.addItems(["💪 Muscles — Aucun", "💪 Muscles — Auto", "💪 Muscles — Personnalisé…"])
+        self._muscle_mode_combo.setEnabled(False)
+        self._muscle_mode_combo.setToolTip(
+            "Aucun : aucun muscle affiché\n"
+            "Auto : muscles définis par BONE_MUSCLES pour cet os\n"
+            "Personnalisé : choisir librement dans la liste complète BP3D"
         )
-        self._muscle_btn.setStyleSheet(
-            "QPushButton { font-size: 10px; padding: 3px 8px; background: #2a2a4a; "
+        self._muscle_mode_combo.setStyleSheet(
+            "QComboBox { font-size: 10px; padding: 3px 6px; background: #2a2a4a; "
             "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
-            "QPushButton:checked { background: #2a1500; color: #cc7744; border-color: #cc7744; }"
-            "QPushButton:hover { background: #3a3a5a; }"
-            "QPushButton:disabled { color: #555566; border-color: #333355; }"
+            "QComboBox:disabled { color: #555566; border-color: #333355; }"
+            "QComboBox::drop-down { border: none; }"
         )
-        self._muscle_btn.toggled.connect(self._on_muscle_toggled)
-        vl.addWidget(self._muscle_btn)
+        self._muscle_mode_combo.currentIndexChanged.connect(self._on_muscle_mode_changed)
+        vl.addWidget(self._muscle_mode_combo)
+
+        self._muscle_list = QListWidget()
+        self._muscle_list.setVisible(False)
+        self._muscle_list.setMaximumHeight(180)
+        self._muscle_list.setStyleSheet(
+            "QListWidget { font-size: 9px; background: #1a1a2e; color: #aaaacc; "
+            "border: 1px solid #3a3a5a; border-radius: 2px; }"
+            "QListWidget::item:hover { background: #2a2a4a; }"
+        )
+        self._muscle_list.itemChanged.connect(self._on_muscle_item_changed)
+        vl.addWidget(self._muscle_list)
 
         _thresh_lbl_style = (
             "font-size: 9px; color: rgba(200,200,230,0.85); background: transparent;"
@@ -904,7 +915,10 @@ class AnnotatorWindow(QMainWindow):
         self._bone_show_curv: bool = False
         self._bone_curv_cache: dict[str, tuple[pv.PolyData, np.ndarray]] = {}
         self._active_bone_code: str | None = None
-        self._bone_show_muscles: bool = False
+        self._muscle_mode: str = "none"  # "none" | "auto" | "custom"
+        self._custom_muscle_ids: set[int] = set()
+        self._muscle_list_populated: bool = False
+        self._muscle_names: dict[int, str] = {}
         self._muscle_index: dict[int, Path] | None = None
         from .muscle_map import build_muscle_index, find_bp3d_dir
         self._bp3d_dir: Path | None = find_bp3d_dir()
@@ -934,7 +948,7 @@ class AnnotatorWindow(QMainWindow):
             self._skel_btn.setEnabled(False)
             self._adj_btn.setEnabled(False)
             self._bone_curv_btn.setEnabled(False)
-            self._muscle_btn.setEnabled(False)
+            self._muscle_mode_combo.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -949,7 +963,7 @@ class AnnotatorWindow(QMainWindow):
             self._skel_btn.setEnabled(False)
             self._adj_btn.setEnabled(False)
             self._bone_curv_btn.setEnabled(False)
-            self._muscle_btn.setEnabled(False)
+            self._muscle_mode_combo.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -970,7 +984,7 @@ class AnnotatorWindow(QMainWindow):
                 self._skel_btn.setEnabled(False)
                 self._adj_btn.setEnabled(False)
                 self._bone_curv_btn.setEnabled(False)
-                self._muscle_btn.setEnabled(False)
+                self._muscle_mode_combo.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -983,7 +997,7 @@ class AnnotatorWindow(QMainWindow):
                 self._skel_btn.setEnabled(False)
                 self._adj_btn.setEnabled(False)
                 self._bone_curv_btn.setEnabled(False)
-                self._muscle_btn.setEnabled(False)
+                self._muscle_mode_combo.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -1023,9 +1037,13 @@ class AnnotatorWindow(QMainWindow):
                 show_scalar_bar=False,
             )
         self._add_bone_overlay(stem)
-        if self._bone_show_muscles and self._muscle_index:
+        if self._muscle_index is not None and self._muscle_mode != "none":
             from .muscle_map import get_muscle_paths
-            for mpath in get_muscle_paths(stem, self._bp3d_dir, self._muscle_index):
+            if self._muscle_mode == "auto":
+                mpaths = get_muscle_paths(stem, self._bp3d_dir, self._muscle_index)
+            else:
+                mpaths = [self._muscle_index[fid] for fid in self._custom_muscle_ids if fid in self._muscle_index]
+            for mpath in mpaths:
                 try:
                     mmesh = pv.read(str(mpath))
                     self._bone_plotter.add_mesh(
@@ -1046,7 +1064,7 @@ class AnnotatorWindow(QMainWindow):
         self._skel_btn.setEnabled(True)
         self._adj_btn.setEnabled(True)
         self._bone_curv_btn.setEnabled(True)
-        self._muscle_btn.setEnabled(True)
+        self._muscle_mode_combo.setEnabled(self._bp3d_dir is not None or self._muscle_index is not None)
 
     # ── Bone overlay (skeleton / adjacent) ──────────────────────────────────
 
@@ -1118,30 +1136,68 @@ class AnnotatorWindow(QMainWindow):
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
 
-    def _on_muscle_toggled(self, checked: bool) -> None:
-        self._bone_show_muscles = checked
-        if checked and self._bp3d_dir is None:
-            # Auto-detection failed at startup — ask the user once
-            path = QFileDialog.getExistingDirectory(
-                self,
-                "Sélectionner le dossier BodyParts3D (isa_BP3D_4.0_obj_99)",
-                str(Path.home() / "Downloads"),
-            )
-            if path:
-                self._bp3d_dir = Path(path)
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                try:
-                    from .muscle_map import build_muscle_index
-                    self._muscle_index = build_muscle_index(self._bp3d_dir)
-                finally:
-                    QApplication.restoreOverrideCursor()
-            else:
-                self._muscle_btn.blockSignals(True)
-                self._muscle_btn.setChecked(False)
-                self._muscle_btn.blockSignals(False)
-                self._bone_show_muscles = False
-                return
+    def _on_muscle_mode_changed(self, index: int) -> None:
+        modes = ["none", "auto", "custom"]
+        self._muscle_mode = modes[index]
+        is_custom = self._muscle_mode == "custom"
+        self._muscle_list.setVisible(is_custom)
+        if is_custom:
+            if self._bp3d_dir is None:
+                path = QFileDialog.getExistingDirectory(
+                    self,
+                    "Sélectionner le dossier BodyParts3D (isa_BP3D_4.0_obj_99)",
+                    str(Path.home() / "Downloads"),
+                )
+                if path:
+                    self._bp3d_dir = Path(path)
+                    QApplication.setOverrideCursor(Qt.WaitCursor)
+                    try:
+                        from .muscle_map import build_muscle_index
+                        self._muscle_index = build_muscle_index(self._bp3d_dir)
+                    finally:
+                        QApplication.restoreOverrideCursor()
+                else:
+                    self._muscle_mode_combo.blockSignals(True)
+                    self._muscle_mode_combo.setCurrentIndex(0)
+                    self._muscle_mode_combo.blockSignals(False)
+                    self._muscle_mode = "none"
+                    self._muscle_list.setVisible(False)
+                    return
+            if not self._muscle_list_populated:
+                self._populate_muscle_list()
         if self._active_bone_code:
+            cam = self._bone_plotter.camera_position
+            self._load_bone_for(self._active_bone_code)
+            self._bone_plotter.camera_position = cam
+
+    def _populate_muscle_list(self) -> None:
+        if self._muscle_index is None or self._muscle_list_populated:
+            return
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        try:
+            from .muscle_map import build_muscle_name_index
+            self._muscle_names = build_muscle_name_index(self._muscle_index)
+        finally:
+            QApplication.restoreOverrideCursor()
+        self._muscle_list.blockSignals(True)
+        self._muscle_list.clear()
+        for fma_id in sorted(self._muscle_index.keys(), key=lambda k: self._muscle_names.get(k, f"FMA{k}")):
+            name = self._muscle_names.get(fma_id, f"FMA{fma_id}")
+            item = QListWidgetItem(name)
+            item.setData(Qt.UserRole, fma_id)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(Qt.Unchecked)
+            self._muscle_list.addItem(item)
+        self._muscle_list.blockSignals(False)
+        self._muscle_list_populated = True
+
+    def _on_muscle_item_changed(self, item: QListWidgetItem) -> None:
+        fma_id = item.data(Qt.UserRole)
+        if item.checkState() == Qt.Checked:
+            self._custom_muscle_ids.add(fma_id)
+        else:
+            self._custom_muscle_ids.discard(fma_id)
+        if self._active_bone_code and self._muscle_mode == "custom":
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam

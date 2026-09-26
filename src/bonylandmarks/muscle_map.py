@@ -176,6 +176,31 @@ def build_muscle_index(bp3d_dir: Path) -> dict[int, Path]:
     return index
 
 
+def build_muscle_name_index(muscle_index: dict[int, Path]) -> dict[int, str]:
+    """Extrait les noms anglais depuis les en-têtes des OBJ déjà indexés.
+
+    Parameters
+    ----------
+    muscle_index:
+        Index pré-construit par ``build_muscle_index`` (FMA ID → chemin OBJ).
+    """
+    _NAME_RE = re.compile(r"#\s*English name\s*:\s*(.+)", re.IGNORECASE)
+    names: dict[int, str] = {}
+    for fma_id, obj_path in muscle_index.items():
+        try:
+            with obj_path.open(encoding="utf-8", errors="replace") as fh:
+                for i, line in enumerate(fh):
+                    if i >= 20:
+                        break
+                    m = _NAME_RE.match(line)
+                    if m:
+                        names[fma_id] = m.group(1).strip()
+                        break
+        except OSError:
+            continue
+    return names
+
+
 def get_muscle_paths(
     bone_stem: str,
     bp3d_dir: Path,
