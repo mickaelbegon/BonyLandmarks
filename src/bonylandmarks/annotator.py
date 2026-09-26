@@ -829,7 +829,23 @@ class AnnotatorWindow(QMainWindow):
         ovl_row.addWidget(self._adj_btn)
         vl.addLayout(ovl_row)
 
+        self._curv_btn = QPushButton("∿ Courbure")
+        self._curv_btn.setCheckable(True)
+        self._curv_btn.setEnabled(False)
+        self._curv_btn.setToolTip("Afficher la courbure moyenne de la surface osseuse")
+        self._curv_btn.setStyleSheet(
+            "QPushButton { font-size: 10px; padding: 3px 8px; background: #2a2a4a; "
+            "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
+            "QPushButton:checked { background: #2a1a00; color: #ee9922; border-color: #ee9922; }"
+            "QPushButton:hover { background: #3a3a5a; }"
+            "QPushButton:disabled { color: #555566; border-color: #333355; }"
+        )
+        self._curv_btn.toggled.connect(self._on_bone_curv_toggled)
+        vl.addWidget(self._curv_btn)
+
         self._overlay_mode: str | None = None
+        self._bone_show_curv: bool = False
+        self._bone_curv_cache: dict[str, pv.PolyData] = {}
         self._active_bone_code: str | None = None
         # landmark-edit picking state (all must stay alive while observers active)
         self._lm_picker: vtk.vtkCellPicker | None = None
@@ -854,6 +870,7 @@ class AnnotatorWindow(QMainWindow):
             self._bone_edit_btn.setChecked(False)
             self._skel_btn.setEnabled(False)
             self._adj_btn.setEnabled(False)
+            self._curv_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -867,6 +884,7 @@ class AnnotatorWindow(QMainWindow):
             self._bone_edit_btn.setEnabled(False)
             self._skel_btn.setEnabled(False)
             self._adj_btn.setEnabled(False)
+            self._curv_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -886,6 +904,7 @@ class AnnotatorWindow(QMainWindow):
                 self._bone_edit_btn.setEnabled(False)
                 self._skel_btn.setEnabled(False)
                 self._adj_btn.setEnabled(False)
+                self._curv_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -897,6 +916,7 @@ class AnnotatorWindow(QMainWindow):
                 self._bone_edit_btn.setEnabled(False)
                 self._skel_btn.setEnabled(False)
                 self._adj_btn.setEnabled(False)
+                self._curv_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -904,12 +924,26 @@ class AnnotatorWindow(QMainWindow):
         self._bone_missing_lbl.setVisible(False)
         self._bone_plotter.clear()
         self._bone_plotter.enable_3_lights()
-        self._bone_plotter.add_mesh(
-            self._bone_cache[stem],
-            color="#e8d5b8", smooth_shading=True,
-            ambient=0.3, diffuse=0.9, specular=0.2,
-            show_scalar_bar=False,
-        )
+        if self._bone_show_curv:
+            if stem not in self._bone_curv_cache:
+                cm = self._bone_cache[stem].compute_curvature(curv_type="mean")
+                c = cm["Curvature"]
+                clim = float(np.percentile(np.abs(c[np.isfinite(c)]), 90)) or 0.01
+                cm["Curvature_clipped"] = np.clip(c, -clim, clim)
+                self._bone_curv_cache[stem] = (cm, clim)
+            cm, clim = self._bone_curv_cache[stem]
+            self._bone_plotter.add_mesh(
+                cm, scalars="Curvature_clipped", cmap="RdBu",
+                clim=(-clim, clim), smooth_shading=True,
+                show_scalar_bar=True, scalar_bar_args={"title": "Courbure", "fmt": "%.3f"},
+            )
+        else:
+            self._bone_plotter.add_mesh(
+                self._bone_cache[stem],
+                color="#e8d5b8", smooth_shading=True,
+                ambient=0.3, diffuse=0.9, specular=0.2,
+                show_scalar_bar=False,
+            )
         pos = _lm_positions().get(code)
         if pos is not None:
             r = self._bone_cache[stem].length * 0.013
@@ -930,6 +964,7 @@ class AnnotatorWindow(QMainWindow):
         self._bone_edit_btn.setText("✏ Modifier position")
         self._skel_btn.setEnabled(True)
         self._adj_btn.setEnabled(True)
+        self._curv_btn.setEnabled(True)
 
     # ── Bone overlay (skeleton / adjacent) ──────────────────────────────────
 
@@ -980,6 +1015,13 @@ class AnnotatorWindow(QMainWindow):
             self._overlay_mode = "adjacent"
         else:
             self._overlay_mode = None
+        if self._active_bone_code:
+            cam = self._bone_plotter.camera_position
+            self._load_bone_for(self._active_bone_code)
+            self._bone_plotter.camera_position = cam
+
+    def _on_bone_curv_toggled(self, checked: bool) -> None:
+        self._bone_show_curv = checked
         if self._active_bone_code:
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
