@@ -843,6 +843,23 @@ class AnnotatorWindow(QMainWindow):
         self._curv_btn.toggled.connect(self._on_bone_curv_toggled)
         vl.addWidget(self._curv_btn)
 
+        self._muscle_btn = QPushButton("💪 Muscles")
+        self._muscle_btn.setCheckable(True)
+        self._muscle_btn.setEnabled(False)
+        self._muscle_btn.setToolTip(
+            "Afficher les muscles associés à cet os en transparence\n"
+            "(nécessite le dossier BodyParts3D)"
+        )
+        self._muscle_btn.setStyleSheet(
+            "QPushButton { font-size: 10px; padding: 3px 8px; background: #2a2a4a; "
+            "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
+            "QPushButton:checked { background: #2a1500; color: #cc7744; border-color: #cc7744; }"
+            "QPushButton:hover { background: #3a3a5a; }"
+            "QPushButton:disabled { color: #555566; border-color: #333355; }"
+        )
+        self._muscle_btn.toggled.connect(self._on_muscle_toggled)
+        vl.addWidget(self._muscle_btn)
+
         _thresh_lbl_style = (
             "font-size: 9px; color: rgba(200,200,230,0.85); background: transparent;"
         )
@@ -876,6 +893,9 @@ class AnnotatorWindow(QMainWindow):
         self._bone_show_curv: bool = False
         self._bone_curv_cache: dict[str, tuple[pv.PolyData, np.ndarray]] = {}
         self._active_bone_code: str | None = None
+        self._bone_show_muscles: bool = False
+        self._muscle_index: dict[int, Path] | None = None
+        self._bp3d_dir: Path | None = None
         # landmark-edit picking state (all must stay alive while observers active)
         self._lm_picker: vtk.vtkCellPicker | None = None
         self._lm_press_xy: tuple[int, int] | None = None
@@ -900,6 +920,7 @@ class AnnotatorWindow(QMainWindow):
             self._skel_btn.setEnabled(False)
             self._adj_btn.setEnabled(False)
             self._curv_btn.setEnabled(False)
+            self._muscle_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -914,6 +935,7 @@ class AnnotatorWindow(QMainWindow):
             self._skel_btn.setEnabled(False)
             self._adj_btn.setEnabled(False)
             self._curv_btn.setEnabled(False)
+            self._muscle_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -934,6 +956,7 @@ class AnnotatorWindow(QMainWindow):
                 self._skel_btn.setEnabled(False)
                 self._adj_btn.setEnabled(False)
                 self._curv_btn.setEnabled(False)
+                self._muscle_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -946,6 +969,7 @@ class AnnotatorWindow(QMainWindow):
                 self._skel_btn.setEnabled(False)
                 self._adj_btn.setEnabled(False)
                 self._curv_btn.setEnabled(False)
+                self._muscle_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -985,6 +1009,17 @@ class AnnotatorWindow(QMainWindow):
                 show_scalar_bar=False,
             )
         self._add_bone_overlay(stem)
+        if self._bone_show_muscles and self._muscle_index:
+            from .muscle_map import get_muscle_paths
+            for mpath in get_muscle_paths(stem, self._bp3d_dir, self._muscle_index):
+                try:
+                    mmesh = pv.read(str(mpath))
+                    self._bone_plotter.add_mesh(
+                        mmesh, color="#cc7744", opacity=0.22,
+                        smooth_shading=True, show_scalar_bar=False,
+                    )
+                except Exception:
+                    pass
         self._bone_plotter.add_axes(
             xlabel="X  G/D", ylabel="Y  Post/Ant", zlabel="Z  Sup/Inf",
             line_width=2,
@@ -997,6 +1032,7 @@ class AnnotatorWindow(QMainWindow):
         self._skel_btn.setEnabled(True)
         self._adj_btn.setEnabled(True)
         self._curv_btn.setEnabled(True)
+        self._muscle_btn.setEnabled(True)
 
     # ── Bone overlay (skeleton / adjacent) ──────────────────────────────────
 
@@ -1064,6 +1100,33 @@ class AnnotatorWindow(QMainWindow):
     def _on_bone_curv_perc_changed(self, value: int) -> None:
         self._bone_curv_thresh_lbl.setText(f"Seuil : P{value}")
         if self._bone_show_curv and self._active_bone_code:
+            cam = self._bone_plotter.camera_position
+            self._load_bone_for(self._active_bone_code)
+            self._bone_plotter.camera_position = cam
+
+    def _on_muscle_toggled(self, checked: bool) -> None:
+        self._bone_show_muscles = checked
+        if checked and self._bp3d_dir is None:
+            path = QFileDialog.getExistingDirectory(
+                self,
+                "Sélectionner le dossier BodyParts3D (isa_BP3D_4.0_obj_99)",
+                str(Path.home() / "Downloads"),
+            )
+            if path:
+                self._bp3d_dir = Path(path)
+                QApplication.setOverrideCursor(Qt.WaitCursor)
+                try:
+                    from .muscle_map import build_muscle_index
+                    self._muscle_index = build_muscle_index(self._bp3d_dir)
+                finally:
+                    QApplication.restoreOverrideCursor()
+            else:
+                self._muscle_btn.blockSignals(True)
+                self._muscle_btn.setChecked(False)
+                self._muscle_btn.blockSignals(False)
+                self._bone_show_muscles = False
+                return
+        if self._active_bone_code:
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
