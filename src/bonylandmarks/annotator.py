@@ -66,6 +66,7 @@ from PySide6.QtWidgets import (
 from pyvistaqt import QtInteractor
 
 from .bone_map import BONE_JOINTS, BONE_LABEL_FR, LANDMARK_BONE
+from .emg_references import EMG_LINE_COLOR, EMG_REF_COLORS, EMG_REFERENCES
 from .landmarks_extended import LANDMARKS, THEME_LABELS, Landmark
 from .mesh_loader import load_avatar_glb, load_glb_mesh
 
@@ -102,6 +103,8 @@ _DONE_TEXT = "#7fe08a"
 
 _ACTOR_PREFIX = "lm_"
 _LABEL_PREFIX = "lbl_"
+_EMG_REF_ACTOR_PREFIX = "emg_ref_"
+_EMG_LINE_ACTOR = "emg_line"
 
 # ─── Widget styles ───────────────────────────────────────────────────────────
 
@@ -393,6 +396,7 @@ class AnnotatorWindow(QMainWindow):
         self._hint_label = QLabel("")
         self._hint_label.setWordWrap(True)
         self._hint_label.setAlignment(Qt.AlignTop)
+        self._hint_label.setTextFormat(Qt.RichText)
         self._hint_label.setStyleSheet("font-size: 12px; color: #dcdce8;")
         hint_scroll = QScrollArea()
         hint_scroll.setWidgetResizable(True)
@@ -1558,6 +1562,7 @@ class AnnotatorWindow(QMainWindow):
             self._coord_label.setText("Non placé")
             self._clear_btn.setEnabled(False)
             self._hud_overlay.setVisible(False)
+            self._clear_emg_refs()
             self._load_bone_for(None)
             return
 
@@ -1568,7 +1573,7 @@ class AnnotatorWindow(QMainWindow):
             f"{lm.code}  ·  {lm.category}  ·  {theme_label}  ·  "
             f"{_SIDE_LABELS.get(lm.body_side, lm.body_side)}"
         )
-        self._hint_label.setText(lm.hint_fr)
+        self._hint_label.setText(self._hint_html(lm))
 
         has_app = bool(lm.application_fr)
         self._app_hdr.setVisible(has_app)
@@ -1590,6 +1595,7 @@ class AnnotatorWindow(QMainWindow):
         self._hud_overlay.setVisible(True)
         self._position_hud_overlay()
         self._load_bone_for(lm.code)
+        self._draw_emg_refs(lm)
 
     def _update_progress(self) -> None:
         n_filtered_done = sum(1 for lm in self._filtered if lm.code in self._placed)
@@ -1643,6 +1649,76 @@ class AnnotatorWindow(QMainWindow):
     def _redraw_all_markers(self) -> None:
         for code in list(self._placed):
             self._draw_marker(code)
+
+    # ── EMG reference visualisation ───────────────────────────────────────────
+
+    def _hint_html(self, lm: "Landmark") -> str:
+        """Return a colorized HTML version of lm.hint_fr for EMG landmarks."""
+        import html as _html
+        text = _html.escape(lm.hint_fr)
+        if lm.category != "EMG":
+            return text
+        for i, code in enumerate(EMG_REFERENCES.get(lm.code, [])):
+            color = EMG_REF_COLORS[i] if i < len(EMG_REF_COLORS) else "#ffffff"
+            styled = (
+                f'<span style="color:{color}; font-weight:bold;">{code}</span>'
+            )
+            text = text.replace(code, styled)
+        return text
+
+    def _clear_emg_refs(self) -> None:
+        """Remove all EMG reference spheres and the muscle line from the main plotter."""
+        for i in range(len(EMG_REF_COLORS)):
+            self._plotter.remove_actor(f"{_EMG_REF_ACTOR_PREFIX}{i}", render=False)
+            self._plotter.remove_actor(f"{_EMG_REF_ACTOR_PREFIX}lbl_{i}", render=False)
+        self._plotter.remove_actor(_EMG_LINE_ACTOR, render=False)
+
+    def _draw_emg_refs(self, lm: "Landmark") -> None:
+        """Draw colored reference spheres and a muscle line for an EMG landmark."""
+        self._clear_emg_refs()
+        if lm.category != "EMG":
+            self._plotter.render()
+            return
+        ref_codes = EMG_REFERENCES.get(lm.code, [])
+        positions: list[np.ndarray] = []
+        for i, code in enumerate(ref_codes):
+            pos = self._placed.get(code)
+            if pos is None:
+                continue
+            color = EMG_REF_COLORS[i] if i < len(EMG_REF_COLORS) else "#ffffff"
+            self._plotter.add_mesh(
+                pv.Sphere(radius=self._sphere_radius * 1.15, center=pos),
+                color=color,
+                name=f"{_EMG_REF_ACTOR_PREFIX}{i}",
+                pickable=False,
+                render=False,
+            )
+            try:
+                self._plotter.add_point_labels(
+                    np.asarray([pos], dtype=float),
+                    [code],
+                    name=f"{_EMG_REF_ACTOR_PREFIX}lbl_{i}",
+                    font_size=10,
+                    text_color=color,
+                    shape=None,
+                    always_visible=True,
+                    render=False,
+                )
+            except Exception:
+                pass
+            positions.append(np.asarray(pos, dtype=float))
+        if len(positions) == 2:
+            line = pv.Line(positions[0], positions[1], resolution=1)
+            tube = line.tube(radius=self._sphere_radius * 0.28)
+            self._plotter.add_mesh(
+                tube,
+                color=EMG_LINE_COLOR,
+                name=_EMG_LINE_ACTOR,
+                pickable=False,
+                render=False,
+                opacity=0.75,
+            )
+        self._plotter.render()
 
     # ── Placement callbacks ───────────────────────────────────────────────────
 
