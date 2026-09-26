@@ -242,9 +242,9 @@ def _med_epicondyle(p, l):
     return p[extreme(p, AX_X, -l, mask=mask)].tolist()
 
 def _radiale(p, l):
-    # Radiale = radial head = proximal end of the radius: highest Z point (lateral tiebreaker)
-    mask = pct_mask(p, AX_Z, 88, 100)
-    return p[score_extreme(p, [(AX_Z, SUP * 5), (AX_X, l)], mask=mask)].tolist()
+    # Radiale = radial head = proximal end of the radius: lateral point in top Z band
+    mask = pct_mask(p, AX_Z, 85, 100)
+    return p[score_extreme(p, [(AX_Z, SUP * 2), (AX_X, l * 3)], mask=mask)].tolist()
 
 for s in ("right", "left"):
     l = lat(s)
@@ -282,8 +282,8 @@ def _pelvis_half_mask(p, l):
 
 def _ASIS(p, l):
     half = _pelvis_half_mask(p, l)
-    mask = half & pct_mask(p, AX_Z, 60, 100)
-    return p[score_extreme(p, [(AX_Y, ANT), (AX_Z, SUP)], mask=mask)].tolist()
+    mask = half & pct_mask(p, AX_Z, 65, 88)
+    return p[extreme(p, AX_Y, ANT, mask=mask)].tolist()
 
 def _AIIS(p, l):
     half = _pelvis_half_mask(p, l)
@@ -292,8 +292,8 @@ def _AIIS(p, l):
 
 def _PSIS(p, l):
     half = _pelvis_half_mask(p, l)
-    mask = half & pct_mask(p, AX_Z, 70, 100)
-    return p[score_extreme(p, [(AX_Y, -ANT), (AX_Z, SUP)], mask=mask)].tolist()
+    mask = half & pct_mask(p, AX_Z, 76, 83)
+    return p[extreme(p, AX_Y, -ANT, mask=mask)].tolist()
 
 def _iliac_crest(p, l):
     half = _pelvis_half_mask(p, l)
@@ -321,23 +321,29 @@ for s in ("right", "left"):
 RULES["pubic_symphysis"] = ("pelvis", _pubic_symphysis)
 
 # ── Sacrum  ───────────────────────────────────────────────────────────────────
-RULES["sacrum_S2"] = ("sacrum", lambda p: _spinous(p, 45, 65))
+def _sacrum_S2(p):
+    cx = p[:, AX_X].mean()
+    x_range = float(p[:, AX_X].max() - p[:, AX_X].min())
+    midline = np.abs(p[:, AX_X] - cx) < x_range * 0.15
+    mask = midline & pct_mask(p, AX_Z, 50, 70)
+    return p[extreme(p, AX_Y, -ANT, mask=mask)].tolist()
+RULES["sacrum_S2"] = ("sacrum", _sacrum_S2)
 
 # ── Fémur  ────────────────────────────────────────────────────────────────────
 def _greater_troch(p, l):
-    mask = pct_mask(p, AX_Z, 72, 94)
+    mask = pct_mask(p, AX_Z, 58, 74)
     return p[extreme(p, AX_X, l, mask=mask)].tolist()
 
 def _lat_knee_femur(p, l):
-    mask = pct_mask(p, AX_Z, 0, 18)
+    mask = pct_mask(p, AX_Z, 22, 38)
     return p[extreme(p, AX_X, l, mask=mask)].tolist()
 
 def _med_knee_femur(p, l):
-    mask = pct_mask(p, AX_Z, 0, 18)
-    return p[extreme(p, AX_X, -l, mask=mask)].tolist()
+    mask = pct_mask(p, AX_Z, 16, 28)
+    return p[score_extreme(p, [(AX_X, -l * 3), (AX_Y, ANT)], mask=mask)].tolist()
 
 def _adductor_tubercle(p, l):
-    mask = pct_mask(p, AX_Z, 15, 28)
+    mask = pct_mask(p, AX_Z, 36, 48)
     return p[extreme(p, AX_X, -l, mask=mask)].tolist()
 
 for s in ("right", "left"):
@@ -356,7 +362,7 @@ for s in ("right", "left"):
 
 # ── Tibia  ────────────────────────────────────────────────────────────────────
 def _tib_tub(p):
-    mask = pct_mask(p, AX_Z, 76, 92)
+    mask = pct_mask(p, AX_Z, 44, 66)
     return p[extreme(p, AX_Y, ANT, mask=mask)].tolist()
 
 def _gerdy(p, l):
@@ -364,11 +370,13 @@ def _gerdy(p, l):
     return p[score_extreme(p, [(AX_X, l), (AX_Y, ANT)], mask=mask)].tolist()
 
 def _pes_anserinus(p, l):
-    mask = pct_mask(p, AX_Z, 73, 90)
-    return p[score_extreme(p, [(AX_X, -l), (AX_Y, ANT)], mask=mask)].tolist()
+    cx = p[:, AX_X].mean()
+    medial_half = p[:, AX_X] > cx if l < 0 else p[:, AX_X] < cx
+    mask = medial_half & pct_mask(p, AX_Z, 36, 58)
+    return p[extreme(p, AX_Y, ANT, mask=mask)].tolist()
 
 def _med_malleolus(p, l):
-    mask = pct_mask(p, AX_Z, 0, 16)
+    mask = pct_mask(p, AX_Z, 6, 20)
     return p[extreme(p, AX_X, -l, mask=mask)].tolist()
 
 for s in ("right", "left"):
@@ -405,20 +413,23 @@ def _navicular_tub(p, l):
     return p[extreme(p, AX_X, -l, mask=mask)].tolist()
 
 def _meta5_base(p, l):
-    mask = pct_mask(p, AX_Y, 20, 50)
+    mask = pct_mask(p, AX_Y, 78, 90)
     return p[extreme(p, AX_X, l, mask=mask)].tolist()
 
 def _meta5_head(p, l):
-    mask = pct_mask(p, AX_Y, 0, 28)
+    mask = pct_mask(p, AX_Y, 28, 45)
     return p[extreme(p, AX_X, l, mask=mask)].tolist()
 
 def _meta1_head(p, l):
-    mask = pct_mask(p, AX_Y, 0, 28)
+    mask = pct_mask(p, AX_Y, 0, 6)
     return p[extreme(p, AX_X, -l, mask=mask)].tolist()
 
 def _meta2_head(p, l):
-    mask = pct_mask(p, AX_Y, 0, 28)
-    return p[mask].mean(axis=0).tolist()
+    # 2nd metatarsal head: most anterior in the lateral 70-88% X band of the foot
+    x_lat = p[:, AX_X] * l
+    x_mask = (x_lat >= np.percentile(x_lat, 70)) & (x_lat <= np.percentile(x_lat, 88))
+    mask = x_mask & pct_mask(p, AX_Y, 0, 10)
+    return p[extreme(p, AX_Y, ANT, mask=mask)].tolist()
 
 for s in ("right", "left"):
     l = lat(s)
