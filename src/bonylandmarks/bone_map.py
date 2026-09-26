@@ -53,8 +53,8 @@ LANDMARK_BONE: dict[str, str | None] = {
     "scapula_superior_angle_right":     "scapula_right",
     "coracoid_process_left":            "scapula_left",
     "coracoid_process_right":           "scapula_right",
-    "acromioclavicular_joint_left":     "scapula_left",
-    "acromioclavicular_joint_right":    "scapula_right",
+    "acromioclavicular_joint_left":     "clavicle_left",
+    "acromioclavicular_joint_right":    "clavicle_right",
 
     # ── Clavicule ───────────────────────────────────────────────────────────
     "sternoclavicular_joint_left":      "clavicle_left",
