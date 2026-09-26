@@ -926,14 +926,16 @@ class AnnotatorWindow(QMainWindow):
         self._bone_plotter.enable_3_lights()
         if self._bone_show_curv:
             if stem not in self._bone_curv_cache:
-                cm = self._bone_cache[stem].compute_curvature(curv_type="mean")
-                c = cm["Curvature"]
-                clim = float(np.percentile(np.abs(c[np.isfinite(c)]), 90)) or 0.01
-                cm["Curvature_clipped"] = np.clip(c, -clim, clim)
+                raw = self._bone_cache[stem].curvature(curv_type="mean")
+                cm = self._bone_cache[stem].copy()
+                c = raw[np.isfinite(raw)]
+                clim = float(np.percentile(np.abs(c), 90)) if len(c) else 0.01
+                clim = clim or 0.01
+                cm["curvature"] = np.clip(raw, -clim, clim)
                 self._bone_curv_cache[stem] = (cm, clim)
             cm, clim = self._bone_curv_cache[stem]
             self._bone_plotter.add_mesh(
-                cm, scalars="Curvature_clipped", cmap="RdBu",
+                cm, scalars="curvature", cmap="RdBu",
                 clim=(-clim, clim), smooth_shading=True,
                 show_scalar_bar=True, scalar_bar_args={"title": "Courbure", "fmt": "%.3f"},
             )
