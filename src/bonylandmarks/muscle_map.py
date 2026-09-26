@@ -16,18 +16,120 @@ BONE_MUSCLES: dict[str, list[int]] = {
     "scapula_right":  [33581, 33584, 34682, 34684, 32544, 32547, 13039],
     "humerus_left":   [34683, 34685, 34681, 37685, 37687, 37700, 37696],  # deltoid + biceps short/long + triceps long/med L
     "humerus_right":  [34682, 34684, 34680, 37684, 37686, 37699, 37695],
-    "radius_left":  [],
-    "radius_right": [],
-    "ulna_left":    [],
-    "ulna_right":   [],
-    "pelvis":  [],
-    "sacrum":  [],
-    "femur_left":  [],
-    "femur_right": [],
-    "tibia_left":  [],
-    "tibia_right": [],
-    "fibula_left": [],
-    "fibula_right": [],
+    # --- Avant-bras droit ---
+    "radius_right": [
+        38486,  # right brachioradialis
+        38513,  # right supinator
+        38460,  # right flexor carpi radialis
+        38560,  # humeral head of right pronator teres
+        38495,  # right extensor carpi radialis longus
+        38498,  # right extensor carpi radialis brevis
+    ],
+    # --- Avant-bras gauche ---
+    "radius_left": [
+        38487,  # left brachioradialis
+        38514,  # left supinator
+        38461,  # left flexor carpi radialis
+        38561,  # humeral head of left pronator teres
+        38496,  # left extensor carpi radialis longus
+        38499,  # left extensor carpi radialis brevis
+    ],
+    "ulna_right": [
+        38619,  # ulnar head of right flexor carpi ulnaris
+        38507,  # right extensor carpi ulnaris
+        38479,  # right flexor digitorum profundus
+        37705,  # right anconeus
+        38454,  # right pronator quadratus
+    ],
+    "ulna_left": [
+        38620,  # ulnar head of left flexor carpi ulnaris
+        38508,  # left extensor carpi ulnaris
+        38480,  # left flexor digitorum profundus
+        37706,  # left anconeus
+        38455,  # left pronator quadratus
+    ],
+    # --- Ceinture pelvienne ---
+    "pelvis": [
+        22328, 22329,   # gluteus maximus R / L
+        22330, 22331,   # gluteus medius R / L
+        22425, 22426,   # tensor fasciae latae R / L
+        22322, 22323,   # iliacus R / L
+        22342, 22343,   # psoas major R / L
+        13336, 13337,   # external oblique R / L
+    ],
+    "sacrum": [
+        22328, 22329,   # gluteus maximus R / L (origine sacrée)
+        22340, 22341,   # piriformis R / L (origine S2-S4)
+        22740, 22741,   # right / left iliocostalis lumborum (érecteurs)
+        22751, 22753,   # right / left longissimus thoracis (érecteurs)
+        46443, 46444,   # right / left coccygeus
+    ],
+    # --- Cuisse droite ---
+    "femur_right": [
+        38928,  # right rectus femoris
+        38930,  # right vastus lateralis
+        38932,  # right vastus medialis
+        38934,  # right vastus intermedius
+        45888,  # long head of right biceps femoris
+        45891,  # short head of right biceps femoris
+        22358,  # right semitendinosus
+        22448,  # right semimembranosus
+        22456,  # right adductor longus
+        22459,  # right adductor magnus
+        43883,  # right gracilis
+    ],
+    # --- Cuisse gauche ---
+    "femur_left": [
+        38929,  # left rectus femoris
+        38931,  # left vastus lateralis
+        38933,  # left vastus medialis
+        38935,  # left vastus intermedius
+        45889,  # long head of left biceps femoris
+        45892,  # short head of left biceps femoris
+        22359,  # left semitendinosus
+        22449,  # left semimembranosus
+        22457,  # left adductor longus
+        22460,  # left adductor magnus
+        43884,  # left gracilis
+    ],
+    # --- Jambe droite (tibia) ---
+    "tibia_right": [
+        22544,  # right tibialis anterior
+        22558,  # right soleus
+        45957,  # medial head of right gastrocnemius
+        45960,  # lateral head of right gastrocnemius
+        22591,  # right popliteus
+        22358,  # right semitendinosus  (tendon du pes anserinus)
+        22354,  # right sartorius       (tendon du pes anserinus)
+        43883,  # right gracilis        (tendon du pes anserinus)
+    ],
+    # --- Jambe gauche (tibia) ---
+    "tibia_left": [
+        22545,  # left tibialis anterior
+        22559,  # left soleus
+        45958,  # medial head of left gastrocnemius
+        45961,  # lateral head of left gastrocnemius
+        22592,  # left popliteus
+        22359,  # left semitendinosus  (tendon du pes anserinus)
+        22355,  # left sartorius       (tendon du pes anserinus)
+        43884,  # left gracilis        (tendon du pes anserinus)
+    ],
+    # --- Fibula droite ---
+    "fibula_right": [
+        22552,  # right fibularis longus
+        22554,  # right fibularis brevis
+        22548,  # right extensor digitorum longus
+        65014,  # right flexor hallucis longus
+        22550,  # right fibularis tertius
+    ],
+    # --- Fibula gauche ---
+    "fibula_left": [
+        22553,  # left fibularis longus
+        22555,  # left fibularis brevis
+        22549,  # left extensor digitorum longus
+        65015,  # left flexor hallucis longus
+        22551,  # left fibularis tertius
+    ],
 }
 
 # Regex to extract FMA concept ID from OBJ header comments
