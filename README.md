@@ -275,3 +275,37 @@ Les scans BodyLoop `avatar_3d` contiennent :
 - Des nœuds squelette avec les positions des articulations
 
 L'app extrait les 24 repères correspondant aux landmarks anatomiques ciblés et les affiche comme sphères vertes de référence.
+
+---
+
+## Crédits
+
+### BodyParts3D
+
+Les meshes 3D osseux de référence sont issus de la base de données **BodyParts3D**.
+
+> BodyParts3D, © The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan
+
+https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html
+
+### Claude Code
+
+Outil d'assistance au développement IA utilisé pour construire ce projet.
+
+https://claude.ai/claude-code
+
+### Bibliothèques open source
+
+- **PyVista** : visualisation 3D
+- **PySide6** : interface graphique
+- **pyvistaqt** : intégration PyVista/Qt
+- **trimesh** : traitement des maillages
+- **pygltflib** : lecture des fichiers GLB
+- **cryptography** : chiffrement AES-256-GCM
+- **httpx** : requêtes HTTP
+
+### Auteur
+
+**Mickael Begon**  
+Université de Montréal  
+mickael.begon@umontreal.ca
