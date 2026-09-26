@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import importlib.metadata
 import sys
 from pathlib import Path
 
 import httpx
 from PySide6.QtCore import QTimer
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
@@ -34,6 +36,39 @@ class MainWindow(QMainWindow):
         self._lang = "fr"
         self.setWindowTitle(tr("app_title", self._lang))
         self.resize(1280, 800)
+        self._setup_menu()
+
+    def _setup_menu(self) -> None:
+        """Create the menu bar with Help menu and About action."""
+        menubar = self.menuBar()
+        help_menu = menubar.addMenu("?")
+
+        about_action = QAction("À propos…", self)
+        about_action.triggered.connect(self._on_about)
+        help_menu.addAction(about_action)
+
+    def _on_about(self) -> None:
+        """Show the About dialog with credits."""
+        try:
+            version = importlib.metadata.version("bonylandmarks")
+        except Exception:
+            version = "dev"
+
+        about_text = (
+            f"<b>BonyLandmarks</b> v{version}<br><br>"
+            "Outil interactif 3D pour placer des repères anatomiques.<br><br>"
+            "<b>BodyParts3D</b><br>"
+            "© The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan<br>"
+            '<a href="https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html">https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html</a><br><br>'
+            "<b>Développement</b><br>"
+            "Développé avec l'assistance de Claude Code (Anthropic)<br><br>"
+            "<b>Auteur</b><br>"
+            "Mickael Begon<br>"
+            "Université de Montréal<br>"
+            "mickael.begon@umontreal.ca"
+        )
+
+        QMessageBox.about(self, "À propos de BonyLandmarks", about_text)
 
     def start(self) -> None:
         import os
