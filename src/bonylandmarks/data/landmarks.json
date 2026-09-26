@@ -8,8 +8,8 @@
     "hint_en": "Highest point of the skull with the head in the Frankfort plane (lower orbital margin and ear canal horizontally aligned). Flatten the hair with the rule before marking; this is the stature measurement point.",
     "body_side": "midline",
     "theme": "posture",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère de la stature selon ISO 7250-1 et ISO 8559-1:2017 : point apical pour la mesure de la taille debout et de toutes les longueurs corporelles verticales. Utilisé dans les enquêtes anthropométriques CAESAR (2002), SizeUK et SizeUSA pour le calcul des tailles de vêtements et la conception ergonomique des postes de travail.",
+    "application_en": "Stature landmark per ISO 7250-1 and ISO 8559-1:2017: the apical point for standing height and all vertical body length measurements. Used in the CAESAR (2002), SizeUK and SizeUSA anthropometric surveys to compute clothing sizes and to design ergonomic workstations."
   },
   {
     "code": "glabella",
@@ -92,8 +92,8 @@
     "hint_en": "Midline depression at the top of the manubrium, between the medial ends of both clavicles. Slide a finger along the clavicle toward the midline until it drops into the notch; mark the superior border of the sternum, not the soft tissue of the hollow.",
     "body_side": "midline",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du thorax (Wu et al., J Biomech 38(5), 2005) : avec T8, l'acromion et le processus xiphoïde, il contribue à la définition du repère local thoracique pour la cinématique 3D de l'épaule. Repère anatomique de référence pour le cathétérisme veineux central sous-clavier : 2 cm latéral et 1 cm inférieur au tiers médial de la clavicule, dirigé vers cet encoche (Aubaniac, 1952).",
+    "application_en": "ISB thoracic landmark (Wu et al., J Biomech 38(5), 2005): with T8, the acromion and xiphoid process it contributes to the local thoracic coordinate system for 3D shoulder kinematics. Clinical reference for subclavian central venous catheterization: 2 cm lateral and 1 cm inferior to the medial third of the clavicle, aimed toward this notch (Aubaniac, 1952)."
   },
   {
     "code": "xiphoid_process",
@@ -104,8 +104,8 @@
     "hint_en": "Lower tip of the sternum, at the infrasternal angle formed by the two costal margins. Follow both costal margins upward with the thumbs to their midline junction. Palpate gently: the tip is cartilaginous and tender.",
     "body_side": "midline",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du thorax (Wu et al. 2005, J Biomech) : avec T8, l'incisure jugulaire et l'acromion, il participe au système de coordonnées thoracique pour l'analyse cinématique 3D de l'épaule. Borne inférieure de la zone de compression sternale en RCP (moitié inférieure du sternum, au-dessus du xiphoïde) et point de départ des mesures du périmètre thoracique (ISAK).",
+    "application_en": "ISB thoracic landmark (Wu et al. 2005, J Biomech): with T8, the jugular notch and acromion it participates in the thoracic coordinate system for 3D shoulder kinematic analysis. Inferior boundary of the sternal compression zone in CPR (lower half of sternum, above the xiphoid) and origin point for thoracic girth measurements (ISAK)."
   },
   {
     "code": "sternal_angle_louis",
@@ -128,8 +128,8 @@
     "hint_en": "Most prominent spinous process at the base of the neck (vertebra prominens). To tell it from C6, ask the subject to flex then extend the neck: C6 slides away under the finger in extension while C7 stays prominent. Reference point for the upper trapezius EMG site.",
     "body_side": "midline",
     "theme": "posture",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du thorax (Wu et al. 2005, J Biomech) : définit le segment cervical supérieur et contribue avec T8 à la mesure de la cyphose thoracique. En ISO 8559-1:2017, il constitue le point de départ de la longueur du dos (C7 → taille anatomique), de la hauteur nuque et de la longueur de la colonne vertébrale utilisées dans tous les systèmes de patronage de vêtements.",
+    "application_en": "ISB thoracic landmark (Wu et al. 2005, J Biomech): defines the upper cervical segment and contributes with T8 to thoracic kyphosis measurement. In ISO 8559-1:2017 it is the origin point for back length (C7 → waist), nape height and spinal length, used in all clothing pattern-making systems."
   },
   {
     "code": "T1_spinous",
@@ -176,8 +176,8 @@
     "hint_en": "Count spinous processes downward from C7 with the arms at the side. T8 lies roughly level with the inferior angle of the scapula (≈ T7-T8). Distal reference for the lower trapezius EMG site.",
     "body_side": "midline",
     "theme": "posture",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du thorax (Wu et al. 2005, J Biomech) : avec l'incisure jugulaire, C7 et le processus xiphoïde, il définit le repère local thoracique pour calculer les angles scapulo-thoraciques, la rotation axiale du thorax et l'inclinaison latérale lors des exercices ISB de l'épaule. Repère distal du site EMG du trapèze inférieur (SENIAM : trigone scapulaire → T8, à 2/3 de cette ligne).",
+    "application_en": "ISB thoracic landmark (Wu et al. 2005, J Biomech): with the jugular notch, C7 and the xiphoid process it defines the local thoracic coordinate system for computing scapulothoracic angles, axial thoracic rotation and lateral inclination in ISB shoulder exercises. Distal reference for the lower trapezius EMG site (SENIAM: scapular trigonum → T8, at 2/3 of this line)."
   },
   {
     "code": "T10_spinous",
@@ -212,8 +212,8 @@
     "hint_en": "First locate L4 (on the horizontal line joining the highest points of both iliac crests), then count three spinous processes upward. Reference for the longissimus and iliocostalis EMG sites (two finger widths laterally).",
     "body_side": "midline",
     "theme": "posture",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère de la zone de transition thoraco-lombaire basse : définit la limite supérieure de la lordose lombaire dans les analyses posturales sagittales et la référence proximale des sites EMG paravertébraux (longissimus et iliocostal à 2-3 cm latéralement selon SENIAM). Utilisé dans les protocoles NIOSH de calcul de la charge vertébrale en levage et dans le test d'endurance de Biering-Sørensen.",
+    "application_en": "Lower thoracolumbar transition landmark: defines the upper bound of lumbar lordosis in sagittal postural analysis and the proximal reference for paravertebral EMG sites (longissimus and iliocostalis 2-3 cm laterally, SENIAM). Used in NIOSH protocols for vertebral load calculation during lifting and in the Biering-Sørensen endurance test."
   },
   {
     "code": "L5_spinous",
@@ -224,8 +224,8 @@
     "hint_en": "Last mobile lumbar spinous process, just above the sacrum, on the midline between both PSIS. Key landmark for the lumbosacral junction (L5-S1) in ergonomics and lifting analysis.",
     "body_side": "midline",
     "theme": "posture",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère de la charnière lombo-sacrée (L5-S1) : en ergonomie, il délimite avec S1 le segment vertébral le plus soumis aux contraintes de cisaillement lors des manutentions lourdes. Utilisé pour calculer l'angle lombo-sacré dans les analyses de posture sagittale. La ligne de Tuffier (EIPS-EIPS) intersecte le rachis à L4 ou L4-L5, ce qui permet de repérer L5 par comptage pour les ponctions lombaires et l'anesthésie périmédullaire (Broadbent et al., Anaesthesia 2000).",
+    "application_en": "Lumbosacral junction landmark (L5-S1): in ergonomics it delimits with S1 the spinal segment most subjected to shear stress during heavy lifting. Used to calculate the lumbosacral angle in sagittal postural analysis. Tuffier's line (PSIS-to-PSIS) intersects the spine at L4 or L4-L5, allowing L5 to be identified by counting for lumbar puncture and epidural anaesthesia (Broadbent et al., Anaesthesia 2000)."
   },
   {
     "code": "S1_spinous",
@@ -272,8 +272,8 @@
     "hint_en": "Flat, broad process of the left scapula forming the tip of the shoulder. Follow the scapular spine laterally to its flat end. Mark the most lateral and superior point of the acromial border (acromiale in ISAK anthropometry).",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB de l'épaule (Wu et al. 2005, J Biomech) : avec l'articulation acromio-claviculaire, il participe au repère scapulaire pour la cinématique 3D. En ISAK, c'est le point 'acromiale', origine de la mesure acromiale-radiale (longueur du bras) et référence des plis bicipital et tricipital. En ISO 8559-1:2017, il définit la largeur d'épaule et la longueur de manche. Site d'injection IM du deltoïde : 2-5 cm sous l'acromion, zone dense en tissu musculaire.",
+    "application_en": "ISB shoulder landmark (Wu et al. 2005, J Biomech): with the acromioclavicular joint it contributes to the scapular coordinate system for 3D kinematics. In ISAK it is the 'acromiale' point, origin of the acromiale-radiale arm length and reference for the biceps and triceps skinfolds. In ISO 8559-1:2017 it defines shoulder width and sleeve length. IM deltoid injection site: 2-5 cm below the acromion, over dense muscle tissue."
   },
   {
     "code": "acromion_right",
@@ -284,8 +284,8 @@
     "hint_en": "Flat, broad process of the right scapula forming the tip of the shoulder. Follow the scapular spine laterally to its flat end. Mark the most lateral and superior point of the acromial border (ISAK acromiale, origin of the acromiale-radiale measurement).",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB de l'épaule (Wu et al. 2005, J Biomech) : avec l'articulation acromio-claviculaire, il participe au repère scapulaire pour la cinématique 3D. En ISAK, c'est le point 'acromiale', origine de la mesure acromiale-radiale (longueur du bras) et référence des plis bicipital et tricipital. En ISO 8559-1:2017, il définit la largeur d'épaule et la longueur de manche. Site d'injection IM du deltoïde : 2-5 cm sous l'acromion, zone dense en tissu musculaire.",
+    "application_en": "ISB shoulder landmark (Wu et al. 2005, J Biomech): with the acromioclavicular joint it contributes to the scapular coordinate system for 3D kinematics. In ISAK it is the 'acromiale' point, origin of the acromiale-radiale arm length and reference for the biceps and triceps skinfolds. In ISO 8559-1:2017 it defines shoulder width and sleeve length. IM deltoid injection site: 2-5 cm below the acromion, over dense muscle tissue."
   },
   {
     "code": "acromial_angle_left",
@@ -296,8 +296,8 @@
     "hint_en": "Posterolateral corner of the acromion, where its lateral border meets the posterior border of the scapular spine. Follow the scapular spine laterally: the angle is the sharp change of direction felt under the finger. Reference for the posterior deltoid EMG site.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Coin postéro-latéral de l'acromion servant de référence pour le site EMG du deltoïde postérieur (SENIAM) : électrodes placées 2 travers de doigt en arrière et en dessous de cet angle. Repère scapulaire secondaire pour l'évaluation de la dyskinésie de la scapula et de la rotation scapulaire inférieure dans les syndromes du conflit sous-acromial.",
+    "application_en": "Posterolateral corner of the acromion serving as reference for the posterior deltoid EMG site (SENIAM): electrodes placed two finger widths behind and below this angle. Secondary scapular reference for assessing scapular dyskinesis and inferior scapular rotation in subacromial impingement syndromes."
   },
   {
     "code": "acromial_angle_right",
@@ -308,8 +308,8 @@
     "hint_en": "Posterolateral corner of the acromion, where its lateral border meets the posterior border of the scapular spine. Follow the scapular spine laterally: the angle is the sharp change of direction felt under the finger. Reference for the posterior deltoid EMG site.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Coin postéro-latéral de l'acromion servant de référence pour le site EMG du deltoïde postérieur (SENIAM) : électrodes placées 2 travers de doigt en arrière et en dessous de cet angle. Repère scapulaire secondaire pour l'évaluation de la dyskinésie de la scapula et de la rotation scapulaire inférieure dans les syndromes du conflit sous-acromial.",
+    "application_en": "Posterolateral corner of the acromion serving as reference for the posterior deltoid EMG site (SENIAM): electrodes placed two finger widths behind and below this angle. Secondary scapular reference for assessing scapular dyskinesis and inferior scapular rotation in subacromial impingement syndromes."
   },
   {
     "code": "scapula_trigonum_left",
@@ -320,8 +320,8 @@
     "hint_en": "Small triangular surface where the scapular spine meets the medial border of the scapula (≈ T3 level). Follow the spine medially until it flattens against the vertebral border. Reference for the middle and lower trapezius EMG sites.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère médial de l'épine de la scapula servant de référence proximale pour les sites EMG du trapèze moyen et du trapèze inférieur (SENIAM). Avec les épineuses T3-T4, il matérialise le bord vertébral de la scapula et permet de quantifier l'abduction/adduction scapulaire dans l'évaluation de la dyskinésie et du syndrome du conflit sous-acromial.",
+    "application_en": "Medial reference of the scapular spine serving as the proximal anchor for the middle and lower trapezius EMG sites (SENIAM). With the T3-T4 spinous processes it marks the vertebral border of the scapula and allows quantification of scapular abduction/adduction in dyskinesis assessment and subacromial impingement syndrome."
   },
   {
     "code": "scapula_trigonum_right",
@@ -332,8 +332,8 @@
     "hint_en": "Small triangular surface where the scapular spine meets the medial border of the scapula (≈ T3 level). Follow the spine medially until it flattens against the vertebral border. Reference for the middle and lower trapezius EMG sites.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère médial de l'épine de la scapula servant de référence proximale pour les sites EMG du trapèze moyen et du trapèze inférieur (SENIAM). Avec les épineuses T3-T4, il matérialise le bord vertébral de la scapula et permet de quantifier l'abduction/adduction scapulaire dans l'évaluation de la dyskinésie et du syndrome du conflit sous-acromial.",
+    "application_en": "Medial reference of the scapular spine serving as the proximal anchor for the middle and lower trapezius EMG sites (SENIAM). With the T3-T4 spinous processes it marks the vertebral border of the scapula and allows quantification of scapular abduction/adduction in dyskinesis assessment and subacromial impingement syndrome."
   },
   {
     "code": "scapula_inferior_angle_left",
@@ -344,8 +344,8 @@
     "hint_en": "Lowest tip of the scapula, with the arm hanging relaxed at the side. Follow the medial border downward to its point. This is the ISAK 'subscapulare' landmark used to locate the subscapular skinfold.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère 'subscapulare' ISAK (Marfell-Jones et al. 2006) : le pli cutané sous-scapulaire est pris 2 cm sous ce point, oblique à 45°, et figure dans les protocoles de Durnin & Womersley (Br J Nutr, 1974) et Jackson & Pollock (1978) pour l'estimation de la densité corporelle. Repère de dyskinésie scapulaire : son niveau vertical par rapport à T7-T8 indique la rotation scapulaire inférieure et le basculement (tipping).",
+    "application_en": "ISAK 'subscapulare' landmark (Marfell-Jones et al. 2006): the subscapular skinfold is taken 2 cm below this point at a 45° angle, following the Durnin & Womersley (Br J Nutr, 1974) and Jackson & Pollock (1978) body density protocols. Scapular dyskinesis reference: its vertical level relative to T7-T8 indicates inferior scapular rotation and tipping."
   },
   {
     "code": "scapula_inferior_angle_right",
@@ -356,8 +356,8 @@
     "hint_en": "Lowest tip of the scapula, with the arm hanging relaxed at the side. Follow the medial border downward to its point. This is the ISAK 'subscapulare' landmark used to locate the subscapular skinfold.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère 'subscapulare' ISAK (Marfell-Jones et al. 2006) : le pli cutané sous-scapulaire est pris 2 cm sous ce point, oblique à 45°, et figure dans les protocoles de Durnin & Womersley (Br J Nutr, 1974) et Jackson & Pollock (1978) pour l'estimation de la densité corporelle. Repère de dyskinésie scapulaire : son niveau vertical par rapport à T7-T8 indique la rotation scapulaire inférieure et le basculement (tipping).",
+    "application_en": "ISAK 'subscapulare' landmark (Marfell-Jones et al. 2006): the subscapular skinfold is taken 2 cm below this point at a 45° angle, following the Durnin & Womersley (Br J Nutr, 1974) and Jackson & Pollock (1978) body density protocols. Scapular dyskinesis reference: its vertical level relative to T7-T8 indicates inferior scapular rotation and tipping."
   },
   {
     "code": "scapular_spine_left",
@@ -536,8 +536,8 @@
     "hint_en": "Lateral bony prominence at the distal end of the left humerus, elbow flexed to 90°. It is the common origin of the wrist extensors. With the medial epicondyle it defines the biepicondylar humerus breadth (ISAK).",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du membre supérieur (Wu et al. 2005, J Biomech) : avec l'épicondyle médial, définit l'axe de flexion-extension du coude et le repère local de l'avant-bras pour le calcul des moments articulaires. En ISAK, les deux épicondyles définissent le diamètre bi-épicondylien de l'humérus. Site de palpation de l'épicondylalgie latérale (tennis elbow) et référence distale pour la longueur de l'avant-bras (ISO 7250).",
+    "application_en": "ISB upper limb landmark (Wu et al. 2005, J Biomech): with the medial epicondyle it defines the elbow flexion-extension axis and local forearm coordinate system for joint moment computation. In ISAK both epicondyles define the biepicondylar humerus breadth. Palpation site for lateral epicondylalgia (tennis elbow) and distal reference for forearm length (ISO 7250)."
   },
   {
     "code": "lateral_epicondyle_right",
@@ -548,8 +548,8 @@
     "hint_en": "Lateral bony prominence at the distal end of the right humerus, elbow flexed to 90°. It is the common origin of the wrist extensors. With the medial epicondyle it defines the biepicondylar humerus breadth (ISAK).",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du membre supérieur (Wu et al. 2005, J Biomech) : avec l'épicondyle médial, définit l'axe de flexion-extension du coude et le repère local de l'avant-bras pour le calcul des moments articulaires. En ISAK, les deux épicondyles définissent le diamètre bi-épicondylien de l'humérus. Site de palpation de l'épicondylalgie latérale (tennis elbow) et référence distale pour la longueur de l'avant-bras (ISO 7250).",
+    "application_en": "ISB upper limb landmark (Wu et al. 2005, J Biomech): with the medial epicondyle it defines the elbow flexion-extension axis and local forearm coordinate system for joint moment computation. In ISAK both epicondyles define the biepicondylar humerus breadth. Palpation site for lateral epicondylalgia (tennis elbow) and distal reference for forearm length (ISO 7250)."
   },
   {
     "code": "medial_epicondyle_left",
@@ -560,8 +560,8 @@
     "hint_en": "Medial bony prominence at the distal end of the left humerus, very prominent with the elbow flexed. The ulnar nerve runs in the groove just behind it, so palpate gently. Common origin of the wrist flexors.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du membre supérieur (Wu et al. 2005, J Biomech) : avec l'épicondyle latéral, définit l'axe de flexion du coude et le repère local de l'avant-bras pour la cinématique 3D. Site de palpation de l'épicondylalgie médiale (golf elbow, épitrochléite) et cible des infiltrations de corticoïde ; le nerf ulnaire circule dans la gouttière rétro-épicondylienne — palper avec précaution.",
+    "application_en": "ISB upper limb landmark (Wu et al. 2005, J Biomech): with the lateral epicondyle it defines the elbow flexion axis and local forearm coordinate system for 3D kinematics. Palpation site for medial epicondylalgia (golf elbow, medial epicondylitis) and corticosteroid injection; the ulnar nerve runs in the retro-epicondylar groove — palpate with care."
   },
   {
     "code": "medial_epicondyle_right",
@@ -572,8 +572,8 @@
     "hint_en": "Medial bony prominence at the distal end of the right humerus, very prominent with the elbow flexed. The ulnar nerve runs in the groove just behind it, so palpate gently. Common origin of the wrist flexors.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du membre supérieur (Wu et al. 2005, J Biomech) : avec l'épicondyle latéral, définit l'axe de flexion du coude et le repère local de l'avant-bras pour la cinématique 3D. Site de palpation de l'épicondylalgie médiale (golf elbow, épitrochléite) et cible des infiltrations de corticoïde ; le nerf ulnaire circule dans la gouttière rétro-épicondylienne — palper avec précaution.",
+    "application_en": "ISB upper limb landmark (Wu et al. 2005, J Biomech): with the lateral epicondyle it defines the elbow flexion axis and local forearm coordinate system for 3D kinematics. Palpation site for medial epicondylalgia (golf elbow, medial epicondylitis) and corticosteroid injection; the ulnar nerve runs in the retro-epicondylar groove — palpate with care."
   },
   {
     "code": "olecranon_left",
@@ -584,8 +584,8 @@
     "hint_en": "Posterior bony tip of the ulna at the point of the left elbow, easily palpated with the elbow flexed to 90°. Insertion of triceps brachii and distal reference for the triceps EMG site (midway acromion-olecranon).",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB de l'avant-bras (Wu et al. 2005, J Biomech) : avec l'épicondyle latéral et les styloïdes, définit le segment de l'avant-bras. En ISO 7250-1, la hauteur coude-sol (olécrâne en appui) est le critère de réglage du plan de travail et du clavier (angle coude 90-110° recommandé). Référence goniométrique pour la mesure des amplitudes de flexion-extension du coude et référence distale du site EMG du triceps (SENIAM).",
+    "application_en": "ISB forearm landmark (Wu et al. 2005, J Biomech): with the lateral epicondyle and styloid processes it defines the forearm segment. In ISO 7250-1 sitting elbow height (olecranon supported) is the criterion for adjusting the work surface and keyboard height (90-110° elbow angle recommended). Goniometric reference for elbow flexion-extension ROM and distal reference for the triceps EMG site (SENIAM)."
   },
   {
     "code": "olecranon_right",
@@ -596,8 +596,8 @@
     "hint_en": "Posterior bony tip of the ulna at the point of the right elbow, easily palpated with the elbow flexed to 90°. Insertion of triceps brachii and distal reference for the triceps EMG site (midway acromion-olecranon).",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB de l'avant-bras (Wu et al. 2005, J Biomech) : avec l'épicondyle latéral et les styloïdes, définit le segment de l'avant-bras. En ISO 7250-1, la hauteur coude-sol (olécrâne en appui) est le critère de réglage du plan de travail et du clavier (angle coude 90-110° recommandé). Référence goniométrique pour la mesure des amplitudes de flexion-extension du coude et référence distale du site EMG du triceps (SENIAM).",
+    "application_en": "ISB forearm landmark (Wu et al. 2005, J Biomech): with the lateral epicondyle and styloid processes it defines the forearm segment. In ISO 7250-1 sitting elbow height (olecranon supported) is the criterion for adjusting the work surface and keyboard height (90-110° elbow angle recommended). Goniometric reference for elbow flexion-extension ROM and distal reference for the triceps EMG site (SENIAM)."
   },
   {
     "code": "radiale_left",
@@ -608,8 +608,8 @@
     "hint_en": "Most proximal and lateral point of the left radial head. Place a finger in the dimple below the lateral epicondyle and ask for pronation-supination: the radial head rolls under the fingertip. Distal end of the ISAK acromiale-radiale length.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Point 'radiale' ISAK (Marfell-Jones et al. 2006) : extrémité distale de la mesure acromiale-radiale (longueur du bras), le ruban étant tendu de l'acromion à ce point, bras pendant. Le point mi-acromiale-radiale obtenu fixe le niveau des plis bicipital et tricipital et de la circonférence du bras relâché, qui sont essentiels pour l'estimation de la composition corporelle.",
+    "application_en": "ISAK 'radiale' point (Marfell-Jones et al. 2006): distal end of the acromiale-radiale arm length measurement, with the tape running from the acromion to this point with the arm hanging. The resulting mid-acromiale-radiale level fixes the biceps and triceps skinfold sites and the relaxed arm girth, which are essential for body composition estimation."
   },
   {
     "code": "radiale_right",
@@ -620,8 +620,8 @@
     "hint_en": "Most proximal and lateral point of the right radial head. Place a finger in the dimple below the lateral epicondyle and ask for pronation-supination: the radial head rolls under the fingertip. Distal end of the ISAK acromiale-radiale length.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Point 'radiale' ISAK (Marfell-Jones et al. 2006) : extrémité distale de la mesure acromiale-radiale (longueur du bras), le ruban étant tendu de l'acromion à ce point, bras pendant. Le point mi-acromiale-radiale obtenu fixe le niveau des plis bicipital et tricipital et de la circonférence du bras relâché, qui sont essentiels pour l'estimation de la composition corporelle.",
+    "application_en": "ISAK 'radiale' point (Marfell-Jones et al. 2006): distal end of the acromiale-radiale arm length measurement, with the tape running from the acromion to this point with the arm hanging. The resulting mid-acromiale-radiale level fixes the biceps and triceps skinfold sites and the relaxed arm girth, which are essential for body composition estimation."
   },
   {
     "code": "radial_styloid_left",
@@ -632,8 +632,8 @@
     "hint_en": "Distal projection of the left radius on the lateral (thumb) side of the wrist, at the floor of the anatomical snuffbox. It extends about 1 cm further distally than the ulnar styloid. With the ulnar styloid it defines the wrist axis.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB de l'avant-bras (Wu et al. 2005, J Biomech) : avec la styloïde ulnaire, définit l'axe fonctionnel du poignet et le repère local de la main pour la cinématique 3D. La longueur de l'avant-bras (olécrane → styloïde radiale) est une donnée ergonomique ISO 7250 pour le dimensionnement des outils et des postes de travail. Repère de l'interligne radio-carpien pour les infiltrations et l'arthroscopie du poignet.",
+    "application_en": "ISB forearm landmark (Wu et al. 2005, J Biomech): with the ulnar styloid it defines the functional wrist axis and local hand coordinate system for 3D kinematics. Forearm length (olecranon → radial styloid) is an ISO 7250 ergonomic measurement for tool and workstation dimensioning. Reference for the radiocarpal joint line in wrist infiltrations and arthroscopy."
   },
   {
     "code": "radial_styloid_right",
@@ -644,8 +644,8 @@
     "hint_en": "Distal projection of the right radius on the lateral (thumb) side of the wrist, at the floor of the anatomical snuffbox. It extends about 1 cm further distally than the ulnar styloid. With the ulnar styloid it defines the wrist axis.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB de l'avant-bras (Wu et al. 2005, J Biomech) : avec la styloïde ulnaire, définit l'axe fonctionnel du poignet et le repère local de la main pour la cinématique 3D. La longueur de l'avant-bras (olécrane → styloïde radiale) est une donnée ergonomique ISO 7250 pour le dimensionnement des outils et des postes de travail. Repère de l'interligne radio-carpien pour les infiltrations et l'arthroscopie du poignet.",
+    "application_en": "ISB forearm landmark (Wu et al. 2005, J Biomech): with the ulnar styloid it defines the functional wrist axis and local hand coordinate system for 3D kinematics. Forearm length (olecranon → radial styloid) is an ISO 7250 ergonomic measurement for tool and workstation dimensioning. Reference for the radiocarpal joint line in wrist infiltrations and arthroscopy."
   },
   {
     "code": "ulnar_styloid_left",
@@ -656,8 +656,8 @@
     "hint_en": "Distal projection of the left ulna on the medial (little-finger) side of the wrist, forearm pronated. Distinguish the styloid (small posteromedial spike) from the ulnar head, which is bulkier and more proximal.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB de l'avant-bras (Wu et al. 2005, J Biomech) : avec la styloïde radiale, définit l'axe du poignet pour la cinématique 3D des mouvements de flexion-extension et de déviation radioulnaire. Repère diagnostique du complexe fibro-cartilagineux triangulaire (CFCT) en cas de douleur ulnaire du poignet : test de compression en prono-supination forcée.",
+    "application_en": "ISB forearm landmark (Wu et al. 2005, J Biomech): with the radial styloid it defines the wrist axis for 3D kinematics of flexion-extension and radioulnar deviation. Diagnostic reference for the triangular fibrocartilage complex (TFCC) in ulnar-sided wrist pain: compression test in forced pronation-supination."
   },
   {
     "code": "ulnar_styloid_right",
@@ -668,8 +668,8 @@
     "hint_en": "Distal projection of the right ulna on the medial (little-finger) side of the wrist, forearm pronated. Distinguish the styloid (small posteromedial spike) from the ulnar head, which is bulkier and more proximal.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB de l'avant-bras (Wu et al. 2005, J Biomech) : avec la styloïde radiale, définit l'axe du poignet pour la cinématique 3D des mouvements de flexion-extension et de déviation radioulnaire. Repère diagnostique du complexe fibro-cartilagineux triangulaire (CFCT) en cas de douleur ulnaire du poignet : test de compression en prono-supination forcée.",
+    "application_en": "ISB forearm landmark (Wu et al. 2005, J Biomech): with the radial styloid it defines the wrist axis for 3D kinematics of flexion-extension and radioulnar deviation. Diagnostic reference for the triangular fibrocartilage complex (TFCC) in ulnar-sided wrist pain: compression test in forced pronation-supination."
   },
   {
     "code": "ASIS_left",
@@ -680,8 +680,8 @@
     "hint_en": "Bony prominence at the anterior end of the left iliac crest. Lay the hand flat on the crest and follow it forward until it stops against bone. This is the ISAK 'iliospinale' and the origin of nearly all quadriceps EMG lines.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pelvis (Wu et al., J Biomech 35(4), 2002) : avec PSIS_left, ASIS_right et PSIS_right, définit le repère local pelvien (JCS) pour l'analyse cinématique 3D de la marche — calcul de l'antéversion/rétroversion, de l'obliquité et de la rotation axiale. Sommet de l'angle Q avec le centre de la patella et la tubérosité tibiale (normal 8-14° H, 11-20° F). Repère 'iliospinale' ISAK pour les sites EMG du quadriceps.",
+    "application_en": "ISB pelvic landmark (Wu et al., J Biomech 35(4), 2002): with PSIS_left, ASIS_right and PSIS_right it defines the local pelvic coordinate system (JCS) for 3D gait kinematics — computing anterior/posterior tilt, obliquity and axial rotation. Summit of the Q angle with the patellar centre and tibial tuberosity (normal 8-14° M, 11-20° F). ISAK 'iliospinale' landmark for quadriceps EMG sites."
   },
   {
     "code": "ASIS_right",
@@ -692,8 +692,8 @@
     "hint_en": "Bony prominence at the anterior end of the right iliac crest. Lay the hand flat on the crest and follow it forward until it stops against bone. This is the ISAK 'iliospinale' and the origin of nearly all quadriceps EMG lines.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pelvis (Wu et al., J Biomech 35(4), 2002) : avec PSIS_right, ASIS_left et PSIS_left, définit le repère local pelvien (JCS) pour l'analyse cinématique 3D de la marche — calcul de l'antéversion/rétroversion, de l'obliquité et de la rotation axiale. Sommet de l'angle Q avec le centre de la patella et la tubérosité tibiale (normal 8-14° H, 11-20° F). Repère 'iliospinale' ISAK pour les sites EMG du quadriceps.",
+    "application_en": "ISB pelvic landmark (Wu et al., J Biomech 35(4), 2002): with PSIS_right, ASIS_left and PSIS_left it defines the local pelvic coordinate system (JCS) for 3D gait kinematics — computing anterior/posterior tilt, obliquity and axial rotation. Summit of the Q angle with the patellar centre and tibial tuberosity (normal 8-14° M, 11-20° F). ISAK 'iliospinale' landmark for quadriceps EMG sites."
   },
   {
     "code": "AIIS_left",
@@ -728,8 +728,8 @@
     "hint_en": "Posterior end of the left iliac crest, under the visible skin dimple. Follow the iliac crest backward to its terminal prominence. Together with the ASIS it defines sagittal pelvic tilt.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pelvis (Wu et al. 2002, J Biomech) : avec les EIAS, forme le système de coordonnées pelvien pour la cinématique 3D. La fossette de Michaelis (dépression cutanée sus-jacente) aide à sa localisation. La ligne joignant les deux EIPS correspond à la ligne de Tuffier (niveau L4-L5), référence pour l'anesthésie péridurale et la ponction lombaire (Broadbent et al., Anaesthesia 2000). Utilisé dans les tests SIJ (FABER, Gaenslen, thigh thrust).",
+    "application_en": "ISB pelvic landmark (Wu et al. 2002, J Biomech): with the ASIS it forms the pelvic coordinate system for 3D kinematics. The skin dimple (Michaelis fossa) above it aids localisation. The line joining both PSIS corresponds to Tuffier's line (L4-L5 level), the reference for epidural anaesthesia and lumbar puncture (Broadbent et al., Anaesthesia 2000). Used in SIJ tests (FABER, Gaenslen, thigh thrust)."
   },
   {
     "code": "PSIS_right",
@@ -740,8 +740,8 @@
     "hint_en": "Posterior end of the right iliac crest, under the visible skin dimple. Follow the iliac crest backward to its terminal prominence. Together with the ASIS it defines sagittal pelvic tilt.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pelvis (Wu et al. 2002, J Biomech) : avec les EIAS, forme le système de coordonnées pelvien pour la cinématique 3D. La fossette de Michaelis (dépression cutanée sus-jacente) aide à sa localisation. La ligne joignant les deux EIPS correspond à la ligne de Tuffier (niveau L4-L5), référence pour l'anesthésie péridurale et la ponction lombaire (Broadbent et al., Anaesthesia 2000). Utilisé dans les tests SIJ (FABER, Gaenslen, thigh thrust).",
+    "application_en": "ISB pelvic landmark (Wu et al. 2002, J Biomech): with the ASIS it forms the pelvic coordinate system for 3D kinematics. The skin dimple (Michaelis fossa) above it aids localisation. The line joining both PSIS corresponds to Tuffier's line (L4-L5 level), the reference for epidural anaesthesia and lumbar puncture (Broadbent et al., Anaesthesia 2000). Used in SIJ tests (FABER, Gaenslen, thigh thrust)."
   },
   {
     "code": "iliac_crest_left",
@@ -752,8 +752,8 @@
     "hint_en": "Most lateral point of the left iliac crest, subject standing with weight evenly distributed. Press firmly upward along the lateral pelvis until the superior border of the bone is reached. Landmark for the iliac crest skinfold (ISAK).",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère 'iliocristale' ISAK (Marfell-Jones et al. 2006) : site du pli cutané de la crête iliaque. Référence OMS pour la circonférence de taille (mi-chemin entre rebord costal inférieur et crête iliaque) : seuils de risque cardiovasculaire ≥ 88 cm femme / ≥ 102 cm homme (WHO, Diabetes Care 2007). En ISO 8559-1:2017, définit la 'ligne de taille anatomique' pour les patrons de jupe et de pantalon.",
+    "application_en": "ISAK 'iliocristale' landmark (Marfell-Jones et al. 2006): site of the iliac crest skinfold. WHO reference for waist circumference (midpoint between lower costal margin and iliac crest): cardiovascular risk thresholds ≥ 88 cm women / ≥ 102 cm men (WHO, Diabetes Care 2007). In ISO 8559-1:2017 it defines the 'anatomical waist line' for skirt and trouser patterns."
   },
   {
     "code": "iliac_crest_right",
@@ -764,8 +764,8 @@
     "hint_en": "Most lateral point of the right iliac crest, subject standing with weight evenly distributed. Press firmly upward along the lateral pelvis until the superior border of the bone is reached. Landmark for the iliac crest and supraspinale skinfolds (ISAK).",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère 'iliocristale' ISAK (Marfell-Jones et al. 2006) : site du pli cutané de la crête iliaque et du pli supra-iliaque. Référence OMS pour la circonférence de taille (mi-chemin entre rebord costal inférieur et crête iliaque) : seuils de risque cardiovasculaire ≥ 88 cm femme / ≥ 102 cm homme (WHO, Diabetes Care 2007). En ISO 8559-1:2017, définit la 'ligne de taille anatomique' pour les patrons de jupe et de pantalon.",
+    "application_en": "ISAK 'iliocristale' landmark (Marfell-Jones et al. 2006): site of the iliac crest and supraspinale skinfolds. WHO reference for waist circumference (midpoint between lower costal margin and iliac crest): cardiovascular risk thresholds ≥ 88 cm women / ≥ 102 cm men (WHO, Diabetes Care 2007). In ISO 8559-1:2017 it defines the 'anatomical waist line' for skirt and trouser patterns."
   },
   {
     "code": "ischial_tuberosity_left",
@@ -776,8 +776,8 @@
     "hint_en": "Large bony prominence you sit on, palpable under the left gluteal fold with the hip flexed (side-lying or standing and bent forward). Origin of the hamstrings and starting point of the biceps femoris and semitendinosus EMG lines.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ergonomique ISO 7250-1 : le 'point ischiatique' définit la hauteur poplitée assise (hauteur de siège standard), la distance siège-genou et la distance siège-pied pour la conception des postes de travail et des sièges. Origine des ischio-jambiers (biceps fémoral, semi-tendineux, semi-membraneux) : site de palpation des tendinopathies proximales et des bursites ischiatiques du sportif.",
+    "application_en": "ISO 7250-1 ergonomic landmark: the 'ischial point' defines sitting popliteal height (standard seat height), seat-to-knee and seat-to-foot distances for workstation and seating design. Origin of the hamstrings (biceps femoris, semitendinosus, semimembranosus): palpation site for proximal hamstring tendinopathy and ischial bursitis in athletes."
   },
   {
     "code": "ischial_tuberosity_right",
@@ -788,8 +788,8 @@
     "hint_en": "Large bony prominence you sit on, palpable under the right gluteal fold with the hip flexed (side-lying or standing and bent forward). Origin of the hamstrings and starting point of the biceps femoris and semitendinosus EMG lines.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ergonomique ISO 7250-1 : le 'point ischiatique' définit la hauteur poplitée assise (hauteur de siège standard), la distance siège-genou et la distance siège-pied pour la conception des postes de travail et des sièges. Origine des ischio-jambiers (biceps fémoral, semi-tendineux, semi-membraneux) : site de palpation des tendinopathies proximales et des bursites ischiatiques du sportif.",
+    "application_en": "ISO 7250-1 ergonomic landmark: the 'ischial point' defines sitting popliteal height (standard seat height), seat-to-knee and seat-to-foot distances for workstation and seating design. Origin of the hamstrings (biceps femoris, semitendinosus, semimembranosus): palpation site for proximal hamstring tendinopathy and ischial bursitis in athletes."
   },
   {
     "code": "greater_trochanter_left",
@@ -800,8 +800,8 @@
     "hint_en": "Lateral process of the femur on the outer aspect of the left hip. Rest the palm on the lateral thigh and ask for internal/external hip rotation: the trochanter rolls under the hand. Mark its most lateral and proximal point.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du fémur (Wu et al. 2002, J Biomech) : avec les épicondyles fémoraux, contribue au système de coordonnées fémoral pour la cinématique 3D de la hanche. Repère 'trochanterion' ISAK pour la mesure de mi-cuisse et ISO 7250 pour la longueur de hanche/bassin (patron de pantalon). Site de l'injection IM ventroglutéale (Von Hochstetter 1954) dans le triangle grand trochanter-EIAS-crête iliaque, à l'écart du nerf sciatique.",
+    "application_en": "ISB femoral landmark (Wu et al. 2002, J Biomech): with the femoral epicondyles contributes to the femoral coordinate system for 3D hip kinematics. ISAK 'trochanterion' for mid-thigh girth and ISO 7250 for hip/pelvic length (trouser pattern). Ventrogluteal IM injection site (Von Hochstetter 1954) within the safe triangle greater trochanter-ASIS-iliac crest, away from the sciatic nerve."
   },
   {
     "code": "greater_trochanter_right",
@@ -812,8 +812,8 @@
     "hint_en": "Lateral process of the femur on the outer aspect of the right hip. Rest the palm on the lateral thigh and ask for internal/external hip rotation: the trochanter rolls under the hand. ISAK 'trochanterion' for the mid-thigh girth.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du fémur (Wu et al. 2002, J Biomech) : avec les épicondyles fémoraux, contribue au système de coordonnées fémoral pour la cinématique 3D de la hanche. Repère 'trochanterion' ISAK pour la mesure de mi-cuisse et ISO 7250 pour la longueur de hanche/bassin (patron de pantalon). Site de l'injection IM ventroglutéale (Von Hochstetter 1954) dans le triangle grand trochanter-EIAS-crête iliaque, à l'écart du nerf sciatique.",
+    "application_en": "ISB femoral landmark (Wu et al. 2002, J Biomech): with the femoral epicondyles contributes to the femoral coordinate system for 3D hip kinematics. ISAK 'trochanterion' for mid-thigh girth and ISO 7250 for hip/pelvic length (trouser pattern). Ventrogluteal IM injection site (Von Hochstetter 1954) within the safe triangle greater trochanter-ASIS-iliac crest, away from the sciatic nerve."
   },
   {
     "code": "sacrum_S2",
@@ -824,8 +824,8 @@
     "hint_en": "Midpoint of the posterior sacrum, on the line joining both PSIS (≈ second sacral vertebra). Flat, smooth surface between the two gluteal masses. Origin of the gluteus maximus EMG line (sacrum → greater trochanter).",
     "body_side": "midline",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère de l'axe longitudinal du grand fessier (SENIAM) et référence postérieure du bassin pour l'évaluation de la posture assise prolongée (basculement postérieur). Avec les EIPS, il matérialise la surface dorso-sacrée. Site de référence pour les injections sacrées péridurales (caudales) en anesthésiologie et pour les points de repère du hiatus sacré en radiologie interventionnelle.",
+    "application_en": "Reference for the gluteus maximus long axis (SENIAM) and posterior pelvic landmark for evaluating prolonged-sitting posture (posterior tilt). With the PSIS it marks the dorsal sacral surface. Reference site for sacral epidural (caudal) injections in anaesthesiology and for the sacral hiatus in interventional radiology."
   },
   {
     "code": "pubic_symphysis",
@@ -848,8 +848,8 @@
     "hint_en": "Superior border (base) of the left patella, knee extended and quadriceps relaxed. Push the patella upward with the thumb to feel its border clearly. Distal end of the rectus femoris EMG line (ASIS → superior patellar border).",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Référence 'mid-patellare' ISAK (Marfell-Jones et al. 2006) pour le pli cutané de la cuisse antérieure (mi-distance pli inguinal — bord supérieur de la patella). Extrémité distale du site EMG du droit fémoral (EIAS → bord supérieur de la patella, marquer à 50 %). Repère du Q-angle (EIAS → centre de la patella) pour le dépistage du syndrome fémoro-patellaire.",
+    "application_en": "ISAK 'mid-patellare' reference (Marfell-Jones et al. 2006) for the front thigh skinfold (midway inguinal fold — superior patellar border). Distal end of the rectus femoris EMG line (ASIS → superior patellar border, mark at 50%). Proximal reference of the Q-angle (ASIS → patellar centre) for patellofemoral pain syndrome screening."
   },
   {
     "code": "patella_superior_right",
@@ -860,8 +860,8 @@
     "hint_en": "Superior border (base) of the right patella, knee extended and quadriceps relaxed. Push the patella upward with the thumb to feel its border clearly. Also the 'mid-patellare' reference for the front thigh skinfold (ISAK).",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Référence 'mid-patellare' ISAK (Marfell-Jones et al. 2006) pour le pli cutané de la cuisse antérieure (mi-distance pli inguinal — bord supérieur de la patella). Extrémité distale du site EMG du droit fémoral (EIAS → bord supérieur de la patella, marquer à 50 %). Repère du Q-angle (EIAS → centre de la patella) pour le dépistage du syndrome fémoro-patellaire.",
+    "application_en": "ISAK 'mid-patellare' reference (Marfell-Jones et al. 2006) for the front thigh skinfold (midway inguinal fold — superior patellar border). Distal end of the rectus femoris EMG line (ASIS → superior patellar border, mark at 50%). Proximal reference of the Q-angle (ASIS → patellar centre) for patellofemoral pain syndrome screening."
   },
   {
     "code": "patella_center_left",
@@ -896,8 +896,8 @@
     "hint_en": "Most lateral bony prominence of the left femoral condyle, just above the joint line. With the knee flexed to 90°, follow the lateral edge of the trochlea backward. With the medial epicondyle it defines the knee flexion axis and the ISAK femur breadth.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du fémur (Wu et al. 2002, J Biomech) : avec l'épicondyle médial, définit l'axe de flexion-extension du genou (axe médio-latéral ISB) et le repère local fémoral pour le calcul des moments articulaires. En ISAK, les deux épicondyles définissent le diamètre bi-épicondylien du fémur. Insertion du ligament collatéral latéral : repère pour les tests d'instabilité et les infiltrations latérales du genou.",
+    "application_en": "ISB femoral landmark (Wu et al. 2002, J Biomech): with the medial epicondyle it defines the knee flexion-extension axis (ISB mediolateral axis) and the local femoral coordinate system for joint moment computation. In ISAK both epicondyles define the biepicondylar femur breadth. Lateral collateral ligament attachment: reference for instability tests and lateral knee injections."
   },
   {
     "code": "lateral_knee_right",
@@ -908,8 +908,8 @@
     "hint_en": "Most lateral bony prominence of the right femoral condyle, just above the joint line. With the knee flexed to 90°, follow the lateral edge of the trochlea backward. With the medial epicondyle it defines the knee flexion axis and the ISAK femur breadth.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du fémur (Wu et al. 2002, J Biomech) : avec l'épicondyle médial, définit l'axe de flexion-extension du genou (axe médio-latéral ISB) et le repère local fémoral pour le calcul des moments articulaires. En ISAK, les deux épicondyles définissent le diamètre bi-épicondylien du fémur. Insertion du ligament collatéral latéral : repère pour les tests d'instabilité et les infiltrations latérales du genou.",
+    "application_en": "ISB femoral landmark (Wu et al. 2002, J Biomech): with the medial epicondyle it defines the knee flexion-extension axis (ISB mediolateral axis) and the local femoral coordinate system for joint moment computation. In ISAK both epicondyles define the biepicondylar femur breadth. Lateral collateral ligament attachment: reference for instability tests and lateral knee injections."
   },
   {
     "code": "medial_knee_left",
@@ -920,8 +920,8 @@
     "hint_en": "Most medial bony prominence of the left femoral condyle, above the joint line. It is the proximal attachment of the medial collateral ligament and the proximal reference for the soleus EMG site (medial condyle → medial malleolus).",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du fémur (Wu et al. 2002, J Biomech) : avec l'épicondyle latéral, définit l'axe de flexion du genou pour la cinématique 3D de la marche et le calcul des moments fléchisseurs/extenseurs. Insertion proximale du ligament collatéral médial (LCM) : repère de palpation diagnostique dans les traumatismes en valgus et les tests ligamentaires médiaux du genou.",
+    "application_en": "ISB femoral landmark (Wu et al. 2002, J Biomech): with the lateral epicondyle it defines the knee flexion axis for 3D gait kinematics and flexor/extensor moment computation. Proximal attachment of the medial collateral ligament (MCL): palpation reference in valgus trauma and medial knee ligament tests."
   },
   {
     "code": "medial_knee_right",
@@ -932,8 +932,8 @@
     "hint_en": "Most medial bony prominence of the right femoral condyle, above the joint line. It is the proximal attachment of the medial collateral ligament and the proximal reference for the soleus EMG site (medial condyle → medial malleolus).",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du fémur (Wu et al. 2002, J Biomech) : avec l'épicondyle latéral, définit l'axe de flexion du genou pour la cinématique 3D de la marche et le calcul des moments fléchisseurs/extenseurs. Insertion proximale du ligament collatéral médial (LCM) : repère de palpation diagnostique dans les traumatismes en valgus et les tests ligamentaires médiaux du genou.",
+    "application_en": "ISB femoral landmark (Wu et al. 2002, J Biomech): with the lateral epicondyle it defines the knee flexion axis for 3D gait kinematics and flexor/extensor moment computation. Proximal attachment of the medial collateral ligament (MCL): palpation reference in valgus trauma and medial knee ligament tests."
   },
   {
     "code": "fibular_head_left",
@@ -944,8 +944,8 @@
     "hint_en": "Rounded bony bump on the lateral aspect of the left leg, about 2 cm below the knee joint line and behind the tibial tubercle. The common fibular nerve wraps around the neck just below it, so palpate without pressing. Origin of the tibialis anterior and fibularis EMG lines.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du tibia (Wu et al. 2002, J Biomech) : contribue avec les malléoles à la définition du repère local tibial pour la cinématique 3D de la cheville et la rotation tibiale. Repère 'tibiale laterale' ISAK pour la mesure de mi-cuisse. Le nerf fibulaire commun contourne le col de la fibula juste en dessous (compression → pied tombant) : repère neurologique clé en examen clinique.",
+    "application_en": "ISB tibial landmark (Wu et al. 2002, J Biomech): contributes with the malleoli to the local tibial coordinate system for 3D ankle kinematics and tibial rotation. ISAK 'tibiale laterale' for mid-thigh measurement. The common fibular nerve wraps around the fibular neck just below (compression causes foot drop): a key neurological reference in clinical examination."
   },
   {
     "code": "fibular_head_right",
@@ -956,8 +956,8 @@
     "hint_en": "Rounded bony bump on the lateral aspect of the right leg, about 2 cm below the knee joint line and behind the tibial tubercle. The common fibular nerve wraps around the neck just below it, so palpate without pressing. ISAK 'tibiale laterale' reference for mid-thigh.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du tibia (Wu et al. 2002, J Biomech) : contribue avec les malléoles à la définition du repère local tibial pour la cinématique 3D de la cheville et la rotation tibiale. Repère 'tibiale laterale' ISAK pour la mesure de mi-cuisse. Le nerf fibulaire commun contourne le col de la fibula juste en dessous (compression → pied tombant) : repère neurologique clé en examen clinique.",
+    "application_en": "ISB tibial landmark (Wu et al. 2002, J Biomech): contributes with the malleoli to the local tibial coordinate system for 3D ankle kinematics and tibial rotation. ISAK 'tibiale laterale' for mid-thigh measurement. The common fibular nerve wraps around the fibular neck just below (compression causes foot drop): a key neurological reference in clinical examination."
   },
   {
     "code": "tibial_tuberosity_left",
@@ -968,8 +968,8 @@
     "hint_en": "Triangular bony ridge on the anterior surface of the left tibia, 2 to 3 cm below the apex of the patella. Follow the patellar tendon down to its bony insertion. Quadriceps insertion site and a clinical landmark (Osgood-Schlatter).",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Extrémité distale de l'angle Q (EIAS → centre de la patella → tubérosité tibiale) : valeurs normales 8-14° homme, 11-20° femme (Nordin & Frankel, 2001) ; une augmentation indique un syndrome fémoro-patellaire ou une instabilité patellaire. Site de la maladie d'Osgood-Schlatter chez l'adolescent (apophysite de traction) et repère ISB distal du segment tibial pour l'analyse de la marche.",
+    "application_en": "Distal end of the Q angle (ASIS → patellar centre → tibial tuberosity): normal values 8-14° males, 11-20° females (Nordin & Frankel, 2001); an increase indicates patellofemoral pain syndrome or patellar instability. Site of Osgood-Schlatter disease in adolescents (traction apophysitis) and distal ISB landmark of the tibial segment for gait analysis."
   },
   {
     "code": "tibial_tuberosity_right",
@@ -980,8 +980,8 @@
     "hint_en": "Triangular bony ridge on the anterior surface of the right tibia, 2 to 3 cm below the apex of the patella. Follow the patellar tendon down to its bony insertion. Quadriceps insertion site and a clinical landmark (Osgood-Schlatter).",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Extrémité distale de l'angle Q (EIAS → centre de la patella → tubérosité tibiale) : valeurs normales 8-14° homme, 11-20° femme (Nordin & Frankel, 2001) ; une augmentation indique un syndrome fémoro-patellaire ou une instabilité patellaire. Site de la maladie d'Osgood-Schlatter chez l'adolescent (apophysite de traction) et repère ISB distal du segment tibial pour l'analyse de la marche.",
+    "application_en": "Distal end of the Q angle (ASIS → patellar centre → tibial tuberosity): normal values 8-14° males, 11-20° females (Nordin & Frankel, 2001); an increase indicates patellofemoral pain syndrome or patellar instability. Site of Osgood-Schlatter disease in adolescents (traction apophysitis) and distal ISB landmark of the tibial segment for gait analysis."
   },
   {
     "code": "gerdy_tubercle_left",
@@ -1064,8 +1064,8 @@
     "hint_en": "Distal end of the left fibula, prominent on the lateral ankle. Mark its most distal point: it sits lower and more posterior than the medial malleolus. Distal end of the fibularis EMG line.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pied/cheville (Wu et al. 2002, J Biomech) : avec la malléole médiale et le calcanéum, définit le repère local tibial (axe médio-latéral de la cheville) pour le calcul des angles de flexion plantaire/dorsiflexion à la marche. Repère clinique des ligaments talo-fibulaire antérieur et calcanéo-fibulaire dans le bilan d'une entorse de cheville en inversion.",
+    "application_en": "ISB foot/ankle landmark (Wu et al. 2002, J Biomech): with the medial malleolus and calcaneus it defines the local tibial coordinate system (mediolateral ankle axis) for computing plantar/dorsiflexion angles during gait. Clinical reference for the anterior talofibular and calcaneofibular ligaments in lateral ankle sprain assessment."
   },
   {
     "code": "lateral_malleolus_right",
@@ -1076,8 +1076,8 @@
     "hint_en": "Distal end of the right fibula, prominent on the lateral ankle. Mark its most distal point: it sits lower and more posterior than the medial malleolus. Distal end of the fibularis EMG line.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pied/cheville (Wu et al. 2002, J Biomech) : avec la malléole médiale et le calcanéum, définit le repère local tibial (axe médio-latéral de la cheville) pour le calcul des angles de flexion plantaire/dorsiflexion à la marche. Repère clinique des ligaments talo-fibulaire antérieur et calcanéo-fibulaire dans le bilan d'une entorse de cheville en inversion.",
+    "application_en": "ISB foot/ankle landmark (Wu et al. 2002, J Biomech): with the medial malleolus and calcaneus it defines the local tibial coordinate system (mediolateral ankle axis) for computing plantar/dorsiflexion angles during gait. Clinical reference for the anterior talofibular and calcaneofibular ligaments in lateral ankle sprain assessment."
   },
   {
     "code": "medial_malleolus_left",
@@ -1088,8 +1088,8 @@
     "hint_en": "Distal end of the left tibia, prominent on the medial ankle. Mark its most distal point. Distal end of the soleus and tibialis anterior EMG lines.",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pied/cheville (Wu et al. 2002, J Biomech) : avec la malléole latérale, définit l'axe bimalléolaire de la cheville pour la cinématique 3D. Repère clinique des ligaments deltoïdiens (entorse médiale rare mais grave) et point de mesure de la hauteur de l'arche médiale du pied. Extrémité distale des lignes EMG du soléaire et du tibial antérieur (SENIAM).",
+    "application_en": "ISB foot/ankle landmark (Wu et al. 2002, J Biomech): with the lateral malleolus it defines the bimalleolar ankle axis for 3D kinematics. Clinical reference for the deltoid ligaments (medial ankle sprain, rare but severe) and measurement point for medial arch height. Distal end of the soleus and tibialis anterior EMG lines (SENIAM)."
   },
   {
     "code": "medial_malleolus_right",
@@ -1100,8 +1100,8 @@
     "hint_en": "Distal end of the right tibia, prominent on the medial ankle. Mark its most distal point. Distal end of the soleus and tibialis anterior EMG lines.",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pied/cheville (Wu et al. 2002, J Biomech) : avec la malléole latérale, définit l'axe bimalléolaire de la cheville pour la cinématique 3D. Repère clinique des ligaments deltoïdiens (entorse médiale rare mais grave) et point de mesure de la hauteur de l'arche médiale du pied. Extrémité distale des lignes EMG du soléaire et du tibial antérieur (SENIAM).",
+    "application_en": "ISB foot/ankle landmark (Wu et al. 2002, J Biomech): with the lateral malleolus it defines the bimalleolar ankle axis for 3D kinematics. Clinical reference for the deltoid ligaments (medial ankle sprain, rare but severe) and measurement point for medial arch height. Distal end of the soleus and tibialis anterior EMG lines (SENIAM)."
   },
   {
     "code": "heel_left",
@@ -1112,8 +1112,8 @@
     "hint_en": "Most posterior point of the left calcaneus, at the level of the Achilles insertion, with the foot flat on the ground. Mark on the posterior midline of the heel. Distal reference of the lateral gastrocnemius EMG line (fibular head → heel).",
     "body_side": "left",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pied (Wu et al. 2002, J Biomech) : avec les têtes métatarsiennes, définit le système de coordonnées du pied pour la cinématique 3D de la cheville et l'angle de progression du pied à la marche. L'angle de Böhler (normal 25-40°) est mesuré en radiographie latérale entre la face supérieure du calcanéum et l'axe reliant la tubérosité postérieure à la grande apophyse : son aplatissement signe une fracture du calcanéum.",
+    "application_en": "ISB foot landmark (Wu et al. 2002, J Biomech): with the metatarsal heads it defines the foot coordinate system for 3D ankle kinematics and foot progression angle during gait. Böhler's angle (normal 25-40°) is measured on a lateral radiograph between the superior calcaneal surface and the axis from posterior tuberosity to the large process: its flattening indicates calcaneal fracture."
   },
   {
     "code": "heel_right",
@@ -1124,8 +1124,8 @@
     "hint_en": "Most posterior point of the right calcaneus, at the level of the Achilles insertion, with the foot flat on the ground. Mark on the posterior midline of the heel. Distal reference of the lateral gastrocnemius EMG line (fibular head → heel).",
     "body_side": "right",
     "theme": "anatomy",
-    "application_fr": "",
-    "application_en": ""
+    "application_fr": "Repère ISB du pied (Wu et al. 2002, J Biomech) : avec les têtes métatarsiennes, définit le système de coordonnées du pied pour la cinématique 3D de la cheville et l'angle de progression du pied à la marche. L'angle de Böhler (normal 25-40°) est mesuré en radiographie latérale entre la face supérieure du calcanéum et l'axe reliant la tubérosité postérieure à la grande apophyse : son aplatissement signe une fracture du calcanéum.",
+    "application_en": "ISB foot landmark (Wu et al. 2002, J Biomech): with the metatarsal heads it defines the foot coordinate system for 3D ankle kinematics and foot progression angle during gait. Böhler's angle (normal 25-40°) is measured on a lateral radiograph between the superior calcaneal surface and the axis from posterior tuberosity to the large process: its flattening indicates calcaneal fracture."
   },
   {
     "code": "navicular_tuberosity_left",
