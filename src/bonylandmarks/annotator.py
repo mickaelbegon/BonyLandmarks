@@ -1173,15 +1173,16 @@ class AnnotatorWindow(QMainWindow):
     def _populate_muscle_list(self) -> None:
         if self._muscle_index is None or self._muscle_list_populated:
             return
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            from .muscle_map import build_muscle_name_index
-            self._muscle_names = build_muscle_name_index(self._muscle_index)
-        finally:
-            QApplication.restoreOverrideCursor()
+        from .muscle_map import BONE_MUSCLES, build_muscle_name_index
+        # Seuls les FMA IDs définis dans BONE_MUSCLES (muscles curatés)
+        known_ids = {fid for ids in BONE_MUSCLES.values() for fid in ids}
+        available_ids = known_ids & set(self._muscle_index.keys())
+        # Lire les noms uniquement pour les muscles curatés
+        filtered_index = {fid: self._muscle_index[fid] for fid in available_ids}
+        self._muscle_names = build_muscle_name_index(filtered_index)
         self._muscle_list.blockSignals(True)
         self._muscle_list.clear()
-        for fma_id in sorted(self._muscle_index.keys(), key=lambda k: self._muscle_names.get(k, f"FMA{k}")):
+        for fma_id in sorted(available_ids, key=lambda k: self._muscle_names.get(k, f"FMA{k}")):
             name = self._muscle_names.get(fma_id, f"FMA{fma_id}")
             item = QListWidgetItem(name)
             item.setData(Qt.UserRole, fma_id)
