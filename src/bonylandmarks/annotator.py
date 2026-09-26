@@ -899,7 +899,10 @@ class AnnotatorWindow(QMainWindow):
         self._active_bone_code: str | None = None
         self._bone_show_muscles: bool = False
         self._muscle_index: dict[int, Path] | None = None
-        self._bp3d_dir: Path | None = None
+        from .muscle_map import build_muscle_index, find_bp3d_dir
+        self._bp3d_dir: Path | None = find_bp3d_dir()
+        if self._bp3d_dir is not None:
+            self._muscle_index = build_muscle_index(self._bp3d_dir)
         # landmark-edit picking state (all must stay alive while observers active)
         self._lm_picker: vtk.vtkCellPicker | None = None
         self._lm_press_xy: tuple[int, int] | None = None
@@ -1111,6 +1114,7 @@ class AnnotatorWindow(QMainWindow):
     def _on_muscle_toggled(self, checked: bool) -> None:
         self._bone_show_muscles = checked
         if checked and self._bp3d_dir is None:
+            # Auto-detection failed at startup — ask the user once
             path = QFileDialog.getExistingDirectory(
                 self,
                 "Sélectionner le dossier BodyParts3D (isa_BP3D_4.0_obj_99)",
