@@ -65,7 +65,7 @@ from PySide6.QtWidgets import (
 )
 from pyvistaqt import QtInteractor
 
-from .bone_map import BONE_LABEL_FR, LANDMARK_BONE
+from .bone_map import BONE_JOINTS, BONE_LABEL_FR, LANDMARK_BONE
 from .landmarks_extended import LANDMARKS, THEME_LABELS, Landmark
 from .mesh_loader import load_avatar_glb, load_glb_mesh
 
@@ -804,6 +804,32 @@ class AnnotatorWindow(QMainWindow):
         self._bone_edit_btn.toggled.connect(self._on_bone_edit_toggled)
         vl.addWidget(self._bone_edit_btn)
 
+        _ovl_ss = (
+            "QPushButton { font-size: 10px; padding: 3px 6px; background: #2a2a4a; "
+            "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
+            "QPushButton:checked { background: #002244; color: #66aaee; border-color: #66aaee; }"
+            "QPushButton:hover { background: #3a3a5a; }"
+            "QPushButton:disabled { color: #555566; border-color: #333355; }"
+        )
+        ovl_row = QHBoxLayout()
+        ovl_row.setSpacing(4)
+        self._skel_btn = QPushButton("🦴 Squelette")
+        self._skel_btn.setCheckable(True)
+        self._skel_btn.setEnabled(False)
+        self._skel_btn.setToolTip("Afficher tout le squelette en transparence")
+        self._skel_btn.setStyleSheet(_ovl_ss)
+        self._skel_btn.toggled.connect(self._on_skel_toggled)
+        self._adj_btn = QPushButton("🔗 Adjacents")
+        self._adj_btn.setCheckable(True)
+        self._adj_btn.setEnabled(False)
+        self._adj_btn.setToolTip("Afficher les os partageant une articulation avec cet os")
+        self._adj_btn.setStyleSheet(_ovl_ss)
+        self._adj_btn.toggled.connect(self._on_adj_toggled)
+        ovl_row.addWidget(self._skel_btn)
+        ovl_row.addWidget(self._adj_btn)
+        vl.addLayout(ovl_row)
+
+        self._overlay_mode: str | None = None
         self._active_bone_code: str | None = None
         # landmark-edit picking state (all must stay alive while observers active)
         self._lm_picker: vtk.vtkCellPicker | None = None
@@ -826,6 +852,8 @@ class AnnotatorWindow(QMainWindow):
             self._bone_missing_lbl.setVisible(False)
             self._bone_edit_btn.setEnabled(False)
             self._bone_edit_btn.setChecked(False)
+            self._skel_btn.setEnabled(False)
+            self._adj_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -837,6 +865,8 @@ class AnnotatorWindow(QMainWindow):
         if stem is None:
             self._bone_missing_lbl.setVisible(False)
             self._bone_edit_btn.setEnabled(False)
+            self._skel_btn.setEnabled(False)
+            self._adj_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
             return
@@ -854,6 +884,8 @@ class AnnotatorWindow(QMainWindow):
                 )
                 self._bone_missing_lbl.setVisible(True)
                 self._bone_edit_btn.setEnabled(False)
+                self._skel_btn.setEnabled(False)
+                self._adj_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -863,6 +895,8 @@ class AnnotatorWindow(QMainWindow):
                 self._bone_missing_lbl.setText(f"Erreur : {exc}")
                 self._bone_missing_lbl.setVisible(True)
                 self._bone_edit_btn.setEnabled(False)
+                self._skel_btn.setEnabled(False)
+                self._adj_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
                 return
@@ -884,6 +918,7 @@ class AnnotatorWindow(QMainWindow):
                 color="#00DD44", ambient=1.0, diffuse=0.3, specular=0.0,
                 show_scalar_bar=False,
             )
+        self._add_bone_overlay(stem)
         self._bone_plotter.add_axes(
             xlabel="X  G/D", ylabel="Y  Post/Ant", zlabel="Z  Sup/Inf",
             line_width=2,
@@ -893,6 +928,62 @@ class AnnotatorWindow(QMainWindow):
         self._bone_edit_btn.setEnabled(True)
         self._bone_edit_btn.setChecked(False)
         self._bone_edit_btn.setText("✏ Modifier position")
+        self._skel_btn.setEnabled(True)
+        self._adj_btn.setEnabled(True)
+
+    # ── Bone overlay (skeleton / adjacent) ──────────────────────────────────
+
+    def _add_bone_overlay(self, current_stem: str) -> None:
+        if self._overlay_mode is None:
+            return
+        if self._overlay_mode == "skeleton":
+            extra = [s for s in BONE_LABEL_FR if s != current_stem]
+        else:  # "adjacent"
+            extra = BONE_JOINTS.get(current_stem, [])
+        for s in extra:
+            if s not in self._bone_cache:
+                for ext in (".stl", ".obj", ".STL", ".OBJ"):
+                    p = _BONES_DIR / f"{s}{ext}"
+                    if p.exists():
+                        try:
+                            self._bone_cache[s] = pv.read(str(p))
+                        except Exception:
+                            pass
+                        break
+            mesh = self._bone_cache.get(s)
+            if mesh is None:
+                continue
+            self._bone_plotter.add_mesh(
+                mesh,
+                color="#7aaece", opacity=0.18, smooth_shading=True,
+                show_scalar_bar=False,
+            )
+
+    def _on_skel_toggled(self, checked: bool) -> None:
+        if checked:
+            self._adj_btn.blockSignals(True)
+            self._adj_btn.setChecked(False)
+            self._adj_btn.blockSignals(False)
+            self._overlay_mode = "skeleton"
+        else:
+            self._overlay_mode = None
+        if self._active_bone_code:
+            cam = self._bone_plotter.camera_position
+            self._load_bone_for(self._active_bone_code)
+            self._bone_plotter.camera_position = cam
+
+    def _on_adj_toggled(self, checked: bool) -> None:
+        if checked:
+            self._skel_btn.blockSignals(True)
+            self._skel_btn.setChecked(False)
+            self._skel_btn.blockSignals(False)
+            self._overlay_mode = "adjacent"
+        else:
+            self._overlay_mode = None
+        if self._active_bone_code:
+            cam = self._bone_plotter.camera_position
+            self._load_bone_for(self._active_bone_code)
+            self._bone_plotter.camera_position = cam
 
     # ── Landmark position editing on bone mesh ──────────────────────────────
 
