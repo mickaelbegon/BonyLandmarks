@@ -843,9 +843,38 @@ class AnnotatorWindow(QMainWindow):
         self._curv_btn.toggled.connect(self._on_bone_curv_toggled)
         vl.addWidget(self._curv_btn)
 
+        _thresh_lbl_style = (
+            "font-size: 9px; color: rgba(200,200,230,0.85); background: transparent;"
+        )
+        _thresh_slider_style = (
+            "QSlider::groove:horizontal { height: 4px; background: rgba(255,255,255,0.15); "
+            "border-radius: 2px; }"
+            "QSlider::handle:horizontal { width: 12px; height: 12px; margin: -4px 0; "
+            "background: rgba(200,130,50,0.9); border-radius: 6px; }"
+            "QSlider::sub-page:horizontal { background: rgba(220,140,40,0.45); border-radius: 2px; }"
+        )
+        self._bone_curv_thresh_lbl = QLabel("Seuil : P90")
+        self._bone_curv_thresh_lbl.setStyleSheet(_thresh_lbl_style)
+        self._bone_curv_thresh_lbl.setAlignment(Qt.AlignCenter)
+        self._bone_curv_thresh_lbl.setVisible(False)
+        vl.addWidget(self._bone_curv_thresh_lbl)
+
+        self._bone_curv_thresh_slider = QSlider(Qt.Horizontal)
+        self._bone_curv_thresh_slider.setRange(50, 99)
+        self._bone_curv_thresh_slider.setValue(90)
+        self._bone_curv_thresh_slider.setFixedHeight(18)
+        self._bone_curv_thresh_slider.setStyleSheet(_thresh_slider_style)
+        self._bone_curv_thresh_slider.setToolTip(
+            "Percentile de saturation de la colormap\n"
+            "Diminuer pour révéler les courbures plus subtiles"
+        )
+        self._bone_curv_thresh_slider.valueChanged.connect(self._on_bone_curv_perc_changed)
+        self._bone_curv_thresh_slider.setVisible(False)
+        vl.addWidget(self._bone_curv_thresh_slider)
+
         self._overlay_mode: str | None = None
         self._bone_show_curv: bool = False
-        self._bone_curv_cache: dict[str, pv.PolyData] = {}
+        self._bone_curv_cache: dict[str, tuple[pv.PolyData, np.ndarray]] = {}
         self._active_bone_code: str | None = None
         # landmark-edit picking state (all must stay alive while observers active)
         self._lm_picker: vtk.vtkCellPicker | None = None
@@ -928,12 +957,13 @@ class AnnotatorWindow(QMainWindow):
             if stem not in self._bone_curv_cache:
                 raw = self._bone_cache[stem].curvature(curv_type="mean")
                 cm = self._bone_cache[stem].copy()
-                c = raw[np.isfinite(raw)]
-                clim = float(np.percentile(np.abs(c), 90)) if len(c) else 0.01
-                clim = clim or 0.01
-                cm["curvature"] = np.clip(raw, -clim, clim)
-                self._bone_curv_cache[stem] = (cm, clim)
-            cm, clim = self._bone_curv_cache[stem]
+                cm["curvature"] = raw
+                self._bone_curv_cache[stem] = (cm, raw)
+            cm, raw = self._bone_curv_cache[stem]
+            perc = self._bone_curv_thresh_slider.value()
+            c = raw[np.isfinite(raw)]
+            clim = float(np.percentile(np.abs(c), perc)) if len(c) else 0.01
+            clim = clim or 0.01
             self._bone_plotter.add_mesh(
                 cm, scalars="curvature", cmap="RdBu",
                 clim=(-clim, clim), smooth_shading=True,
@@ -1024,7 +1054,16 @@ class AnnotatorWindow(QMainWindow):
 
     def _on_bone_curv_toggled(self, checked: bool) -> None:
         self._bone_show_curv = checked
+        self._bone_curv_thresh_lbl.setVisible(checked)
+        self._bone_curv_thresh_slider.setVisible(checked)
         if self._active_bone_code:
+            cam = self._bone_plotter.camera_position
+            self._load_bone_for(self._active_bone_code)
+            self._bone_plotter.camera_position = cam
+
+    def _on_bone_curv_perc_changed(self, value: int) -> None:
+        self._bone_curv_thresh_lbl.setText(f"Seuil : P{value}")
+        if self._bone_show_curv and self._active_bone_code:
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam

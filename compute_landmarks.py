@@ -187,10 +187,6 @@ def _coracoid(p, l):
     mask = pct_mask(p, AX_Z, 65, 90)
     return p[score_extreme(p, [(AX_Y, ANT * 2), (AX_Z, -SUP)], mask=mask)].tolist()
 
-def _ac_joint(p, l):
-    mask = pct_mask(p, AX_Z, 80, 100)
-    return p[score_extreme(p, [(AX_X, l), (AX_Z, SUP)], mask=mask)].tolist()
-
 for s in ("right", "left"):
     l = lat(s)
     RULES[f"acromion_{s}"]              = (f"scapula_{s}", lambda p, _l=l: _acromion(p, _l))
@@ -200,18 +196,30 @@ for s in ("right", "left"):
     RULES[f"scapula_superior_angle_{s}"]= (f"scapula_{s}", lambda p, _l=l: _scap_sup_angle(p, _l))
     RULES[f"scapular_spine_{s}"]        = (f"scapula_{s}", lambda p, _l=l: _scap_spine(p, _l))
     RULES[f"coracoid_process_{s}"]      = (f"scapula_{s}", lambda p, _l=l: _coracoid(p, _l))
-    RULES[f"acromioclavicular_joint_{s}"]=(f"scapula_{s}", lambda p, _l=l: _ac_joint(p, _l))
 
 # ── Clavicule  ────────────────────────────────────────────────────────────────
+def _ac_joint(p, l):
+    # Scapula acromion lateral face: the acromion is most lateral + superior in scapula
+    mask = pct_mask(p, AX_Z, 80, 100)
+    return p[score_extreme(p, [(AX_X, l), (AX_Z, SUP)], mask=mask)].tolist()
+
 def _sc_joint(p, l):
-    return p[extreme(p, AX_X, -l)].tolist()   # medial end = least lateral
-RULES["sternoclavicular_joint_right"] = ("clavicle_right", lambda p: _sc_joint(p, LAT_RIGHT))
-RULES["sternoclavicular_joint_left"]  = ("clavicle_left",  lambda p: _sc_joint(p, LAT_LEFT))
+    # Medial end of clavicle: most medial, then anterior + superior (articular face)
+    medial_val = p[:, AX_X] * (-l)   # high = medial
+    mask = medial_val >= np.percentile(medial_val, 65)
+    return p[score_extreme(p, [(AX_X, -l * 2), (AX_Y, ANT), (AX_Z, SUP)], mask=mask)].tolist()
+
+for s in ("right", "left"):
+    l = lat(s)
+    RULES[f"acromioclavicular_joint_{s}"] = (f"scapula_{s}", lambda p, _l=l: _ac_joint(p, _l))
+    RULES[f"sternoclavicular_joint_{s}"]  = (f"clavicle_{s}", lambda p, _l=l: _sc_joint(p, _l))
 
 # ── Humerus  ──────────────────────────────────────────────────────────────────
 def _greater_tubercle(p, l):
-    mask = pct_mask(p, AX_Z, 78, 100)
-    return p[extreme(p, AX_X, l, mask=mask)].tolist()
+    # Greater tubercle: lateral + slightly superior prominence below the humeral head
+    # X weight >> Z weight so lateral is primary; Z breaks ties toward the tubercle apex
+    mask = pct_mask(p, AX_Z, 80, 97)
+    return p[score_extreme(p, [(AX_X, l * 3), (AX_Z, SUP)], mask=mask)].tolist()
 
 def _deltoid_tub(p, l):
     mask = pct_mask(p, AX_Z, 40, 62)
