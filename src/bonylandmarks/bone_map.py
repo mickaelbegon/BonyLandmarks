@@ -231,6 +231,41 @@ LANDMARK_BONE: dict[str, str | None] = {
 
 
 # Human-readable bone names (for display in the panel)
+BONE_JOINTS: dict[str, list[str]] = {
+    "skull":              ["cervical_vertebrae"],
+    "cervical_vertebrae": ["skull", "thoracic_vertebrae"],
+    "thoracic_vertebrae": ["cervical_vertebrae", "lumbar_vertebrae", "rib_left", "rib_right"],
+    "lumbar_vertebrae":   ["thoracic_vertebrae", "sacrum"],
+    "sacrum":             ["lumbar_vertebrae", "pelvis"],
+    "pelvis":             ["sacrum", "femur_left", "femur_right"],
+    "sternum":            ["rib_left", "rib_right", "clavicle_left", "clavicle_right"],
+    "rib_left":           ["thoracic_vertebrae", "sternum"],
+    "rib_right":          ["thoracic_vertebrae", "sternum"],
+    "clavicle_left":      ["sternum", "scapula_left"],
+    "clavicle_right":     ["sternum", "scapula_right"],
+    "scapula_left":       ["clavicle_left", "humerus_left"],
+    "scapula_right":      ["clavicle_right", "humerus_right"],
+    "humerus_left":       ["scapula_left", "radius_left", "ulna_left"],
+    "humerus_right":      ["scapula_right", "radius_right", "ulna_right"],
+    "radius_left":        ["humerus_left", "ulna_left"],
+    "radius_right":       ["humerus_right", "ulna_right"],
+    "ulna_left":          ["humerus_left", "radius_left"],
+    "ulna_right":         ["humerus_right", "radius_right"],
+    "femur_left":         ["pelvis", "tibia_left", "fibula_left", "patella_left"],
+    "femur_right":        ["pelvis", "tibia_right", "fibula_right", "patella_right"],
+    "patella_left":       ["femur_left", "tibia_left"],
+    "patella_right":      ["femur_right", "tibia_right"],
+    "tibia_left":         ["femur_left", "fibula_left", "patella_left", "calcaneus_left"],
+    "tibia_right":        ["femur_right", "fibula_right", "patella_right", "calcaneus_right"],
+    "fibula_left":        ["tibia_left", "calcaneus_left"],
+    "fibula_right":       ["tibia_right", "calcaneus_right"],
+    "calcaneus_left":     ["tibia_left", "fibula_left", "foot_left"],
+    "calcaneus_right":    ["tibia_right", "fibula_right", "foot_right"],
+    "foot_left":          ["calcaneus_left"],
+    "foot_right":         ["calcaneus_right"],
+}
+
+
 BONE_LABEL_FR: dict[str, str] = {
     "skull":                "Crâne",
     "sternum":              "Sternum",
