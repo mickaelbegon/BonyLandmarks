@@ -797,8 +797,8 @@ class AnnotatorWindow(QMainWindow):
         self._bone_edit_btn.setStyleSheet(
             "QPushButton { font-size: 10px; padding: 3px 8px; background: #2a2a4a; "
             "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
-            "QPushButton:checked { background: #4a3a00; color: #FFD700; "
-            "border-color: #FFD700; }"
+            "QPushButton:checked { background: #003a00; color: #00DD44; "
+            "border-color: #00DD44; }"
             "QPushButton:hover { background: #3a3a5a; }"
         )
         self._bone_edit_btn.toggled.connect(self._on_bone_edit_toggled)
@@ -881,7 +881,7 @@ class AnnotatorWindow(QMainWindow):
             r = self._bone_cache[stem].length * 0.013
             self._bone_plotter.add_mesh(
                 pv.Sphere(radius=r, center=pos),
-                color="#FFD700", ambient=1.0, diffuse=0.3, specular=0.0,
+                color="#00DD44", ambient=1.0, diffuse=0.3, specular=0.0,
                 show_scalar_bar=False,
             )
         self._bone_plotter.add_axes(
@@ -969,7 +969,9 @@ class AnnotatorWindow(QMainWindow):
         lm[code] = [round(float(v), 4) for v in world_pos]
         with _LM_POSITIONS_FILE.open("w", encoding="utf-8") as f:
             json.dump(lm, f, indent=2, ensure_ascii=False)
+        cam = self._bone_plotter.camera_position
         self._load_bone_for(code)
+        self._bone_plotter.camera_position = cam
 
     def _setup_shortcuts(self) -> None:
         shortcuts = [
