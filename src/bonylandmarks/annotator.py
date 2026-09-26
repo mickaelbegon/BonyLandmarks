@@ -829,19 +829,19 @@ class AnnotatorWindow(QMainWindow):
         ovl_row.addWidget(self._adj_btn)
         vl.addLayout(ovl_row)
 
-        self._curv_btn = QPushButton("∿ Courbure")
-        self._curv_btn.setCheckable(True)
-        self._curv_btn.setEnabled(False)
-        self._curv_btn.setToolTip("Afficher la courbure moyenne de la surface osseuse")
-        self._curv_btn.setStyleSheet(
+        self._bone_curv_btn = QPushButton("∿ Courbure")
+        self._bone_curv_btn.setCheckable(True)
+        self._bone_curv_btn.setEnabled(False)
+        self._bone_curv_btn.setToolTip("Afficher la courbure moyenne de la surface osseuse")
+        self._bone_curv_btn.setStyleSheet(
             "QPushButton { font-size: 10px; padding: 3px 8px; background: #2a2a4a; "
             "color: #aaaacc; border: 1px solid #3a3a6a; border-radius: 3px; }"
             "QPushButton:checked { background: #2a1a00; color: #ee9922; border-color: #ee9922; }"
             "QPushButton:hover { background: #3a3a5a; }"
             "QPushButton:disabled { color: #555566; border-color: #333355; }"
         )
-        self._curv_btn.toggled.connect(self._on_bone_curv_toggled)
-        vl.addWidget(self._curv_btn)
+        self._bone_curv_btn.toggled.connect(self._on_bone_curv_toggled)
+        vl.addWidget(self._bone_curv_btn)
 
         self._muscle_btn = QPushButton("💪 Muscles")
         self._muscle_btn.setCheckable(True)
@@ -919,7 +919,7 @@ class AnnotatorWindow(QMainWindow):
             self._bone_edit_btn.setChecked(False)
             self._skel_btn.setEnabled(False)
             self._adj_btn.setEnabled(False)
-            self._curv_btn.setEnabled(False)
+            self._bone_curv_btn.setEnabled(False)
             self._muscle_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
@@ -934,7 +934,7 @@ class AnnotatorWindow(QMainWindow):
             self._bone_edit_btn.setEnabled(False)
             self._skel_btn.setEnabled(False)
             self._adj_btn.setEnabled(False)
-            self._curv_btn.setEnabled(False)
+            self._bone_curv_btn.setEnabled(False)
             self._muscle_btn.setEnabled(False)
             self._bone_plotter.clear()
             self._bone_plotter.render()
@@ -955,7 +955,7 @@ class AnnotatorWindow(QMainWindow):
                 self._bone_edit_btn.setEnabled(False)
                 self._skel_btn.setEnabled(False)
                 self._adj_btn.setEnabled(False)
-                self._curv_btn.setEnabled(False)
+                self._bone_curv_btn.setEnabled(False)
                 self._muscle_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
@@ -968,7 +968,7 @@ class AnnotatorWindow(QMainWindow):
                 self._bone_edit_btn.setEnabled(False)
                 self._skel_btn.setEnabled(False)
                 self._adj_btn.setEnabled(False)
-                self._curv_btn.setEnabled(False)
+                self._bone_curv_btn.setEnabled(False)
                 self._muscle_btn.setEnabled(False)
                 self._bone_plotter.clear()
                 self._bone_plotter.render()
@@ -1031,7 +1031,7 @@ class AnnotatorWindow(QMainWindow):
         self._bone_edit_btn.setText("✏ Modifier position")
         self._skel_btn.setEnabled(True)
         self._adj_btn.setEnabled(True)
-        self._curv_btn.setEnabled(True)
+        self._bone_curv_btn.setEnabled(True)
         self._muscle_btn.setEnabled(True)
 
     # ── Bone overlay (skeleton / adjacent) ──────────────────────────────────
@@ -1270,6 +1270,7 @@ class AnnotatorWindow(QMainWindow):
 
     def load_glb(self, path: Path) -> None:
         """Load *path* as the working scan, replacing any mesh already shown."""
+        self._exit_landmark_edit()
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.statusBar().showMessage(f"Chargement de {path.name}…")
         try:
