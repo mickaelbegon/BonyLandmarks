@@ -861,7 +861,7 @@ class AnnotatorWindow(QMainWindow):
         vl.addWidget(self._bone_curv_btn)
 
         self._muscle_mode_combo = QComboBox()
-        self._muscle_mode_combo.addItems(["💪 Muscles — Aucun", "💪 Muscles — Auto", "💪 Muscles — Personnalisé…"])
+        self._muscle_mode_combo.addItems(["💪 Muscles — Aucun", "💪 Muscles — Auto", "💪 Muscles — Tous", "💪 Muscles — Personnalisé…"])
         self._muscle_mode_combo.setEnabled(False)
         self._muscle_mode_combo.setToolTip(
             "Aucun : aucun muscle affiché\n"
@@ -1049,6 +1049,8 @@ class AnnotatorWindow(QMainWindow):
             from .muscle_map import BONE_MUSCLES
             if self._muscle_mode == "auto":
                 fids = BONE_MUSCLES.get(stem, [])
+            elif self._muscle_mode == "all":
+                fids = list({fid for ids in BONE_MUSCLES.values() for fid in ids})
             else:
                 fids = list(self._custom_muscle_ids)
             for fid in fids:
@@ -1161,7 +1163,7 @@ class AnnotatorWindow(QMainWindow):
             self._bone_plotter.camera_position = cam
 
     def _on_muscle_mode_changed(self, index: int) -> None:
-        modes = ["none", "auto", "custom"]
+        modes = ["none", "auto", "all", "custom"]
         self._muscle_mode = modes[index]
         is_custom = self._muscle_mode == "custom"
         self._muscle_list.setVisible(is_custom)
@@ -1267,12 +1269,16 @@ class AnnotatorWindow(QMainWindow):
             self._deactivate_muscle(fma_id)
 
     def _deactivate_muscle(self, fma_id: int) -> None:
-        if self._muscle_mode == "auto":
+        if self._muscle_mode in ("auto", "all"):
             from .muscle_map import BONE_MUSCLES
-            stem = LANDMARK_BONE.get(self._active_bone_code or "")
-            self._custom_muscle_ids = set(BONE_MUSCLES.get(stem or "", [])) - {fma_id}
+            if self._muscle_mode == "auto":
+                stem = LANDMARK_BONE.get(self._active_bone_code or "")
+                base_ids = set(BONE_MUSCLES.get(stem or "", []))
+            else:
+                base_ids = {fid for ids in BONE_MUSCLES.values() for fid in ids}
+            self._custom_muscle_ids = base_ids - {fma_id}
             self._muscle_mode_combo.blockSignals(True)
-            self._muscle_mode_combo.setCurrentIndex(2)
+            self._muscle_mode_combo.setCurrentIndex(3)  # Personnalisé
             self._muscle_mode_combo.blockSignals(False)
             self._muscle_mode = "custom"
             self._muscle_list.setVisible(True)
