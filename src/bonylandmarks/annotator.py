@@ -67,7 +67,10 @@ from PySide6.QtWidgets import (
 from pyvistaqt import QtInteractor
 
 from .bone_map import BONE_JOINTS, BONE_LABEL_FR, LANDMARK_BONE
-from .emg_references import EMG_LINE_COLOR, EMG_MUSCLE_FMA, EMG_REF_COLORS, EMG_REFERENCES
+from .emg_references import (
+    EMG_LINE_COLOR, EMG_MARKER_COLOR, EMG_MUSCLE_FMA,
+    EMG_PLACEMENT_PCT, EMG_REF_COLORS, EMG_REFERENCES,
+)
 from .landmarks_extended import LANDMARKS, THEME_LABELS, Landmark
 from .mesh_loader import load_avatar_glb, load_glb_mesh
 
@@ -109,7 +112,13 @@ _ACTOR_PREFIX = "lm_"
 _LABEL_PREFIX = "lbl_"
 _EMG_REF_ACTOR_PREFIX = "emg_ref_"
 _EMG_LINE_ACTOR = "emg_line"
-_PUBIC_TEMP_ACTOR = "pubic_temp"
+_PUBIC_TEMP_ACTOR  = "pubic_temp"
+_PUBIC_TEMP_ACTOR2 = "pubic_temp_2"
+_PUBIC_BORDER_LEFT  = "pubic_border_left"   # sphère permanente bord gauche
+_PUBIC_BORDER_RIGHT = "pubic_border_right"  # sphère permanente bord droit
+_PUBIC_COLOR_1 = "#00e5ff"   # cyan — bord gauche (1er clic)
+_PUBIC_COLOR_2 = "#ff6f00"   # orange — bord droit (2e clic)
+_PUBIC_COLOR_MID = "#c800ff" # magenta — point milieu calculé
 
 # ─── Widget styles ───────────────────────────────────────────────────────────
 
@@ -271,6 +280,7 @@ class AnnotatorWindow(QMainWindow):
 
         # Two-click placement state (pubic_symphysis only)
         self._pubic_first: np.ndarray | None = None
+        self._pubic_borders: tuple[np.ndarray, np.ndarray] | None = None
 
         # Camera geometry, filled by _setup_camera()
         self._up_axis: int = 2
@@ -818,10 +828,10 @@ class AnnotatorWindow(QMainWindow):
         vl.addWidget(self._bone_edit_btn)
 
         self._overlay_combo = QComboBox()
-        self._overlay_combo.addItems(["🦴 Os — Aucun", "🦴 Os — Adjacents", "🦴 Os — Tous", "🦴 Os — Personnalisé…"])
+        self._overlay_combo.addItems(["🦴 Os — Auto", "🦴 Os — Adjacents", "🦴 Os — Tous", "🦴 Os — Personnalisé…"])
         self._overlay_combo.setEnabled(False)
         self._overlay_combo.setToolTip(
-            "Aucun : aucun os supplémentaire\n"
+            "Auto : afficher uniquement l'os du repère sélectionné\n"
             "Adjacents : os partageant une articulation avec l'os courant\n"
             "Tous : squelette complet en transparence\n"
             "Personnalisé : choisir librement les os à afficher"
@@ -866,7 +876,8 @@ class AnnotatorWindow(QMainWindow):
         self._muscle_mode_combo.setToolTip(
             "Aucun : aucun muscle affiché\n"
             "Auto : muscles définis par BONE_MUSCLES pour cet os\n"
-            "Personnalisé : choisir librement dans la liste complète BP3D"
+            "Personnalisé : choisir librement dans la liste complète BP3D\n"
+            "Clic droit sur un muscle → désactiver"
         )
         self._muscle_mode_combo.setStyleSheet(
             "QComboBox { font-size: 10px; padding: 3px 6px; background: #2a2a4a; "
@@ -1110,16 +1121,34 @@ class AnnotatorWindow(QMainWindow):
             )
 
     def _on_overlay_mode_changed(self, index: int) -> None:
+        prev_mode = self._overlay_mode
         modes = ["none", "adjacent", "skeleton", "custom"]
         self._overlay_mode = modes[index]
         is_custom = self._overlay_mode == "custom"
         self._overlay_list.setVisible(is_custom)
-        if is_custom and not self._overlay_list_populated:
-            self._populate_overlay_list()
+        if is_custom:
+            # Pre-populate _custom_overlay_stems from the previous mode
+            stem = LANDMARK_BONE.get(self._active_bone_code or "") if self._active_bone_code else None
+            if prev_mode == "adjacent" and stem:
+                self._custom_overlay_stems = set(BONE_JOINTS.get(stem, []))
+            elif prev_mode == "skeleton":
+                self._custom_overlay_stems = set(BONE_LABEL_FR.keys()) - ({stem} if stem else set())
+            # "none" → keep empty
+            if not self._overlay_list_populated:
+                self._populate_overlay_list()
+            else:
+                self._sync_overlay_list()
         if self._active_bone_code:
-            cam = self._bone_plotter.camera_position
-            self._load_bone_for(self._active_bone_code)
-            self._bone_plotter.camera_position = cam
+            if self._overlay_mode == "skeleton":
+                # "Tous" : laisser reset_camera() centrer sur le squelette complet
+                self._load_bone_for(self._active_bone_code)
+            else:
+                cam = self._bone_plotter.camera_position
+                self._load_bone_for(self._active_bone_code)
+                self._bone_plotter.camera_position = cam
+            lm = self._current_landmark()
+            if lm is not None:
+                self._add_emg_bone_refs(lm)
 
     def _populate_overlay_list(self) -> None:
         if self._overlay_list_populated:
@@ -1130,10 +1159,19 @@ class AnnotatorWindow(QMainWindow):
             item = QListWidgetItem(BONE_LABEL_FR[stem])
             item.setData(Qt.UserRole, stem)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            item.setCheckState(Qt.Unchecked)
+            state = Qt.Checked if stem in self._custom_overlay_stems else Qt.Unchecked
+            item.setCheckState(state)
             self._overlay_list.addItem(item)
         self._overlay_list.blockSignals(False)
         self._overlay_list_populated = True
+
+    def _sync_overlay_list(self) -> None:
+        self._overlay_list.blockSignals(True)
+        for i in range(self._overlay_list.count()):
+            item = self._overlay_list.item(i)
+            state = Qt.Checked if item.data(Qt.UserRole) in self._custom_overlay_stems else Qt.Unchecked
+            item.setCheckState(state)
+        self._overlay_list.blockSignals(False)
 
     def _on_overlay_item_changed(self, item: QListWidgetItem) -> None:
         stem = item.data(Qt.UserRole)
@@ -1145,6 +1183,9 @@ class AnnotatorWindow(QMainWindow):
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
+            lm = self._current_landmark()
+            if lm is not None:
+                self._add_emg_bone_refs(lm)
 
     def _on_bone_curv_toggled(self, checked: bool) -> None:
         self._bone_show_curv = checked
@@ -1154,6 +1195,9 @@ class AnnotatorWindow(QMainWindow):
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
+            lm = self._current_landmark()
+            if lm is not None:
+                self._add_emg_bone_refs(lm)
 
     def _on_bone_curv_perc_changed(self, value: int) -> None:
         self._bone_curv_thresh_lbl.setText(f"Seuil : P{value}")
@@ -1161,8 +1205,12 @@ class AnnotatorWindow(QMainWindow):
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
+            lm = self._current_landmark()
+            if lm is not None:
+                self._add_emg_bone_refs(lm)
 
     def _on_muscle_mode_changed(self, index: int) -> None:
+        prev_mode = self._muscle_mode
         modes = ["none", "auto", "all", "custom"]
         self._muscle_mode = modes[index]
         is_custom = self._muscle_mode == "custom"
@@ -1189,12 +1237,25 @@ class AnnotatorWindow(QMainWindow):
                     self._muscle_mode = "none"
                     self._muscle_list.setVisible(False)
                     return
+            # Pre-populate _custom_muscle_ids from the previous mode
+            from .muscle_map import BONE_MUSCLES
+            if prev_mode == "auto":
+                stem = LANDMARK_BONE.get(self._active_bone_code or "") if self._active_bone_code else None
+                self._custom_muscle_ids = set(BONE_MUSCLES.get(stem or "", []))
+            elif prev_mode == "all":
+                self._custom_muscle_ids = {fid for ids in BONE_MUSCLES.values() for fid in ids}
+            # "none" → keep empty
             if not self._muscle_list_populated:
                 self._populate_muscle_list()
+            else:
+                self._sync_list_from_custom_ids()
         if self._active_bone_code:
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
+            lm = self._current_landmark()
+            if lm is not None:
+                self._add_emg_bone_refs(lm)
 
     def _populate_muscle_list(self) -> None:
         if self._muscle_index is None or self._muscle_list_populated:
@@ -1213,7 +1274,8 @@ class AnnotatorWindow(QMainWindow):
             item = QListWidgetItem(name)
             item.setData(Qt.UserRole, fma_id)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            item.setCheckState(Qt.Unchecked)
+            state = Qt.Checked if fma_id in self._custom_muscle_ids else Qt.Unchecked
+            item.setCheckState(state)
             self._muscle_list.addItem(item)
         self._muscle_list.blockSignals(False)
         self._muscle_list_populated = True
@@ -1228,12 +1290,15 @@ class AnnotatorWindow(QMainWindow):
             cam = self._bone_plotter.camera_position
             self._load_bone_for(self._active_bone_code)
             self._bone_plotter.camera_position = cam
+            lm = self._current_landmark()
+            if lm is not None:
+                self._add_emg_bone_refs(lm)
 
     # ── Muscle picking (clic gauche sur un muscle → désactiver) ─────────────
 
     def _setup_muscle_pick_observer(self) -> None:
         self._muscle_picker = vtk.vtkPropPicker()
-        iren = self._bone_plotter.iren.GetInteractor()
+        iren = self._bone_plotter.iren.interactor
 
         def _on_press(obj, _event):
             if self._bone_edit_btn.isChecked():
@@ -1258,8 +1323,8 @@ class AnnotatorWindow(QMainWindow):
                     self._show_muscle_context_menu(fma_id)
                     break
 
-        iren.AddObserver("LeftButtonPressEvent", _on_press)
-        iren.AddObserver("LeftButtonReleaseEvent", _on_release)
+        iren.AddObserver("RightButtonPressEvent", _on_press)
+        iren.AddObserver("RightButtonReleaseEvent", _on_release)
 
     def _show_muscle_context_menu(self, fma_id: int) -> None:
         name = self._muscle_names.get(fma_id, f"FMA{fma_id}")
@@ -1368,14 +1433,26 @@ class AnnotatorWindow(QMainWindow):
             self._bone_edit_btn.blockSignals(False)
 
     def _on_bone_pick_done(self, world_pos: list) -> None:
-        """Save picked position for the active landmark and refresh."""
+        """Save picked position for the nearest visible landmark and refresh."""
         code = self._active_bone_code
         if not code:
             return
-        lm = _lm_positions()
-        lm[code] = [round(float(v), 4) for v in world_pos]
+        world = np.asarray(world_pos, dtype=float)
+        lm_pos_all = _lm_positions()
+        # Find the nearest placed landmark that shares the same bone stem
+        current_stem = LANDMARK_BONE.get(code)
+        best_code = code
+        best_dist = np.inf
+        for lm_code, pos in lm_pos_all.items():
+            if LANDMARK_BONE.get(lm_code) != current_stem:
+                continue
+            d = float(np.linalg.norm(np.asarray(pos, dtype=float) - world))
+            if d < best_dist:
+                best_dist = d
+                best_code = lm_code
+        lm_pos_all[best_code] = [round(float(v), 4) for v in world_pos]
         with _LM_POSITIONS_FILE.open("w", encoding="utf-8") as f:
-            json.dump(lm, f, indent=2, ensure_ascii=False)
+            json.dump(lm_pos_all, f, indent=2, ensure_ascii=False)
         cam = self._bone_plotter.camera_position
         self._load_bone_for(code)
         self._bone_plotter.camera_position = cam
@@ -1792,6 +1869,10 @@ class AnnotatorWindow(QMainWindow):
         self._plotter.remove_actor(actor_name, render=False)
         self._plotter.remove_actor(label_name, render=False)
 
+        if code == "pubic_symphysis":
+            self._plotter.remove_actor(_PUBIC_BORDER_LEFT, render=False)
+            self._plotter.remove_actor(_PUBIC_BORDER_RIGHT, render=False)
+
         pos = self._placed.get(code)
         if pos is None:
             return
@@ -1812,6 +1893,20 @@ class AnnotatorWindow(QMainWindow):
             )
         except Exception:                                # pragma: no cover
             pass
+
+        # Redraw border spheres for pubic_symphysis
+        if code == "pubic_symphysis" and self._pubic_borders is not None:
+            left_pt, right_pt = self._pubic_borders
+            self._plotter.add_mesh(
+                pv.Sphere(radius=self._sphere_radius, center=left_pt),
+                color=_PUBIC_COLOR_1, opacity=0.85,
+                name=_PUBIC_BORDER_LEFT, pickable=False, render=False,
+            )
+            self._plotter.add_mesh(
+                pv.Sphere(radius=self._sphere_radius, center=right_pt),
+                color=_PUBIC_COLOR_2, opacity=0.85,
+                name=_PUBIC_BORDER_RIGHT, pickable=False, render=False,
+            )
 
     def _redraw_all_markers(self) -> None:
         for code in list(self._placed):
@@ -1834,14 +1929,16 @@ class AnnotatorWindow(QMainWindow):
         return text
 
     def _clear_emg_refs(self) -> None:
-        """Remove all EMG reference spheres and the muscle line from the main plotter."""
+        """Remove all EMG reference spheres, line, and placement marker from the main plotter."""
         for i in range(len(EMG_REF_COLORS)):
             self._plotter.remove_actor(f"{_EMG_REF_ACTOR_PREFIX}{i}", render=False)
             self._plotter.remove_actor(f"{_EMG_REF_ACTOR_PREFIX}lbl_{i}", render=False)
         self._plotter.remove_actor(_EMG_LINE_ACTOR, render=False)
+        self._plotter.remove_actor(f"{_EMG_LINE_ACTOR}_marker", render=False)
+        self._plotter.remove_actor(f"{_EMG_LINE_ACTOR}_marker_lbl", render=False)
 
     def _draw_emg_refs(self, lm: "Landmark") -> None:
-        """Draw colored reference spheres and a muscle line for an EMG landmark."""
+        """Draw colored reference spheres, trajectory, and EMG placement marker."""
         self._clear_emg_refs()
         if lm.category != "EMG":
             self._plotter.render()
@@ -1876,16 +1973,30 @@ class AnnotatorWindow(QMainWindow):
                 pass
             positions.append(np.asarray(pos, dtype=float))
         if len(positions) == 2:
-            line = pv.Line(positions[0], positions[1], resolution=1)
-            tube = line.tube(radius=self._sphere_radius * 0.28)
+            p0, p1 = positions[0], positions[1]
+            tube = pv.Line(p0, p1, resolution=1).tube(radius=self._sphere_radius * 0.28)
             self._plotter.add_mesh(
-                tube,
-                color=EMG_LINE_COLOR,
-                name=_EMG_LINE_ACTOR,
-                pickable=False,
-                render=False,
-                opacity=0.75,
+                tube, color=EMG_LINE_COLOR,
+                name=_EMG_LINE_ACTOR, pickable=False, render=False, opacity=0.75,
             )
+            # EMG placement marker at the recommended % along the line
+            pct = EMG_PLACEMENT_PCT.get(lm.code, 0.50)
+            emg_pt = p0 + pct * (p1 - p0)
+            self._plotter.add_mesh(
+                pv.Sphere(radius=self._sphere_radius * 1.4, center=emg_pt),
+                color=EMG_MARKER_COLOR, ambient=1.0, diffuse=0.3, specular=0.0,
+                name=f"{_EMG_LINE_ACTOR}_marker", pickable=False, render=False,
+            )
+            try:
+                self._plotter.add_point_labels(
+                    np.asarray([emg_pt], dtype=float),
+                    [f"EMG {int(round(pct * 100))}%"],
+                    name=f"{_EMG_LINE_ACTOR}_marker_lbl",
+                    font_size=11, text_color=EMG_MARKER_COLOR,
+                    shape=None, always_visible=True, render=False,
+                )
+            except Exception:
+                pass
         self._plotter.render()
 
     def _add_emg_bone_refs(self, lm: "Landmark") -> None:
@@ -1932,33 +2043,125 @@ class AnnotatorWindow(QMainWindow):
             )
             added_any = True
 
-        # ── Géodésique sur la surface du muscle ─────────────────────────────
-        if len(found_positions) == 2 and self._muscle_index is not None:
-            fma_id = EMG_MUSCLE_FMA.get(lm.code)
-            if fma_id is not None:
-                mpath = self._muscle_index.get(fma_id)
-                if mpath is not None:
+        # ── Trajectoire entre les deux repères de référence ─────────────────────
+        if len(found_positions) == 2:
+            p0, p1 = found_positions[0], found_positions[1]
+            pct = EMG_PLACEMENT_PCT.get(lm.code, 0.50)
+            geo_success = False
+
+            # Tenter la géodésique musculaire si BP3D est chargé
+            if self._muscle_index is not None:
+                from .muscle_map import BONE_MUSCLES
+                all_fids: set[int] = set()
+                for ref_code in ref_codes:
+                    ref_stem = LANDMARK_BONE.get(ref_code)
+                    if ref_stem:
+                        all_fids.update(BONE_MUSCLES.get(ref_stem, []))
+                if main_stem:
+                    all_fids.update(BONE_MUSCLES.get(main_stem, []))
+                primary_fma = EMG_MUSCLE_FMA.get(lm.code)
+                if primary_fma is not None:
+                    all_fids.add(primary_fma)
+
+                muscle_meshes: list = []
+                for fid in all_fids:
+                    mpath = self._muscle_index.get(fid)
+                    if mpath is None:
+                        continue
                     try:
-                        mmesh = pv.read(str(mpath))
-                        pts = mmesh.points
-                        idx0 = int(np.argmin(np.linalg.norm(pts - found_positions[0], axis=1)))
-                        idx1 = int(np.argmin(np.linalg.norm(pts - found_positions[1], axis=1)))
-                        # Muscle en transparence pour contexte
-                        self._bone_plotter.add_mesh(
-                            mmesh, color="#cc7744", opacity=0.18,
-                            smooth_shading=True, show_scalar_bar=False, pickable=False,
-                        )
-                        # Chemin géodésique (Dijkstra sur le graphe de surface)
-                        geo_path = mmesh.geodesic(idx0, idx1)
+                        muscle_meshes.append(pv.read(str(mpath)))
+                    except Exception:
+                        pass
+
+                if muscle_meshes:
+                    try:
+                        for mm in muscle_meshes:
+                            self._bone_plotter.add_mesh(
+                                mm, color="#cc7744", opacity=0.28,
+                                smooth_shading=True, show_scalar_bar=False, pickable=False,
+                            )
+                        combined = pv.merge(muscle_meshes)
+                        pts = combined.points
+                        idx0 = int(np.argmin(np.linalg.norm(pts - p0, axis=1)))
+                        idx1 = int(np.argmin(np.linalg.norm(pts - p1, axis=1)))
+                        surf_pt0 = pts[idx0]
+                        surf_pt1 = pts[idx1]
+
+                        for lm_pt, surf_pt in ((p0, surf_pt0), (p1, surf_pt1)):
+                            conn = pv.Line(lm_pt, surf_pt).tube(radius=r * 0.32)
+                            self._bone_plotter.add_mesh(
+                                conn, color=EMG_LINE_COLOR, opacity=0.95,
+                                ambient=1.0, diffuse=0.3, specular=0.3,
+                                show_scalar_bar=False, pickable=False,
+                            )
+
+                        geo_path = combined.geodesic(idx0, idx1)
                         tube = geo_path.tube(radius=r * 0.32)
                         self._bone_plotter.add_mesh(
                             tube, color=EMG_LINE_COLOR, opacity=0.95,
                             ambient=1.0, diffuse=0.3, specular=0.3,
                             show_scalar_bar=False, pickable=False,
                         )
+
+                        # Marqueur EMG au % de longueur d'arc
+                        geo_pts = geo_path.points
+                        if len(geo_pts) >= 2:
+                            diffs = np.diff(geo_pts, axis=0)
+                            cumul = np.concatenate([[0.0], np.cumsum(
+                                np.linalg.norm(diffs, axis=1))])
+                            total = cumul[-1]
+                            if total > 0:
+                                target = pct * total
+                                seg = int(np.searchsorted(cumul, target, side="right")) - 1
+                                seg = max(0, min(seg, len(geo_pts) - 2))
+                                t = (target - cumul[seg]) / max(
+                                    cumul[seg + 1] - cumul[seg], 1e-9)
+                                emg_pt = geo_pts[seg] + t * (geo_pts[seg + 1] - geo_pts[seg])
+                                self._bone_plotter.add_mesh(
+                                    pv.Sphere(radius=r * 1.5, center=emg_pt),
+                                    color=EMG_MARKER_COLOR, ambient=1.0,
+                                    diffuse=0.3, specular=0.0,
+                                    show_scalar_bar=False, pickable=False,
+                                )
+                                try:
+                                    self._bone_plotter.add_point_labels(
+                                        np.asarray([emg_pt], dtype=float),
+                                        [f"EMG {int(round(pct * 100))}%"],
+                                        font_size=11, text_color=EMG_MARKER_COLOR,
+                                        shape=None, always_visible=True, render=False,
+                                    )
+                                except Exception:
+                                    pass
+                        geo_success = True
                         added_any = True
                     except Exception:
-                        pass  # mesh disconnecté ou FMA absent → dégradation silencieuse
+                        pass  # mesh disconnecté → repli sur ligne droite
+
+            # Ligne droite de repli (pas de BP3D, ou géodésique échouée)
+            if not geo_success:
+                tube = pv.Line(p0, p1, resolution=1).tube(radius=r * 0.32)
+                self._bone_plotter.add_mesh(
+                    tube, color=EMG_LINE_COLOR, opacity=0.80,
+                    ambient=1.0, diffuse=0.3, specular=0.3,
+                    show_scalar_bar=False, pickable=False,
+                )
+                emg_pt = p0 + pct * (p1 - p0)
+                self._bone_plotter.add_mesh(
+                    pv.Sphere(radius=r * 1.5, center=emg_pt),
+                    color=EMG_MARKER_COLOR, ambient=1.0,
+                    diffuse=0.3, specular=0.0,
+                    show_scalar_bar=False, pickable=False,
+                )
+                try:
+                    self._bone_plotter.add_point_labels(
+                        np.asarray([emg_pt], dtype=float),
+                        [f"EMG {int(round(pct * 100))}%"],
+                        font_size=11, text_color=EMG_MARKER_COLOR,
+                        shape=None, always_visible=True, render=False,
+                    )
+                except Exception:
+                    pass
+                added_any = True
 
         if added_any:
             self._bone_plotter.reset_camera()
@@ -1981,8 +2184,9 @@ class AnnotatorWindow(QMainWindow):
             # Toggling off: discard any pending first click for pubic_symphysis
             if self._pubic_first is not None:
                 self._pubic_first = None
-                self._plotter.remove_actor(_PUBIC_TEMP_ACTOR, render=False)
-                self._plotter.remove_actor(f"{_PUBIC_TEMP_ACTOR}_lbl", render=False)
+                for _n in (_PUBIC_BORDER_LEFT, f"{_PUBIC_TEMP_ACTOR}_lbl",
+                           _PUBIC_BORDER_RIGHT, f"{_PUBIC_TEMP_ACTOR2}_lbl"):
+                    self._plotter.remove_actor(_n, render=False)
                 self._plotter.render()
             msg = "Mode placement désactivé : le clic ne fait que tourner la vue."
         self.statusBar().showMessage(msg)
@@ -2004,36 +2208,72 @@ class AnnotatorWindow(QMainWindow):
         if lm.code == "pubic_symphysis":
             pt = np.array(point, dtype=float).ravel()[:3]
             if self._pubic_first is None:
-                # First click: store temp point, show yellow semi-transparent sphere
+                # First click: store left border point — cyan sphere (permanent name)
                 self._pubic_first = pt
-                self._plotter.remove_actor(_PUBIC_TEMP_ACTOR, render=False)
-                temp_sphere = pv.Sphere(radius=self._sphere_radius, center=pt)
+                self._plotter.remove_actor(_PUBIC_BORDER_LEFT, render=False)
                 self._plotter.add_mesh(
-                    temp_sphere,
-                    color="#ffdd00", opacity=0.55,
-                    name=_PUBIC_TEMP_ACTOR, pickable=False, render=False,
+                    pv.Sphere(radius=self._sphere_radius, center=pt),
+                    color=_PUBIC_COLOR_1, opacity=0.85,
+                    name=_PUBIC_BORDER_LEFT, pickable=False, render=False,
                 )
                 try:
                     self._plotter.add_point_labels(
                         np.asarray([pt], dtype=float),
-                        ["1/2 — clic gauche"],
+                        ["← gauche"],
                         name=f"{_PUBIC_TEMP_ACTOR}_lbl",
-                        font_size=11, text_color="#ffdd00",
+                        font_size=11, text_color=_PUBIC_COLOR_1,
                         shape=None, always_visible=True, render=False,
                     )
                 except Exception:  # pragma: no cover
                     pass
                 self._plotter.render()
                 self.statusBar().showMessage(
-                    "Symphyse pubienne : clic 1/2 — palper le bord gauche"
+                    "Symphyse pubienne : clic 2/2 — palper le bord droit"
                 )
                 return
             else:
-                # Second click: average the two points → final placement
-                midpoint = (self._pubic_first + pt) / 2.0
+                # Second click: right border — orange sphere (permanent), then midpoint preview
+                left_pt = self._pubic_first
+                midpoint = (left_pt + pt) / 2.0
                 self._pubic_first = None
-                self._plotter.remove_actor(_PUBIC_TEMP_ACTOR, render=False)
-                self._plotter.remove_actor(f"{_PUBIC_TEMP_ACTOR}_lbl", render=False)
+                self._pubic_borders = (left_pt, pt)
+                # Right border sphere — permanent
+                self._plotter.add_mesh(
+                    pv.Sphere(radius=self._sphere_radius, center=pt),
+                    color=_PUBIC_COLOR_2, opacity=0.85,
+                    name=_PUBIC_BORDER_RIGHT, pickable=False, render=False,
+                )
+                try:
+                    self._plotter.add_point_labels(
+                        np.asarray([pt], dtype=float),
+                        ["→ droit"],
+                        name=f"{_PUBIC_TEMP_ACTOR2}_lbl",
+                        font_size=11, text_color=_PUBIC_COLOR_2,
+                        shape=None, always_visible=True, render=False,
+                    )
+                except Exception:  # pragma: no cover
+                    pass
+                # Show midpoint preview
+                self._plotter.add_mesh(
+                    pv.Sphere(radius=self._sphere_radius * 1.15, center=midpoint),
+                    color=_PUBIC_COLOR_MID, opacity=0.90,
+                    name=f"{_PUBIC_TEMP_ACTOR}_mid", pickable=False, render=False,
+                )
+                try:
+                    self._plotter.add_point_labels(
+                        np.asarray([midpoint], dtype=float),
+                        ["milieu"],
+                        name=f"{_PUBIC_TEMP_ACTOR}_mid_lbl",
+                        font_size=11, text_color=_PUBIC_COLOR_MID,
+                        shape=None, always_visible=True, render=False,
+                    )
+                except Exception:  # pragma: no cover
+                    pass
+                self._plotter.render()
+                # Remove only temp labels and midpoint preview — keep border spheres
+                for _n in (f"{_PUBIC_TEMP_ACTOR}_lbl", f"{_PUBIC_TEMP_ACTOR2}_lbl",
+                           f"{_PUBIC_TEMP_ACTOR}_mid", f"{_PUBIC_TEMP_ACTOR}_mid_lbl"):
+                    self._plotter.remove_actor(_n, render=False)
                 self._placed[lm.code] = midpoint
                 self._draw_marker(lm.code)
                 self._plotter.render()
@@ -2067,8 +2307,9 @@ class AnnotatorWindow(QMainWindow):
         # Reset two-click state for pubic_symphysis if interrupted
         if self._pubic_first is not None:
             self._pubic_first = None
-            self._plotter.remove_actor(_PUBIC_TEMP_ACTOR, render=False)
-            self._plotter.remove_actor(f"{_PUBIC_TEMP_ACTOR}_lbl", render=False)
+            for _n in (_PUBIC_BORDER_LEFT, f"{_PUBIC_TEMP_ACTOR}_lbl",
+                       _PUBIC_BORDER_RIGHT, f"{_PUBIC_TEMP_ACTOR2}_lbl"):
+                self._plotter.remove_actor(_n, render=False)
             if code == "pubic_symphysis" and code not in self._placed:
                 self._plotter.render()
                 self.statusBar().showMessage("Placement symphyse pubienne annulé.")
@@ -2076,6 +2317,8 @@ class AnnotatorWindow(QMainWindow):
 
         if code is None or code not in self._placed:
             return
+        if code == "pubic_symphysis":
+            self._pubic_borders = None
         del self._placed[code]
         self._draw_marker(code)
         self._plotter.render()

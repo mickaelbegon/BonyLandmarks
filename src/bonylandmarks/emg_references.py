@@ -80,8 +80,76 @@ EMG_REFERENCES: dict[str, list[str]] = {
 }
 
 # Couleurs des sphères de référence EMG (par index 0 → point 1, index 1 → point 2)
-EMG_REF_COLORS = ["#00e5ff", "#ff6f00"]   # cyan électrique, orange brûlé
-EMG_LINE_COLOR  = "#ffe066"               # jaune doux pour la ligne géodésique
+EMG_REF_COLORS   = ["#00e5ff", "#ff6f00"]   # cyan électrique, orange brûlé
+EMG_LINE_COLOR   = "#ffe066"                # jaune doux pour la ligne géodésique
+EMG_MARKER_COLOR = "#ff2222"               # rouge vif pour le point de placement EMG
+
+# Pourcentage de distance (depuis le 1er point de référence vers le 2e) auquel
+# placer l'électrode EMG selon les recommandations SENIAM / Hermens et al. 2000.
+# 0.5 = milieu de la ligne de référence.
+EMG_PLACEMENT_PCT: dict[str, float] = {
+    # ── Membres inférieurs ────────────────────────────────────────────────────
+    "EMG_rectus_femoris_left":           0.50,  # 50% ASIS → patella sup
+    "EMG_rectus_femoris_right":          0.50,
+    "EMG_vastus_lateralis_left":         0.667, # 2/3 ASIS → lateral knee
+    "EMG_vastus_lateralis_right":        0.667,
+    "EMG_vastus_medialis_left":          0.80,  # 4/5 ASIS → medial knee
+    "EMG_vastus_medialis_right":         0.80,
+    "EMG_biceps_femoris_left":           0.50,  # 50% ischial tuberosity → lateral knee
+    "EMG_biceps_femoris_right":          0.50,
+    "EMG_semitendinosus_left":           0.50,
+    "EMG_semitendinosus_right":          0.50,
+    "EMG_gastrocnemius_medialis_left":   0.37,  # 37% fibular head → medial malleolus
+    "EMG_gastrocnemius_medialis_right":  0.37,
+    "EMG_gastrocnemius_lateralis_left":  0.30,  # 30% fibular head → heel
+    "EMG_gastrocnemius_lateralis_right": 0.30,
+    "EMG_soleus_left":                   0.67,  # 2/3 medial knee → medial malleolus
+    "EMG_soleus_right":                  0.67,
+    "EMG_tibialis_anterior_left":        0.33,  # 1/3 fibular head → medial malleolus
+    "EMG_tibialis_anterior_right":       0.33,
+    "EMG_peroneus_longus_left":          0.33,  # 1/3 fibular head → lateral malleolus
+    "EMG_peroneus_longus_right":         0.33,
+    # ── Hanches ───────────────────────────────────────────────────────────────
+    "EMG_gluteus_maximus_left":          0.50,  # 50% sacrum-S2 → greater trochanter
+    "EMG_gluteus_maximus_right":         0.50,
+    "EMG_gluteus_medius_left":           0.50,  # 50% iliac crest → greater trochanter
+    "EMG_gluteus_medius_right":          0.50,
+    "EMG_tensor_fasciae_latae_left":     0.33,  # 1/3 ASIS → lateral knee
+    "EMG_tensor_fasciae_latae_right":    0.33,
+    # ── Épaule / deltoïde ─────────────────────────────────────────────────────
+    "EMG_deltoid_medius_left":           0.50,  # 50% acromion → lateral epicondyle
+    "EMG_deltoid_medius_right":          0.50,
+    "EMG_deltoid_posterior_left":        0.50,
+    "EMG_deltoid_posterior_right":       0.50,
+    # ── Bras ──────────────────────────────────────────────────────────────────
+    "EMG_biceps_brachii_left":           0.33,  # 1/3 acromion → lateral epicondyle
+    "EMG_biceps_brachii_right":          0.33,
+    "EMG_triceps_brachii_long_left":     0.50,  # 50% acromion → olecranon
+    "EMG_triceps_brachii_long_right":    0.50,
+    "EMG_triceps_brachii_lateral_left":  0.50,
+    "EMG_triceps_brachii_lateral_right": 0.50,
+    # ── Avant-bras ────────────────────────────────────────────────────────────
+    "EMG_wrist_extensors_left":          0.67,  # 2/3 lateral epicondyle → radial styloid
+    "EMG_wrist_extensors_right":         0.67,
+    "EMG_wrist_flexors_left":            0.67,  # 2/3 medial epicondyle → radial styloid
+    "EMG_wrist_flexors_right":           0.67,
+    "EMG_brachioradialis_left":          0.50,
+    "EMG_brachioradialis_right":         0.50,
+    # ── Tronc / Trapèze ───────────────────────────────────────────────────────
+    "EMG_trapezius_descendens_left":     0.50,  # 50% C7 → acromion
+    "EMG_trapezius_descendens_right":    0.50,
+    "EMG_trapezius_transversalis_left":  0.50,  # 50% trigonum scapulae → T8
+    "EMG_trapezius_transversalis_right": 0.50,
+    "EMG_trapezius_ascendens_left":      0.67,  # 2/3 trigonum scapulae → T8
+    "EMG_trapezius_ascendens_right":     0.67,
+    # ── Rachis ────────────────────────────────────────────────────────────────
+    "EMG_erector_spinae_longissimus_left":    0.50,  # 50% L1 → PSIS
+    "EMG_erector_spinae_longissimus_right":   0.50,
+    "EMG_erector_spinae_iliocostalis_left":   0.50,  # 50% PSIS → rib12 tip
+    "EMG_erector_spinae_iliocostalis_right":  0.50,
+    "EMG_obliquus_externus_left":             0.50,  # 50% rib12 tip → ASIS
+    "EMG_obliquus_externus_right":            0.50,
+}
 
 # FMA concept ID du muscle BodyParts3D correspondant à chaque électrode EMG.
 # None = muscle absent de BONE_MUSCLES ou FMA inconnu (pas de géodésique tracée).
