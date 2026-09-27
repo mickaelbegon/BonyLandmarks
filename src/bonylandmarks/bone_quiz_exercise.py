@@ -621,18 +621,13 @@ class BoneQuizExercise(QWidget):
         return float(mesh.length) * 0.015
 
     def _render_single_bone(self, primary_stem: str, code: str, mode: str) -> None:
-        """Phase 1: show one bone, highlighted in orange if placement mode."""
+        """Phase 1: show one bone in natural bone color."""
         mesh = self._get_bone(primary_stem)
         if mesh is None:
             return
 
-        if mode == "placement":
-            color = _COLOR_BONE_HILIGHT
-        else:
-            color = _COLOR_BONE_PRIMARY
-
         self._plotter.add_mesh(
-            mesh, color=color, smooth_shading=True,
+            mesh, color=_COLOR_BONE_PRIMARY, smooth_shading=True,
             ambient=0.3, diffuse=0.9, specular=0.2,
             show_scalar_bar=False, render=False,
             pickable=(mode == "placement"),
@@ -658,10 +653,7 @@ class BoneQuizExercise(QWidget):
             if mesh is None:
                 continue
             is_primary = stem == primary_stem
-            if is_primary and mode == "placement":
-                color = _COLOR_BONE_HILIGHT
-                opacity = 1.0
-            elif is_primary:
+            if is_primary:
                 color = _COLOR_BONE_PRIMARY
                 opacity = 1.0
             else:
