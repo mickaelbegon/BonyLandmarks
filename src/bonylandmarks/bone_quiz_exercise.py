@@ -25,6 +25,7 @@ import vtk
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QFrame,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -284,6 +285,19 @@ class BoneQuizExercise(QWidget):
         self._candidate_actor = None
         self._ref_sphere_actor = None
 
+        # Camera state (updated per landmark load)
+        self._up_axis: int = 2
+        self._front_axis: int = 1
+        self._side_axis: int = 0
+        self._mesh_centers: list[float] = [0.0, 0.0, 0.0]
+        self._cam_distance: float = 500.0
+
+        # Curvature state
+        self._curv_active: bool = False
+        self._curv_btn: QPushButton | None = None
+        self._curv_legend: QLabel | None = None
+        self._nav_overlay: QWidget | None = None
+
         self._build_ui()
         self._start_phase(1)
 
@@ -307,6 +321,7 @@ class BoneQuizExercise(QWidget):
         self._plotter.set_background(_BG)
         self._plotter.enable_3_lights()
         main.addWidget(self._plotter.interactor, stretch=7)
+        QTimer.singleShot(0, self._build_nav_overlay)
 
         # Right panel (30%)
         self._right_panel = self._build_right_panel()
@@ -545,7 +560,14 @@ class BoneQuizExercise(QWidget):
         else:
             self._render_full_skeleton(stem, code, mode)
 
-        self._plotter.reset_camera()
+        # Reset curvature toggle state on new landmark
+        if self._curv_active and self._curv_btn is not None:
+            self._curv_active = False
+            self._curv_btn.setChecked(False)
+            if self._curv_legend is not None:
+                self._curv_legend.setVisible(False)
+
+        self._setup_camera_from_mesh(stem)
         self._plotter.render()
 
         # ── Right panel controls ──────────────────────────────────────────────
@@ -665,6 +687,286 @@ class BoneQuizExercise(QWidget):
                 opacity=opacity, show_scalar_bar=False, render=False,
                 pickable=(mode == "placement"),
             )
+
+    # ── Camera ────────────────────────────────────────────────────────────────
+
+    def _setup_camera_from_mesh(self, stem: str) -> None:
+        """Frame the camera on the active bone mesh and store axis metadata."""
+        mesh = self._get_bone(stem)
+        if mesh is None:
+            self._plotter.reset_camera()
+            return
+        b = mesh.bounds
+        extents = [b[1] - b[0], b[3] - b[2], b[5] - b[4]]
+        up_axis = extents.index(max(extents))
+        sorted_axes = sorted(range(3), key=lambda i: extents[i])
+        front_axis = sorted_axes[0]
+        self._up_axis = up_axis
+        self._front_axis = front_axis
+        self._side_axis = ({0, 1, 2} - {up_axis, front_axis}).pop()
+        self._mesh_centers = [
+            (b[0] + b[1]) * 0.5,
+            (b[2] + b[3]) * 0.5,
+            (b[4] + b[5]) * 0.5,
+        ]
+        self._cam_distance = max(extents) * 2.2
+        self._reset_view()
+
+    def _set_view(self, cam_axis: int, direction: int) -> None:
+        cam_pos = list(self._mesh_centers)
+        cam_pos[cam_axis] += direction * self._cam_distance
+        up_vec = [0.0, 0.0, 0.0]
+        up_vec[self._up_axis] = 1.0
+        cam = self._plotter.camera
+        cam.position = tuple(cam_pos)
+        cam.focal_point = tuple(self._mesh_centers)
+        cam.up = tuple(up_vec)
+        self._plotter.render()
+
+    def _view_top(self) -> None:
+        cam_pos = list(self._mesh_centers)
+        cam_pos[self._up_axis] += self._cam_distance
+        up_vec = [0.0, 0.0, 0.0]
+        up_vec[self._front_axis] = 1.0
+        cam = self._plotter.camera
+        cam.position = tuple(cam_pos)
+        cam.focal_point = tuple(self._mesh_centers)
+        cam.up = tuple(up_vec)
+        self._plotter.render()
+
+    def _reset_view(self) -> None:
+        self._set_view(self._front_axis, -1)
+
+    def _pan_camera(self, dx: float, dy: float) -> None:
+        cam = self._plotter.camera
+        pos = np.asarray(cam.position, dtype=float)
+        fpt = np.asarray(cam.focal_point, dtype=float)
+        up = np.asarray(cam.up, dtype=float)
+        view_dir = fpt - pos
+        dist = float(np.linalg.norm(view_dir))
+        if dist < 1e-9:
+            return
+        view_dir /= dist
+        right = np.cross(view_dir, up)
+        r_norm = float(np.linalg.norm(right))
+        if r_norm < 1e-9:
+            return
+        right /= r_norm
+        up_perp = np.cross(right, view_dir)
+        step = dist * 0.08
+        delta = right * dx * step + up_perp * dy * step
+        cam.position = tuple(pos + delta)
+        cam.focal_point = tuple(fpt + delta)
+        self._plotter.render()
+
+    # ── Navigation + curvature overlay ────────────────────────────────────────
+
+    def _build_nav_overlay(self) -> None:
+        """Floating panel (top-right of plotter): view buttons, pan arrows, curvature, legend."""
+        container = self._plotter.interactor
+        overlay = QWidget(container)
+        overlay.setObjectName("quiz_nav_overlay")
+        overlay.setAttribute(Qt.WA_TranslucentBackground)
+        layout = QVBoxLayout(overlay)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
+
+        _btn_style = (
+            "QPushButton { background-color: rgba(26,26,46,180); color: #e0e0e0; "
+            "border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; "
+            "font-size: 11px; padding: 3px 7px; }"
+            "QPushButton:hover { background-color: rgba(60,80,140,210); "
+            "border-color: rgba(100,150,255,0.7); }"
+        )
+        _btn_check_style = _btn_style + (
+            "QPushButton:checked { background-color: rgba(120,60,20,210); "
+            "border-color: rgba(255,160,60,0.8); color: #ffcc88; }"
+        )
+
+        # ── View presets ─────────────────────────────────────────────────────
+        view_lbl = QLabel("Vues")
+        view_lbl.setStyleSheet(
+            "font-size: 9px; color: rgba(160,160,200,0.8); "
+            "background: transparent; padding: 0;"
+        )
+        layout.addWidget(view_lbl)
+
+        views_row = QHBoxLayout()
+        views_row.setSpacing(3)
+        for label, tip, slot in (
+            ("Face",  "Vue avant",  lambda: self._set_view(self._front_axis, -1)),
+            ("Dos",   "Vue arrière", lambda: self._set_view(self._front_axis, +1)),
+            ("G",     "Vue gauche",  lambda: self._set_view(self._side_axis, +1)),
+            ("D",     "Vue droite",  lambda: self._set_view(self._side_axis, -1)),
+            ("↑",     "Vue dessus",  self._view_top),
+            ("⟳",     "Réinitialiser", self._reset_view),
+        ):
+            b = QPushButton(label)
+            b.setFixedHeight(24)
+            b.setStyleSheet(_btn_style)
+            b.setToolTip(tip)
+            b.clicked.connect(slot)
+            views_row.addWidget(b)
+        layout.addLayout(views_row)
+
+        # ── Pan arrows ───────────────────────────────────────────────────────
+        pan_lbl = QLabel("Translation")
+        pan_lbl.setStyleSheet(
+            "font-size: 9px; color: rgba(160,160,200,0.8); "
+            "background: transparent; padding: 0;"
+        )
+        layout.addWidget(pan_lbl)
+
+        _pan_tip = (
+            "Translation · aussi : Shift + clic-gauche glisser\n"
+            "Zoom : molette · Rotation : clic-gauche glisser"
+        )
+        pan_w = QWidget()
+        pan_w.setAttribute(Qt.WA_TranslucentBackground)
+        grid = QGridLayout(pan_w)
+        grid.setContentsMargins(0, 0, 0, 0)
+        grid.setSpacing(2)
+        for row, col, sym, dx, dy in (
+            (0, 1, "▲", 0, +1),
+            (1, 0, "◀", -1, 0),
+            (1, 2, "▶", +1, 0),
+            (2, 1, "▼", 0, -1),
+        ):
+            b = QPushButton(sym)
+            b.setFixedSize(26, 26)
+            b.setStyleSheet(_btn_style)
+            b.setToolTip(_pan_tip)
+            b.clicked.connect(lambda _=None, _dx=dx, _dy=dy: self._pan_camera(_dx, _dy))
+            grid.addWidget(b, row, col)
+        layout.addWidget(pan_w)
+
+        # Separator
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setStyleSheet("background: rgba(255,255,255,0.12); border: none; max-height: 1px;")
+        layout.addWidget(sep)
+
+        # ── Curvature toggle ─────────────────────────────────────────────────
+        self._curv_btn = QPushButton("🌡 Courbure")
+        self._curv_btn.setCheckable(True)
+        self._curv_btn.setStyleSheet(_btn_check_style)
+        self._curv_btn.setToolTip(
+            "Heatmap de courbure moyenne\n"
+            "Rouge = saillant (éminence osseuse)\n"
+            "Bleu = creux (sillon, fossette)"
+        )
+        self._curv_btn.toggled.connect(self._toggle_curvature)
+        layout.addWidget(self._curv_btn)
+
+        self._curv_legend = QLabel("Rouge = saillant · Bleu = creux")
+        self._curv_legend.setStyleSheet(
+            "font-size: 9px; color: rgba(255,180,80,0.85); "
+            "background: transparent; padding: 1px 2px;"
+        )
+        self._curv_legend.setAlignment(Qt.AlignCenter)
+        self._curv_legend.setVisible(False)
+        layout.addWidget(self._curv_legend)
+
+        # ── Mouse legend ─────────────────────────────────────────────────────
+        mouse_info = QLabel("🖱 clic · ↕ molette · Shift+clic")
+        mouse_info.setStyleSheet(
+            "font-size: 9px; color: rgba(160,160,200,0.7); "
+            "background: transparent; padding: 1px 0;"
+        )
+        mouse_info.setAlignment(Qt.AlignCenter)
+        layout.addWidget(mouse_info)
+
+        overlay.adjustSize()
+        self._nav_overlay = overlay
+        self._position_nav_overlay()
+        container.installEventFilter(self)
+
+    def eventFilter(self, obj, event) -> bool:
+        from PySide6.QtCore import QEvent
+        if (
+            obj is self._plotter.interactor
+            and event.type() == QEvent.Resize
+            and self._nav_overlay is not None
+        ):
+            self._position_nav_overlay()
+        return super().eventFilter(obj, event)
+
+    def _position_nav_overlay(self) -> None:
+        if self._nav_overlay is None:
+            return
+        container = self._plotter.interactor
+        margin = 8
+        w = self._nav_overlay.width() or self._nav_overlay.sizeHint().width()
+        x = container.width() - w - margin
+        self._nav_overlay.move(x, margin)
+        self._nav_overlay.raise_()
+
+    # ── Curvature ─────────────────────────────────────────────────────────────
+
+    def _toggle_curvature(self, checked: bool) -> None:
+        self._curv_active = checked
+        if self._curv_legend is not None:
+            self._curv_legend.setVisible(checked)
+        if checked:
+            self._apply_curvature()
+        else:
+            # Restore solid bone color
+            self._plotter.clear()
+            self._candidate_actor = None
+            self._ref_sphere_actor = None
+            stem, code = self._items[self._current_idx]
+            mode = self._current_mode
+            if self._current_phase == 1:
+                self._render_single_bone(stem, code, mode)
+            else:
+                self._render_full_skeleton(stem, code, mode)
+            self._plotter.render()
+        if self._nav_overlay is not None:
+            self._nav_overlay.adjustSize()
+            self._position_nav_overlay()
+
+    def _apply_curvature(self) -> None:
+        """Replace bone color with mean-curvature heatmap (coolwarm colormap)."""
+        if not self._curv_active:
+            return
+        stem, _ = self._items[self._current_idx]
+        mesh = self._get_bone(stem)
+        if mesh is None:
+            return
+
+        # Smooth slightly before curvature to reduce mesh noise
+        smoothed = mesh.smooth(n_iter=50, relaxation_factor=0.05)
+        curv = smoothed.curvature(curv_type="mean")
+        # Clamp to P5–P95 for better contrast
+        lo = float(np.percentile(curv, 5))
+        hi = float(np.percentile(curv, 95))
+        if abs(hi - lo) < 1e-9:
+            hi = lo + 1e-6
+
+        smoothed["curvature"] = curv
+        self._plotter.clear()
+        self._plotter.add_mesh(
+            smoothed,
+            scalars="curvature",
+            clim=[lo, hi],
+            cmap="coolwarm",
+            smooth_shading=True,
+            show_scalar_bar=True,
+            scalar_bar_args={
+                "title": "Courbure",
+                "vertical": True,
+                "height": 0.4,
+                "position_x": 0.02,
+                "position_y": 0.3,
+                "title_font_size": 10,
+                "label_font_size": 9,
+            },
+            ambient=0.3,
+            diffuse=0.9,
+            render=False,
+            pickable=False,
+        )
+        self._plotter.render()
 
     # ── VTK picking (placement mode) ──────────────────────────────────────────
 
