@@ -1,0 +1,6 @@
+[
+  {"nom": "Dupont",   "prenom": "Alice",   "matricule": "20000001"},
+  {"nom": "Martin",   "prenom": "Bob",     "matricule": "20000002"},
+  {"nom": "Tremblay", "prenom": "Charlie", "matricule": "20000003"},
+  {"nom": "Leblanc",  "prenom": "Diana",   "matricule": "20000004"}
+]
