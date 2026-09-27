@@ -13,9 +13,9 @@ from bonylandmarks.manifest import get_server_url, load_manifest
 
 
 def test_load_manifest_returns_dev_fixture() -> None:
-    """load_manifest() should return a non-empty sorted list of students."""
+    """load_manifest() should return the 4 fake students from manifest.dev.json."""
     students = load_manifest()
-    assert len(students) > 0
+    assert len(students) == 4
     assert all("nom" in s and "prenom" in s and "matricule" in s for s in students)
 
 
