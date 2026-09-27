@@ -9,6 +9,37 @@ from dataclasses import dataclass
 
 import numpy as np
 
+# ─── Standalone grade helpers (used by bone quiz and other exercises) ──────────
+
+#: Per-landmark thresholds for the bone quiz (tighter than session thresholds).
+BONE_QUIZ_THRESHOLDS: tuple[float, float, float] = (10.0, 20.0, 40.0)
+
+
+def grade_from_dist(
+    dist_mm: float,
+    thresholds: tuple[float, float, float] = BONE_QUIZ_THRESHOLDS,
+) -> str:
+    """Return A/B/C/D for a placement distance.
+
+    Default thresholds: A < 10 mm, B < 20 mm, C < 40 mm, D ≥ 40 mm.
+    Pass custom thresholds as ``(a_max, b_max, c_max)`` in mm.
+    """
+    a, b, c = thresholds
+    if dist_mm < a:
+        return "A"
+    if dist_mm < b:
+        return "B"
+    if dist_mm < c:
+        return "C"
+    return "D"
+
+
+def grade_color(grade: str) -> str:
+    """Return hex color for a grade letter (A→green, B→blue, C→orange, D→red)."""
+    return {"A": "#00cc44", "B": "#7cb9ff", "C": "#ffaa00", "D": "#ff4444"}.get(
+        grade, "#e8e8f0"
+    )
+
 
 @dataclass
 class LandmarkResult:

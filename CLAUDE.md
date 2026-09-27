@@ -64,6 +64,19 @@ Point d'entrée CLI : `bonylandmarks` (app étudiant) / `python -m bonylandmarks
 | `sticker_removal.py` | Inpainting vertex-colour : suppression stickers photogrammétriques verts ~20mm par IDW |
 | `bone_quiz_exercise.py` | Quiz interactif Os/Squelette : placement et identification de repères sur meshes BodyParts3D, deux phases (os individuel → squelette), scoring mm |
 | `shared_scan_exercise.py` | Exercice scan partagé : placement libre sur scan commun sans vérité terrain, comparaison inter-étudiants par agrégation de positions (centroïde + écart-type) |
+| `scene3d.py` | Helpers PyVista partagés : `CameraAxes`, `fit_camera_to_mesh`, `set_view`, `view_top`, `reset_view`, `pan_camera`, `apply_curvature_heatmap` |
+
+### `src/bonylandmarks/ui/`
+
+| Fichier | Rôle |
+|---|---|
+| `styles.py` | Constantes de style partagées : `BG`, `CARD`, `TEXT`, `BTN_PRIMARY`, `NAV_BTN`, `NAV_BTN_CHECK`, `COLOR_BONE_*`, `COLOR_SPHERE_*` |
+
+### `src/bonylandmarks/widgets/`
+
+| Fichier | Rôle |
+|---|---|
+| `nav_overlay.py` | `NavOverlay(QWidget)` : overlay flottant de navigation 3D (vues, translation, courbure) ; se positionne automatiquement en haut-droite du plotter |
 
 ### `src/bonylandmarks/data/`
 
@@ -283,5 +296,72 @@ Progression des exercices disponibles dans l'app étudiant (sélection à l'écr
 2. **Tutoriel** (`tutorial.py`) — exploration guidée avant la session notée ; mode Reconnaissance (position visible) puis mode Quiz (caché) ; accessible depuis l'écran d'accueil en mode "Mon scan 3D".
 3. **ISB** (`isb_exercise.py`) — construction guidée des repères locaux ISB (Wu et al. 2002/2005) ; 7 segments ; wizard étape par étape avec feedback pédagogique.
 4. **Anthropo** (`anthro_measures_exercise.py`) — 20 mesures anthropométriques interactives (circumférences, diamètres, longueurs) ; chaque `AnthroMeasure` implémente `compute(ground_truth)`.
-5. **Quiz osseux** (`bone_quiz_exercise.py`) — quiz sur meshes BodyParts3D locaux, sans connexion ; deux phases (os individuel → squelette complet) ; scoring mm vs. positions de référence algorithmiques. ← *nouveau*
-6. **Scan partagé** (`shared_scan_exercise.py`) — exercice collaboratif sur GLB commun fourni par l'enseignant ; non-évaluatif ; agrégation des soumissions JSON du groupe (centroïde + écart-type par repère). ← *nouveau*
+5. **Quiz osseux** (`bone_quiz_exercise.py`) — quiz sur meshes BodyParts3D locaux, sans connexion ; deux phases (os individuel → squelette complet) ; scoring mm vs. positions de référence algorithmiques.
+6. **Scan partagé** (`shared_scan_exercise.py`) — exercice collaboratif sur GLB commun fourni par l'enseignant ; non-évaluatif ; agrégation des soumissions JSON du groupe (centroïde + écart-type par repère).
+
+### Pattern pour créer un nouvel exercice 3D
+
+Un exercice 3D autonome suit ce squelette :
+
+```python
+from .scene3d import CameraAxes, fit_camera_to_mesh, reset_view, pan_camera, set_view, view_top, apply_curvature_heatmap
+from .scoring import grade_from_dist, grade_color
+from .ui.styles import BG, CARD, TEXT, BTN_PRIMARY, COLOR_BONE_PRIMARY
+from .widgets.nav_overlay import NavOverlay
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget
+from pyvistaqt import QtInteractor
+
+class MonExercice(QWidget):
+    exercise_complete = Signal()
+
+    def __init__(self, lang="fr", parent=None):
+        super().__init__(parent)
+        self._lang = lang
+        self._cam_axes: CameraAxes = CameraAxes()
+        self._nav_overlay: NavOverlay | None = None
+        self._plotter = QtInteractor(self)
+        self._plotter.set_background(BG)
+        QTimer.singleShot(0, self._create_nav_overlay)
+
+    def _setup_camera(self, mesh) -> None:
+        self._cam_axes = fit_camera_to_mesh(mesh, distance_factor=2.2)
+        reset_view(self._plotter, self._cam_axes)
+
+    def _create_nav_overlay(self) -> None:
+        self._nav_overlay = NavOverlay(
+            self._plotter.interactor,
+            face_fn=lambda: set_view(self._plotter, self._cam_axes, self._cam_axes.front, -1),
+            back_fn=lambda: set_view(self._plotter, self._cam_axes, self._cam_axes.front, +1),
+            left_fn=lambda: set_view(self._plotter, self._cam_axes, self._cam_axes.side,  +1),
+            right_fn=lambda: set_view(self._plotter, self._cam_axes, self._cam_axes.side,  -1),
+            top_fn=lambda: view_top(self._plotter, self._cam_axes),
+            reset_fn=lambda: reset_view(self._plotter, self._cam_axes),
+            pan_fn=lambda dx, dy: pan_camera(self._plotter, dx, dy),
+            toggle_curvature_fn=self._toggle_curvature,  # ou None pour désactiver
+        )
+        self._nav_overlay.show()
+
+    def _toggle_curvature(self, checked: bool) -> None:
+        if checked:
+            apply_curvature_heatmap(self._plotter, mon_mesh)
+        else:
+            # re-render sans heatmap
+            pass
+
+    def shutdown(self) -> None:
+        try:
+            self._plotter.close()
+        except Exception:
+            pass
+
+    def closeEvent(self, event) -> None:
+        self.shutdown()
+        super().closeEvent(event)
+```
+
+**Notes importantes** :
+- Les lambdas dans `_create_nav_overlay` capturent `self` par référence → elles utilisent toujours `self._cam_axes` courant.
+- `fit_camera_to_mesh(mesh, distance_factor=2.2)` fonctionne pour un os individuel ; utiliser `1.8` pour un squelette complet.
+- `grade_from_dist(dist_mm)` : seuils par défaut 10/20/40 mm (quiz osseux) ; passer des seuils personnalisés pour d'autres exercices.
+- `NavOverlay` gère seule son positionnement et le resize via `eventFilter`.
