@@ -37,12 +37,12 @@ EMG_REFERENCES: dict[str, list[str]] = {
     "EMG_tensor_fasciae_latae_left":    ["ASIS_left",              "lateral_knee_left"],
     "EMG_tensor_fasciae_latae_right":   ["ASIS_right",             "lateral_knee_right"],
     # ── Épaule ────────────────────────────────────────────────────────────────
-    "EMG_deltoid_anterior_left":        ["acromion_left"],
-    "EMG_deltoid_anterior_right":       ["acromion_right"],
+    "EMG_deltoid_anterior_left":        ["acromion_left",          "deltoid_tuberosity_left"],
+    "EMG_deltoid_anterior_right":       ["acromion_right",         "deltoid_tuberosity_right"],
     "EMG_deltoid_medius_left":          ["acromion_left",          "lateral_epicondyle_left"],
     "EMG_deltoid_medius_right":         ["acromion_right",         "lateral_epicondyle_right"],
-    "EMG_deltoid_posterior_left":       ["acromial_angle_left"],
-    "EMG_deltoid_posterior_right":      ["acromial_angle_right"],
+    "EMG_deltoid_posterior_left":       ["acromial_angle_left",    "deltoid_tuberosity_left"],
+    "EMG_deltoid_posterior_right":      ["acromial_angle_right",   "deltoid_tuberosity_right"],
     # ── Bras ──────────────────────────────────────────────────────────────────
     "EMG_biceps_brachii_left":          ["acromion_left",          "lateral_epicondyle_left"],
     "EMG_biceps_brachii_right":         ["acromion_right",         "lateral_epicondyle_right"],
@@ -64,10 +64,10 @@ EMG_REFERENCES: dict[str, list[str]] = {
     "EMG_trapezius_transversalis_right":["scapula_trigonum_right", "T8_spinous"],
     "EMG_trapezius_ascendens_left":     ["scapula_trigonum_left",  "T8_spinous"],
     "EMG_trapezius_ascendens_right":    ["scapula_trigonum_right", "T8_spinous"],
-    "EMG_serratus_anterior_left":       ["scapula_inferior_angle_left"],
-    "EMG_serratus_anterior_right":      ["scapula_inferior_angle_right"],
-    "EMG_pectoralis_major_sternal_left": ["sternal_angle_louis"],
-    "EMG_pectoralis_major_sternal_right":["sternal_angle_louis"],
+    "EMG_serratus_anterior_left":       ["scapula_inferior_angle_left",  "iliac_crest_left"],
+    "EMG_serratus_anterior_right":      ["scapula_inferior_angle_right", "iliac_crest_right"],
+    "EMG_pectoralis_major_sternal_left": ["sternal_angle_louis",         "deltoid_tuberosity_left"],
+    "EMG_pectoralis_major_sternal_right":["sternal_angle_louis",         "deltoid_tuberosity_right"],
     # ── Rachis ────────────────────────────────────────────────────────────────
     "EMG_erector_spinae_longissimus_left":    ["L1_spinous",  "PSIS_left"],
     "EMG_erector_spinae_longissimus_right":   ["L1_spinous",  "PSIS_right"],
@@ -75,8 +75,8 @@ EMG_REFERENCES: dict[str, list[str]] = {
     "EMG_erector_spinae_iliocostalis_right":  ["PSIS_right",  "rib12_tip_right"],
     "EMG_obliquus_externus_left":             ["rib12_tip_left",  "ASIS_left"],
     "EMG_obliquus_externus_right":            ["rib12_tip_right", "ASIS_right"],
-    "EMG_rectus_abdominis_left":              ["sternal_angle_louis"],
-    "EMG_rectus_abdominis_right":             ["sternal_angle_louis"],
+    "EMG_rectus_abdominis_left":              ["sternal_angle_louis",  "pubic_symphysis"],
+    "EMG_rectus_abdominis_right":             ["sternal_angle_louis",  "pubic_symphysis"],
 }
 
 # Couleurs des sphères de référence EMG (par index 0 → point 1, index 1 → point 2)
@@ -117,10 +117,12 @@ EMG_PLACEMENT_PCT: dict[str, float] = {
     "EMG_tensor_fasciae_latae_left":     0.33,  # 1/3 ASIS → lateral knee
     "EMG_tensor_fasciae_latae_right":    0.33,
     # ── Épaule / deltoïde ─────────────────────────────────────────────────────
+    "EMG_deltoid_anterior_left":         0.33,  # 1/3 acromion → tubérosité deltoïdienne
+    "EMG_deltoid_anterior_right":        0.33,
     "EMG_deltoid_medius_left":           0.50,  # 50% acromion → lateral epicondyle
     "EMG_deltoid_medius_right":          0.50,
-    "EMG_deltoid_posterior_left":        0.50,
-    "EMG_deltoid_posterior_right":       0.50,
+    "EMG_deltoid_posterior_left":        0.33,  # 1/3 angle acromial → tubérosité deltoïdienne
+    "EMG_deltoid_posterior_right":       0.33,
     # ── Bras ──────────────────────────────────────────────────────────────────
     "EMG_biceps_brachii_left":           0.33,  # 1/3 acromion → lateral epicondyle
     "EMG_biceps_brachii_right":          0.33,
@@ -149,6 +151,13 @@ EMG_PLACEMENT_PCT: dict[str, float] = {
     "EMG_erector_spinae_iliocostalis_right":  0.50,
     "EMG_obliquus_externus_left":             0.50,  # 50% rib12 tip → ASIS
     "EMG_obliquus_externus_right":            0.50,
+    # ── Tronc antérieur ───────────────────────────────────────────────────────
+    "EMG_pectoralis_major_sternal_left":      0.67,  # 2/3 angle de Louis → tubérosité deltoïdienne
+    "EMG_pectoralis_major_sternal_right":     0.67,
+    "EMG_serratus_anterior_left":             0.33,  # 1/3 angle inf. scapula → crête iliaque
+    "EMG_serratus_anterior_right":            0.33,
+    "EMG_rectus_abdominis_left":              0.33,  # 1/3 angle de Louis → symphyse pubienne
+    "EMG_rectus_abdominis_right":             0.33,
 }
 
 # FMA concept ID du muscle BodyParts3D correspondant à chaque électrode EMG.
