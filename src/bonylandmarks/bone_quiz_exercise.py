@@ -534,6 +534,7 @@ class BoneQuizExercise(QWidget):
 
         # ── 3D view ──────────────────────────────────────────────────────────
         self._plotter.clear()
+        self._plotter.enable_3_lights()
         self._candidate_actor = None
         self._ref_sphere_actor = None
 
@@ -745,6 +746,7 @@ class BoneQuizExercise(QWidget):
                 render_curvature(self._plotter, self._curv_cache[stem])
         else:
             self._plotter.clear()
+            self._plotter.enable_3_lights()
             self._candidate_actor = None
             self._ref_sphere_actor = None
             stem, code = self._items[self._current_idx]

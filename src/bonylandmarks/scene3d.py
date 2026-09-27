@@ -123,6 +123,7 @@ def render_curvature(plotter, curv_mesh) -> None:
         curv_mesh.field_data["curv_clim"][1]
     )
     plotter.clear()
+    plotter.enable_3_lights()
     plotter.add_mesh(
         curv_mesh,
         scalars="curvature",
