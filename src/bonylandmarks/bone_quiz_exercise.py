@@ -300,13 +300,8 @@ class BoneQuizExercise(QWidget):
 
         # PyVista plotter (70%)
         self._plotter = QtInteractor(self)
-        self._plotter.set_background(_BG)
+        self._plotter.set_background("#0d0d18")
         self._plotter.enable_3_lights()
-        # SSAO adds ambient occlusion (darkening in crevices) for depth perception
-        try:
-            self._plotter.enable_ssao(radius=20, bias=0.05, kernel_size=128)
-        except Exception:
-            pass
         main.addWidget(self._plotter.interactor, stretch=7)
         QTimer.singleShot(0, self._create_nav_overlay)
 
@@ -669,7 +664,7 @@ class BoneQuizExercise(QWidget):
 
         self._plotter.add_mesh(
             mesh, color=_COLOR_BONE_PRIMARY, smooth_shading=True,
-            ambient=0.08, diffuse=0.9, specular=0.4, specular_power=20,
+            ambient=0.3, diffuse=0.9, specular=0.2,
             show_scalar_bar=False, render=False,
             pickable=(mode == "placement"),
         )
@@ -702,7 +697,7 @@ class BoneQuizExercise(QWidget):
                 opacity = _OPACITY_REF
             self._plotter.add_mesh(
                 mesh, color=color, smooth_shading=True,
-                ambient=0.05, diffuse=0.85, specular=0.3, specular_power=15,
+                ambient=0.2, diffuse=0.85, specular=0.2,
                 opacity=opacity, show_scalar_bar=False, render=False,
                 pickable=(mode == "placement"),
             )
