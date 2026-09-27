@@ -1,10 +1,10 @@
 """Bone quiz exercise — quiz students on anatomical landmarks using BodyParts3D meshes.
 
 Two phases:
-  Phase 1 — Individual bones: 8 random bones, show each bone with its landmarks,
-             alternate between Placement and Identification modes.
-  Phase 2 — Full skeleton: all bones shown simultaneously, 20 random landmarks
-             across all bones, same two modes.
+  Phase 1 — Identification (individual bones): 8 random bones; a landmark is
+             highlighted, student picks its name from 4 choices (MCQ).
+  Phase 2 — Placement (full skeleton): all bones shown; name given, student
+             clicks the correct location on the skeleton.
 
 Architecture
 ------------
@@ -462,10 +462,14 @@ class BoneQuizExercise(QWidget):
 
         if phase == 1:
             self._items = self._phase1_items
-            self._phase_label.setText("Phase 1 / 2 — Os individuels")
+            self._phase_label.setText("Phase 1 / 2 — Identification (os individuels)")
+            # Phase 1: identification only — a landmark is shown, student names it
+            mode_for_phase = "identification"
         else:
             self._items = self._phase2_items
-            self._phase_label.setText("Phase 2 / 2 — Squelette complet")
+            self._phase_label.setText("Phase 2 / 2 — Placement (squelette complet)")
+            # Phase 2: placement only — name given, student clicks the location
+            mode_for_phase = "placement"
 
         if not self._items:
             # Skip to next phase or summary
@@ -475,11 +479,7 @@ class BoneQuizExercise(QWidget):
                 self._show_summary()
             return
 
-        # Build mode sequence: alternate placement / identification
-        modes: list[str] = []
-        for i in range(len(self._items)):
-            modes.append("placement" if i % 2 == 0 else "identification")
-        self._mode_seq = modes
+        self._mode_seq = [mode_for_phase] * len(self._items)
 
         self._load_landmark(0)
 
