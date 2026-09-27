@@ -99,11 +99,12 @@ def pan_camera(plotter, dx: float, dy: float) -> None:
     plotter.render()
 
 
-def apply_curvature_heatmap(plotter, mesh) -> None:
-    """Render mean-curvature heatmap (coolwarm) on *plotter*, clearing first.
+def compute_curvature(mesh) -> "pv.PolyData":
+    """Smooth a mesh and compute mean-curvature scalars.
 
-    Smooths the mesh slightly (50 iterations) to reduce vertex-level noise
-    before computing curvature. Color range is clamped to P5–P95.
+    Returns a new PolyData with ``"curvature"`` point data and
+    ``field_data["curv_clim"]`` = [lo, hi] (P5–P95 clamped range).
+    Callers are responsible for caching the result when needed.
     """
     smoothed = mesh.smooth(n_iter=50, relaxation_factor=0.05)
     curv = smoothed.curvature(curv_type="mean")
@@ -112,9 +113,18 @@ def apply_curvature_heatmap(plotter, mesh) -> None:
     if abs(hi - lo) < 1e-9:
         hi = lo + 1e-6
     smoothed["curvature"] = curv
+    smoothed.field_data["curv_clim"] = np.array([lo, hi])
+    return smoothed
+
+
+def render_curvature(plotter, curv_mesh) -> None:
+    """Render a pre-computed curvature mesh (from :func:`compute_curvature`)."""
+    lo, hi = float(curv_mesh.field_data["curv_clim"][0]), float(
+        curv_mesh.field_data["curv_clim"][1]
+    )
     plotter.clear()
     plotter.add_mesh(
-        smoothed,
+        curv_mesh,
         scalars="curvature",
         clim=[lo, hi],
         cmap="coolwarm",
@@ -135,3 +145,12 @@ def apply_curvature_heatmap(plotter, mesh) -> None:
         pickable=False,
     )
     plotter.render()
+
+
+def apply_curvature_heatmap(plotter, mesh) -> None:
+    """Convenience: compute curvature then render immediately (no caching).
+
+    Prefer the :func:`compute_curvature` + :func:`render_curvature` split
+    when caching is needed (e.g. repeated toggles on the same bone).
+    """
+    render_curvature(plotter, compute_curvature(mesh))

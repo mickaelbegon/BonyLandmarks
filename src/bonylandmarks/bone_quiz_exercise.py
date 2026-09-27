@@ -22,7 +22,7 @@ from typing import Optional
 import numpy as np
 import pyvista as pv
 import vtk
-from PySide6.QtCore import Qt, QTimer, Signal
+from PySide6.QtCore import QRunnable, Qt, QThreadPool, QTimer, Signal
 from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
@@ -38,9 +38,10 @@ from .bone_map import BONE_JOINTS, BONE_LABEL_FR, LANDMARK_BONE
 from .landmarks_extended import LANDMARK_BY_CODE, LANDMARKS
 from .scene3d import (
     CameraAxes,
-    apply_curvature_heatmap,
+    compute_curvature,
     fit_camera_to_mesh,
     pan_camera,
+    render_curvature,
     reset_view,
     set_view,
     view_top,
@@ -72,6 +73,11 @@ _LM_POS_FILE = _BONES_DIR / "landmark_positions.json"
 _N_BONES_PHASE1 = 8
 _N_LANDMARKS_PHASE2 = 20
 _OPACITY_REF = 0.4
+
+# Meshes with more than this many vertices are decimated on first load.
+# Skull ~65k and ribs ~43k become ~8k and ~5k respectively — 8–10x faster curvature.
+_DECIMATE_THRESHOLD = 12_000
+_DECIMATE_TARGET_REDUCTION = 0.88  # keep ~12 % of triangles
 
 _BTN_MCQ = (
     f"QPushButton {{ background: {_CARD}; color: {_TEXT}; border: 1px solid #3a3a6a; "
@@ -269,8 +275,13 @@ class BoneQuizExercise(QWidget):
         self._curv_active: bool = False
         self._nav_overlay: NavOverlay | None = None
 
+        # Curvature cache: stem → smoothed PolyData with curvature scalars
+        self._curv_cache: dict[str, pv.PolyData] = {}
+
         self._build_ui()
         self._start_phase(1)
+        # Preload phase-1 bone meshes in background so first question is instant
+        self._preload_phase1_bones()
 
     # ── UI construction ───────────────────────────────────────────────────────
 
@@ -607,8 +618,42 @@ class BoneQuizExercise(QWidget):
             mesh = _load_bone(stem)
             if mesh is None:
                 return None
+            if mesh.n_points > _DECIMATE_THRESHOLD:
+                try:
+                    mesh = mesh.decimate(
+                        _DECIMATE_TARGET_REDUCTION, volume_preservation=True
+                    )
+                except Exception:
+                    pass
             self._bone_cache[stem] = mesh
         return self._bone_cache[stem]
+
+    def _preload_phase1_bones(self) -> None:
+        """Load phase-1 bone meshes in a background thread (fills _bone_cache)."""
+        stems = list({stem for stem, _ in self._phase1_items} - set(self._bone_cache))
+        if not stems:
+            return
+
+        bone_cache = self._bone_cache
+
+        class _Loader(QRunnable):
+            def run(self_inner) -> None:  # noqa: N805
+                for s in stems:
+                    if s in bone_cache:
+                        continue
+                    mesh = _load_bone(s)
+                    if mesh is None:
+                        continue
+                    if mesh.n_points > _DECIMATE_THRESHOLD:
+                        try:
+                            mesh = mesh.decimate(
+                                _DECIMATE_TARGET_REDUCTION, volume_preservation=True
+                            )
+                        except Exception:
+                            pass
+                    bone_cache[s] = mesh
+
+        QThreadPool.globalInstance().start(_Loader())
 
     def _sphere_radius(self, stem: str) -> float:
         mesh = self._get_bone(stem)
@@ -700,7 +745,9 @@ class BoneQuizExercise(QWidget):
             stem, _ = self._items[self._current_idx]
             mesh = self._get_bone(stem)
             if mesh is not None:
-                apply_curvature_heatmap(self._plotter, mesh)
+                if stem not in self._curv_cache:
+                    self._curv_cache[stem] = compute_curvature(mesh)
+                render_curvature(self._plotter, self._curv_cache[stem])
         else:
             self._plotter.clear()
             self._candidate_actor = None
