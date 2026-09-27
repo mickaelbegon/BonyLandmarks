@@ -62,6 +62,8 @@ Point d'entrée CLI : `bonylandmarks` (app étudiant) / `python -m bonylandmarks
 | `biomechanics.py` | Mesures biomécaniques calculables depuis positions landmarks 3D mm (ISB Wu 2002/2005) |
 | `face_blur.py` | Flou visage/tête sur vertex colors (matrice adjacence sparse pour perf) |
 | `sticker_removal.py` | Inpainting vertex-colour : suppression stickers photogrammétriques verts ~20mm par IDW |
+| `bone_quiz_exercise.py` | Quiz interactif Os/Squelette : placement et identification de repères sur meshes BodyParts3D, deux phases (os individuel → squelette), scoring mm |
+| `shared_scan_exercise.py` | Exercice scan partagé : placement libre sur scan commun sans vérité terrain, comparaison inter-étudiants par agrégation de positions (centroïde + écart-type) |
 
 ### `src/bonylandmarks/data/`
 
@@ -270,3 +272,16 @@ CI GitHub Actions : tests + build exécutables Windows/macOS à chaque push sur 
 4. **L'annotateur est indépendant du viewer étudiant** — ne pas importer `viewer.py` depuis `annotator.py` ni vice-versa.
 5. **`LANDMARKS` dans `landmarks_extended.py`** est la source de vérité des 182 repères — `landmarks.py` ne contient que les 24 de l'exercice 1 (app étudiant).
 6. **Picking VTK** dans l'annotateur : utiliser des observers VTK (`AddObserver`) et non des callbacks PyVista (`on_left_click`) pour éviter les conflits.
+
+---
+
+## 14. Exercices pédagogiques
+
+Progression des exercices disponibles dans l'app étudiant (sélection à l'écran d'accueil) :
+
+1. **Scan personnel** (`viewer.py`) — placement de 24 repères sur son propre scan BodyLoop ; score en mm vs. vérité terrain AutoMarkers ; notes A–D avec retry pour les D.
+2. **Tutoriel** (`tutorial.py`) — exploration guidée avant la session notée ; mode Reconnaissance (position visible) puis mode Quiz (caché) ; accessible depuis l'écran d'accueil en mode "Mon scan 3D".
+3. **ISB** (`isb_exercise.py`) — construction guidée des repères locaux ISB (Wu et al. 2002/2005) ; 7 segments ; wizard étape par étape avec feedback pédagogique.
+4. **Anthropo** (`anthro_measures_exercise.py`) — 20 mesures anthropométriques interactives (circumférences, diamètres, longueurs) ; chaque `AnthroMeasure` implémente `compute(ground_truth)`.
+5. **Quiz osseux** (`bone_quiz_exercise.py`) — quiz sur meshes BodyParts3D locaux, sans connexion ; deux phases (os individuel → squelette complet) ; scoring mm vs. positions de référence algorithmiques. ← *nouveau*
+6. **Scan partagé** (`shared_scan_exercise.py`) — exercice collaboratif sur GLB commun fourni par l'enseignant ; non-évaluatif ; agrégation des soumissions JSON du groupe (centroïde + écart-type par repère). ← *nouveau*

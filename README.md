@@ -1,6 +1,6 @@
-# BonyLandmarks — App Étudiant
+# BonyLandmarks — Plateforme d'apprentissage des repères anatomiques 3D
 
-Outil interactif 3D pour placer des repères anatomiques sur son propre scan corporel BodyLoop.
+Outil interactif 3D pour apprendre à identifier et placer des repères anatomiques osseux. Plusieurs exercices pédagogiques sont disponibles : palpation sur son propre scan BodyLoop, quiz sur os BodyParts3D, et exercice collaboratif sur scan partagé.
 
 [![CI](https://github.com/mickaelbegon/BonyLandmarks/actions/workflows/ci.yml/badge.svg)](https://github.com/mickaelbegon/BonyLandmarks/actions/workflows/ci.yml)
 
@@ -9,8 +9,11 @@ Outil interactif 3D pour placer des repères anatomiques sur son propre scan cor
 ## Table des matières
 
 1. [Téléchargement et installation (étudiants)](#1-téléchargement-et-installation-étudiants)
-2. [Utilisation pas à pas](#2-utilisation-pas-à-pas)
-3. [Repères anatomiques (24 total)](#3-repères-anatomiques-24-total)
+2. [Exercices disponibles](#2-exercices-disponibles)
+   - [Exercice 1 — Mon scan 3D](#exercice-1--mon-scan-3d)
+   - [Exercice 2 — Quiz osseux](#exercice-2--quiz-osseux)
+   - [Exercice 3 — Scan partagé](#exercice-3--scan-partagé)
+3. [Repères anatomiques](#3-repères-anatomiques)
 4. [Soumettre sur Moodle](#4-soumettre-sur-moodle)
 5. [Installation pour le développement](#5-installation-pour-le-développement)
 6. [Architecture technique](#6-architecture-technique)
@@ -47,33 +50,28 @@ bonylandmarks
 
 ---
 
-## 2. Utilisation pas à pas
+## 2. Exercices disponibles
 
-### Étape 1 — Connexion
+Au démarrage, l'écran d'accueil propose trois exercices. Cliquer sur la carte correspondante pour sélectionner l'exercice, puis cliquer **Commencer**.
 
-Au démarrage, une fenêtre de connexion s'affiche :
+### Exercice 1 — Mon scan 3D
+
+**Connexion requise.** L'application télécharge votre scan corporel 3D chiffré depuis le serveur de l'enseignant et le déchiffre localement. Vous placez 24 repères osseux sur votre propre corps numérique et recevez un score en millimètres comparé aux positions de référence BodyLoop.
+
+#### Connexion
+
+Au démarrage, saisir vos identifiants :
 
 | Champ | Valeur |
 |---|---|
-| **Matricule** | Votre matricule UdeM (ex. `20111111`) |
-| **Date de naissance** | Votre date de naissance |
-| **URL du serveur** | Fournie par l'enseignant (ex. `http://192.168.1.42:8765`) |
+| **Nom** | Sélectionner votre nom dans la liste déroulante |
+| **Date de naissance** | Votre date de naissance (utilisée comme clé de déchiffrement) |
 
-Cliquer **Se connecter** : l'app télécharge votre scan chiffré et le déchiffre localement. Aucune donnée personnelle ne transite en clair.
+Cliquer **Commencer** : l'app télécharge votre scan chiffré et le déchiffre localement. Aucune donnée personnelle ne transite en clair.
 
-### Étape 2 — Exploration du scan
+#### Exploration et placement
 
-Votre corps 3D s'affiche avec :
-
-- **Sphères vertes** : les 24 repères anatomiques que vous devez identifier (positions de référence BodyLoop)
-- **Interface de navigation** :
-  - Clic gauche + glisser → rotation
-  - Clic droit + glisser (ou molette) → zoom
-  - Clic molette + glisser → déplacement latéral
-
-### Étape 3 — Placement des repères
-
-Pour chaque repère (24 au total) :
+Votre corps 3D s'affiche. Pour chaque repère (24 au total) :
 
 1. Le panneau de droite affiche le **nom du repère** et un **indice de palpation**.
 2. Cliquer sur la surface du corps à l'endroit correspondant au repère.
@@ -83,12 +81,47 @@ Pour chaque repère (24 au total) :
    - La sphère devient **bleue** (repère confirmé).
 5. Cliquer **Recommencer** pour annuler et reprendre le placement si nécessaire.
 
+#### Notation
+
+| Note | Erreur moyenne |
+|---|---|
+| A | < 30 mm |
+| B | < 80 mm |
+| C | < 150 mm |
+| D | ≥ 150 mm |
+
+Les repères notés D sont remis en queue pour une deuxième tentative.
+
+#### Export
+
+Après les 24 repères, un récapitulatif s'affiche. Cliquer **Exporter JSON** pour sauvegarder vos résultats dans un fichier `.json` à déposer sur Moodle.
+
 > Le bouton de langue (FR / EN) dans le coin supérieur droit bascule l'interface en anglais.
 
-### Étape 4 — Fin de session
+---
 
-Après les 24 repères, un récapitulatif s'affiche.
-Cliquer **Exporter JSON** pour sauvegarder vos résultats dans un fichier `.json`.
+### Exercice 2 — Quiz osseux
+
+**Pas de connexion requise.** Cet exercice utilise les meshes osseux BodyParts3D disponibles localement. Il se déroule en deux phases :
+
+1. **Phase individuelle** : pour chaque os sélectionné, identifier et placer des repères anatomiques spécifiques sur le mesh 3D de l'os isolé. Un score en millimètres est calculé par rapport aux positions de référence algorithmeques.
+
+2. **Phase squelette complet** : replacer les mêmes repères sur une vue du squelette entier pour renforcer la contextualisation anatomique.
+
+Ce quiz est adapté à l'entraînement autonome, sans scan personnel, à partir des meshes BodyParts3D.
+
+---
+
+### Exercice 3 — Scan partagé
+
+**Scan commun, login optionnel.** L'enseignant distribue un fichier GLB commun à tous les étudiants. Chaque étudiant place librement des repères sur ce scan partagé, puis les résultats de l'ensemble du groupe sont agrégés :
+
+- La **position centroïde** de chaque repère (moyenne des placements) est calculée.
+- L'**écart-type** indique la dispersion des placements inter-étudiants.
+
+Cet exercice est non-évaluatif : il favorise la discussion collective sur la variabilité de palpation et la reproductibilité inter-observateurs.
+
+Au démarrage de cet exercice, une fenêtre de sélection de fichier s'ouvre pour choisir le fichier GLB partagé. Les fichiers JSON de soumissions des autres étudiants doivent se trouver dans le même dossier.
 
 ---
 
@@ -117,12 +150,12 @@ L'application utilise deux référentiels de repères distincts.
 
 ### 3b. Référentiel anatomique complet (`data/landmarks.json`)
 
-Le fichier [`src/bonylandmarks/data/landmarks.json`](src/bonylandmarks/data/landmarks.json) contient **182 repères osseux** bilingues (FR/EN) utilisés pour les exercices ISB et anthropométriques. Chaque repère inclut :
+Le fichier [`src/bonylandmarks/data/landmarks.json`](src/bonylandmarks/data/landmarks.json) contient **182 repères osseux** bilingues (FR/EN) utilisés pour les exercices ISB, anthropométriques et le quiz osseux. Chaque repère inclut :
 
 | Champ | Type | Description |
 |---|---|---|
 | `code` | `string` | Identifiant unique snake_case (ex. `ASIS_left`) |
-| `category` | `string` | Toujours `"BONE"` (réservé pour extension future) |
+| `category` | `string` | `"BONE"`, `"EMG"`, `"SKINFOLD"` ou `"ANTHRO"` |
 | `name_fr` / `name_en` | `string` | Nom anatomique bilingue |
 | `hint_fr` / `hint_en` | `string` | Description précise de palpation (2–5 phrases) |
 | `body_side` | `"left"` \| `"right"` \| `"midline"` | Latéralité du repère |
@@ -143,30 +176,13 @@ Le fichier [`src/bonylandmarks/data/landmarks.json`](src/bonylandmarks/data/land
 | `lower_limb` | 2 | Membre inférieur |
 | `cpr` | 1 | Réanimation cardio-pulmonaire |
 
-**Exemple d'entrée :**
-
-```json
-{
-  "code": "acromion_left",
-  "category": "BONE",
-  "name_fr": "Acromion gauche",
-  "name_en": "Left acromion",
-  "hint_fr": "Processus plat et large de la scapula formant le sommet de l'épaule gauche…",
-  "hint_en": "Flat, broad process of the left scapula forming the tip of the shoulder…",
-  "body_side": "left",
-  "theme": "anatomy",
-  "application_fr": "",
-  "application_en": ""
-}
-```
-
-Pour **ajouter ou modifier un repère**, éditer directement ce fichier JSON — aucun redémarrage Python n'est nécessaire, le fichier est chargé à l'exécution. Les repères sans entrée dans `data/landmarks.json` ne seront pas proposés dans les exercices ISB/anthropo.
+Pour **ajouter ou modifier un repère**, éditer directement ce fichier JSON — aucun redémarrage Python n'est nécessaire, le fichier est chargé à l'exécution.
 
 ---
 
 ## 4. Soumettre sur Moodle
 
-1. À la fin de la session, cliquer **Exporter JSON**.
+1. À la fin de la session (exercice 1), cliquer **Exporter JSON**.
 2. Choisir un dossier de sauvegarde. Le fichier s'appellera `{matricule}_{timestamp}.json`.
 3. Se connecter à Moodle, naviguer vers l'activité de remise, et déposer ce fichier JSON.
 
@@ -233,30 +249,38 @@ Les exécutables Windows et macOS sont produits automatiquement par GitHub Actio
 
 ```
 src/bonylandmarks/
-├── main.py               # Point d'entrée : fenêtre de login → viewer → export
-├── login_dialog.py       # Dialogue de connexion (matricule + DDN + URL serveur)
-├── mesh_loader.py        # Chargement GLB : corps 3D + AutoMarkers BodyLoop
-├── viewer.py             # Widget 3D PySide6/PyVista : picking, exercices ISB/anthropo
-├── landmarks.py          # 24 Landmark hardcodés (code, nom FR/EN, indice FR/EN)
-│                         #   → liés aux AutoMarkers BodyLoop (vérité terrain exercice 1)
-├── data/
-│   └── landmarks.json    # 182 repères osseux bilingues (9 thèmes, palpation + applications)
-│                         #   → référentiel des exercices ISB et anthropométriques
-├── isb_recipes.py        # Recettes déclaratives pour les repères ISB (7 segments)
-├── isb_step_engine.py    # Moteur guidé ISB : pick → vecteur → produit vectoriel → repère
-├── frame_template.py     # Templates déclaratifs FrameTemplate → steps (source de vérité)
-├── anthro_recipes.py     # 20 recettes de mesures anthropométriques
-├── anthro_step_engine.py # Moteur guidé anthropo (distances, angles, asymétries…)
-├── joint_centers/        # Centres articulaires non palpables (HJC Bell/Harrington, GHJC Meskers/Sobral)
-├── isb_exercise.py       # Définitions et métadonnées des exercices ISB
-├── scoring.py            # Calcul erreur euclidienne + feedback couleur
-├── export.py             # Export JSON (format Moodle)
-├── client.py             # Client HTTP : téléchargement + déchiffrement du scan
-├── crypto.py             # AES-256-GCM déchiffrement
-└── i18n.py               # Traductions FR/EN
+├── main.py                    # Point d'entrée : écran d'accueil → exercices → export
+├── splash.py                  # Écran d'accueil : sélection d'exercice + login
+├── viewer.py                  # Widget 3D (exercice 1) : picking, workflow repère
+├── session.py                 # Machine à états de session (sans Qt), scoring
+├── landmarks.py               # 24 repères BodyLoop (exercice 1)
+├── landmarks_extended.py      # 182 repères complets (tous exercices)
+├── bone_quiz_exercise.py      # Exercice 2 : quiz os BodyParts3D (deux phases)
+├── shared_scan_exercise.py    # Exercice 3 : scan partagé, agrégation inter-étudiants
+├── tutorial.py                # Mode tutoriel guidé (exercice 1)
+├── isb_exercise.py            # Exercice ISB (Wu et al. 2002/2005)
+├── isb_recipes.py             # Recettes déclaratives repères ISB
+├── isb_step_engine.py         # Moteur wizard ISB
+├── frame_template.py          # Templates FrameTemplate → steps (source de vérité)
+├── anthro_recipes.py          # 20 recettes anthropométriques
+├── anthro_step_engine.py      # Moteur guidé anthropo
+├── anthro_measures_exercise.py # 20 mesures anthropométriques structurées
+├── bone_map.py                # LANDMARK_BONE, BONE_JOINTS, BONE_LABEL_FR
+├── muscle_map.py              # BONE_MUSCLES (FMA IDs)
+├── mesh_loader.py             # Chargement GLB → meshes PyVista (mm)
+├── scoring.py                 # Calcul erreur euclidienne + feedback couleur
+├── export.py                  # Export JSON (format Moodle)
+├── client.py                  # Client HTTP : téléchargement + déchiffrement scan
+├── crypto.py                  # AES-256-GCM déchiffrement
+├── annotator.py               # Outil annotation expert (enseignant)
+├── i18n.py                    # Traductions FR/EN
+└── data/
+    ├── landmarks.json         # 182 repères osseux bilingues (9 thèmes)
+    └── bones/
+        └── landmark_positions.json  # code → [x, y, z] (mm, BodyParts3D)
 ```
 
-### Chiffrement
+### Chiffrement (exercice 1)
 
 La clé de déchiffrement est calculée localement à partir du matricule et de la date de naissance :
 

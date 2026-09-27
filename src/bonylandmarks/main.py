@@ -100,6 +100,14 @@ class MainWindow(QMainWindow):
                     self._open_annotator()
                     return
 
+                if result == SplashDialog.BONE_QUIZ_RESULT:
+                    self._open_bone_quiz()
+                    return
+
+                if result == SplashDialog.SHARED_SCAN_RESULT:
+                    self._open_shared_scan(splash)
+                    return
+
                 tutorial_mode = (result == SplashDialog.TUTORIAL_RESULT)
                 matricule = splash.matricule
 
@@ -204,6 +212,61 @@ class MainWindow(QMainWindow):
         self._annotator.show()
         self._annotator.raise_()
         self._annotator.activateWindow()
+
+    def _open_bone_quiz(self) -> None:
+        """Open the bone quiz exercise — no login required."""
+        from .bone_quiz_exercise import BoneQuizExercise
+
+        quiz = BoneQuizExercise(lang=self._lang)
+        quiz.exercise_complete.connect(self._on_bone_quiz_done)
+        self.setCentralWidget(quiz)
+        self.show()
+
+    def _on_bone_quiz_done(self) -> None:
+        QMessageBox.information(
+            self,
+            "Quiz terminé" if self._lang == "fr" else "Quiz complete",
+            "Exercice os terminé. Bonne pratique !"
+            if self._lang == "fr" else
+            "Bone exercise complete. Good practice!",
+        )
+        # Re-show splash to start again or quit
+        self.start()
+
+    def _open_shared_scan(self, splash) -> None:
+        """Open the shared scan exercise — student picks a GLB from disk."""
+        from pathlib import Path as _Path
+        from PySide6.QtWidgets import QFileDialog as _QFileDialog
+        from .shared_scan_exercise import SharedScanExercise
+
+        caption = (
+            "Ouvrir un scan partagé"
+            if self._lang == "fr" else
+            "Open a shared scan"
+        )
+        path, _ = _QFileDialog.getOpenFileName(
+            self, caption, "", "GLB (*.glb);;Tous (*)"
+        )
+        if not path:
+            self.start()
+            return
+
+        glb_bytes = _Path(path).read_bytes()
+        submissions_dir = _Path(path).parent  # peer JSONs in same folder
+        scan_name = _Path(path).stem
+
+        ex = SharedScanExercise(
+            glb_bytes=glb_bytes,
+            scan_name=scan_name,
+            lang=self._lang,
+            submissions_dir=submissions_dir,
+        )
+        ex.exercise_complete.connect(self._on_shared_scan_done)
+        self.setCentralWidget(ex)
+        self.show()
+
+    def _on_shared_scan_done(self) -> None:
+        self.start()
 
     def _launch_session(
         self,

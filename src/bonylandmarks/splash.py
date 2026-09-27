@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QVBoxLayout,
+    QWidget,
 )
 
 from .i18n import Language, tr
@@ -39,6 +40,9 @@ _GRADES = [
     ("D", "≥ 150 mm", "#c62828"),
 ]
 
+# Ordered list of exercise modes (used to index _ex_card_btns)
+_EX_MODES = ["personal", "bone_quiz", "shared_scan"]
+
 
 def _make_sep() -> QFrame:
     sep = QFrame()
@@ -56,11 +60,15 @@ class SplashDialog(QDialog):
                                local ``.glb`` file was chosen)
         2                    — tutorial mode
         3                    — teacher annotation tool (no login required)
+        4                    — bone quiz exercise (no login required)
+        5                    — shared scan exercise (file chooser)
         QDialog.Rejected (0) — user closed the window
     """
 
     TUTORIAL_RESULT: int = 2
     ANNOTATOR_RESULT: int = 3
+    BONE_QUIZ_RESULT: int = 4
+    SHARED_SCAN_RESULT: int = 5
 
     def __init__(
         self,
@@ -77,8 +85,9 @@ class SplashDialog(QDialog):
         self._birthdate: date | None = None
         self._local_glb_bytes: bytes | None = None
         self._selected_matricule: str | None = None  # set by combo box selection
+        self._exercise_mode: str = "personal"  # "personal", "bone_quiz", "shared_scan"
 
-        self.setFixedSize(700, 620)
+        self.setFixedSize(700, 720)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setStyleSheet(
             f"""
@@ -221,12 +230,40 @@ class SplashDialog(QDialog):
 
         root.addWidget(_make_sep())
 
-        # ── Login form ───────────────────────────────────────────────────────
+        # ── Exercise selection ────────────────────────────────────────────────
+        self._exercise_hdr = QLabel()
+        self._exercise_hdr.setStyleSheet(
+            "font-size: 14px; font-weight: bold; color: #7cb9ff;"
+        )
+        root.addWidget(self._exercise_hdr)
+
+        ex_row = QHBoxLayout()
+        ex_row.setSpacing(10)
+
+        self._ex_card_btns: list[QPushButton] = []
+        for mode in _EX_MODES:
+            btn = QPushButton()
+            btn.setAutoDefault(False)
+            self._apply_exercise_card_style(btn, selected=(mode == "personal"))
+            btn.clicked.connect(lambda checked, m=mode: self._on_exercise_selected(m))
+            ex_row.addWidget(btn, stretch=1)
+            self._ex_card_btns.append(btn)
+
+        root.addLayout(ex_row)
+
+        root.addWidget(_make_sep())
+
+        # ── Login form (wrapped in a QWidget so it can be shown/hidden) ──────
+        self._login_widget = QWidget()
+        login_layout = QVBoxLayout(self._login_widget)
+        login_layout.setContentsMargins(0, 0, 0, 0)
+        login_layout.setSpacing(6)
+
         self._login_hdr = QLabel()
         self._login_hdr.setStyleSheet(
             "font-size: 14px; font-weight: bold; color: #7cb9ff;"
         )
-        root.addWidget(self._login_hdr)
+        login_layout.addWidget(self._login_hdr)
 
         form_row = QHBoxLayout()
         form_row.setSpacing(16)
@@ -306,7 +343,7 @@ class SplashDialog(QDialog):
         dob_col.addWidget(self._dob_edit)
         form_row.addLayout(dob_col, stretch=1)
 
-        root.addLayout(form_row)
+        login_layout.addLayout(form_row)
 
         self._error_label = QLabel("")
         self._error_label.setStyleSheet(
@@ -314,14 +351,16 @@ class SplashDialog(QDialog):
         )
         self._error_label.setWordWrap(True)
         self._error_label.hide()
-        root.addWidget(self._error_label)
+        login_layout.addWidget(self._error_label)
 
         self._offline_label = QLabel()
         self._offline_label.setWordWrap(True)
         self._offline_label.setStyleSheet(f"font-size: 11px; color: #ffa726;")
         if self._server_url is not None:
             self._offline_label.hide()
-        root.addWidget(self._offline_label)
+        login_layout.addWidget(self._offline_label)
+
+        root.addWidget(self._login_widget)
 
         root.addStretch()
         root.addWidget(_make_sep())
@@ -381,6 +420,36 @@ class SplashDialog(QDialog):
         elif self._matricule_edit is not None:
             self._matricule_edit.setFocus()
 
+    # ── Exercise card helpers ─────────────────────────────────────────────────
+
+    @staticmethod
+    def _apply_exercise_card_style(btn: QPushButton, selected: bool) -> None:
+        border_color = _ACCENT_BLUE if selected else "#333366"
+        btn.setStyleSheet(
+            f"QPushButton {{ background-color: {_CARD_BG}; "
+            f"border: 2px solid {border_color}; border-radius: 8px; "
+            f"color: {_TEXT_MAIN}; font-size: 11px; padding: 10px 6px; "
+            f"text-align: center; }}"
+            f"QPushButton:hover {{ border-color: #2196F3; }}"
+        )
+
+    def _on_exercise_selected(self, mode: str) -> None:
+        """Handle exercise card click: update selection state and UI visibility."""
+        self._exercise_mode = mode
+        for i, m in enumerate(_EX_MODES):
+            self._apply_exercise_card_style(self._ex_card_btns[i], selected=(m == mode))
+
+        # Login form is only needed for personal scan mode
+        self._login_widget.setVisible(mode == "personal")
+        # Local file button only relevant for personal scan
+        self._local_btn.setVisible(mode == "personal")
+        # Tutorial button only applies to personal scan mode
+        self._tutorial_btn.setVisible(mode == "personal")
+        # Start button: always enabled for non-personal modes
+        self._start_btn.setEnabled(
+            mode != "personal" or self._server_url is not None
+        )
+
     # ── Localised text ────────────────────────────────────────────────────────
 
     def _refresh_labels(self) -> None:
@@ -426,6 +495,26 @@ class SplashDialog(QDialog):
             lbl.setText(desc)
 
         self._grade_hdr.setText("Notation :" if fr else "Grading:")
+
+        # Exercise selection header and card labels
+        self._exercise_hdr.setText(
+            "Choisir un exercice :" if fr else "Choose an exercise:"
+        )
+        if fr:
+            ex_labels = [
+                ("🧍 Mon scan 3D", "Connexion\nrequise"),
+                ("🦴 Quiz osseux", "Os BodyParts3D\npas de login"),
+                ("🤝 Scan partagé", "Scan commun\nlogin optionnel"),
+            ]
+        else:
+            ex_labels = [
+                ("🧍 My 3D scan", "Login\nrequired"),
+                ("🦴 Bone quiz", "BodyParts3D bones\nno login"),
+                ("🤝 Shared scan", "Common scan\noptional login"),
+            ]
+        for btn, (title, desc) in zip(self._ex_card_btns, ex_labels):
+            btn.setText(f"{title}\n{desc}")
+
         self._login_hdr.setText("🔑  Connexion" if fr else "🔑  Login")
         if self._name_combo is not None:
             self._matricule_label.setText(
@@ -537,8 +626,13 @@ class SplashDialog(QDialog):
     def _on_start(self) -> None:
         if not self._start_btn.isEnabled():
             return
-        if self._validate_login():
-            self.accept()
+        if self._exercise_mode == "bone_quiz":
+            self.done(SplashDialog.BONE_QUIZ_RESULT)
+        elif self._exercise_mode == "shared_scan":
+            self.done(SplashDialog.SHARED_SCAN_RESULT)
+        else:
+            if self._validate_login():
+                self.accept()
 
     def _on_tutorial(self) -> None:
         if self._validate_login():
