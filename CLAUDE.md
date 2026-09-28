@@ -65,6 +65,8 @@ Point d'entrée CLI : `bonylandmarks` (app étudiant) / `python -m bonylandmarks
 | `bone_quiz_exercise.py` | Quiz interactif Os/Squelette : placement et identification de repères sur meshes BodyParts3D, deux phases (os individuel → squelette), scoring mm |
 | `shared_scan_exercise.py` | Exercice scan partagé : placement libre sur scan commun sans vérité terrain, comparaison inter-étudiants par agrégation de positions (centroïde + écart-type) |
 | `scene3d.py` | Helpers PyVista partagés : `CameraAxes`, `fit_camera_to_mesh`, `set_view`, `view_top`, `reset_view`, `pan_camera`, `apply_curvature_heatmap` |
+| `bodyloop_client.py` | Client HTTP BodyLoop : auth OAuth2 password grant, listage viatars, téléchargement GLB en mm (`scale=1000`) |
+| `bodyloop_dialog.py` | Dialog de chargement scan : onglet fichier local (QFileDialog) + onglet BodyLoop (connexion, liste viatars, choix modèle) ; retourne `glb_bytes`, `scan_name`, `model_name` |
 
 ### `src/bonylandmarks/ui/`
 

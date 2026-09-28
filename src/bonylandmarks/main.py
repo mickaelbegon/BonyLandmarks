@@ -234,30 +234,25 @@ class MainWindow(QMainWindow):
         self.start()
 
     def _open_shared_scan(self, splash) -> None:
-        """Open the shared scan exercise — student picks a GLB from disk."""
+        """Open the shared scan exercise — local GLB file or BodyLoop server."""
         from pathlib import Path as _Path
-        from PySide6.QtWidgets import QFileDialog as _QFileDialog
+        from PySide6.QtWidgets import QDialog as _QDialog
+        from .bodyloop_dialog import ScanSourceDialog
         from .shared_scan_exercise import SharedScanExercise
 
-        caption = (
-            "Ouvrir un scan partagé"
-            if self._lang == "fr" else
-            "Open a shared scan"
-        )
-        path, _ = _QFileDialog.getOpenFileName(
-            self, caption, "", "GLB (*.glb);;Tous (*)"
-        )
-        if not path:
+        dlg = ScanSourceDialog(lang=self._lang, parent=self)
+        if dlg.exec() != _QDialog.Accepted or dlg.glb_bytes is None:
             self.start()
             return
 
-        glb_bytes = _Path(path).read_bytes()
-        submissions_dir = _Path(path).parent  # peer JSONs in same folder
-        scan_name = _Path(path).stem
+        # For local files the submissions folder lives beside the file;
+        # for BodyLoop downloads we use ~/.bonylandmarks/submissions/.
+        submissions_dir = _Path.home() / ".bonylandmarks" / "submissions"
+        submissions_dir.mkdir(parents=True, exist_ok=True)
 
         ex = SharedScanExercise(
-            glb_bytes=glb_bytes,
-            scan_name=scan_name,
+            glb_bytes=dlg.glb_bytes,
+            scan_name=dlg.scan_name,
             lang=self._lang,
             submissions_dir=submissions_dir,
         )
