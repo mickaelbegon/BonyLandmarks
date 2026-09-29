@@ -143,6 +143,20 @@ jobs:
           echo "----- stderr"; cat smoke-macos.stderr.log
           exit $code
 
+      - name: Smoke test (plugin Qt cocoa réel, session GUI du runner)
+        run: |
+          find dist/BonyLandmarks.app -name "libqcocoa*"
+          export QT_QPA_PLATFORM=cocoa
+          export BONY_SMOKE_LOG="$PWD/smoke-macos-cocoa.log"
+          : > "$BONY_SMOKE_LOG"
+          set +e
+          dist/BonyLandmarks.app/Contents/MacOS/BonyLandmarks --smoke-test > smoke-macos-cocoa.stdout.log 2> smoke-macos-cocoa.stderr.log
+          code=$?
+          set -e
+          echo "exit code: $code"
+          cat "$BONY_SMOKE_LOG"; echo "----- stderr"; cat smoke-macos-cocoa.stderr.log
+          exit $code
+
       - name: Upload smoke logs
         if: always()
         uses: actions/upload-artifact@v4
