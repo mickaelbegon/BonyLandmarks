@@ -41,7 +41,7 @@ _GRADES = [
 ]
 
 # Ordered list of exercise modes (used to index _ex_card_btns)
-_EX_MODES = ["personal", "bone_quiz", "shared_scan"]
+_EX_MODES = ["personal", "bone_quiz", "shared_scan", "anatomy_quiz"]
 
 
 def _make_sep() -> QFrame:
@@ -62,6 +62,7 @@ class SplashDialog(QDialog):
         3                    — teacher annotation tool (no login required)
         4                    — bone quiz exercise (no login required)
         5                    — shared scan exercise (file chooser)
+        6                    — 3D anatomy quiz (bones and muscles, no login)
         QDialog.Rejected (0) — user closed the window
     """
 
@@ -69,6 +70,7 @@ class SplashDialog(QDialog):
     ANNOTATOR_RESULT: int = 3
     BONE_QUIZ_RESULT: int = 4
     SHARED_SCAN_RESULT: int = 5
+    ANATOMY_QUIZ_RESULT: int = 6
 
     def __init__(
         self,
@@ -505,12 +507,14 @@ class SplashDialog(QDialog):
                 ("🧍 Mon scan 3D", "Connexion\nrequise"),
                 ("🦴 Quiz osseux", "Os BodyParts3D\npas de login"),
                 ("🤝 Scan partagé", "Scan commun\nlogin optionnel"),
+                ("🧠 Anatomie 3D", "Os et muscles\npas de login"),
             ]
         else:
             ex_labels = [
                 ("🧍 My 3D scan", "Login\nrequired"),
                 ("🦴 Bone quiz", "BodyParts3D bones\nno login"),
                 ("🤝 Shared scan", "Common scan\noptional login"),
+                ("🧠 3D anatomy", "Bones and muscles\nno login"),
             ]
         for btn, (title, desc) in zip(self._ex_card_btns, ex_labels):
             btn.setText(f"{title}\n{desc}")
@@ -630,6 +634,8 @@ class SplashDialog(QDialog):
             self.done(SplashDialog.BONE_QUIZ_RESULT)
         elif self._exercise_mode == "shared_scan":
             self.done(SplashDialog.SHARED_SCAN_RESULT)
+        elif self._exercise_mode == "anatomy_quiz":
+            self.done(SplashDialog.ANATOMY_QUIZ_RESULT)
         else:
             if self._validate_login():
                 self.accept()

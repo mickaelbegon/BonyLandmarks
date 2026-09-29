@@ -1,0 +1,3747 @@
+[
+ {
+  "id": "frontal",
+  "kind": "bone",
+  "fma_id": "FMA52734",
+  "name_fr": "Os frontal",
+  "name_en": "Frontal bone",
+  "side": "mid",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "frontal",
+   "os du front"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/frontal.obj"
+ },
+ {
+  "id": "occipital",
+  "kind": "bone",
+  "fma_id": "FMA52735",
+  "name_fr": "Os occipital",
+  "name_en": "Occipital bone",
+  "side": "mid",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "occipital"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/occipital.obj"
+ },
+ {
+  "id": "mandible",
+  "kind": "bone",
+  "fma_id": "FMA52748",
+  "name_fr": "Mandibule",
+  "name_en": "Mandible",
+  "side": "mid",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "maxillaire inférieur",
+   "os de la mâchoire",
+   "mâchoire inférieure"
+  ],
+  "synonyms_en": [
+   "jaw",
+   "jawbone",
+   "lower jaw"
+  ],
+  "mesh_file": "bones_full/mandible.obj"
+ },
+ {
+  "id": "sphenoid",
+  "kind": "bone",
+  "fma_id": "FMA52736",
+  "name_fr": "Os sphénoïde",
+  "name_en": "Sphenoid bone",
+  "side": "mid",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "sphénoïde"
+  ],
+  "synonyms_en": [
+   "sphenoid"
+  ],
+  "mesh_file": "bones_full/sphenoid.obj"
+ },
+ {
+  "id": "ethmoid",
+  "kind": "bone",
+  "fma_id": "FMA52740",
+  "name_fr": "Os ethmoïde",
+  "name_en": "Ethmoid bone",
+  "side": "mid",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "ethmoïde"
+  ],
+  "synonyms_en": [
+   "ethmoid"
+  ],
+  "mesh_file": "bones_full/ethmoid.obj"
+ },
+ {
+  "id": "vomer",
+  "kind": "bone",
+  "fma_id": "FMA9710",
+  "name_fr": "Vomer",
+  "name_en": "Vomer",
+  "side": "mid",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "os vomer"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/vomer.obj"
+ },
+ {
+  "id": "hyoid",
+  "kind": "bone",
+  "fma_id": "FMA52749",
+  "name_fr": "Os hyoïde",
+  "name_en": "Hyoid bone",
+  "side": "mid",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "hyoïde"
+  ],
+  "synonyms_en": [
+   "hyoid"
+  ],
+  "mesh_file": "bones_full/hyoid.obj"
+ },
+ {
+  "id": "parietal_left",
+  "kind": "bone",
+  "fma_id": "FMA52789",
+  "name_fr": "Os pariétal gauche",
+  "name_en": "Left parietal bone",
+  "side": "left",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "pariétal"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/parietal_left.obj"
+ },
+ {
+  "id": "temporal_left",
+  "kind": "bone",
+  "fma_id": "FMA52739",
+  "name_fr": "Os temporal gauche",
+  "name_en": "Left temporal bone",
+  "side": "left",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "temporal"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/temporal_left.obj"
+ },
+ {
+  "id": "maxilla_left",
+  "kind": "bone",
+  "fma_id": "FMA53650",
+  "name_fr": "Maxillaire gauche",
+  "name_en": "Left maxilla",
+  "side": "left",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "os maxillaire",
+   "maxillaire supérieur",
+   "mâchoire supérieure"
+  ],
+  "synonyms_en": [
+   "upper jaw",
+   "maxillary bone"
+  ],
+  "mesh_file": "bones_full/maxilla_left.obj"
+ },
+ {
+  "id": "zygomatic_left",
+  "kind": "bone",
+  "fma_id": "FMA52893",
+  "name_fr": "Os zygomatique gauche",
+  "name_en": "Left zygomatic bone",
+  "side": "left",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "zygomatique",
+   "malaire",
+   "os malaire",
+   "os jugal",
+   "pommette"
+  ],
+  "synonyms_en": [
+   "cheekbone",
+   "malar bone"
+  ],
+  "mesh_file": "bones_full/zygomatic_left.obj"
+ },
+ {
+  "id": "nasal_left",
+  "kind": "bone",
+  "fma_id": "FMA53648",
+  "name_fr": "Os nasal gauche",
+  "name_en": "Left nasal bone",
+  "side": "left",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "os propre du nez",
+   "nasal"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/nasal_left.obj"
+ },
+ {
+  "id": "lacrimal_left",
+  "kind": "bone",
+  "fma_id": "FMA53646",
+  "name_fr": "Os lacrimal gauche",
+  "name_en": "Left lacrimal bone",
+  "side": "left",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "lacrimal",
+   "os lacrymal",
+   "unguis"
+  ],
+  "synonyms_en": [
+   "unguis"
+  ],
+  "mesh_file": "bones_full/lacrimal_left.obj"
+ },
+ {
+  "id": "palatine_left",
+  "kind": "bone",
+  "fma_id": "FMA53656",
+  "name_fr": "Os palatin gauche",
+  "name_en": "Left palatine bone",
+  "side": "left",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "palatin"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/palatine_left.obj"
+ },
+ {
+  "id": "inferior_nasal_concha_left",
+  "kind": "bone",
+  "fma_id": "FMA54738",
+  "name_fr": "Cornet nasal inférieur gauche",
+  "name_en": "Left inferior nasal concha",
+  "side": "left",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "cornet inférieur",
+   "cornet nasal inférieur"
+  ],
+  "synonyms_en": [
+   "inferior turbinate"
+  ],
+  "mesh_file": "bones_full/inferior_nasal_concha_left.obj"
+ },
+ {
+  "id": "parietal_right",
+  "kind": "bone",
+  "fma_id": "FMA52788",
+  "name_fr": "Os pariétal droite",
+  "name_en": "Right parietal bone",
+  "side": "right",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "pariétal"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/parietal_right.obj"
+ },
+ {
+  "id": "temporal_right",
+  "kind": "bone",
+  "fma_id": "FMA52738",
+  "name_fr": "Os temporal droite",
+  "name_en": "Right temporal bone",
+  "side": "right",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "temporal"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/temporal_right.obj"
+ },
+ {
+  "id": "maxilla_right",
+  "kind": "bone",
+  "fma_id": "FMA53649",
+  "name_fr": "Maxillaire droite",
+  "name_en": "Right maxilla",
+  "side": "right",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "os maxillaire",
+   "maxillaire supérieur",
+   "mâchoire supérieure"
+  ],
+  "synonyms_en": [
+   "upper jaw",
+   "maxillary bone"
+  ],
+  "mesh_file": "bones_full/maxilla_right.obj"
+ },
+ {
+  "id": "zygomatic_right",
+  "kind": "bone",
+  "fma_id": "FMA52892",
+  "name_fr": "Os zygomatique droite",
+  "name_en": "Right zygomatic bone",
+  "side": "right",
+  "region": "skull",
+  "tier": 1,
+  "synonyms_fr": [
+   "zygomatique",
+   "malaire",
+   "os malaire",
+   "os jugal",
+   "pommette"
+  ],
+  "synonyms_en": [
+   "cheekbone",
+   "malar bone"
+  ],
+  "mesh_file": "bones_full/zygomatic_right.obj"
+ },
+ {
+  "id": "nasal_right",
+  "kind": "bone",
+  "fma_id": "FMA53647",
+  "name_fr": "Os nasal droite",
+  "name_en": "Right nasal bone",
+  "side": "right",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "os propre du nez",
+   "nasal"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/nasal_right.obj"
+ },
+ {
+  "id": "lacrimal_right",
+  "kind": "bone",
+  "fma_id": "FMA53645",
+  "name_fr": "Os lacrimal droite",
+  "name_en": "Right lacrimal bone",
+  "side": "right",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "lacrimal",
+   "os lacrymal",
+   "unguis"
+  ],
+  "synonyms_en": [
+   "unguis"
+  ],
+  "mesh_file": "bones_full/lacrimal_right.obj"
+ },
+ {
+  "id": "palatine_right",
+  "kind": "bone",
+  "fma_id": "FMA53655",
+  "name_fr": "Os palatin droite",
+  "name_en": "Right palatine bone",
+  "side": "right",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "palatin"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/palatine_right.obj"
+ },
+ {
+  "id": "inferior_nasal_concha_right",
+  "kind": "bone",
+  "fma_id": "FMA54737",
+  "name_fr": "Cornet nasal inférieur droite",
+  "name_en": "Right inferior nasal concha",
+  "side": "right",
+  "region": "skull",
+  "tier": 2,
+  "synonyms_fr": [
+   "cornet inférieur",
+   "cornet nasal inférieur"
+  ],
+  "synonyms_en": [
+   "inferior turbinate"
+  ],
+  "mesh_file": "bones_full/inferior_nasal_concha_right.obj"
+ },
+ {
+  "id": "atlas",
+  "kind": "bone",
+  "fma_id": "FMA12519",
+  "name_fr": "Atlas (C1)",
+  "name_en": "Atlas (C1)",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "C1",
+   "1re vertèbre cervicale",
+   "première vertèbre cervicale"
+  ],
+  "synonyms_en": [
+   "C1",
+   "first cervical vertebra"
+  ],
+  "mesh_file": "bones_full/atlas.obj"
+ },
+ {
+  "id": "axis",
+  "kind": "bone",
+  "fma_id": "FMA12520",
+  "name_fr": "Axis (C2)",
+  "name_en": "Axis (C2)",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "C2",
+   "2e vertèbre cervicale",
+   "deuxième vertèbre cervicale"
+  ],
+  "synonyms_en": [
+   "C2",
+   "second cervical vertebra"
+  ],
+  "mesh_file": "bones_full/axis.obj"
+ },
+ {
+  "id": "vertebra_c3",
+  "kind": "bone",
+  "fma_id": "FMA12521",
+  "name_fr": "Vertèbre cervicale C3",
+  "name_en": "Cervical vertebra C3",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "C3",
+   "3e vertèbre cervicale"
+  ],
+  "synonyms_en": [
+   "C3",
+   "third cervical vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_c3.obj"
+ },
+ {
+  "id": "vertebra_c4",
+  "kind": "bone",
+  "fma_id": "FMA12522",
+  "name_fr": "Vertèbre cervicale C4",
+  "name_en": "Cervical vertebra C4",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "C4",
+   "4e vertèbre cervicale"
+  ],
+  "synonyms_en": [
+   "C4",
+   "fourth cervical vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_c4.obj"
+ },
+ {
+  "id": "vertebra_c5",
+  "kind": "bone",
+  "fma_id": "FMA12523",
+  "name_fr": "Vertèbre cervicale C5",
+  "name_en": "Cervical vertebra C5",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "C5",
+   "5e vertèbre cervicale"
+  ],
+  "synonyms_en": [
+   "C5",
+   "fifth cervical vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_c5.obj"
+ },
+ {
+  "id": "vertebra_c6",
+  "kind": "bone",
+  "fma_id": "FMA12524",
+  "name_fr": "Vertèbre cervicale C6",
+  "name_en": "Cervical vertebra C6",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "C6",
+   "6e vertèbre cervicale"
+  ],
+  "synonyms_en": [
+   "C6",
+   "sixth cervical vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_c6.obj"
+ },
+ {
+  "id": "vertebra_c7",
+  "kind": "bone",
+  "fma_id": "FMA12525",
+  "name_fr": "Vertèbre cervicale C7",
+  "name_en": "Cervical vertebra C7",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "C7",
+   "7e vertèbre cervicale"
+  ],
+  "synonyms_en": [
+   "C7",
+   "seventh cervical vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_c7.obj"
+ },
+ {
+  "id": "vertebra_t1",
+  "kind": "bone",
+  "fma_id": "FMA9165",
+  "name_fr": "Vertèbre thoracique T1",
+  "name_en": "Thoracic vertebra T1",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T1",
+   "D1",
+   "1re vertèbre thoracique",
+   "vertèbre dorsale D1"
+  ],
+  "synonyms_en": [
+   "T1",
+   "first thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t1.obj"
+ },
+ {
+  "id": "vertebra_t2",
+  "kind": "bone",
+  "fma_id": "FMA9187",
+  "name_fr": "Vertèbre thoracique T2",
+  "name_en": "Thoracic vertebra T2",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T2",
+   "D2",
+   "2e vertèbre thoracique",
+   "vertèbre dorsale D2"
+  ],
+  "synonyms_en": [
+   "T2",
+   "second thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t2.obj"
+ },
+ {
+  "id": "vertebra_t3",
+  "kind": "bone",
+  "fma_id": "FMA9209",
+  "name_fr": "Vertèbre thoracique T3",
+  "name_en": "Thoracic vertebra T3",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T3",
+   "D3",
+   "3e vertèbre thoracique",
+   "vertèbre dorsale D3"
+  ],
+  "synonyms_en": [
+   "T3",
+   "third thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t3.obj"
+ },
+ {
+  "id": "vertebra_t4",
+  "kind": "bone",
+  "fma_id": "FMA9248",
+  "name_fr": "Vertèbre thoracique T4",
+  "name_en": "Thoracic vertebra T4",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T4",
+   "D4",
+   "4e vertèbre thoracique",
+   "vertèbre dorsale D4"
+  ],
+  "synonyms_en": [
+   "T4",
+   "fourth thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t4.obj"
+ },
+ {
+  "id": "vertebra_t5",
+  "kind": "bone",
+  "fma_id": "FMA9922",
+  "name_fr": "Vertèbre thoracique T5",
+  "name_en": "Thoracic vertebra T5",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T5",
+   "D5",
+   "5e vertèbre thoracique",
+   "vertèbre dorsale D5"
+  ],
+  "synonyms_en": [
+   "T5",
+   "fifth thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t5.obj"
+ },
+ {
+  "id": "vertebra_t6",
+  "kind": "bone",
+  "fma_id": "FMA9945",
+  "name_fr": "Vertèbre thoracique T6",
+  "name_en": "Thoracic vertebra T6",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T6",
+   "D6",
+   "6e vertèbre thoracique",
+   "vertèbre dorsale D6"
+  ],
+  "synonyms_en": [
+   "T6",
+   "sixth thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t6.obj"
+ },
+ {
+  "id": "vertebra_t7",
+  "kind": "bone",
+  "fma_id": "FMA9968",
+  "name_fr": "Vertèbre thoracique T7",
+  "name_en": "Thoracic vertebra T7",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T7",
+   "D7",
+   "7e vertèbre thoracique",
+   "vertèbre dorsale D7"
+  ],
+  "synonyms_en": [
+   "T7",
+   "seventh thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t7.obj"
+ },
+ {
+  "id": "vertebra_t8",
+  "kind": "bone",
+  "fma_id": "FMA9991",
+  "name_fr": "Vertèbre thoracique T8",
+  "name_en": "Thoracic vertebra T8",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T8",
+   "D8",
+   "8e vertèbre thoracique",
+   "vertèbre dorsale D8"
+  ],
+  "synonyms_en": [
+   "T8",
+   "eighth thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t8.obj"
+ },
+ {
+  "id": "vertebra_t9",
+  "kind": "bone",
+  "fma_id": "FMA10014",
+  "name_fr": "Vertèbre thoracique T9",
+  "name_en": "Thoracic vertebra T9",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T9",
+   "D9",
+   "9e vertèbre thoracique",
+   "vertèbre dorsale D9"
+  ],
+  "synonyms_en": [
+   "T9",
+   "ninth thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t9.obj"
+ },
+ {
+  "id": "vertebra_t10",
+  "kind": "bone",
+  "fma_id": "FMA10037",
+  "name_fr": "Vertèbre thoracique T10",
+  "name_en": "Thoracic vertebra T10",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T10",
+   "D10",
+   "10e vertèbre thoracique",
+   "vertèbre dorsale D10"
+  ],
+  "synonyms_en": [
+   "T10",
+   "tenth thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t10.obj"
+ },
+ {
+  "id": "vertebra_t11",
+  "kind": "bone",
+  "fma_id": "FMA10059",
+  "name_fr": "Vertèbre thoracique T11",
+  "name_en": "Thoracic vertebra T11",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T11",
+   "D11",
+   "11e vertèbre thoracique",
+   "vertèbre dorsale D11"
+  ],
+  "synonyms_en": [
+   "T11",
+   "eleventh thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t11.obj"
+ },
+ {
+  "id": "vertebra_t12",
+  "kind": "bone",
+  "fma_id": "FMA10081",
+  "name_fr": "Vertèbre thoracique T12",
+  "name_en": "Thoracic vertebra T12",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "T12",
+   "D12",
+   "12e vertèbre thoracique",
+   "vertèbre dorsale D12"
+  ],
+  "synonyms_en": [
+   "T12",
+   "twelfth thoracic vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_t12.obj"
+ },
+ {
+  "id": "vertebra_l1",
+  "kind": "bone",
+  "fma_id": "FMA13072",
+  "name_fr": "Vertèbre lombaire L1",
+  "name_en": "Lumbar vertebra L1",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "L1",
+   "1re vertèbre lombaire"
+  ],
+  "synonyms_en": [
+   "L1",
+   "first lumbar vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_l1.obj"
+ },
+ {
+  "id": "vertebra_l2",
+  "kind": "bone",
+  "fma_id": "FMA13073",
+  "name_fr": "Vertèbre lombaire L2",
+  "name_en": "Lumbar vertebra L2",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "L2",
+   "2e vertèbre lombaire"
+  ],
+  "synonyms_en": [
+   "L2",
+   "second lumbar vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_l2.obj"
+ },
+ {
+  "id": "vertebra_l3",
+  "kind": "bone",
+  "fma_id": "FMA13074",
+  "name_fr": "Vertèbre lombaire L3",
+  "name_en": "Lumbar vertebra L3",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "L3",
+   "3e vertèbre lombaire"
+  ],
+  "synonyms_en": [
+   "L3",
+   "third lumbar vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_l3.obj"
+ },
+ {
+  "id": "vertebra_l4",
+  "kind": "bone",
+  "fma_id": "FMA13075",
+  "name_fr": "Vertèbre lombaire L4",
+  "name_en": "Lumbar vertebra L4",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "L4",
+   "4e vertèbre lombaire"
+  ],
+  "synonyms_en": [
+   "L4",
+   "fourth lumbar vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_l4.obj"
+ },
+ {
+  "id": "vertebra_l5",
+  "kind": "bone",
+  "fma_id": "FMA13076",
+  "name_fr": "Vertèbre lombaire L5",
+  "name_en": "Lumbar vertebra L5",
+  "side": "mid",
+  "region": "spine",
+  "tier": 1,
+  "synonyms_fr": [
+   "L5",
+   "5e vertèbre lombaire"
+  ],
+  "synonyms_en": [
+   "L5",
+   "fifth lumbar vertebra"
+  ],
+  "mesh_file": "bones_full/vertebra_l5.obj"
+ },
+ {
+  "id": "sacrum",
+  "kind": "bone",
+  "fma_id": "FMA16202",
+  "name_fr": "Sacrum",
+  "name_en": "Sacrum",
+  "side": "mid",
+  "region": "pelvis",
+  "tier": 1,
+  "synonyms_fr": [
+   "os sacrum"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/sacrum.obj"
+ },
+ {
+  "id": "hip_bone_left",
+  "kind": "bone",
+  "fma_id": "FMA16587",
+  "name_fr": "Os coxal gauche",
+  "name_en": "Left hip bone",
+  "side": "left",
+  "region": "pelvis",
+  "tier": 1,
+  "synonyms_fr": [
+   "os iliaque",
+   "os de la hanche",
+   "coxal",
+   "os innominé"
+  ],
+  "synonyms_en": [
+   "pelvic bone",
+   "innominate bone",
+   "os coxae",
+   "coxal bone"
+  ],
+  "mesh_file": "bones_full/hip_bone_left.obj"
+ },
+ {
+  "id": "hip_bone_right",
+  "kind": "bone",
+  "fma_id": "FMA16586",
+  "name_fr": "Os coxal droite",
+  "name_en": "Right hip bone",
+  "side": "right",
+  "region": "pelvis",
+  "tier": 1,
+  "synonyms_fr": [
+   "os iliaque",
+   "os de la hanche",
+   "coxal",
+   "os innominé"
+  ],
+  "synonyms_en": [
+   "pelvic bone",
+   "innominate bone",
+   "os coxae",
+   "coxal bone"
+  ],
+  "mesh_file": "bones_full/hip_bone_right.obj"
+ },
+ {
+  "id": "manubrium",
+  "kind": "bone",
+  "fma_id": "FMA7486",
+  "name_fr": "Manubrium du sternum",
+  "name_en": "Manubrium of sternum",
+  "side": "mid",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "manubrium",
+   "manubrium sternal",
+   "poignée du sternum"
+  ],
+  "synonyms_en": [
+   "manubrium sterni"
+  ],
+  "mesh_file": "bones_full/manubrium.obj"
+ },
+ {
+  "id": "sternum_body",
+  "kind": "bone",
+  "fma_id": "FMA7487",
+  "name_fr": "Corps du sternum",
+  "name_en": "Body of sternum",
+  "side": "mid",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "sternum",
+   "corps sternal"
+  ],
+  "synonyms_en": [
+   "sternum",
+   "breastbone",
+   "sternal body",
+   "gladiolus"
+  ],
+  "mesh_file": "bones_full/sternum_body.obj"
+ },
+ {
+  "id": "xiphoid_process",
+  "kind": "bone",
+  "fma_id": "FMA7488",
+  "name_fr": "Processus xiphoïde",
+  "name_en": "Xiphoid process",
+  "side": "mid",
+  "region": "thorax",
+  "tier": 2,
+  "synonyms_fr": [
+   "appendice xiphoïde",
+   "xiphoïde",
+   "xiphoïde du sternum"
+  ],
+  "synonyms_en": [
+   "xiphoid",
+   "xiphisternum"
+  ],
+  "mesh_file": "bones_full/xiphoid_process.obj"
+ },
+ {
+  "id": "rib_1_left",
+  "kind": "bone",
+  "fma_id": "FMA7987",
+  "name_fr": "1re côte gauche",
+  "name_en": "Left rib 1",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 1 gauche",
+   "côte 1"
+  ],
+  "synonyms_en": [
+   "rib 1",
+   "first rib"
+  ],
+  "mesh_file": "bones_full/rib_1_left.obj"
+ },
+ {
+  "id": "rib_2_left",
+  "kind": "bone",
+  "fma_id": "FMA8012",
+  "name_fr": "2e côte gauche",
+  "name_en": "Left rib 2",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 2 gauche",
+   "côte 2"
+  ],
+  "synonyms_en": [
+   "rib 2",
+   "second rib"
+  ],
+  "mesh_file": "bones_full/rib_2_left.obj"
+ },
+ {
+  "id": "rib_3_left",
+  "kind": "bone",
+  "fma_id": "FMA8039",
+  "name_fr": "3e côte gauche",
+  "name_en": "Left rib 3",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 3 gauche",
+   "côte 3"
+  ],
+  "synonyms_en": [
+   "rib 3",
+   "third rib"
+  ],
+  "mesh_file": "bones_full/rib_3_left.obj"
+ },
+ {
+  "id": "rib_4_left",
+  "kind": "bone",
+  "fma_id": "FMA8148",
+  "name_fr": "4e côte gauche",
+  "name_en": "Left rib 4",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 4 gauche",
+   "côte 4"
+  ],
+  "synonyms_en": [
+   "rib 4",
+   "fourth rib"
+  ],
+  "mesh_file": "bones_full/rib_4_left.obj"
+ },
+ {
+  "id": "rib_5_left",
+  "kind": "bone",
+  "fma_id": "FMA8093",
+  "name_fr": "5e côte gauche",
+  "name_en": "Left rib 5",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 5 gauche",
+   "côte 5"
+  ],
+  "synonyms_en": [
+   "rib 5",
+   "fifth rib"
+  ],
+  "mesh_file": "bones_full/rib_5_left.obj"
+ },
+ {
+  "id": "rib_6_left",
+  "kind": "bone",
+  "fma_id": "FMA8202",
+  "name_fr": "6e côte gauche",
+  "name_en": "Left rib 6",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 6 gauche",
+   "côte 6"
+  ],
+  "synonyms_en": [
+   "rib 6",
+   "sixth rib"
+  ],
+  "mesh_file": "bones_full/rib_6_left.obj"
+ },
+ {
+  "id": "rib_7_left",
+  "kind": "bone",
+  "fma_id": "FMA8256",
+  "name_fr": "7e côte gauche",
+  "name_en": "Left rib 7",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 7 gauche",
+   "côte 7"
+  ],
+  "synonyms_en": [
+   "rib 7",
+   "seventh rib"
+  ],
+  "mesh_file": "bones_full/rib_7_left.obj"
+ },
+ {
+  "id": "rib_8_left",
+  "kind": "bone",
+  "fma_id": "FMA8310",
+  "name_fr": "8e côte gauche",
+  "name_en": "Left rib 8",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 8 gauche",
+   "côte 8"
+  ],
+  "synonyms_en": [
+   "rib 8",
+   "eighth rib"
+  ],
+  "mesh_file": "bones_full/rib_8_left.obj"
+ },
+ {
+  "id": "rib_9_left",
+  "kind": "bone",
+  "fma_id": "FMA8391",
+  "name_fr": "9e côte gauche",
+  "name_en": "Left rib 9",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 9 gauche",
+   "côte 9"
+  ],
+  "synonyms_en": [
+   "rib 9",
+   "ninth rib"
+  ],
+  "mesh_file": "bones_full/rib_9_left.obj"
+ },
+ {
+  "id": "rib_10_left",
+  "kind": "bone",
+  "fma_id": "FMA8472",
+  "name_fr": "10e côte gauche",
+  "name_en": "Left rib 10",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 10 gauche",
+   "côte 10"
+  ],
+  "synonyms_en": [
+   "rib 10",
+   "tenth rib"
+  ],
+  "mesh_file": "bones_full/rib_10_left.obj"
+ },
+ {
+  "id": "rib_11_left",
+  "kind": "bone",
+  "fma_id": "FMA8532",
+  "name_fr": "11e côte gauche",
+  "name_en": "Left rib 11",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 11 gauche",
+   "côte 11"
+  ],
+  "synonyms_en": [
+   "rib 11",
+   "eleventh rib"
+  ],
+  "mesh_file": "bones_full/rib_11_left.obj"
+ },
+ {
+  "id": "rib_12_left",
+  "kind": "bone",
+  "fma_id": "FMA8534",
+  "name_fr": "12e côte gauche",
+  "name_en": "Left rib 12",
+  "side": "left",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 12 gauche",
+   "côte 12"
+  ],
+  "synonyms_en": [
+   "rib 12",
+   "twelfth rib"
+  ],
+  "mesh_file": "bones_full/rib_12_left.obj"
+ },
+ {
+  "id": "rib_1_right",
+  "kind": "bone",
+  "fma_id": "FMA7857",
+  "name_fr": "1re côte droite",
+  "name_en": "Right rib 1",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 1 droite",
+   "côte 1"
+  ],
+  "synonyms_en": [
+   "rib 1",
+   "first rib"
+  ],
+  "mesh_file": "bones_full/rib_1_right.obj"
+ },
+ {
+  "id": "rib_2_right",
+  "kind": "bone",
+  "fma_id": "FMA7882",
+  "name_fr": "2e côte droite",
+  "name_en": "Right rib 2",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 2 droite",
+   "côte 2"
+  ],
+  "synonyms_en": [
+   "rib 2",
+   "second rib"
+  ],
+  "mesh_file": "bones_full/rib_2_right.obj"
+ },
+ {
+  "id": "rib_3_right",
+  "kind": "bone",
+  "fma_id": "FMA7909",
+  "name_fr": "3e côte droite",
+  "name_en": "Right rib 3",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 3 droite",
+   "côte 3"
+  ],
+  "synonyms_en": [
+   "rib 3",
+   "third rib"
+  ],
+  "mesh_file": "bones_full/rib_3_right.obj"
+ },
+ {
+  "id": "rib_4_right",
+  "kind": "bone",
+  "fma_id": "FMA7957",
+  "name_fr": "4e côte droite",
+  "name_en": "Right rib 4",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 4 droite",
+   "côte 4"
+  ],
+  "synonyms_en": [
+   "rib 4",
+   "fourth rib"
+  ],
+  "mesh_file": "bones_full/rib_4_right.obj"
+ },
+ {
+  "id": "rib_5_right",
+  "kind": "bone",
+  "fma_id": "FMA8066",
+  "name_fr": "5e côte droite",
+  "name_en": "Right rib 5",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 5 droite",
+   "côte 5"
+  ],
+  "synonyms_en": [
+   "rib 5",
+   "fifth rib"
+  ],
+  "mesh_file": "bones_full/rib_5_right.obj"
+ },
+ {
+  "id": "rib_6_right",
+  "kind": "bone",
+  "fma_id": "FMA8175",
+  "name_fr": "6e côte droite",
+  "name_en": "Right rib 6",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 6 droite",
+   "côte 6"
+  ],
+  "synonyms_en": [
+   "rib 6",
+   "sixth rib"
+  ],
+  "mesh_file": "bones_full/rib_6_right.obj"
+ },
+ {
+  "id": "rib_7_right",
+  "kind": "bone",
+  "fma_id": "FMA8229",
+  "name_fr": "7e côte droite",
+  "name_en": "Right rib 7",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 7 droite",
+   "côte 7"
+  ],
+  "synonyms_en": [
+   "rib 7",
+   "seventh rib"
+  ],
+  "mesh_file": "bones_full/rib_7_right.obj"
+ },
+ {
+  "id": "rib_8_right",
+  "kind": "bone",
+  "fma_id": "FMA8283",
+  "name_fr": "8e côte droite",
+  "name_en": "Right rib 8",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 8 droite",
+   "côte 8"
+  ],
+  "synonyms_en": [
+   "rib 8",
+   "eighth rib"
+  ],
+  "mesh_file": "bones_full/rib_8_right.obj"
+ },
+ {
+  "id": "rib_9_right",
+  "kind": "bone",
+  "fma_id": "FMA8364",
+  "name_fr": "9e côte droite",
+  "name_en": "Right rib 9",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 9 droite",
+   "côte 9"
+  ],
+  "synonyms_en": [
+   "rib 9",
+   "ninth rib"
+  ],
+  "mesh_file": "bones_full/rib_9_right.obj"
+ },
+ {
+  "id": "rib_10_right",
+  "kind": "bone",
+  "fma_id": "FMA8445",
+  "name_fr": "10e côte droite",
+  "name_en": "Right rib 10",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 10 droite",
+   "côte 10"
+  ],
+  "synonyms_en": [
+   "rib 10",
+   "tenth rib"
+  ],
+  "mesh_file": "bones_full/rib_10_right.obj"
+ },
+ {
+  "id": "rib_11_right",
+  "kind": "bone",
+  "fma_id": "FMA8531",
+  "name_fr": "11e côte droite",
+  "name_en": "Right rib 11",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 11 droite",
+   "côte 11"
+  ],
+  "synonyms_en": [
+   "rib 11",
+   "eleventh rib"
+  ],
+  "mesh_file": "bones_full/rib_11_right.obj"
+ },
+ {
+  "id": "rib_12_right",
+  "kind": "bone",
+  "fma_id": "FMA8533",
+  "name_fr": "12e côte droite",
+  "name_en": "Right rib 12",
+  "side": "right",
+  "region": "thorax",
+  "tier": 1,
+  "synonyms_fr": [
+   "côte 12 droite",
+   "côte 12"
+  ],
+  "synonyms_en": [
+   "rib 12",
+   "twelfth rib"
+  ],
+  "mesh_file": "bones_full/rib_12_right.obj"
+ },
+ {
+  "id": "clavicle_left",
+  "kind": "bone",
+  "fma_id": "FMA13323",
+  "name_fr": "Clavicule gauche",
+  "name_en": "Left clavicle",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "collarbone"
+  ],
+  "mesh_file": "bones_full/clavicle_left.obj"
+ },
+ {
+  "id": "clavicle_right",
+  "kind": "bone",
+  "fma_id": "FMA13322",
+  "name_fr": "Clavicule droite",
+  "name_en": "Right clavicle",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "collarbone"
+  ],
+  "mesh_file": "bones_full/clavicle_right.obj"
+ },
+ {
+  "id": "scapula_left",
+  "kind": "bone",
+  "fma_id": "FMA13396",
+  "name_fr": "Scapula gauche",
+  "name_en": "Left scapula",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "omoplate"
+  ],
+  "synonyms_en": [
+   "shoulder blade"
+  ],
+  "mesh_file": "bones_full/scapula_left.obj"
+ },
+ {
+  "id": "scapula_right",
+  "kind": "bone",
+  "fma_id": "FMA13395",
+  "name_fr": "Scapula droite",
+  "name_en": "Right scapula",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "omoplate"
+  ],
+  "synonyms_en": [
+   "shoulder blade"
+  ],
+  "mesh_file": "bones_full/scapula_right.obj"
+ },
+ {
+  "id": "humerus_left",
+  "kind": "bone",
+  "fma_id": "FMA23131",
+  "name_fr": "Humérus gauche",
+  "name_en": "Left humerus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "os du bras"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/humerus_left.obj"
+ },
+ {
+  "id": "humerus_right",
+  "kind": "bone",
+  "fma_id": "FMA23130",
+  "name_fr": "Humérus droite",
+  "name_en": "Right humerus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "os du bras"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/humerus_right.obj"
+ },
+ {
+  "id": "radius_left",
+  "kind": "bone",
+  "fma_id": "FMA23465",
+  "name_fr": "Radius gauche",
+  "name_en": "Left radius",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/radius_left.obj"
+ },
+ {
+  "id": "radius_right",
+  "kind": "bone",
+  "fma_id": "FMA23464",
+  "name_fr": "Radius droite",
+  "name_en": "Right radius",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/radius_right.obj"
+ },
+ {
+  "id": "ulna_left",
+  "kind": "bone",
+  "fma_id": "FMA23468",
+  "name_fr": "Ulna gauche",
+  "name_en": "Left ulna",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "cubitus",
+   "os cubitus"
+  ],
+  "synonyms_en": [
+   "cubitus"
+  ],
+  "mesh_file": "bones_full/ulna_left.obj"
+ },
+ {
+  "id": "ulna_right",
+  "kind": "bone",
+  "fma_id": "FMA23467",
+  "name_fr": "Ulna droite",
+  "name_en": "Right ulna",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "cubitus",
+   "os cubitus"
+  ],
+  "synonyms_en": [
+   "cubitus"
+  ],
+  "mesh_file": "bones_full/ulna_right.obj"
+ },
+ {
+  "id": "scaphoid_left",
+  "kind": "bone",
+  "fma_id": "FMA24436",
+  "name_fr": "Scaphoïde gauche",
+  "name_en": "Left scaphoid",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "scaphoïde carpien",
+   "os scaphoïde",
+   "naviculaire de la main"
+  ],
+  "synonyms_en": [
+   "navicular bone of hand"
+  ],
+  "mesh_file": "bones_full/scaphoid_left.obj"
+ },
+ {
+  "id": "scaphoid_right",
+  "kind": "bone",
+  "fma_id": "FMA24435",
+  "name_fr": "Scaphoïde droite",
+  "name_en": "Right scaphoid",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "scaphoïde carpien",
+   "os scaphoïde",
+   "naviculaire de la main"
+  ],
+  "synonyms_en": [
+   "navicular bone of hand"
+  ],
+  "mesh_file": "bones_full/scaphoid_right.obj"
+ },
+ {
+  "id": "lunate_left",
+  "kind": "bone",
+  "fma_id": "FMA24438",
+  "name_fr": "Lunatum gauche",
+  "name_en": "Left lunate",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "semi-lunaire",
+   "os semi-lunaire",
+   "os lunatum"
+  ],
+  "synonyms_en": [
+   "semilunar"
+  ],
+  "mesh_file": "bones_full/lunate_left.obj"
+ },
+ {
+  "id": "lunate_right",
+  "kind": "bone",
+  "fma_id": "FMA24437",
+  "name_fr": "Lunatum droite",
+  "name_en": "Right lunate",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "semi-lunaire",
+   "os semi-lunaire",
+   "os lunatum"
+  ],
+  "synonyms_en": [
+   "semilunar"
+  ],
+  "mesh_file": "bones_full/lunate_right.obj"
+ },
+ {
+  "id": "triquetrum_left",
+  "kind": "bone",
+  "fma_id": "FMA24440",
+  "name_fr": "Triquétrum gauche",
+  "name_en": "Left triquetrum",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "pyramidal",
+   "os triquetrum",
+   "os pyramidal"
+  ],
+  "synonyms_en": [
+   "triquetral",
+   "pyramidal bone"
+  ],
+  "mesh_file": "bones_full/triquetrum_left.obj"
+ },
+ {
+  "id": "triquetrum_right",
+  "kind": "bone",
+  "fma_id": "FMA24439",
+  "name_fr": "Triquétrum droite",
+  "name_en": "Right triquetrum",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "pyramidal",
+   "os triquetrum",
+   "os pyramidal"
+  ],
+  "synonyms_en": [
+   "triquetral",
+   "pyramidal bone"
+  ],
+  "mesh_file": "bones_full/triquetrum_right.obj"
+ },
+ {
+  "id": "pisiform_left",
+  "kind": "bone",
+  "fma_id": "FMA24442",
+  "name_fr": "Pisiforme gauche",
+  "name_en": "Left pisiform",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "os pisiforme"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/pisiform_left.obj"
+ },
+ {
+  "id": "pisiform_right",
+  "kind": "bone",
+  "fma_id": "FMA24441",
+  "name_fr": "Pisiforme droite",
+  "name_en": "Right pisiform",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "os pisiforme"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "bones_full/pisiform_right.obj"
+ },
+ {
+  "id": "trapezium_left",
+  "kind": "bone",
+  "fma_id": "FMA24444",
+  "name_fr": "Trapèze gauche",
+  "name_en": "Left trapezium",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "os trapèze",
+   "grand multangulaire"
+  ],
+  "synonyms_en": [
+   "greater multangular"
+  ],
+  "mesh_file": "bones_full/trapezium_left.obj"
+ },
+ {
+  "id": "trapezium_right",
+  "kind": "bone",
+  "fma_id": "FMA24443",
+  "name_fr": "Trapèze droite",
+  "name_en": "Right trapezium",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "os trapèze",
+   "grand multangulaire"
+  ],
+  "synonyms_en": [
+   "greater multangular"
+  ],
+  "mesh_file": "bones_full/trapezium_right.obj"
+ },
+ {
+  "id": "trapezoid_left",
+  "kind": "bone",
+  "fma_id": "FMA24445",
+  "name_fr": "Trapézoïde gauche",
+  "name_en": "Left trapezoid",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "os trapézoïde",
+   "petit multangulaire"
+  ],
+  "synonyms_en": [
+   "lesser multangular"
+  ],
+  "mesh_file": "bones_full/trapezoid_left.obj"
+ },
+ {
+  "id": "trapezoid_right",
+  "kind": "bone",
+  "fma_id": "FMA23725",
+  "name_fr": "Trapézoïde droite",
+  "name_en": "Right trapezoid",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "os trapézoïde",
+   "petit multangulaire"
+  ],
+  "synonyms_en": [
+   "lesser multangular"
+  ],
+  "mesh_file": "bones_full/trapezoid_right.obj"
+ },
+ {
+  "id": "capitate_left",
+  "kind": "bone",
+  "fma_id": "FMA24447",
+  "name_fr": "Capitatum gauche",
+  "name_en": "Left capitate",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "grand os",
+   "os capitatum"
+  ],
+  "synonyms_en": [
+   "os magnum"
+  ],
+  "mesh_file": "bones_full/capitate_left.obj"
+ },
+ {
+  "id": "capitate_right",
+  "kind": "bone",
+  "fma_id": "FMA24446",
+  "name_fr": "Capitatum droite",
+  "name_en": "Right capitate",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "grand os",
+   "os capitatum"
+  ],
+  "synonyms_en": [
+   "os magnum"
+  ],
+  "mesh_file": "bones_full/capitate_right.obj"
+ },
+ {
+  "id": "hamate_left",
+  "kind": "bone",
+  "fma_id": "FMA24449",
+  "name_fr": "Hamatum gauche",
+  "name_en": "Left hamate",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "os crochu",
+   "os hamatum",
+   "unciforme"
+  ],
+  "synonyms_en": [
+   "unciform"
+  ],
+  "mesh_file": "bones_full/hamate_left.obj"
+ },
+ {
+  "id": "hamate_right",
+  "kind": "bone",
+  "fma_id": "FMA24448",
+  "name_fr": "Hamatum droite",
+  "name_en": "Right hamate",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "os crochu",
+   "os hamatum",
+   "unciforme"
+  ],
+  "synonyms_en": [
+   "unciform"
+  ],
+  "mesh_file": "bones_full/hamate_right.obj"
+ },
+ {
+  "id": "metacarpal_1_left",
+  "kind": "bone",
+  "fma_id": "FMA24465",
+  "name_fr": "1er métacarpien gauche",
+  "name_en": "Left metacarpal 1",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 1 gauche",
+   "métacarpien I gauche"
+  ],
+  "synonyms_en": [
+   "metacarpal 1",
+   "first metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_1_left.obj"
+ },
+ {
+  "id": "metacarpal_1_right",
+  "kind": "bone",
+  "fma_id": "FMA24464",
+  "name_fr": "1er métacarpien droite",
+  "name_en": "Right metacarpal 1",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 1 droite",
+   "métacarpien I droite"
+  ],
+  "synonyms_en": [
+   "metacarpal 1",
+   "first metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_1_right.obj"
+ },
+ {
+  "id": "metacarpal_2_left",
+  "kind": "bone",
+  "fma_id": "FMA24467",
+  "name_fr": "2e métacarpien gauche",
+  "name_en": "Left metacarpal 2",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 2 gauche",
+   "métacarpien II gauche"
+  ],
+  "synonyms_en": [
+   "metacarpal 2",
+   "second metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_2_left.obj"
+ },
+ {
+  "id": "metacarpal_2_right",
+  "kind": "bone",
+  "fma_id": "FMA24466",
+  "name_fr": "2e métacarpien droite",
+  "name_en": "Right metacarpal 2",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 2 droite",
+   "métacarpien II droite"
+  ],
+  "synonyms_en": [
+   "metacarpal 2",
+   "second metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_2_right.obj"
+ },
+ {
+  "id": "metacarpal_3_left",
+  "kind": "bone",
+  "fma_id": "FMA24469",
+  "name_fr": "3e métacarpien gauche",
+  "name_en": "Left metacarpal 3",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 3 gauche",
+   "métacarpien III gauche"
+  ],
+  "synonyms_en": [
+   "metacarpal 3",
+   "third metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_3_left.obj"
+ },
+ {
+  "id": "metacarpal_3_right",
+  "kind": "bone",
+  "fma_id": "FMA24468",
+  "name_fr": "3e métacarpien droite",
+  "name_en": "Right metacarpal 3",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 3 droite",
+   "métacarpien III droite"
+  ],
+  "synonyms_en": [
+   "metacarpal 3",
+   "third metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_3_right.obj"
+ },
+ {
+  "id": "metacarpal_4_left",
+  "kind": "bone",
+  "fma_id": "FMA24471",
+  "name_fr": "4e métacarpien gauche",
+  "name_en": "Left metacarpal 4",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 4 gauche",
+   "métacarpien IV gauche"
+  ],
+  "synonyms_en": [
+   "metacarpal 4",
+   "fourth metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_4_left.obj"
+ },
+ {
+  "id": "metacarpal_4_right",
+  "kind": "bone",
+  "fma_id": "FMA24470",
+  "name_fr": "4e métacarpien droite",
+  "name_en": "Right metacarpal 4",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 4 droite",
+   "métacarpien IV droite"
+  ],
+  "synonyms_en": [
+   "metacarpal 4",
+   "fourth metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_4_right.obj"
+ },
+ {
+  "id": "metacarpal_5_left",
+  "kind": "bone",
+  "fma_id": "FMA24473",
+  "name_fr": "5e métacarpien gauche",
+  "name_en": "Left metacarpal 5",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 5 gauche",
+   "métacarpien V gauche"
+  ],
+  "synonyms_en": [
+   "metacarpal 5",
+   "fifth metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_5_left.obj"
+ },
+ {
+  "id": "metacarpal_5_right",
+  "kind": "bone",
+  "fma_id": "FMA24472",
+  "name_fr": "5e métacarpien droite",
+  "name_en": "Right metacarpal 5",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métacarpien 5 droite",
+   "métacarpien V droite"
+  ],
+  "synonyms_en": [
+   "metacarpal 5",
+   "fifth metacarpal"
+  ],
+  "mesh_file": "bones_full/metacarpal_5_right.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_1_left",
+  "kind": "bone",
+  "fma_id": "FMA65470",
+  "name_fr": "Phalange proximale du pouce gauche",
+  "name_en": "Left proximal phalanx of thumb",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale pouce gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx thumb left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_1_left.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_1_right",
+  "kind": "bone",
+  "fma_id": "FMA24450",
+  "name_fr": "Phalange proximale du pouce droite",
+  "name_en": "Right proximal phalanx of thumb",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale pouce droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx thumb right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_1_right.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_1_left",
+  "kind": "bone",
+  "fma_id": "FMA23951",
+  "name_fr": "Phalange distale du pouce gauche",
+  "name_en": "Left distal phalanx of thumb",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale pouce gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx thumb left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_1_left.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_1_right",
+  "kind": "bone",
+  "fma_id": "FMA24459",
+  "name_fr": "Phalange distale du pouce droite",
+  "name_en": "Right distal phalanx of thumb",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale pouce droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx thumb right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_1_right.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_2_left",
+  "kind": "bone",
+  "fma_id": "FMA71915",
+  "name_fr": "Phalange proximale de l'index gauche",
+  "name_en": "Left proximal phalanx of index finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale index gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx index finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_2_left.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_2_right",
+  "kind": "bone",
+  "fma_id": "FMA24451",
+  "name_fr": "Phalange proximale de l'index droite",
+  "name_en": "Right proximal phalanx of index finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale index droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx index finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_2_right.obj"
+ },
+ {
+  "id": "hand_phalanx_middle_2_left",
+  "kind": "bone",
+  "fma_id": "FMA23938",
+  "name_fr": "Phalange moyenne de l'index gauche",
+  "name_en": "Left middle phalanx of index finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne index gauche"
+  ],
+  "synonyms_en": [
+   "middle phalanx index finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_middle_2_left.obj"
+ },
+ {
+  "id": "hand_phalanx_middle_2_right",
+  "kind": "bone",
+  "fma_id": "FMA24455",
+  "name_fr": "Phalange moyenne de l'index droite",
+  "name_en": "Right middle phalanx of index finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne index droite"
+  ],
+  "synonyms_en": [
+   "middle phalanx index finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_middle_2_right.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_2_left",
+  "kind": "bone",
+  "fma_id": "FMA23953",
+  "name_fr": "Phalange distale de l'index gauche",
+  "name_en": "Left distal phalanx of index finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale index gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx index finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_2_left.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_2_right",
+  "kind": "bone",
+  "fma_id": "FMA24460",
+  "name_fr": "Phalange distale de l'index droite",
+  "name_en": "Right distal phalanx of index finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale index droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx index finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_2_right.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_3_left",
+  "kind": "bone",
+  "fma_id": "FMA71908",
+  "name_fr": "Phalange proximale du majeur gauche",
+  "name_en": "Left proximal phalanx of middle finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale majeur gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx middle finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_3_left.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_3_right",
+  "kind": "bone",
+  "fma_id": "FMA24452",
+  "name_fr": "Phalange proximale du majeur droite",
+  "name_en": "Right proximal phalanx of middle finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale majeur droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx middle finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_3_right.obj"
+ },
+ {
+  "id": "hand_phalanx_middle_3_left",
+  "kind": "bone",
+  "fma_id": "FMA23940",
+  "name_fr": "Phalange moyenne du majeur gauche",
+  "name_en": "Left middle phalanx of middle finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne majeur gauche"
+  ],
+  "synonyms_en": [
+   "middle phalanx middle finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_middle_3_left.obj"
+ },
+ {
+  "id": "hand_phalanx_middle_3_right",
+  "kind": "bone",
+  "fma_id": "FMA24456",
+  "name_fr": "Phalange moyenne du majeur droite",
+  "name_en": "Right middle phalanx of middle finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne majeur droite"
+  ],
+  "synonyms_en": [
+   "middle phalanx middle finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_middle_3_right.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_3_left",
+  "kind": "bone",
+  "fma_id": "FMA23955",
+  "name_fr": "Phalange distale du majeur gauche",
+  "name_en": "Left distal phalanx of middle finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale majeur gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx middle finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_3_left.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_3_right",
+  "kind": "bone",
+  "fma_id": "FMA24461",
+  "name_fr": "Phalange distale du majeur droite",
+  "name_en": "Right distal phalanx of middle finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale majeur droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx middle finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_3_right.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_4_left",
+  "kind": "bone",
+  "fma_id": "FMA71916",
+  "name_fr": "Phalange proximale de l'annulaire gauche",
+  "name_en": "Left proximal phalanx of ring finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale annulaire gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx ring finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_4_left.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_4_right",
+  "kind": "bone",
+  "fma_id": "FMA24453",
+  "name_fr": "Phalange proximale de l'annulaire droite",
+  "name_en": "Right proximal phalanx of ring finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale annulaire droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx ring finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_4_right.obj"
+ },
+ {
+  "id": "hand_phalanx_middle_4_left",
+  "kind": "bone",
+  "fma_id": "FMA23942",
+  "name_fr": "Phalange moyenne de l'annulaire gauche",
+  "name_en": "Left middle phalanx of ring finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne annulaire gauche"
+  ],
+  "synonyms_en": [
+   "middle phalanx ring finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_middle_4_left.obj"
+ },
+ {
+  "id": "hand_phalanx_middle_4_right",
+  "kind": "bone",
+  "fma_id": "FMA24457",
+  "name_fr": "Phalange moyenne de l'annulaire droite",
+  "name_en": "Right middle phalanx of ring finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne annulaire droite"
+  ],
+  "synonyms_en": [
+   "middle phalanx ring finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_middle_4_right.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_4_left",
+  "kind": "bone",
+  "fma_id": "FMA23957",
+  "name_fr": "Phalange distale de l'annulaire gauche",
+  "name_en": "Left distal phalanx of ring finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale annulaire gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx ring finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_4_left.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_4_right",
+  "kind": "bone",
+  "fma_id": "FMA24462",
+  "name_fr": "Phalange distale de l'annulaire droite",
+  "name_en": "Right distal phalanx of ring finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale annulaire droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx ring finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_4_right.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_5_left",
+  "kind": "bone",
+  "fma_id": "FMA66791",
+  "name_fr": "Phalange proximale de l'auriculaire gauche",
+  "name_en": "Left proximal phalanx of little finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale auriculaire gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx little finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_5_left.obj"
+ },
+ {
+  "id": "hand_phalanx_proximal_5_right",
+  "kind": "bone",
+  "fma_id": "FMA24454",
+  "name_fr": "Phalange proximale de l'auriculaire droite",
+  "name_en": "Right proximal phalanx of little finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale auriculaire droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx little finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_proximal_5_right.obj"
+ },
+ {
+  "id": "hand_phalanx_middle_5_left",
+  "kind": "bone",
+  "fma_id": "FMA23944",
+  "name_fr": "Phalange moyenne de l'auriculaire gauche",
+  "name_en": "Left middle phalanx of little finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne auriculaire gauche"
+  ],
+  "synonyms_en": [
+   "middle phalanx little finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_middle_5_left.obj"
+ },
+ {
+  "id": "hand_phalanx_middle_5_right",
+  "kind": "bone",
+  "fma_id": "FMA24458",
+  "name_fr": "Phalange moyenne de l'auriculaire droite",
+  "name_en": "Right middle phalanx of little finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne auriculaire droite"
+  ],
+  "synonyms_en": [
+   "middle phalanx little finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_middle_5_right.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_5_left",
+  "kind": "bone",
+  "fma_id": "FMA23959",
+  "name_fr": "Phalange distale de l'auriculaire gauche",
+  "name_en": "Left distal phalanx of little finger",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale auriculaire gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx little finger left"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_5_left.obj"
+ },
+ {
+  "id": "hand_phalanx_distal_5_right",
+  "kind": "bone",
+  "fma_id": "FMA24463",
+  "name_fr": "Phalange distale de l'auriculaire droite",
+  "name_en": "Right distal phalanx of little finger",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale auriculaire droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx little finger right"
+  ],
+  "mesh_file": "bones_full/hand_phalanx_distal_5_right.obj"
+ },
+ {
+  "id": "femur_left",
+  "kind": "bone",
+  "fma_id": "FMA24475",
+  "name_fr": "Fémur gauche",
+  "name_en": "Left femur",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "os de la cuisse"
+  ],
+  "synonyms_en": [
+   "thighbone"
+  ],
+  "mesh_file": "bones_full/femur_left.obj"
+ },
+ {
+  "id": "femur_right",
+  "kind": "bone",
+  "fma_id": "FMA24474",
+  "name_fr": "Fémur droite",
+  "name_en": "Right femur",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "os de la cuisse"
+  ],
+  "synonyms_en": [
+   "thighbone"
+  ],
+  "mesh_file": "bones_full/femur_right.obj"
+ },
+ {
+  "id": "patella_left",
+  "kind": "bone",
+  "fma_id": "FMA24487",
+  "name_fr": "Patella gauche",
+  "name_en": "Left patella",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "rotule"
+  ],
+  "synonyms_en": [
+   "kneecap"
+  ],
+  "mesh_file": "bones_full/patella_left.obj"
+ },
+ {
+  "id": "patella_right",
+  "kind": "bone",
+  "fma_id": "FMA24486",
+  "name_fr": "Patella droite",
+  "name_en": "Right patella",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "rotule"
+  ],
+  "synonyms_en": [
+   "kneecap"
+  ],
+  "mesh_file": "bones_full/patella_right.obj"
+ },
+ {
+  "id": "tibia_left",
+  "kind": "bone",
+  "fma_id": "FMA24478",
+  "name_fr": "Tibia gauche",
+  "name_en": "Left tibia",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "os de la jambe"
+  ],
+  "synonyms_en": [
+   "shinbone"
+  ],
+  "mesh_file": "bones_full/tibia_left.obj"
+ },
+ {
+  "id": "tibia_right",
+  "kind": "bone",
+  "fma_id": "FMA24477",
+  "name_fr": "Tibia droite",
+  "name_en": "Right tibia",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "os de la jambe"
+  ],
+  "synonyms_en": [
+   "shinbone"
+  ],
+  "mesh_file": "bones_full/tibia_right.obj"
+ },
+ {
+  "id": "fibula_left",
+  "kind": "bone",
+  "fma_id": "FMA24481",
+  "name_fr": "Fibula gauche",
+  "name_en": "Left fibula",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "péroné",
+   "os péroné"
+  ],
+  "synonyms_en": [
+   "peroneal bone",
+   "calf bone"
+  ],
+  "mesh_file": "bones_full/fibula_left.obj"
+ },
+ {
+  "id": "fibula_right",
+  "kind": "bone",
+  "fma_id": "FMA24480",
+  "name_fr": "Fibula droite",
+  "name_en": "Right fibula",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "péroné",
+   "os péroné"
+  ],
+  "synonyms_en": [
+   "peroneal bone",
+   "calf bone"
+  ],
+  "mesh_file": "bones_full/fibula_right.obj"
+ },
+ {
+  "id": "calcaneus_left",
+  "kind": "bone",
+  "fma_id": "FMA24498",
+  "name_fr": "Calcanéus gauche",
+  "name_en": "Left calcaneus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "calcanéum",
+   "os du talon"
+  ],
+  "synonyms_en": [
+   "heel bone",
+   "calcaneum"
+  ],
+  "mesh_file": "bones_full/calcaneus_left.obj"
+ },
+ {
+  "id": "calcaneus_right",
+  "kind": "bone",
+  "fma_id": "FMA24497",
+  "name_fr": "Calcanéus droite",
+  "name_en": "Right calcaneus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "calcanéum",
+   "os du talon"
+  ],
+  "synonyms_en": [
+   "heel bone",
+   "calcaneum"
+  ],
+  "mesh_file": "bones_full/calcaneus_right.obj"
+ },
+ {
+  "id": "talus_left",
+  "kind": "bone",
+  "fma_id": "FMA24483",
+  "name_fr": "Talus gauche",
+  "name_en": "Left talus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "astragale"
+  ],
+  "synonyms_en": [
+   "astragalus",
+   "ankle bone"
+  ],
+  "mesh_file": "bones_full/talus_left.obj"
+ },
+ {
+  "id": "talus_right",
+  "kind": "bone",
+  "fma_id": "FMA24482",
+  "name_fr": "Talus droite",
+  "name_en": "Right talus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "synonyms_fr": [
+   "astragale"
+  ],
+  "synonyms_en": [
+   "astragalus",
+   "ankle bone"
+  ],
+  "mesh_file": "bones_full/talus_right.obj"
+ },
+ {
+  "id": "cuboid_left",
+  "kind": "bone",
+  "fma_id": "FMA24529",
+  "name_fr": "Os cuboïde gauche",
+  "name_en": "Left cuboid bone",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "cuboïde",
+   "os cuboïde"
+  ],
+  "synonyms_en": [
+   "cuboid"
+  ],
+  "mesh_file": "bones_full/cuboid_left.obj"
+ },
+ {
+  "id": "navicular_left",
+  "kind": "bone",
+  "fma_id": "FMA24501",
+  "name_fr": "Os naviculaire gauche",
+  "name_en": "Left navicular bone",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "naviculaire",
+   "scaphoïde tarsien",
+   "os scaphoïde du pied"
+  ],
+  "synonyms_en": [
+   "navicular",
+   "tarsal navicular"
+  ],
+  "mesh_file": "bones_full/navicular_left.obj"
+ },
+ {
+  "id": "cuneiform_medial_left",
+  "kind": "bone",
+  "fma_id": "FMA24522",
+  "name_fr": "Os cunéiforme médial gauche",
+  "name_en": "Left medial cuneiform bone",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "1er cunéiforme",
+   "cunéiforme médial",
+   "premier cunéiforme"
+  ],
+  "synonyms_en": [
+   "first cuneiform",
+   "medial cuneiform"
+  ],
+  "mesh_file": "bones_full/cuneiform_medial_left.obj"
+ },
+ {
+  "id": "cuneiform_intermediate_left",
+  "kind": "bone",
+  "fma_id": "FMA24524",
+  "name_fr": "Os cunéiforme intermédiaire gauche",
+  "name_en": "Left intermediate cuneiform bone",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "2e cunéiforme",
+   "cunéiforme intermédiaire",
+   "deuxième cunéiforme"
+  ],
+  "synonyms_en": [
+   "second cuneiform",
+   "intermediate cuneiform"
+  ],
+  "mesh_file": "bones_full/cuneiform_intermediate_left.obj"
+ },
+ {
+  "id": "cuneiform_lateral_left",
+  "kind": "bone",
+  "fma_id": "FMA24526",
+  "name_fr": "Os cunéiforme latéral gauche",
+  "name_en": "Left lateral cuneiform bone",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "3e cunéiforme",
+   "cunéiforme latéral",
+   "troisième cunéiforme"
+  ],
+  "synonyms_en": [
+   "third cuneiform",
+   "lateral cuneiform"
+  ],
+  "mesh_file": "bones_full/cuneiform_lateral_left.obj"
+ },
+ {
+  "id": "cuboid_right",
+  "kind": "bone",
+  "fma_id": "FMA24528",
+  "name_fr": "Os cuboïde droite",
+  "name_en": "Right cuboid bone",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "cuboïde",
+   "os cuboïde"
+  ],
+  "synonyms_en": [
+   "cuboid"
+  ],
+  "mesh_file": "bones_full/cuboid_right.obj"
+ },
+ {
+  "id": "navicular_right",
+  "kind": "bone",
+  "fma_id": "FMA24500",
+  "name_fr": "Os naviculaire droite",
+  "name_en": "Right navicular bone",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "naviculaire",
+   "scaphoïde tarsien",
+   "os scaphoïde du pied"
+  ],
+  "synonyms_en": [
+   "navicular",
+   "tarsal navicular"
+  ],
+  "mesh_file": "bones_full/navicular_right.obj"
+ },
+ {
+  "id": "cuneiform_medial_right",
+  "kind": "bone",
+  "fma_id": "FMA24521",
+  "name_fr": "Os cunéiforme médial droite",
+  "name_en": "Right medial cuneiform bone",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "1er cunéiforme",
+   "cunéiforme médial",
+   "premier cunéiforme"
+  ],
+  "synonyms_en": [
+   "first cuneiform",
+   "medial cuneiform"
+  ],
+  "mesh_file": "bones_full/cuneiform_medial_right.obj"
+ },
+ {
+  "id": "cuneiform_intermediate_right",
+  "kind": "bone",
+  "fma_id": "FMA24523",
+  "name_fr": "Os cunéiforme intermédiaire droite",
+  "name_en": "Right intermediate cuneiform bone",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "2e cunéiforme",
+   "cunéiforme intermédiaire",
+   "deuxième cunéiforme"
+  ],
+  "synonyms_en": [
+   "second cuneiform",
+   "intermediate cuneiform"
+  ],
+  "mesh_file": "bones_full/cuneiform_intermediate_right.obj"
+ },
+ {
+  "id": "cuneiform_lateral_right",
+  "kind": "bone",
+  "fma_id": "FMA24525",
+  "name_fr": "Os cunéiforme latéral droite",
+  "name_en": "Right lateral cuneiform bone",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "3e cunéiforme",
+   "cunéiforme latéral",
+   "troisième cunéiforme"
+  ],
+  "synonyms_en": [
+   "third cuneiform",
+   "lateral cuneiform"
+  ],
+  "mesh_file": "bones_full/cuneiform_lateral_right.obj"
+ },
+ {
+  "id": "metatarsal_1_left",
+  "kind": "bone",
+  "fma_id": "FMA24508",
+  "name_fr": "1er métatarsien gauche",
+  "name_en": "Left metatarsal 1",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 1 gauche",
+   "métatarsien I gauche"
+  ],
+  "synonyms_en": [
+   "metatarsal 1",
+   "first metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_1_left.obj"
+ },
+ {
+  "id": "metatarsal_1_right",
+  "kind": "bone",
+  "fma_id": "FMA24507",
+  "name_fr": "1er métatarsien droite",
+  "name_en": "Right metatarsal 1",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 1 droite",
+   "métatarsien I droite"
+  ],
+  "synonyms_en": [
+   "metatarsal 1",
+   "first metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_1_right.obj"
+ },
+ {
+  "id": "metatarsal_2_left",
+  "kind": "bone",
+  "fma_id": "FMA24510",
+  "name_fr": "2e métatarsien gauche",
+  "name_en": "Left metatarsal 2",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 2 gauche",
+   "métatarsien II gauche"
+  ],
+  "synonyms_en": [
+   "metatarsal 2",
+   "second metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_2_left.obj"
+ },
+ {
+  "id": "metatarsal_2_right",
+  "kind": "bone",
+  "fma_id": "FMA24509",
+  "name_fr": "2e métatarsien droite",
+  "name_en": "Right metatarsal 2",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 2 droite",
+   "métatarsien II droite"
+  ],
+  "synonyms_en": [
+   "metatarsal 2",
+   "second metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_2_right.obj"
+ },
+ {
+  "id": "metatarsal_3_left",
+  "kind": "bone",
+  "fma_id": "FMA24512",
+  "name_fr": "3e métatarsien gauche",
+  "name_en": "Left metatarsal 3",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 3 gauche",
+   "métatarsien III gauche"
+  ],
+  "synonyms_en": [
+   "metatarsal 3",
+   "third metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_3_left.obj"
+ },
+ {
+  "id": "metatarsal_3_right",
+  "kind": "bone",
+  "fma_id": "FMA24511",
+  "name_fr": "3e métatarsien droite",
+  "name_en": "Right metatarsal 3",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 3 droite",
+   "métatarsien III droite"
+  ],
+  "synonyms_en": [
+   "metatarsal 3",
+   "third metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_3_right.obj"
+ },
+ {
+  "id": "metatarsal_4_left",
+  "kind": "bone",
+  "fma_id": "FMA24514",
+  "name_fr": "4e métatarsien gauche",
+  "name_en": "Left metatarsal 4",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 4 gauche",
+   "métatarsien IV gauche"
+  ],
+  "synonyms_en": [
+   "metatarsal 4",
+   "fourth metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_4_left.obj"
+ },
+ {
+  "id": "metatarsal_4_right",
+  "kind": "bone",
+  "fma_id": "FMA24513",
+  "name_fr": "4e métatarsien droite",
+  "name_en": "Right metatarsal 4",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 4 droite",
+   "métatarsien IV droite"
+  ],
+  "synonyms_en": [
+   "metatarsal 4",
+   "fourth metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_4_right.obj"
+ },
+ {
+  "id": "metatarsal_5_left",
+  "kind": "bone",
+  "fma_id": "FMA24516",
+  "name_fr": "5e métatarsien gauche",
+  "name_en": "Left metatarsal 5",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 5 gauche",
+   "métatarsien V gauche"
+  ],
+  "synonyms_en": [
+   "metatarsal 5",
+   "fifth metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_5_left.obj"
+ },
+ {
+  "id": "metatarsal_5_right",
+  "kind": "bone",
+  "fma_id": "FMA24515",
+  "name_fr": "5e métatarsien droite",
+  "name_en": "Right metatarsal 5",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "métatarsien 5 droite",
+   "métatarsien V droite"
+  ],
+  "synonyms_en": [
+   "metatarsal 5",
+   "fifth metatarsal"
+  ],
+  "mesh_file": "bones_full/metatarsal_5_right.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_1_left",
+  "kind": "bone",
+  "fma_id": "FMA43254",
+  "name_fr": "Phalange proximale du gros orteil gauche",
+  "name_en": "Left proximal phalanx of big toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale gros orteil gauche",
+   "phalange proximale de l'hallux gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx big toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_1_left.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_1_right",
+  "kind": "bone",
+  "fma_id": "FMA43253",
+  "name_fr": "Phalange proximale du gros orteil droite",
+  "name_en": "Right proximal phalanx of big toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale gros orteil droite",
+   "phalange proximale de l'hallux droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx big toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_1_right.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_1_left",
+  "kind": "bone",
+  "fma_id": "FMA32651",
+  "name_fr": "Phalange distale du gros orteil gauche",
+  "name_en": "Left distal phalanx of big toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale gros orteil gauche",
+   "phalange distale de l'hallux gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx big toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_1_left.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_1_right",
+  "kind": "bone",
+  "fma_id": "FMA32650",
+  "name_fr": "Phalange distale du gros orteil droite",
+  "name_en": "Right distal phalanx of big toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale gros orteil droite",
+   "phalange distale de l'hallux droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx big toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_1_right.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_2_left",
+  "kind": "bone",
+  "fma_id": "FMA32635",
+  "name_fr": "Phalange proximale du 2e orteil gauche",
+  "name_en": "Left proximal phalanx of second toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale 2e orteil gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx second toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_2_left.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_2_right",
+  "kind": "bone",
+  "fma_id": "FMA32634",
+  "name_fr": "Phalange proximale du 2e orteil droite",
+  "name_en": "Right proximal phalanx of second toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale 2e orteil droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx second toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_2_right.obj"
+ },
+ {
+  "id": "foot_phalanx_middle_2_left",
+  "kind": "bone",
+  "fma_id": "FMA32643",
+  "name_fr": "Phalange moyenne du 2e orteil gauche",
+  "name_en": "Left middle phalanx of second toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne 2e orteil gauche"
+  ],
+  "synonyms_en": [
+   "middle phalanx second toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_middle_2_left.obj"
+ },
+ {
+  "id": "foot_phalanx_middle_2_right",
+  "kind": "bone",
+  "fma_id": "FMA32642",
+  "name_fr": "Phalange moyenne du 2e orteil droite",
+  "name_en": "Right middle phalanx of second toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne 2e orteil droite"
+  ],
+  "synonyms_en": [
+   "middle phalanx second toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_middle_2_right.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_2_left",
+  "kind": "bone",
+  "fma_id": "FMA32653",
+  "name_fr": "Phalange distale du 2e orteil gauche",
+  "name_en": "Left distal phalanx of second toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale 2e orteil gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx second toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_2_left.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_2_right",
+  "kind": "bone",
+  "fma_id": "FMA32652",
+  "name_fr": "Phalange distale du 2e orteil droite",
+  "name_en": "Right distal phalanx of second toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale 2e orteil droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx second toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_2_right.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_3_left",
+  "kind": "bone",
+  "fma_id": "FMA32637",
+  "name_fr": "Phalange proximale du 3e orteil gauche",
+  "name_en": "Left proximal phalanx of third toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale 3e orteil gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx third toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_3_left.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_3_right",
+  "kind": "bone",
+  "fma_id": "FMA32636",
+  "name_fr": "Phalange proximale du 3e orteil droite",
+  "name_en": "Right proximal phalanx of third toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale 3e orteil droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx third toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_3_right.obj"
+ },
+ {
+  "id": "foot_phalanx_middle_3_left",
+  "kind": "bone",
+  "fma_id": "FMA32645",
+  "name_fr": "Phalange moyenne du 3e orteil gauche",
+  "name_en": "Left middle phalanx of third toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne 3e orteil gauche"
+  ],
+  "synonyms_en": [
+   "middle phalanx third toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_middle_3_left.obj"
+ },
+ {
+  "id": "foot_phalanx_middle_3_right",
+  "kind": "bone",
+  "fma_id": "FMA32644",
+  "name_fr": "Phalange moyenne du 3e orteil droite",
+  "name_en": "Right middle phalanx of third toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne 3e orteil droite"
+  ],
+  "synonyms_en": [
+   "middle phalanx third toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_middle_3_right.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_3_left",
+  "kind": "bone",
+  "fma_id": "FMA32655",
+  "name_fr": "Phalange distale du 3e orteil gauche",
+  "name_en": "Left distal phalanx of third toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale 3e orteil gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx third toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_3_left.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_3_right",
+  "kind": "bone",
+  "fma_id": "FMA32654",
+  "name_fr": "Phalange distale du 3e orteil droite",
+  "name_en": "Right distal phalanx of third toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale 3e orteil droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx third toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_3_right.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_4_left",
+  "kind": "bone",
+  "fma_id": "FMA32639",
+  "name_fr": "Phalange proximale du 4e orteil gauche",
+  "name_en": "Left proximal phalanx of fourth toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale 4e orteil gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx fourth toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_4_left.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_4_right",
+  "kind": "bone",
+  "fma_id": "FMA32638",
+  "name_fr": "Phalange proximale du 4e orteil droite",
+  "name_en": "Right proximal phalanx of fourth toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale 4e orteil droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx fourth toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_4_right.obj"
+ },
+ {
+  "id": "foot_phalanx_middle_4_left",
+  "kind": "bone",
+  "fma_id": "FMA32647",
+  "name_fr": "Phalange moyenne du 4e orteil gauche",
+  "name_en": "Left middle phalanx of fourth toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne 4e orteil gauche"
+  ],
+  "synonyms_en": [
+   "middle phalanx fourth toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_middle_4_left.obj"
+ },
+ {
+  "id": "foot_phalanx_middle_4_right",
+  "kind": "bone",
+  "fma_id": "FMA32646",
+  "name_fr": "Phalange moyenne du 4e orteil droite",
+  "name_en": "Right middle phalanx of fourth toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne 4e orteil droite"
+  ],
+  "synonyms_en": [
+   "middle phalanx fourth toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_middle_4_right.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_4_left",
+  "kind": "bone",
+  "fma_id": "FMA32657",
+  "name_fr": "Phalange distale du 4e orteil gauche",
+  "name_en": "Left distal phalanx of fourth toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale 4e orteil gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx fourth toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_4_left.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_4_right",
+  "kind": "bone",
+  "fma_id": "FMA32656",
+  "name_fr": "Phalange distale du 4e orteil droite",
+  "name_en": "Right distal phalanx of fourth toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale 4e orteil droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx fourth toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_4_right.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_5_left",
+  "kind": "bone",
+  "fma_id": "FMA32641",
+  "name_fr": "Phalange proximale du 5e orteil gauche",
+  "name_en": "Left proximal phalanx of little toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale 5e orteil gauche",
+   "phalange proximale du petit orteil gauche"
+  ],
+  "synonyms_en": [
+   "proximal phalanx little toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_5_left.obj"
+ },
+ {
+  "id": "foot_phalanx_proximal_5_right",
+  "kind": "bone",
+  "fma_id": "FMA32640",
+  "name_fr": "Phalange proximale du 5e orteil droite",
+  "name_en": "Right proximal phalanx of little toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange proximale 5e orteil droite",
+   "phalange proximale du petit orteil droite"
+  ],
+  "synonyms_en": [
+   "proximal phalanx little toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_proximal_5_right.obj"
+ },
+ {
+  "id": "foot_phalanx_middle_5_left",
+  "kind": "bone",
+  "fma_id": "FMA230988",
+  "name_fr": "Phalange moyenne du 5e orteil gauche",
+  "name_en": "Left middle phalanx of little toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne 5e orteil gauche",
+   "phalange moyenne du petit orteil gauche"
+  ],
+  "synonyms_en": [
+   "middle phalanx little toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_middle_5_left.obj"
+ },
+ {
+  "id": "foot_phalanx_middle_5_right",
+  "kind": "bone",
+  "fma_id": "FMA230986",
+  "name_fr": "Phalange moyenne du 5e orteil droite",
+  "name_en": "Right middle phalanx of little toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange moyenne 5e orteil droite",
+   "phalange moyenne du petit orteil droite"
+  ],
+  "synonyms_en": [
+   "middle phalanx little toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_middle_5_right.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_5_left",
+  "kind": "bone",
+  "fma_id": "FMA32659",
+  "name_fr": "Phalange distale du 5e orteil gauche",
+  "name_en": "Left distal phalanx of little toe",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale 5e orteil gauche",
+   "phalange distale du petit orteil gauche"
+  ],
+  "synonyms_en": [
+   "distal phalanx little toe left"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_5_left.obj"
+ },
+ {
+  "id": "foot_phalanx_distal_5_right",
+  "kind": "bone",
+  "fma_id": "FMA32658",
+  "name_fr": "Phalange distale du 5e orteil droite",
+  "name_en": "Right distal phalanx of little toe",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "phalange distale 5e orteil droite",
+   "phalange distale du petit orteil droite"
+  ],
+  "synonyms_en": [
+   "distal phalanx little toe right"
+  ],
+  "mesh_file": "bones_full/foot_phalanx_distal_5_right.obj"
+ },
+ {
+  "id": "sesamoid_medial_left",
+  "kind": "bone",
+  "fma_id": "FMA45098",
+  "name_fr": "Sésamoïde médial du gros orteil gauche",
+  "name_en": "Left medial hallux sesamoid",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "sésamoïde médial",
+   "os sésamoïde médial gauche"
+  ],
+  "synonyms_en": [
+   "medial sesamoid",
+   "hallux sesamoid"
+  ],
+  "mesh_file": "bones_full/sesamoid_medial_left.obj",
+  "src_files": [
+   "FJ3266"
+  ]
+ },
+ {
+  "id": "sesamoid_lateral_left",
+  "kind": "bone",
+  "fma_id": "FMA45098",
+  "name_fr": "Sésamoïde latéral du gros orteil gauche",
+  "name_en": "Left lateral hallux sesamoid",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "sésamoïde latéral",
+   "os sésamoïde latéral gauche"
+  ],
+  "synonyms_en": [
+   "lateral sesamoid",
+   "hallux sesamoid"
+  ],
+  "mesh_file": "bones_full/sesamoid_lateral_left.obj",
+  "src_files": [
+   "FJ3270"
+  ]
+ },
+ {
+  "id": "sesamoid_medial_right",
+  "kind": "bone",
+  "fma_id": "FMA45097",
+  "name_fr": "Sésamoïde médial du gros orteil droite",
+  "name_en": "Right medial hallux sesamoid",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "sésamoïde médial",
+   "os sésamoïde médial droite"
+  ],
+  "synonyms_en": [
+   "medial sesamoid",
+   "hallux sesamoid"
+  ],
+  "mesh_file": "bones_full/sesamoid_medial_right.obj",
+  "src_files": [
+   "FJ3372"
+  ]
+ },
+ {
+  "id": "sesamoid_lateral_right",
+  "kind": "bone",
+  "fma_id": "FMA45097",
+  "name_fr": "Sésamoïde latéral du gros orteil droite",
+  "name_en": "Right lateral hallux sesamoid",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "synonyms_fr": [
+   "sésamoïde latéral",
+   "os sésamoïde latéral droite"
+  ],
+  "synonyms_en": [
+   "lateral sesamoid",
+   "hallux sesamoid"
+  ],
+  "mesh_file": "bones_full/sesamoid_lateral_right.obj",
+  "src_files": [
+   "FJ3376"
+  ]
+ }
+]

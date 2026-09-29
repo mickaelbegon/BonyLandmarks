@@ -27,3 +27,8 @@ htmlcov/
 src/bonylandmarks/data/bones/*.obj
 src/bonylandmarks/data/bones/*.stl
 src/bonylandmarks/data/bones/validation/
+
+# BodyParts3D meshes complets (os individuels + muscles) — CC BY-SA 2.1 JP, non versionnés
+# Regénérer avec : python scripts/import_bp3d.py --kind all
+src/bonylandmarks/data/bones_full/
+src/bonylandmarks/data/muscles/*.obj

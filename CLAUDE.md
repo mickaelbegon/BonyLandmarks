@@ -25,6 +25,7 @@ Point d'entrée CLI : `bonylandmarks` (app étudiant) / `python -m bonylandmarks
 
 | Fichier | Rôle |
 |---|---|
+| `scripts/import_bp3d.py` | Importe les meshes BodyParts3D 4.0 (OBJ `FJ*.obj`) vers `data/bones_full/` (os) et `data/muscles/` (muscles) d'après `anatomy_bones.json` / `anatomy_muscles.json` ; indexe l'en-tête `# Concept ID` de chaque fichier (le numéro `FJ<n>` n'est PAS le FMA) ; options `--src`, `--kind bone\|muscle\|all`, `--target-faces`, `--dry-run`, `--force` |
 | `compute_landmarks.py` | Script standalone : calcule algorithmiquement les positions de référence des repères sur les meshes BodyParts3D, écrit `landmark_positions.json` et des PNG de validation |
 
 ### `src/bonylandmarks/`
@@ -64,6 +65,10 @@ Point d'entrée CLI : `bonylandmarks` (app étudiant) / `python -m bonylandmarks
 | `sticker_removal.py` | Inpainting vertex-colour : suppression stickers photogrammétriques verts ~20mm par IDW |
 | `bone_quiz_exercise.py` | Quiz interactif Os/Squelette : placement et identification de repères sur meshes BodyParts3D, deux phases (os individuel → squelette), scoring mm |
 | `shared_scan_exercise.py` | Exercice scan partagé : placement libre sur scan commun sans vérité terrain, comparaison inter-étudiants par agrégation de positions (centroïde + écart-type) |
+| `anatomy_catalog.py` | Catalogue pur Python des structures anatomiques (os / muscles) : `Structure`, `all_structures`, `get`, `available(kind, region, tier_max)` (uniquement les meshes présents), `mesh_path`, `regions`, `display_name` ; lit `data/anatomy_*.json` |
+| `structure_quiz_engine.py` | Moteur pur Python (sans Qt, 49 tests) des quiz « identifier / localiser » : `Mode`, `Level`, `QuizConfig`, `QuizSession` (choix / liste / texte tolérant / clic 3D, score 1/0,5/0, `retry_session`, `summary`), `grade_letter` |
+| `structure_scene.py` | Scène fusionnée du quiz d'anatomie (sans Qt) : cache mémoire des meshes, `MergedMesh` (toutes les structures dans un seul PolyData + tableau `sid` par cellule), `SceneLayer` (1 acteur, recoloration en place, masquage), `pick_structure`, `choose_view` / `focus_distance` (orientation caméra) |
+| `structure_quiz_exercise.py` | Exercice « Anatomie 3D — os et muscles » (`StructureQuizExercise`) : écran de config → quiz (identifier niveaux 1-3 / localiser) → résultats ; splash `ANATOMY_QUIZ_RESULT=6` |
 | `scene3d.py` | Helpers PyVista partagés : `CameraAxes`, `fit_camera_to_mesh`, `set_view`, `view_top`, `reset_view`, `pan_camera`, `apply_curvature_heatmap` |
 | `bodyloop_client.py` | Client HTTP BodyLoop : auth OAuth2 password grant, listage viatars, téléchargement GLB en mm (`scale=1000`) |
 | `bodyloop_dialog.py` | Dialog de chargement scan : onglet fichier local (QFileDialog) + onglet BodyLoop (connexion, liste viatars, choix modèle) ; retourne `glb_bytes`, `scan_name`, `model_name` |
@@ -87,6 +92,10 @@ Point d'entrée CLI : `bonylandmarks` (app étudiant) / `python -m bonylandmarks
 | `landmarks.json` | 182 repères osseux bilingues (9 thèmes : anatomy, shoulder, gait, posture, upper_limb, core, knee_rehab, lower_limb, cpr) |
 | `bones/landmark_positions.json` | `code → [x, y, z]` — positions de référence corrigées par l'expert (généré par `compute_landmarks.py`, affiné par l'annotateur) |
 | `bones/*.stl` ou `*.obj` | Meshes osseux BodyParts3D (**gitignorés**) |
+| `anatomy_bones.json` | Catalogue de 205 os individuels (id, FMA, noms FR/EN, côté, région, tier 1/2, synonymes, `mesh_file`) |
+| `anatomy_muscles.json` | Catalogue de 187 muscles (mêmes champs + `layer` = `superficial`/`deep`, régions `lower_limb`, `upper_limb`, `trunk`, `head_neck`) ; `anatomy_muscles_sources.json` = fichiers sources BP3D |
+| `bones_full/*.obj` | Un mesh par os (coordonnées BP3D d'origine, non recentrées) — **gitignorés**, générés par `scripts/import_bp3d.py --kind bone` |
+| `muscles/*.obj` | Un mesh par muscle — **gitignorés**, générés par `scripts/import_bp3d.py --kind muscle` |
 | `bones/validation/*.png` | Images de validation des algorithmes géométriques |
 
 ---
@@ -203,7 +212,7 @@ Script de comparaison disponible dans le scratchpad de session (non versionné).
 ### Meshes musculaires
 
 - Dossier configurable localement (ex. `C:\Users\micka\Downloads\isa_BP3D_4.0_obj_99\...`)
-- Nommés `FJ{concept_id}.obj` (ex. `FJ13039.obj`)
+- Nommés `FJ<n>.obj` (ex. `FJ3266.obj`) : **`<n>` n'est PAS le numéro FMA** — le vrai concept FMA est dans l'en-tête `# Concept ID` de chaque fichier (plusieurs fichiers peuvent porter le même FMA). Ne jamais déduire un FMA du nom de fichier : `scripts/import_bp3d.py` indexe les en-têtes.
 - En-tête de chaque fichier OBJ contient :
   ```
   # English name : Pectoralis major
@@ -211,6 +220,7 @@ Script de comparaison disponible dans le scratchpad de session (non versionné).
   ```
 - `isa_parts_list_e.txt` : mapping concept ID ↔ nom anglais
 - `BONE_MUSCLES` dans `muscle_map.py` : `bone_stem → [FMA IDs]`
+- Import pour les exercices d'anatomie 3D : `python scripts/import_bp3d.py --kind all` (voir `--src`, `--dry-run`, `--force`) ; les meshes importés vont dans `data/bones_full/` et `data/muscles/` (gitignorés).
 
 ### Attribution obligatoire
 
@@ -300,6 +310,8 @@ Progression des exercices disponibles dans l'app étudiant (sélection à l'écr
 4. **Anthropo** (`anthro_measures_exercise.py`) — 20 mesures anthropométriques interactives (circumférences, diamètres, longueurs) ; chaque `AnthroMeasure` implémente `compute(ground_truth)`.
 5. **Quiz osseux** (`bone_quiz_exercise.py`) — quiz sur meshes BodyParts3D locaux, sans connexion ; deux phases (os individuel → squelette complet) ; scoring mm vs. positions de référence algorithmiques.
 6. **Scan partagé** (`shared_scan_exercise.py`) — exercice collaboratif sur GLB commun fourni par l'enseignant ; non-évaluatif ; agrégation des soumissions JSON du groupe (centroïde + écart-type par repère).
+
+7. **Anatomie 3D — os et muscles** (`structure_quiz_exercise.py`) — squelette / muscles BodyParts3D complets, sans connexion (`scripts/import_bp3d.py` requis) ; **Identifier** (structure cible en cyan vif, tout le reste opaque ; niveau 1 choix multiple, 2 liste complète filtrable, 3 saisie libre tolérante) et **Localiser** (clic sur la structure : cible verte, erreur rouge, côté opposé orange = demi-point) ; régions / détail (tier) / nombre de questions configurables ; muscles : squelette gris + muscles de la région, couche superficielle retirée quand la cible est profonde (`layer="deep"`) ; option `superficial_targets_only` (localiser) ; caméra orientée face à la cible en mode Identifier ; performance : meshes mis en cache et fusionnés (1 acteur par couche, `sid` par cellule pour le picking, recoloration en place). Accessible depuis l'écran d'accueil (carte « Anatomie 3D »).
 
 ### Pattern pour créer un nouvel exercice 3D
 

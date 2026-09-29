@@ -108,6 +108,10 @@ class MainWindow(QMainWindow):
                     self._open_shared_scan(splash)
                     return
 
+                if result == SplashDialog.ANATOMY_QUIZ_RESULT:
+                    self._open_anatomy_quiz()
+                    return
+
                 tutorial_mode = (result == SplashDialog.TUTORIAL_RESULT)
                 matricule = splash.matricule
 
@@ -231,6 +235,21 @@ class MainWindow(QMainWindow):
             "Bone exercise complete. Good practice!",
         )
         # Re-show splash to start again or quit
+        self.start()
+
+    def _open_anatomy_quiz(self) -> None:
+        """Open the 3D anatomy quiz (bones / muscles) — no login required."""
+        from .structure_quiz_exercise import StructureQuizExercise
+
+        quiz = StructureQuizExercise(lang=self._lang)
+        quiz.exercise_complete.connect(self._on_anatomy_quiz_done)
+        self.setCentralWidget(quiz)
+        self.show()
+
+    def _on_anatomy_quiz_done(self) -> None:
+        quiz = self.centralWidget()
+        if hasattr(quiz, "shutdown"):
+            quiz.shutdown()  # release the VTK render window
         self.start()
 
     def _open_shared_scan(self, splash) -> None:

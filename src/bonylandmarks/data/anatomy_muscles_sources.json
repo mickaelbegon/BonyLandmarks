@@ -1,0 +1,1752 @@
+{
+ "sternocleidomastoid_left": {
+  "fma_ids": [
+   "FMA13409"
+  ],
+  "source_files": [
+   "FJ1573.obj"
+  ],
+  "centroid_x": 31
+ },
+ "sternocleidomastoid_right": {
+  "fma_ids": [
+   "FMA13408"
+  ],
+  "source_files": [
+   "FJ1595.obj"
+  ],
+  "centroid_x": -1
+ },
+ "scalenus_anterior_left": {
+  "fma_ids": [
+   "FMA13393"
+  ],
+  "source_files": [
+   "FJ1570.obj"
+  ],
+  "centroid_x": 38
+ },
+ "scalenus_anterior_right": {
+  "fma_ids": [
+   "FMA13392"
+  ],
+  "source_files": [
+   "FJ1592.obj"
+  ],
+  "centroid_x": -39
+ },
+ "scalenus_medius_left": {
+  "fma_ids": [
+   "FMA13391"
+  ],
+  "source_files": [
+   "FJ1571.obj"
+  ],
+  "centroid_x": 38
+ },
+ "scalenus_medius_right": {
+  "fma_ids": [
+   "FMA13390"
+  ],
+  "source_files": [
+   "FJ1593.obj"
+  ],
+  "centroid_x": -39
+ },
+ "scalenus_posterior_left": {
+  "fma_ids": [
+   "FMA13389"
+  ],
+  "source_files": [
+   "FJ1572.obj"
+  ],
+  "centroid_x": 48
+ },
+ "scalenus_posterior_right": {
+  "fma_ids": [
+   "FMA13388"
+  ],
+  "source_files": [
+   "FJ1594.obj"
+  ],
+  "centroid_x": -49
+ },
+ "digastric_left": {
+  "fma_ids": [
+   "FMA46293"
+  ],
+  "source_files": [
+   "FJ1555.obj",
+   "FJ1560.obj",
+   "FJ1578.obj"
+  ],
+  "centroid_x": 17
+ },
+ "digastric_right": {
+  "fma_ids": [
+   "FMA46292"
+  ],
+  "source_files": [
+   "FJ1556.obj",
+   "FJ1579.obj"
+  ],
+  "centroid_x": -22
+ },
+ "platysma_left": {
+  "fma_ids": [
+   "FMA45740"
+  ],
+  "source_files": [
+   "FJ1558.obj"
+  ],
+  "centroid_x": 73
+ },
+ "platysma_right": {
+  "fma_ids": [
+   "FMA45739"
+  ],
+  "source_files": [
+   "FJ1587.obj"
+  ],
+  "centroid_x": -72
+ },
+ "omohyoid_left": {
+  "fma_ids": [
+   "FMA13349"
+  ],
+  "source_files": [
+   "FJ1565.obj"
+  ],
+  "centroid_x": 58
+ },
+ "omohyoid_right": {
+  "fma_ids": [
+   "FMA13348"
+  ],
+  "source_files": [
+   "FJ1586.obj"
+  ],
+  "centroid_x": -59
+ },
+ "sternohyoid_left": {
+  "fma_ids": [
+   "FMA13347"
+  ],
+  "source_files": [
+   "FJ1574.obj"
+  ],
+  "centroid_x": 14
+ },
+ "sternohyoid_right": {
+  "fma_ids": [
+   "FMA13346"
+  ],
+  "source_files": [
+   "FJ1596.obj"
+  ],
+  "centroid_x": -15
+ },
+ "splenius_capitis_left": {
+  "fma_ids": [
+   "FMA22729"
+  ],
+  "source_files": [
+   "FJ1545M.obj"
+  ],
+  "centroid_x": 29
+ },
+ "splenius_capitis_right": {
+  "fma_ids": [
+   "FMA22728"
+  ],
+  "source_files": [
+   "FJ1545.obj"
+  ],
+  "centroid_x": -29
+ },
+ "semispinalis_capitis_left": {
+  "fma_ids": [
+   "FMA22877"
+  ],
+  "source_files": [
+   "FJ1538M.obj"
+  ],
+  "centroid_x": 23
+ },
+ "semispinalis_capitis_right": {
+  "fma_ids": [
+   "FMA22876"
+  ],
+  "source_files": [
+   "FJ1538.obj"
+  ],
+  "centroid_x": -23
+ },
+ "levator_scapulae_left": {
+  "fma_ids": [
+   "FMA32541"
+  ],
+  "source_files": [
+   "FJ1532M.obj"
+  ],
+  "centroid_x": 51
+ },
+ "levator_scapulae_right": {
+  "fma_ids": [
+   "FMA32540"
+  ],
+  "source_files": [
+   "FJ1532.obj"
+  ],
+  "centroid_x": -51
+ },
+ "pectoralis_major_left": {
+  "fma_ids": [
+   "FMA34691",
+   "FMA79980",
+   "FMA45875"
+  ],
+  "source_files": [
+   "FJ1446M.obj",
+   "FJ1447M.obj",
+   "FJ1464M.obj"
+  ],
+  "centroid_x": 107
+ },
+ "pectoralis_major_right": {
+  "fma_ids": [
+   "FMA34690",
+   "FMA79979",
+   "FMA45874"
+  ],
+  "source_files": [
+   "FJ1446.obj",
+   "FJ1447.obj",
+   "FJ1464.obj"
+  ],
+  "centroid_x": -107
+ },
+ "pectoralis_minor_left": {
+  "fma_ids": [
+   "FMA13376"
+  ],
+  "source_files": [
+   "FJ1456M.obj"
+  ],
+  "centroid_x": 100
+ },
+ "pectoralis_minor_right": {
+  "fma_ids": [
+   "FMA13375"
+  ],
+  "source_files": [
+   "FJ1456.obj"
+  ],
+  "centroid_x": -100
+ },
+ "subclavius_left": {
+  "fma_ids": [
+   "FMA13411"
+  ],
+  "source_files": [
+   "FJ1460M.obj"
+  ],
+  "centroid_x": 69
+ },
+ "subclavius_right": {
+  "fma_ids": [
+   "FMA13412"
+  ],
+  "source_files": [
+   "FJ1460.obj"
+  ],
+  "centroid_x": -69
+ },
+ "serratus_anterior_left": {
+  "fma_ids": [
+   "FMA13399"
+  ],
+  "source_files": [
+   "FJ1459M.obj"
+  ],
+  "centroid_x": 101
+ },
+ "serratus_anterior_right": {
+  "fma_ids": [
+   "FMA13398"
+  ],
+  "source_files": [
+   "FJ1459.obj"
+  ],
+  "centroid_x": -101
+ },
+ "external_oblique_left": {
+  "fma_ids": [
+   "FMA13337"
+  ],
+  "source_files": [
+   "FJ1452M.obj"
+  ],
+  "centroid_x": 72
+ },
+ "external_oblique_right": {
+  "fma_ids": [
+   "FMA13336"
+  ],
+  "source_files": [
+   "FJ1452.obj"
+  ],
+  "centroid_x": -72
+ },
+ "external_intercostal_left": {
+  "fma_ids": [
+   "FMA9756"
+  ],
+  "source_files": [
+   "FJ1451M.obj"
+  ],
+  "centroid_x": 80
+ },
+ "external_intercostal_right": {
+  "fma_ids": [
+   "FMA9756"
+  ],
+  "source_files": [
+   "FJ1451.obj"
+  ],
+  "centroid_x": -80
+ },
+ "trapezius_left": {
+  "fma_ids": [
+   "FMA33583",
+   "FMA33585",
+   "FMA33587"
+  ],
+  "source_files": [
+   "FJ1520M.obj",
+   "FJ1521M.obj",
+   "FJ1554M.obj"
+  ],
+  "centroid_x": 72
+ },
+ "trapezius_right": {
+  "fma_ids": [
+   "FMA33581",
+   "FMA33584",
+   "FMA33586"
+  ],
+  "source_files": [
+   "FJ1520.obj",
+   "FJ1521.obj",
+   "FJ1554.obj"
+  ],
+  "centroid_x": -72
+ },
+ "rhomboid_major_left": {
+  "fma_ids": [
+   "FMA13382"
+  ],
+  "source_files": [
+   "FJ1536M.obj"
+  ],
+  "centroid_x": 44
+ },
+ "rhomboid_major_right": {
+  "fma_ids": [
+   "FMA13381"
+  ],
+  "source_files": [
+   "FJ1536.obj"
+  ],
+  "centroid_x": -44
+ },
+ "rhomboid_minor_left": {
+  "fma_ids": [
+   "FMA13384"
+  ],
+  "source_files": [
+   "FJ1537M.obj"
+  ],
+  "centroid_x": 30
+ },
+ "rhomboid_minor_right": {
+  "fma_ids": [
+   "FMA13383"
+  ],
+  "source_files": [
+   "FJ1537.obj"
+  ],
+  "centroid_x": -30
+ },
+ "serratus_posterior_inferior_left": {
+  "fma_ids": [
+   "FMA13406"
+  ],
+  "source_files": [
+   "FJ1541M.obj"
+  ],
+  "centroid_x": 52
+ },
+ "serratus_posterior_inferior_right": {
+  "fma_ids": [
+   "FMA13405"
+  ],
+  "source_files": [
+   "FJ1541.obj"
+  ],
+  "centroid_x": -52
+ },
+ "iliocostalis_lumborum_left": {
+  "fma_ids": [
+   "FMA22741"
+  ],
+  "source_files": [
+   "FJ1527M.obj"
+  ],
+  "centroid_x": 54
+ },
+ "iliocostalis_lumborum_right": {
+  "fma_ids": [
+   "FMA22740"
+  ],
+  "source_files": [
+   "FJ1527.obj"
+  ],
+  "centroid_x": -54
+ },
+ "longissimus_thoracis_left": {
+  "fma_ids": [
+   "FMA22753"
+  ],
+  "source_files": [
+   "FJ1535M.obj"
+  ],
+  "centroid_x": 34
+ },
+ "longissimus_thoracis_right": {
+  "fma_ids": [
+   "FMA22751"
+  ],
+  "source_files": [
+   "FJ1535.obj"
+  ],
+  "centroid_x": -34
+ },
+ "diaphragm_mid": {
+  "fma_ids": [
+   "FMA13295"
+  ],
+  "source_files": [
+   "FJ3131.obj"
+  ],
+  "centroid_x": -1
+ },
+ "deltoid_left": {
+  "fma_ids": [
+   "FMA34681",
+   "FMA34683",
+   "FMA34685"
+  ],
+  "source_files": [
+   "FJ1467M.obj",
+   "FJ1468M.obj",
+   "FJ1513M.obj"
+  ],
+  "centroid_x": 161
+ },
+ "deltoid_right": {
+  "fma_ids": [
+   "FMA34680",
+   "FMA34682",
+   "FMA34684"
+  ],
+  "source_files": [
+   "FJ1467.obj",
+   "FJ1468.obj",
+   "FJ1513.obj"
+  ],
+  "centroid_x": -161
+ },
+ "supraspinatus_left": {
+  "fma_ids": [
+   "FMA32545"
+  ],
+  "source_files": [
+   "FJ1506M.obj"
+  ],
+  "centroid_x": 126
+ },
+ "supraspinatus_right": {
+  "fma_ids": [
+   "FMA32544"
+  ],
+  "source_files": [
+   "FJ1506.obj"
+  ],
+  "centroid_x": -126
+ },
+ "infraspinatus_left": {
+  "fma_ids": [
+   "FMA32548"
+  ],
+  "source_files": [
+   "FJ1500M.obj"
+  ],
+  "centroid_x": 125
+ },
+ "infraspinatus_right": {
+  "fma_ids": [
+   "FMA32547"
+  ],
+  "source_files": [
+   "FJ1500.obj"
+  ],
+  "centroid_x": -125
+ },
+ "teres_major_left": {
+  "fma_ids": [
+   "FMA32552"
+  ],
+  "source_files": [
+   "FJ1507M.obj"
+  ],
+  "centroid_x": 129
+ },
+ "teres_major_right": {
+  "fma_ids": [
+   "FMA32551"
+  ],
+  "source_files": [
+   "FJ1507.obj"
+  ],
+  "centroid_x": -129
+ },
+ "teres_minor_left": {
+  "fma_ids": [
+   "FMA32554"
+  ],
+  "source_files": [
+   "FJ1508M.obj"
+  ],
+  "centroid_x": 148
+ },
+ "teres_minor_right": {
+  "fma_ids": [
+   "FMA32553"
+  ],
+  "source_files": [
+   "FJ1508.obj"
+  ],
+  "centroid_x": -148
+ },
+ "subscapularis_left": {
+  "fma_ids": [
+   "FMA13415"
+  ],
+  "source_files": [
+   "FJ1504M.obj"
+  ],
+  "centroid_x": 115
+ },
+ "subscapularis_right": {
+  "fma_ids": [
+   "FMA13414"
+  ],
+  "source_files": [
+   "FJ1504.obj"
+  ],
+  "centroid_x": -115
+ },
+ "coracobrachialis_left": {
+  "fma_ids": [
+   "FMA37666"
+  ],
+  "source_files": [
+   "FJ1488M.obj"
+  ],
+  "centroid_x": 160
+ },
+ "coracobrachialis_right": {
+  "fma_ids": [
+   "FMA37665"
+  ],
+  "source_files": [
+   "FJ1488.obj"
+  ],
+  "centroid_x": -160
+ },
+ "brachialis_left": {
+  "fma_ids": [
+   "FMA37669"
+  ],
+  "source_files": [
+   "FJ1486M.obj"
+  ],
+  "centroid_x": 206
+ },
+ "brachialis_right": {
+  "fma_ids": [
+   "FMA37668"
+  ],
+  "source_files": [
+   "FJ1486.obj"
+  ],
+  "centroid_x": -206
+ },
+ "biceps_brachii_left": {
+  "fma_ids": [
+   "FMA37687",
+   "FMA37685"
+  ],
+  "source_files": [
+   "FJ1478M.obj",
+   "FJ1512M.obj"
+  ],
+  "centroid_x": 178
+ },
+ "biceps_brachii_right": {
+  "fma_ids": [
+   "FMA37686",
+   "FMA37684"
+  ],
+  "source_files": [
+   "FJ1478.obj",
+   "FJ1512.obj"
+  ],
+  "centroid_x": -178
+ },
+ "triceps_brachii_left": {
+  "fma_ids": [
+   "FMA37700",
+   "FMA37698",
+   "FMA37696"
+  ],
+  "source_files": [
+   "FJ1477M.obj",
+   "FJ1479M.obj",
+   "FJ1480M.obj"
+  ],
+  "centroid_x": 191
+ },
+ "triceps_brachii_right": {
+  "fma_ids": [
+   "FMA37699",
+   "FMA37697",
+   "FMA37695"
+  ],
+  "source_files": [
+   "FJ1477.obj",
+   "FJ1479.obj",
+   "FJ1480.obj"
+  ],
+  "centroid_x": -191
+ },
+ "anconeus_left": {
+  "fma_ids": [
+   "FMA37706"
+  ],
+  "source_files": [
+   "FJ1485M.obj"
+  ],
+  "centroid_x": 218
+ },
+ "anconeus_right": {
+  "fma_ids": [
+   "FMA37705"
+  ],
+  "source_files": [
+   "FJ1485.obj"
+  ],
+  "centroid_x": -218
+ },
+ "brachioradialis_left": {
+  "fma_ids": [
+   "FMA38487"
+  ],
+  "source_files": [
+   "FJ1487M.obj"
+  ],
+  "centroid_x": 244
+ },
+ "brachioradialis_right": {
+  "fma_ids": [
+   "FMA38486"
+  ],
+  "source_files": [
+   "FJ1487.obj"
+  ],
+  "centroid_x": -244
+ },
+ "pronator_teres_left": {
+  "fma_ids": [
+   "FMA38561",
+   "FMA38563"
+  ],
+  "source_files": [
+   "FJ1474M.obj",
+   "FJ1516M.obj"
+  ],
+  "centroid_x": 226
+ },
+ "pronator_teres_right": {
+  "fma_ids": [
+   "FMA38560",
+   "FMA38562"
+  ],
+  "source_files": [
+   "FJ1474.obj",
+   "FJ1516.obj"
+  ],
+  "centroid_x": -226
+ },
+ "pronator_quadratus_left": {
+  "fma_ids": [
+   "FMA38455"
+  ],
+  "source_files": [
+   "FJ1503M.obj"
+  ],
+  "centroid_x": 249
+ },
+ "pronator_quadratus_right": {
+  "fma_ids": [
+   "FMA38454"
+  ],
+  "source_files": [
+   "FJ1503.obj"
+  ],
+  "centroid_x": -249
+ },
+ "supinator_left": {
+  "fma_ids": [
+   "FMA38514"
+  ],
+  "source_files": [
+   "FJ1505M.obj"
+  ],
+  "centroid_x": 238
+ },
+ "supinator_right": {
+  "fma_ids": [
+   "FMA38513"
+  ],
+  "source_files": [
+   "FJ1505.obj"
+  ],
+  "centroid_x": -238
+ },
+ "flexor_carpi_radialis_left": {
+  "fma_ids": [
+   "FMA38461"
+  ],
+  "source_files": [
+   "FJ1496M.obj"
+  ],
+  "centroid_x": 228
+ },
+ "flexor_carpi_radialis_right": {
+  "fma_ids": [
+   "FMA38460"
+  ],
+  "source_files": [
+   "FJ1496.obj"
+  ],
+  "centroid_x": -228
+ },
+ "flexor_carpi_ulnaris_left": {
+  "fma_ids": [
+   "FMA38618",
+   "FMA38620"
+  ],
+  "source_files": [
+   "FJ1473M.obj",
+   "FJ1518M.obj"
+  ],
+  "centroid_x": 211
+ },
+ "flexor_carpi_ulnaris_right": {
+  "fma_ids": [
+   "FMA38617",
+   "FMA38619"
+  ],
+  "source_files": [
+   "FJ1473.obj",
+   "FJ1518.obj"
+  ],
+  "centroid_x": -211
+ },
+ "palmaris_longus_left": {
+  "fma_ids": [
+   "FMA38464"
+  ],
+  "source_files": [
+   "FJ1502M.obj"
+  ],
+  "centroid_x": 235
+ },
+ "palmaris_longus_right": {
+  "fma_ids": [
+   "FMA38463"
+  ],
+  "source_files": [
+   "FJ1502.obj"
+  ],
+  "centroid_x": -235
+ },
+ "flexor_digitorum_superficialis_left": {
+  "fma_ids": [
+   "FMA38471"
+  ],
+  "source_files": [
+   "FJ1475M.obj",
+   "FJ1499M.obj"
+  ],
+  "centroid_x": 241
+ },
+ "flexor_digitorum_superficialis_right": {
+  "fma_ids": [
+   "FMA38470"
+  ],
+  "source_files": [
+   "FJ1475.obj",
+   "FJ1499.obj"
+  ],
+  "centroid_x": -241
+ },
+ "flexor_digitorum_profundus_left": {
+  "fma_ids": [
+   "FMA38480"
+  ],
+  "source_files": [
+   "FJ1497M.obj"
+  ],
+  "centroid_x": 255
+ },
+ "flexor_digitorum_profundus_right": {
+  "fma_ids": [
+   "FMA38479"
+  ],
+  "source_files": [
+   "FJ1497.obj"
+  ],
+  "centroid_x": -255
+ },
+ "flexor_pollicis_longus_left": {
+  "fma_ids": [
+   "FMA38484"
+  ],
+  "source_files": [
+   "FJ1498M.obj"
+  ],
+  "centroid_x": 276
+ },
+ "flexor_pollicis_longus_right": {
+  "fma_ids": [
+   "FMA38482"
+  ],
+  "source_files": [
+   "FJ1498.obj"
+  ],
+  "centroid_x": -276
+ },
+ "extensor_carpi_radialis_longus_left": {
+  "fma_ids": [
+   "FMA38496"
+  ],
+  "source_files": [
+   "FJ1490M.obj"
+  ],
+  "centroid_x": 249
+ },
+ "extensor_carpi_radialis_longus_right": {
+  "fma_ids": [
+   "FMA38495"
+  ],
+  "source_files": [
+   "FJ1490.obj"
+  ],
+  "centroid_x": -249
+ },
+ "extensor_carpi_radialis_brevis_left": {
+  "fma_ids": [
+   "FMA38499"
+  ],
+  "source_files": [
+   "FJ1489M.obj"
+  ],
+  "centroid_x": 251
+ },
+ "extensor_carpi_radialis_brevis_right": {
+  "fma_ids": [
+   "FMA38498"
+  ],
+  "source_files": [
+   "FJ1489.obj"
+  ],
+  "centroid_x": -251
+ },
+ "extensor_digitorum_left": {
+  "fma_ids": [
+   "FMA38502"
+  ],
+  "source_files": [
+   "FJ1492M.obj"
+  ],
+  "centroid_x": 264
+ },
+ "extensor_digitorum_right": {
+  "fma_ids": [
+   "FMA38501"
+  ],
+  "source_files": [
+   "FJ1492.obj"
+  ],
+  "centroid_x": -264
+ },
+ "extensor_digiti_minimi_left": {
+  "fma_ids": [
+   "FMA38505"
+  ],
+  "source_files": [
+   "FJ1491M.obj"
+  ],
+  "centroid_x": 235
+ },
+ "extensor_digiti_minimi_right": {
+  "fma_ids": [
+   "FMA38504"
+  ],
+  "source_files": [
+   "FJ1491.obj"
+  ],
+  "centroid_x": -235
+ },
+ "extensor_carpi_ulnaris_left": {
+  "fma_ids": [
+   "FMA38508"
+  ],
+  "source_files": [
+   "FJ1472M.obj",
+   "FJ1517M.obj"
+  ],
+  "centroid_x": 229
+ },
+ "extensor_carpi_ulnaris_right": {
+  "fma_ids": [
+   "FMA38507"
+  ],
+  "source_files": [
+   "FJ1472.obj",
+   "FJ1517.obj"
+  ],
+  "centroid_x": -229
+ },
+ "extensor_indicis_left": {
+  "fma_ids": [
+   "FMA38526"
+  ],
+  "source_files": [
+   "FJ1493M.obj"
+  ],
+  "centroid_x": 269
+ },
+ "extensor_indicis_right": {
+  "fma_ids": [
+   "FMA38525"
+  ],
+  "source_files": [
+   "FJ1493.obj"
+  ],
+  "centroid_x": -269
+ },
+ "extensor_pollicis_brevis_left": {
+  "fma_ids": [
+   "FMA38520"
+  ],
+  "source_files": [
+   "FJ1494M.obj"
+  ],
+  "centroid_x": 273
+ },
+ "extensor_pollicis_brevis_right": {
+  "fma_ids": [
+   "FMA38519"
+  ],
+  "source_files": [
+   "FJ1494.obj"
+  ],
+  "centroid_x": -273
+ },
+ "extensor_pollicis_longus_left": {
+  "fma_ids": [
+   "FMA38523"
+  ],
+  "source_files": [
+   "FJ1495M.obj"
+  ],
+  "centroid_x": 272
+ },
+ "extensor_pollicis_longus_right": {
+  "fma_ids": [
+   "FMA38522"
+  ],
+  "source_files": [
+   "FJ1495.obj"
+  ],
+  "centroid_x": -272
+ },
+ "abductor_pollicis_longus_left": {
+  "fma_ids": [
+   "FMA38517"
+  ],
+  "source_files": [
+   "FJ1484M.obj"
+  ],
+  "centroid_x": 258
+ },
+ "abductor_pollicis_longus_right": {
+  "fma_ids": [
+   "FMA38516"
+  ],
+  "source_files": [
+   "FJ1484.obj"
+  ],
+  "centroid_x": -258
+ },
+ "abductor_pollicis_brevis_left": {
+  "fma_ids": [
+   "FMA37387"
+  ],
+  "source_files": [
+   "FJ1483M.obj"
+  ],
+  "centroid_x": 283
+ },
+ "abductor_pollicis_brevis_right": {
+  "fma_ids": [
+   "FMA37386"
+  ],
+  "source_files": [
+   "FJ1483.obj"
+  ],
+  "centroid_x": -283
+ },
+ "opponens_pollicis_left": {
+  "fma_ids": [
+   "FMA37391"
+  ],
+  "source_files": [
+   "FJ1501M.obj"
+  ],
+  "centroid_x": 282
+ },
+ "opponens_pollicis_right": {
+  "fma_ids": [
+   "FMA37390"
+  ],
+  "source_files": [
+   "FJ1501.obj"
+  ],
+  "centroid_x": -282
+ },
+ "flexor_pollicis_brevis_left": {
+  "fma_ids": [
+   "FMA65199",
+   "FMA37388"
+  ],
+  "source_files": [
+   "FJ1469M.obj",
+   "FJ1514M.obj"
+  ],
+  "centroid_x": 280
+ },
+ "flexor_pollicis_brevis_right": {
+  "fma_ids": [
+   "FMA65198",
+   "FMA37389"
+  ],
+  "source_files": [
+   "FJ1469.obj",
+   "FJ1514.obj"
+  ],
+  "centroid_x": -280
+ },
+ "adductor_pollicis_left": {
+  "fma_ids": [
+   "FMA46122",
+   "FMA46124"
+  ],
+  "source_files": [
+   "FJ1481M.obj",
+   "FJ1515M.obj"
+  ],
+  "centroid_x": 279
+ },
+ "adductor_pollicis_right": {
+  "fma_ids": [
+   "FMA46121",
+   "FMA46123"
+  ],
+  "source_files": [
+   "FJ1481.obj",
+   "FJ1515.obj"
+  ],
+  "centroid_x": -279
+ },
+ "gluteus_maximus_left": {
+  "fma_ids": [
+   "FMA22329"
+  ],
+  "source_files": [
+   "FJ1418M.obj"
+  ],
+  "centroid_x": 72
+ },
+ "gluteus_maximus_right": {
+  "fma_ids": [
+   "FMA22328"
+  ],
+  "source_files": [
+   "FJ1418.obj"
+  ],
+  "centroid_x": -72
+ },
+ "gluteus_medius_left": {
+  "fma_ids": [
+   "FMA22331"
+  ],
+  "source_files": [
+   "FJ1419M.obj"
+  ],
+  "centroid_x": 105
+ },
+ "gluteus_medius_right": {
+  "fma_ids": [
+   "FMA22330"
+  ],
+  "source_files": [
+   "FJ1419.obj"
+  ],
+  "centroid_x": -105
+ },
+ "gluteus_minimus_left": {
+  "fma_ids": [
+   "FMA22333"
+  ],
+  "source_files": [
+   "FJ1420M.obj"
+  ],
+  "centroid_x": 106
+ },
+ "gluteus_minimus_right": {
+  "fma_ids": [
+   "FMA22332"
+  ],
+  "source_files": [
+   "FJ1420.obj"
+  ],
+  "centroid_x": -106
+ },
+ "piriformis_left": {
+  "fma_ids": [
+   "FMA22341"
+  ],
+  "source_files": [
+   "FJ1428M.obj"
+  ],
+  "centroid_x": 81
+ },
+ "piriformis_right": {
+  "fma_ids": [
+   "FMA22340"
+  ],
+  "source_files": [
+   "FJ1428.obj"
+  ],
+  "centroid_x": -81
+ },
+ "obturator_internus_left": {
+  "fma_ids": [
+   "FMA22325"
+  ],
+  "source_files": [
+   "FJ1426M.obj"
+  ],
+  "centroid_x": 70
+ },
+ "obturator_internus_right": {
+  "fma_ids": [
+   "FMA22324"
+  ],
+  "source_files": [
+   "FJ1426.obj"
+  ],
+  "centroid_x": -70
+ },
+ "quadratus_femoris_left": {
+  "fma_ids": [
+   "FMA22339"
+  ],
+  "source_files": [
+   "FJ1432M.obj"
+  ],
+  "centroid_x": 92
+ },
+ "quadratus_femoris_right": {
+  "fma_ids": [
+   "FMA22338"
+  ],
+  "source_files": [
+   "FJ1432.obj"
+  ],
+  "centroid_x": -92
+ },
+ "iliacus_left": {
+  "fma_ids": [
+   "FMA22323"
+  ],
+  "source_files": [
+   "FJ1422M.obj"
+  ],
+  "centroid_x": 100
+ },
+ "iliacus_right": {
+  "fma_ids": [
+   "FMA22322"
+  ],
+  "source_files": [
+   "FJ1422.obj"
+  ],
+  "centroid_x": -100
+ },
+ "psoas_major_left": {
+  "fma_ids": [
+   "FMA22343"
+  ],
+  "source_files": [
+   "FJ1431M.obj"
+  ],
+  "centroid_x": 61
+ },
+ "psoas_major_right": {
+  "fma_ids": [
+   "FMA22342"
+  ],
+  "source_files": [
+   "FJ1431.obj"
+  ],
+  "centroid_x": -61
+ },
+ "pectineus_left": {
+  "fma_ids": [
+   "FMA22451"
+  ],
+  "source_files": [
+   "FJ1427M.obj"
+  ],
+  "centroid_x": 61
+ },
+ "pectineus_right": {
+  "fma_ids": [
+   "FMA22450"
+  ],
+  "source_files": [
+   "FJ1427.obj"
+  ],
+  "centroid_x": -61
+ },
+ "gracilis_left": {
+  "fma_ids": [
+   "FMA43884"
+  ],
+  "source_files": [
+   "FJ1421M.obj"
+  ],
+  "centroid_x": 41
+ },
+ "gracilis_right": {
+  "fma_ids": [
+   "FMA43883"
+  ],
+  "source_files": [
+   "FJ1421.obj"
+  ],
+  "centroid_x": -41
+ },
+ "sartorius_left": {
+  "fma_ids": [
+   "FMA22355"
+  ],
+  "source_files": [
+   "FJ1434M.obj"
+  ],
+  "centroid_x": 76
+ },
+ "sartorius_right": {
+  "fma_ids": [
+   "FMA22354"
+  ],
+  "source_files": [
+   "FJ1434.obj"
+  ],
+  "centroid_x": -76
+ },
+ "rectus_femoris_left": {
+  "fma_ids": [
+   "FMA38929"
+  ],
+  "source_files": [
+   "FJ1433M.obj"
+  ],
+  "centroid_x": 109
+ },
+ "rectus_femoris_right": {
+  "fma_ids": [
+   "FMA38928"
+  ],
+  "source_files": [
+   "FJ1433.obj"
+  ],
+  "centroid_x": -109
+ },
+ "vastus_lateralis_left": {
+  "fma_ids": [
+   "FMA38931"
+  ],
+  "source_files": [
+   "FJ1442M.obj"
+  ],
+  "centroid_x": 122
+ },
+ "vastus_lateralis_right": {
+  "fma_ids": [
+   "FMA38930"
+  ],
+  "source_files": [
+   "FJ1442.obj"
+  ],
+  "centroid_x": -122
+ },
+ "vastus_medialis_left": {
+  "fma_ids": [
+   "FMA38933"
+  ],
+  "source_files": [
+   "FJ1443M.obj"
+  ],
+  "centroid_x": 70
+ },
+ "vastus_medialis_right": {
+  "fma_ids": [
+   "FMA38932"
+  ],
+  "source_files": [
+   "FJ1443.obj"
+  ],
+  "centroid_x": -70
+ },
+ "vastus_intermedius_left": {
+  "fma_ids": [
+   "FMA38935"
+  ],
+  "source_files": [
+   "FJ1441M.obj"
+  ],
+  "centroid_x": 105
+ },
+ "vastus_intermedius_right": {
+  "fma_ids": [
+   "FMA38934"
+  ],
+  "source_files": [
+   "FJ1441.obj"
+  ],
+  "centroid_x": -105
+ },
+ "adductor_longus_left": {
+  "fma_ids": [
+   "FMA22457"
+  ],
+  "source_files": [
+   "FJ1402M.obj"
+  ],
+  "centroid_x": 56
+ },
+ "adductor_longus_right": {
+  "fma_ids": [
+   "FMA22456"
+  ],
+  "source_files": [
+   "FJ1402.obj"
+  ],
+  "centroid_x": -56
+ },
+ "adductor_brevis_left": {
+  "fma_ids": [
+   "FMA22454"
+  ],
+  "source_files": [
+   "FJ1401M.obj"
+  ],
+  "centroid_x": 61
+ },
+ "adductor_brevis_right": {
+  "fma_ids": [
+   "FMA22452"
+  ],
+  "source_files": [
+   "FJ1401.obj"
+  ],
+  "centroid_x": -61
+ },
+ "adductor_magnus_left": {
+  "fma_ids": [
+   "FMA22460"
+  ],
+  "source_files": [
+   "FJ1403M.obj"
+  ],
+  "centroid_x": 63
+ },
+ "adductor_magnus_right": {
+  "fma_ids": [
+   "FMA22459"
+  ],
+  "source_files": [
+   "FJ1403.obj"
+  ],
+  "centroid_x": -63
+ },
+ "tensor_fasciae_latae_left": {
+  "fma_ids": [
+   "FMA22426"
+  ],
+  "source_files": [
+   "FJ1438M.obj"
+  ],
+  "centroid_x": 144
+ },
+ "tensor_fasciae_latae_right": {
+  "fma_ids": [
+   "FMA22425"
+  ],
+  "source_files": [
+   "FJ1438.obj"
+  ],
+  "centroid_x": -144
+ },
+ "semimembranosus_left": {
+  "fma_ids": [
+   "FMA22449"
+  ],
+  "source_files": [
+   "FJ1435M.obj"
+  ],
+  "centroid_x": 42
+ },
+ "semimembranosus_right": {
+  "fma_ids": [
+   "FMA22448"
+  ],
+  "source_files": [
+   "FJ1435.obj"
+  ],
+  "centroid_x": -42
+ },
+ "semitendinosus_left": {
+  "fma_ids": [
+   "FMA22359"
+  ],
+  "source_files": [
+   "FJ1436M.obj"
+  ],
+  "centroid_x": 48
+ },
+ "semitendinosus_right": {
+  "fma_ids": [
+   "FMA22358"
+  ],
+  "source_files": [
+   "FJ1436.obj"
+  ],
+  "centroid_x": -48
+ },
+ "biceps_femoris_left": {
+  "fma_ids": [
+   "FMA45889",
+   "FMA45892"
+  ],
+  "source_files": [
+   "FJ1395M.obj",
+   "FJ1444M.obj"
+  ],
+  "centroid_x": 93
+ },
+ "biceps_femoris_right": {
+  "fma_ids": [
+   "FMA45888",
+   "FMA45891"
+  ],
+  "source_files": [
+   "FJ1395.obj",
+   "FJ1444.obj"
+  ],
+  "centroid_x": -93
+ },
+ "popliteus_left": {
+  "fma_ids": [
+   "FMA22592"
+  ],
+  "source_files": [
+   "FJ1430M.obj"
+  ],
+  "centroid_x": 83
+ },
+ "popliteus_right": {
+  "fma_ids": [
+   "FMA22591"
+  ],
+  "source_files": [
+   "FJ1430.obj"
+  ],
+  "centroid_x": -83
+ },
+ "plantaris_left": {
+  "fma_ids": [
+   "FMA22561"
+  ],
+  "source_files": [
+   "FJ1429M.obj"
+  ],
+  "centroid_x": 70
+ },
+ "plantaris_right": {
+  "fma_ids": [
+   "FMA22560"
+  ],
+  "source_files": [
+   "FJ1429.obj"
+  ],
+  "centroid_x": -70
+ },
+ "gastrocnemius_left": {
+  "fma_ids": [
+   "FMA45961",
+   "FMA45958"
+  ],
+  "source_files": [
+   "FJ1394M.obj",
+   "FJ1397M.obj"
+  ],
+  "centroid_x": 69
+ },
+ "gastrocnemius_right": {
+  "fma_ids": [
+   "FMA45960",
+   "FMA45957"
+  ],
+  "source_files": [
+   "FJ1394.obj",
+   "FJ1397.obj"
+  ],
+  "centroid_x": -69
+ },
+ "soleus_left": {
+  "fma_ids": [
+   "FMA22559"
+  ],
+  "source_files": [
+   "FJ1437M.obj"
+  ],
+  "centroid_x": 76
+ },
+ "soleus_right": {
+  "fma_ids": [
+   "FMA22558"
+  ],
+  "source_files": [
+   "FJ1437.obj"
+  ],
+  "centroid_x": -76
+ },
+ "tibialis_anterior_left": {
+  "fma_ids": [
+   "FMA22545"
+  ],
+  "source_files": [
+   "FJ1439M.obj"
+  ],
+  "centroid_x": 92
+ },
+ "tibialis_anterior_right": {
+  "fma_ids": [
+   "FMA22544"
+  ],
+  "source_files": [
+   "FJ1439.obj"
+  ],
+  "centroid_x": -92
+ },
+ "tibialis_posterior_left": {
+  "fma_ids": [
+   "FMA65019"
+  ],
+  "source_files": [
+   "FJ1440M.obj"
+  ],
+  "centroid_x": 74
+ },
+ "tibialis_posterior_right": {
+  "fma_ids": [
+   "FMA65018"
+  ],
+  "source_files": [
+   "FJ1440.obj"
+  ],
+  "centroid_x": -74
+ },
+ "extensor_digitorum_longus_left": {
+  "fma_ids": [
+   "FMA22549"
+  ],
+  "source_files": [
+   "FJ1406M.obj"
+  ],
+  "centroid_x": 128
+ },
+ "extensor_digitorum_longus_right": {
+  "fma_ids": [
+   "FMA22548"
+  ],
+  "source_files": [
+   "FJ1406.obj"
+  ],
+  "centroid_x": -128
+ },
+ "extensor_hallucis_longus_left": {
+  "fma_ids": [
+   "FMA22547"
+  ],
+  "source_files": [
+   "FJ1408M.obj"
+  ],
+  "centroid_x": 94
+ },
+ "extensor_hallucis_longus_right": {
+  "fma_ids": [
+   "FMA22546"
+  ],
+  "source_files": [
+   "FJ1408.obj"
+  ],
+  "centroid_x": -94
+ },
+ "fibularis_longus_left": {
+  "fma_ids": [
+   "FMA22553"
+  ],
+  "source_files": [
+   "FJ1410M.obj"
+  ],
+  "centroid_x": 104
+ },
+ "fibularis_longus_right": {
+  "fma_ids": [
+   "FMA22552"
+  ],
+  "source_files": [
+   "FJ1410.obj"
+  ],
+  "centroid_x": -104
+ },
+ "fibularis_brevis_left": {
+  "fma_ids": [
+   "FMA22555"
+  ],
+  "source_files": [
+   "FJ1409M.obj"
+  ],
+  "centroid_x": 100
+ },
+ "fibularis_brevis_right": {
+  "fma_ids": [
+   "FMA22554"
+  ],
+  "source_files": [
+   "FJ1409.obj"
+  ],
+  "centroid_x": -100
+ },
+ "fibularis_tertius_left": {
+  "fma_ids": [
+   "FMA22551"
+  ],
+  "source_files": [
+   "FJ1411M.obj"
+  ],
+  "centroid_x": 105
+ },
+ "fibularis_tertius_right": {
+  "fma_ids": [
+   "FMA22550"
+  ],
+  "source_files": [
+   "FJ1411.obj"
+  ],
+  "centroid_x": -105
+ },
+ "flexor_digitorum_longus_left": {
+  "fma_ids": [
+   "FMA65017"
+  ],
+  "source_files": [
+   "FJ1414M.obj"
+  ],
+  "centroid_x": 103
+ },
+ "flexor_digitorum_longus_right": {
+  "fma_ids": [
+   "FMA65016"
+  ],
+  "source_files": [
+   "FJ1414.obj"
+  ],
+  "centroid_x": -103
+ },
+ "flexor_hallucis_longus_left": {
+  "fma_ids": [
+   "FMA65015"
+  ],
+  "source_files": [
+   "FJ1415M.obj"
+  ],
+  "centroid_x": 85
+ },
+ "flexor_hallucis_longus_right": {
+  "fma_ids": [
+   "FMA65014"
+  ],
+  "source_files": [
+   "FJ1415.obj"
+  ],
+  "centroid_x": -85
+ },
+ "abductor_hallucis_left": {
+  "fma_ids": [
+   "FMA37460"
+  ],
+  "source_files": [
+   "FJ1400M.obj"
+  ],
+  "centroid_x": 71
+ },
+ "abductor_hallucis_right": {
+  "fma_ids": [
+   "FMA37459"
+  ],
+  "source_files": [
+   "FJ1400.obj"
+  ],
+  "centroid_x": -71
+ }
+}

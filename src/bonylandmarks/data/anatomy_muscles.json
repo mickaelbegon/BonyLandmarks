@@ -1,0 +1,3267 @@
+[
+ {
+  "id": "sternocleidomastoid_left",
+  "kind": "muscle",
+  "fma_id": "FMA13409",
+  "name_fr": "Sternocléidomastoïdien gauche",
+  "name_en": "Left sternocleidomastoid",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "sterno-cléido-mastoïdien",
+   "SCM",
+   "sterno-cleido-mastoidien"
+  ],
+  "synonyms_en": [
+   "SCM",
+   "sternomastoid"
+  ],
+  "mesh_file": "muscles/sternocleidomastoid_left.obj"
+ },
+ {
+  "id": "sternocleidomastoid_right",
+  "kind": "muscle",
+  "fma_id": "FMA13408",
+  "name_fr": "Sternocléidomastoïdien droit",
+  "name_en": "Right sternocleidomastoid",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "sterno-cléido-mastoïdien",
+   "SCM",
+   "sterno-cleido-mastoidien"
+  ],
+  "synonyms_en": [
+   "SCM",
+   "sternomastoid"
+  ],
+  "mesh_file": "muscles/sternocleidomastoid_right.obj"
+ },
+ {
+  "id": "scalenus_anterior_left",
+  "kind": "muscle",
+  "fma_id": "FMA13393",
+  "name_fr": "Scalène antérieur gauche",
+  "name_en": "Left scalenus anterior",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "anterior scalene"
+  ],
+  "mesh_file": "muscles/scalenus_anterior_left.obj"
+ },
+ {
+  "id": "scalenus_anterior_right",
+  "kind": "muscle",
+  "fma_id": "FMA13392",
+  "name_fr": "Scalène antérieur droit",
+  "name_en": "Right scalenus anterior",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "anterior scalene"
+  ],
+  "mesh_file": "muscles/scalenus_anterior_right.obj"
+ },
+ {
+  "id": "scalenus_medius_left",
+  "kind": "muscle",
+  "fma_id": "FMA13391",
+  "name_fr": "Scalène moyen gauche",
+  "name_en": "Left scalenus medius",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "middle scalene"
+  ],
+  "mesh_file": "muscles/scalenus_medius_left.obj"
+ },
+ {
+  "id": "scalenus_medius_right",
+  "kind": "muscle",
+  "fma_id": "FMA13390",
+  "name_fr": "Scalène moyen droit",
+  "name_en": "Right scalenus medius",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "middle scalene"
+  ],
+  "mesh_file": "muscles/scalenus_medius_right.obj"
+ },
+ {
+  "id": "scalenus_posterior_left",
+  "kind": "muscle",
+  "fma_id": "FMA13389",
+  "name_fr": "Scalène postérieur gauche",
+  "name_en": "Left scalenus posterior",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "posterior scalene"
+  ],
+  "mesh_file": "muscles/scalenus_posterior_left.obj"
+ },
+ {
+  "id": "scalenus_posterior_right",
+  "kind": "muscle",
+  "fma_id": "FMA13388",
+  "name_fr": "Scalène postérieur droit",
+  "name_en": "Right scalenus posterior",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "posterior scalene"
+  ],
+  "mesh_file": "muscles/scalenus_posterior_right.obj"
+ },
+ {
+  "id": "digastric_left",
+  "kind": "muscle",
+  "fma_id": "FMA46293",
+  "name_fr": "Digastrique gauche",
+  "name_en": "Left digastric",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "digastricus"
+  ],
+  "mesh_file": "muscles/digastric_left.obj",
+  "src_files": [
+   "FJ1555",
+   "FJ1560",
+   "FJ1578"
+  ]
+ },
+ {
+  "id": "digastric_right",
+  "kind": "muscle",
+  "fma_id": "FMA46292",
+  "name_fr": "Digastrique droit",
+  "name_en": "Right digastric",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "digastricus"
+  ],
+  "mesh_file": "muscles/digastric_right.obj",
+  "src_files": [
+   "FJ1556",
+   "FJ1579"
+  ]
+ },
+ {
+  "id": "platysma_left",
+  "kind": "muscle",
+  "fma_id": "FMA45740",
+  "name_fr": "Platysma gauche",
+  "name_en": "Left platysma",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "peaucier du cou"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/platysma_left.obj"
+ },
+ {
+  "id": "platysma_right",
+  "kind": "muscle",
+  "fma_id": "FMA45739",
+  "name_fr": "Platysma droit",
+  "name_en": "Right platysma",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "peaucier du cou"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/platysma_right.obj"
+ },
+ {
+  "id": "omohyoid_left",
+  "kind": "muscle",
+  "fma_id": "FMA13349",
+  "name_fr": "Omo-hyoïdien gauche",
+  "name_en": "Left omohyoid",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "omohyoïdien"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/omohyoid_left.obj"
+ },
+ {
+  "id": "omohyoid_right",
+  "kind": "muscle",
+  "fma_id": "FMA13348",
+  "name_fr": "Omo-hyoïdien droit",
+  "name_en": "Right omohyoid",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "omohyoïdien"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/omohyoid_right.obj"
+ },
+ {
+  "id": "sternohyoid_left",
+  "kind": "muscle",
+  "fma_id": "FMA13347",
+  "name_fr": "Sterno-hyoïdien gauche",
+  "name_en": "Left sternohyoid",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "sterno-cléido-hyoïdien",
+   "sternohyoïdien"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/sternohyoid_left.obj"
+ },
+ {
+  "id": "sternohyoid_right",
+  "kind": "muscle",
+  "fma_id": "FMA13346",
+  "name_fr": "Sterno-hyoïdien droit",
+  "name_en": "Right sternohyoid",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "sterno-cléido-hyoïdien",
+   "sternohyoïdien"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/sternohyoid_right.obj"
+ },
+ {
+  "id": "splenius_capitis_left",
+  "kind": "muscle",
+  "fma_id": "FMA22729",
+  "name_fr": "Splénius de la tête gauche",
+  "name_en": "Left splenius capitis",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "splenius de la tête",
+   "splénius capitis"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/splenius_capitis_left.obj"
+ },
+ {
+  "id": "splenius_capitis_right",
+  "kind": "muscle",
+  "fma_id": "FMA22728",
+  "name_fr": "Splénius de la tête droit",
+  "name_en": "Right splenius capitis",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "splenius de la tête",
+   "splénius capitis"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/splenius_capitis_right.obj"
+ },
+ {
+  "id": "semispinalis_capitis_left",
+  "kind": "muscle",
+  "fma_id": "FMA22877",
+  "name_fr": "Semi-épineux de la tête gauche",
+  "name_en": "Left semispinalis capitis",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "grand complexus"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/semispinalis_capitis_left.obj"
+ },
+ {
+  "id": "semispinalis_capitis_right",
+  "kind": "muscle",
+  "fma_id": "FMA22876",
+  "name_fr": "Semi-épineux de la tête droit",
+  "name_en": "Right semispinalis capitis",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "grand complexus"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/semispinalis_capitis_right.obj"
+ },
+ {
+  "id": "levator_scapulae_left",
+  "kind": "muscle",
+  "fma_id": "FMA32541",
+  "name_fr": "Élévateur de la scapula gauche",
+  "name_en": "Left levator scapulae",
+  "side": "left",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "élévateur de l'omoplate",
+   "angulaire de l'omoplate",
+   "angulaire"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/levator_scapulae_left.obj"
+ },
+ {
+  "id": "levator_scapulae_right",
+  "kind": "muscle",
+  "fma_id": "FMA32540",
+  "name_fr": "Élévateur de la scapula droit",
+  "name_en": "Right levator scapulae",
+  "side": "right",
+  "region": "head_neck",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "élévateur de l'omoplate",
+   "angulaire de l'omoplate",
+   "angulaire"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/levator_scapulae_right.obj"
+ },
+ {
+  "id": "pectoralis_major_left",
+  "kind": "muscle",
+  "fma_id": "FMA34691",
+  "name_fr": "Grand pectoral gauche",
+  "name_en": "Left pectoralis major",
+  "side": "left",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "pectoral",
+   "pectoraux"
+  ],
+  "synonyms_en": [
+   "pec major",
+   "pecs"
+  ],
+  "mesh_file": "muscles/pectoralis_major_left.obj",
+  "src_files": [
+   "FJ1446M",
+   "FJ1447M",
+   "FJ1464M"
+  ]
+ },
+ {
+  "id": "pectoralis_major_right",
+  "kind": "muscle",
+  "fma_id": "FMA34690",
+  "name_fr": "Grand pectoral droit",
+  "name_en": "Right pectoralis major",
+  "side": "right",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "pectoral",
+   "pectoraux"
+  ],
+  "synonyms_en": [
+   "pec major",
+   "pecs"
+  ],
+  "mesh_file": "muscles/pectoralis_major_right.obj",
+  "src_files": [
+   "FJ1446",
+   "FJ1447",
+   "FJ1464"
+  ]
+ },
+ {
+  "id": "pectoralis_minor_left",
+  "kind": "muscle",
+  "fma_id": "FMA13376",
+  "name_fr": "Petit pectoral gauche",
+  "name_en": "Left pectoralis minor",
+  "side": "left",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "pec minor"
+  ],
+  "mesh_file": "muscles/pectoralis_minor_left.obj"
+ },
+ {
+  "id": "pectoralis_minor_right",
+  "kind": "muscle",
+  "fma_id": "FMA13375",
+  "name_fr": "Petit pectoral droit",
+  "name_en": "Right pectoralis minor",
+  "side": "right",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "pec minor"
+  ],
+  "mesh_file": "muscles/pectoralis_minor_right.obj"
+ },
+ {
+  "id": "subclavius_left",
+  "kind": "muscle",
+  "fma_id": "FMA13411",
+  "name_fr": "Subclavier gauche",
+  "name_en": "Left subclavius",
+  "side": "left",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "sous-clavier"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/subclavius_left.obj"
+ },
+ {
+  "id": "subclavius_right",
+  "kind": "muscle",
+  "fma_id": "FMA13412",
+  "name_fr": "Subclavier droit",
+  "name_en": "Right subclavius",
+  "side": "right",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "sous-clavier"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/subclavius_right.obj"
+ },
+ {
+  "id": "serratus_anterior_left",
+  "kind": "muscle",
+  "fma_id": "FMA13399",
+  "name_fr": "Dentelé antérieur gauche",
+  "name_en": "Left serratus anterior",
+  "side": "left",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand dentelé"
+  ],
+  "synonyms_en": [
+   "serratus magnus"
+  ],
+  "mesh_file": "muscles/serratus_anterior_left.obj"
+ },
+ {
+  "id": "serratus_anterior_right",
+  "kind": "muscle",
+  "fma_id": "FMA13398",
+  "name_fr": "Dentelé antérieur droit",
+  "name_en": "Right serratus anterior",
+  "side": "right",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand dentelé"
+  ],
+  "synonyms_en": [
+   "serratus magnus"
+  ],
+  "mesh_file": "muscles/serratus_anterior_right.obj"
+ },
+ {
+  "id": "external_oblique_left",
+  "kind": "muscle",
+  "fma_id": "FMA13337",
+  "name_fr": "Oblique externe de l'abdomen gauche",
+  "name_en": "Left external oblique",
+  "side": "left",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand oblique",
+   "oblique externe"
+  ],
+  "synonyms_en": [
+   "external abdominal oblique"
+  ],
+  "mesh_file": "muscles/external_oblique_left.obj"
+ },
+ {
+  "id": "external_oblique_right",
+  "kind": "muscle",
+  "fma_id": "FMA13336",
+  "name_fr": "Oblique externe de l'abdomen droit",
+  "name_en": "Right external oblique",
+  "side": "right",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand oblique",
+   "oblique externe"
+  ],
+  "synonyms_en": [
+   "external abdominal oblique"
+  ],
+  "mesh_file": "muscles/external_oblique_right.obj"
+ },
+ {
+  "id": "external_intercostal_left",
+  "kind": "muscle",
+  "fma_id": "FMA9756",
+  "name_fr": "Intercostal externe gauche",
+  "name_en": "Left external intercostal muscle",
+  "side": "left",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "intercostaux externes"
+  ],
+  "synonyms_en": [
+   "external intercostals"
+  ],
+  "mesh_file": "muscles/external_intercostal_left.obj"
+ },
+ {
+  "id": "external_intercostal_right",
+  "kind": "muscle",
+  "fma_id": "FMA9756",
+  "name_fr": "Intercostal externe droit",
+  "name_en": "Right external intercostal muscle",
+  "side": "right",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "intercostaux externes"
+  ],
+  "synonyms_en": [
+   "external intercostals"
+  ],
+  "mesh_file": "muscles/external_intercostal_right.obj"
+ },
+ {
+  "id": "trapezius_left",
+  "kind": "muscle",
+  "fma_id": "FMA33583",
+  "name_fr": "Trapèze gauche",
+  "name_en": "Left trapezius",
+  "side": "left",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "trapèzes"
+  ],
+  "synonyms_en": [
+   "traps"
+  ],
+  "mesh_file": "muscles/trapezius_left.obj",
+  "src_files": [
+   "FJ1520M",
+   "FJ1521M",
+   "FJ1554M"
+  ]
+ },
+ {
+  "id": "trapezius_right",
+  "kind": "muscle",
+  "fma_id": "FMA33581",
+  "name_fr": "Trapèze droit",
+  "name_en": "Right trapezius",
+  "side": "right",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "trapèzes"
+  ],
+  "synonyms_en": [
+   "traps"
+  ],
+  "mesh_file": "muscles/trapezius_right.obj",
+  "src_files": [
+   "FJ1520",
+   "FJ1521",
+   "FJ1554"
+  ]
+ },
+ {
+  "id": "rhomboid_major_left",
+  "kind": "muscle",
+  "fma_id": "FMA13382",
+  "name_fr": "Grand rhomboïde gauche",
+  "name_en": "Left rhomboid major",
+  "side": "left",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "rhomboïde majeur",
+   "rhomboïde"
+  ],
+  "synonyms_en": [
+   "rhomboid"
+  ],
+  "mesh_file": "muscles/rhomboid_major_left.obj"
+ },
+ {
+  "id": "rhomboid_major_right",
+  "kind": "muscle",
+  "fma_id": "FMA13381",
+  "name_fr": "Grand rhomboïde droit",
+  "name_en": "Right rhomboid major",
+  "side": "right",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "rhomboïde majeur",
+   "rhomboïde"
+  ],
+  "synonyms_en": [
+   "rhomboid"
+  ],
+  "mesh_file": "muscles/rhomboid_major_right.obj"
+ },
+ {
+  "id": "rhomboid_minor_left",
+  "kind": "muscle",
+  "fma_id": "FMA13384",
+  "name_fr": "Petit rhomboïde gauche",
+  "name_en": "Left rhomboid minor",
+  "side": "left",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "rhomboïde mineur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/rhomboid_minor_left.obj"
+ },
+ {
+  "id": "rhomboid_minor_right",
+  "kind": "muscle",
+  "fma_id": "FMA13383",
+  "name_fr": "Petit rhomboïde droit",
+  "name_en": "Right rhomboid minor",
+  "side": "right",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "rhomboïde mineur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/rhomboid_minor_right.obj"
+ },
+ {
+  "id": "serratus_posterior_inferior_left",
+  "kind": "muscle",
+  "fma_id": "FMA13406",
+  "name_fr": "Dentelé postérieur et inférieur gauche",
+  "name_en": "Left serratus posterior inferior",
+  "side": "left",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "petit dentelé postérieur et inférieur",
+   "dentelé postéro-inférieur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/serratus_posterior_inferior_left.obj"
+ },
+ {
+  "id": "serratus_posterior_inferior_right",
+  "kind": "muscle",
+  "fma_id": "FMA13405",
+  "name_fr": "Dentelé postérieur et inférieur droit",
+  "name_en": "Right serratus posterior inferior",
+  "side": "right",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "petit dentelé postérieur et inférieur",
+   "dentelé postéro-inférieur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/serratus_posterior_inferior_right.obj"
+ },
+ {
+  "id": "iliocostalis_lumborum_left",
+  "kind": "muscle",
+  "fma_id": "FMA22741",
+  "name_fr": "Iliocostal lombaire gauche",
+  "name_en": "Left iliocostalis lumborum",
+  "side": "left",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "ilio-costal lombaire"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/iliocostalis_lumborum_left.obj"
+ },
+ {
+  "id": "iliocostalis_lumborum_right",
+  "kind": "muscle",
+  "fma_id": "FMA22740",
+  "name_fr": "Iliocostal lombaire droit",
+  "name_en": "Right iliocostalis lumborum",
+  "side": "right",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "ilio-costal lombaire"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/iliocostalis_lumborum_right.obj"
+ },
+ {
+  "id": "longissimus_thoracis_left",
+  "kind": "muscle",
+  "fma_id": "FMA22753",
+  "name_fr": "Longissimus thoracique gauche",
+  "name_en": "Left longissimus thoracis",
+  "side": "left",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "long dorsal",
+   "longissimus du thorax"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/longissimus_thoracis_left.obj"
+ },
+ {
+  "id": "longissimus_thoracis_right",
+  "kind": "muscle",
+  "fma_id": "FMA22751",
+  "name_fr": "Longissimus thoracique droit",
+  "name_en": "Right longissimus thoracis",
+  "side": "right",
+  "region": "trunk",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "long dorsal",
+   "longissimus du thorax"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/longissimus_thoracis_right.obj"
+ },
+ {
+  "id": "diaphragm_mid",
+  "kind": "muscle",
+  "fma_id": "FMA13295",
+  "name_fr": "Diaphragme",
+  "name_en": "diaphragm",
+  "side": "mid",
+  "region": "trunk",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/diaphragm_mid.obj"
+ },
+ {
+  "id": "deltoid_left",
+  "kind": "muscle",
+  "fma_id": "FMA34681",
+  "name_fr": "Deltoïde gauche",
+  "name_en": "Left deltoid",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "deltoide"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/deltoid_left.obj",
+  "src_files": [
+   "FJ1467M",
+   "FJ1468M",
+   "FJ1513M"
+  ]
+ },
+ {
+  "id": "deltoid_right",
+  "kind": "muscle",
+  "fma_id": "FMA34680",
+  "name_fr": "Deltoïde droit",
+  "name_en": "Right deltoid",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "deltoide"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/deltoid_right.obj",
+  "src_files": [
+   "FJ1467",
+   "FJ1468",
+   "FJ1513"
+  ]
+ },
+ {
+  "id": "supraspinatus_left",
+  "kind": "muscle",
+  "fma_id": "FMA32545",
+  "name_fr": "Supra-épineux gauche",
+  "name_en": "Left supraspinatus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "sus-épineux"
+  ],
+  "synonyms_en": [
+   "supraspinatus muscle"
+  ],
+  "mesh_file": "muscles/supraspinatus_left.obj"
+ },
+ {
+  "id": "supraspinatus_right",
+  "kind": "muscle",
+  "fma_id": "FMA32544",
+  "name_fr": "Supra-épineux droit",
+  "name_en": "Right supraspinatus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "sus-épineux"
+  ],
+  "synonyms_en": [
+   "supraspinatus muscle"
+  ],
+  "mesh_file": "muscles/supraspinatus_right.obj"
+ },
+ {
+  "id": "infraspinatus_left",
+  "kind": "muscle",
+  "fma_id": "FMA32548",
+  "name_fr": "Infra-épineux gauche",
+  "name_en": "Left infraspinatus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "sous-épineux"
+  ],
+  "synonyms_en": [
+   "infraspinatus muscle"
+  ],
+  "mesh_file": "muscles/infraspinatus_left.obj"
+ },
+ {
+  "id": "infraspinatus_right",
+  "kind": "muscle",
+  "fma_id": "FMA32547",
+  "name_fr": "Infra-épineux droit",
+  "name_en": "Right infraspinatus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "sous-épineux"
+  ],
+  "synonyms_en": [
+   "infraspinatus muscle"
+  ],
+  "mesh_file": "muscles/infraspinatus_right.obj"
+ },
+ {
+  "id": "teres_major_left",
+  "kind": "muscle",
+  "fma_id": "FMA32552",
+  "name_fr": "Grand rond gauche",
+  "name_en": "Left teres major",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/teres_major_left.obj"
+ },
+ {
+  "id": "teres_major_right",
+  "kind": "muscle",
+  "fma_id": "FMA32551",
+  "name_fr": "Grand rond droit",
+  "name_en": "Right teres major",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/teres_major_right.obj"
+ },
+ {
+  "id": "teres_minor_left",
+  "kind": "muscle",
+  "fma_id": "FMA32554",
+  "name_fr": "Petit rond gauche",
+  "name_en": "Left teres minor",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/teres_minor_left.obj"
+ },
+ {
+  "id": "teres_minor_right",
+  "kind": "muscle",
+  "fma_id": "FMA32553",
+  "name_fr": "Petit rond droit",
+  "name_en": "Right teres minor",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/teres_minor_right.obj"
+ },
+ {
+  "id": "subscapularis_left",
+  "kind": "muscle",
+  "fma_id": "FMA13415",
+  "name_fr": "Subscapulaire gauche",
+  "name_en": "Left subscapularis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "sous-scapulaire"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/subscapularis_left.obj"
+ },
+ {
+  "id": "subscapularis_right",
+  "kind": "muscle",
+  "fma_id": "FMA13414",
+  "name_fr": "Subscapulaire droit",
+  "name_en": "Right subscapularis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "sous-scapulaire"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/subscapularis_right.obj"
+ },
+ {
+  "id": "coracobrachialis_left",
+  "kind": "muscle",
+  "fma_id": "FMA37666",
+  "name_fr": "Coracobrachial gauche",
+  "name_en": "Left coracobrachialis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "coraco-brachial"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/coracobrachialis_left.obj"
+ },
+ {
+  "id": "coracobrachialis_right",
+  "kind": "muscle",
+  "fma_id": "FMA37665",
+  "name_fr": "Coracobrachial droit",
+  "name_en": "Right coracobrachialis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "coraco-brachial"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/coracobrachialis_right.obj"
+ },
+ {
+  "id": "brachialis_left",
+  "kind": "muscle",
+  "fma_id": "FMA37669",
+  "name_fr": "Brachial gauche",
+  "name_en": "Left brachialis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "brachial antérieur"
+  ],
+  "synonyms_en": [
+   "brachialis anticus"
+  ],
+  "mesh_file": "muscles/brachialis_left.obj"
+ },
+ {
+  "id": "brachialis_right",
+  "kind": "muscle",
+  "fma_id": "FMA37668",
+  "name_fr": "Brachial droit",
+  "name_en": "Right brachialis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "brachial antérieur"
+  ],
+  "synonyms_en": [
+   "brachialis anticus"
+  ],
+  "mesh_file": "muscles/brachialis_right.obj"
+ },
+ {
+  "id": "biceps_brachii_left",
+  "kind": "muscle",
+  "fma_id": "FMA37687",
+  "name_fr": "Biceps brachial gauche",
+  "name_en": "Left biceps brachii",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "biceps",
+   "biceps du bras"
+  ],
+  "synonyms_en": [
+   "biceps"
+  ],
+  "mesh_file": "muscles/biceps_brachii_left.obj",
+  "src_files": [
+   "FJ1478M",
+   "FJ1512M"
+  ]
+ },
+ {
+  "id": "biceps_brachii_right",
+  "kind": "muscle",
+  "fma_id": "FMA37686",
+  "name_fr": "Biceps brachial droit",
+  "name_en": "Right biceps brachii",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "biceps",
+   "biceps du bras"
+  ],
+  "synonyms_en": [
+   "biceps"
+  ],
+  "mesh_file": "muscles/biceps_brachii_right.obj",
+  "src_files": [
+   "FJ1478",
+   "FJ1512"
+  ]
+ },
+ {
+  "id": "triceps_brachii_left",
+  "kind": "muscle",
+  "fma_id": "FMA37700",
+  "name_fr": "Triceps brachial gauche",
+  "name_en": "Left triceps brachii",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "triceps",
+   "triceps du bras"
+  ],
+  "synonyms_en": [
+   "triceps"
+  ],
+  "mesh_file": "muscles/triceps_brachii_left.obj",
+  "src_files": [
+   "FJ1477M",
+   "FJ1479M",
+   "FJ1480M"
+  ]
+ },
+ {
+  "id": "triceps_brachii_right",
+  "kind": "muscle",
+  "fma_id": "FMA37699",
+  "name_fr": "Triceps brachial droit",
+  "name_en": "Right triceps brachii",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "triceps",
+   "triceps du bras"
+  ],
+  "synonyms_en": [
+   "triceps"
+  ],
+  "mesh_file": "muscles/triceps_brachii_right.obj",
+  "src_files": [
+   "FJ1477",
+   "FJ1479",
+   "FJ1480"
+  ]
+ },
+ {
+  "id": "anconeus_left",
+  "kind": "muscle",
+  "fma_id": "FMA37706",
+  "name_fr": "Anconé gauche",
+  "name_en": "Left anconeus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/anconeus_left.obj"
+ },
+ {
+  "id": "anconeus_right",
+  "kind": "muscle",
+  "fma_id": "FMA37705",
+  "name_fr": "Anconé droit",
+  "name_en": "Right anconeus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/anconeus_right.obj"
+ },
+ {
+  "id": "brachioradialis_left",
+  "kind": "muscle",
+  "fma_id": "FMA38487",
+  "name_fr": "Brachio-radial gauche",
+  "name_en": "Left brachioradialis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "brachioradial",
+   "long supinateur"
+  ],
+  "synonyms_en": [
+   "supinator longus"
+  ],
+  "mesh_file": "muscles/brachioradialis_left.obj"
+ },
+ {
+  "id": "brachioradialis_right",
+  "kind": "muscle",
+  "fma_id": "FMA38486",
+  "name_fr": "Brachio-radial droit",
+  "name_en": "Right brachioradialis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "brachioradial",
+   "long supinateur"
+  ],
+  "synonyms_en": [
+   "supinator longus"
+  ],
+  "mesh_file": "muscles/brachioradialis_right.obj"
+ },
+ {
+  "id": "pronator_teres_left",
+  "kind": "muscle",
+  "fma_id": "FMA38561",
+  "name_fr": "Rond pronateur gauche",
+  "name_en": "Left pronator teres",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/pronator_teres_left.obj",
+  "src_files": [
+   "FJ1474M",
+   "FJ1516M"
+  ]
+ },
+ {
+  "id": "pronator_teres_right",
+  "kind": "muscle",
+  "fma_id": "FMA38560",
+  "name_fr": "Rond pronateur droit",
+  "name_en": "Right pronator teres",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/pronator_teres_right.obj",
+  "src_files": [
+   "FJ1474",
+   "FJ1516"
+  ]
+ },
+ {
+  "id": "pronator_quadratus_left",
+  "kind": "muscle",
+  "fma_id": "FMA38455",
+  "name_fr": "Carré pronateur gauche",
+  "name_en": "Left pronator quadratus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/pronator_quadratus_left.obj"
+ },
+ {
+  "id": "pronator_quadratus_right",
+  "kind": "muscle",
+  "fma_id": "FMA38454",
+  "name_fr": "Carré pronateur droit",
+  "name_en": "Right pronator quadratus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/pronator_quadratus_right.obj"
+ },
+ {
+  "id": "supinator_left",
+  "kind": "muscle",
+  "fma_id": "FMA38514",
+  "name_fr": "Supinateur gauche",
+  "name_en": "Left supinator",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "court supinateur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/supinator_left.obj"
+ },
+ {
+  "id": "supinator_right",
+  "kind": "muscle",
+  "fma_id": "FMA38513",
+  "name_fr": "Supinateur droit",
+  "name_en": "Right supinator",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "court supinateur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/supinator_right.obj"
+ },
+ {
+  "id": "flexor_carpi_radialis_left",
+  "kind": "muscle",
+  "fma_id": "FMA38461",
+  "name_fr": "Fléchisseur radial du carpe gauche",
+  "name_en": "Left flexor carpi radialis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand palmaire"
+  ],
+  "synonyms_en": [
+   "FCR"
+  ],
+  "mesh_file": "muscles/flexor_carpi_radialis_left.obj"
+ },
+ {
+  "id": "flexor_carpi_radialis_right",
+  "kind": "muscle",
+  "fma_id": "FMA38460",
+  "name_fr": "Fléchisseur radial du carpe droit",
+  "name_en": "Right flexor carpi radialis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand palmaire"
+  ],
+  "synonyms_en": [
+   "FCR"
+  ],
+  "mesh_file": "muscles/flexor_carpi_radialis_right.obj"
+ },
+ {
+  "id": "flexor_carpi_ulnaris_left",
+  "kind": "muscle",
+  "fma_id": "FMA38618",
+  "name_fr": "Fléchisseur ulnaire du carpe gauche",
+  "name_en": "Left flexor carpi ulnaris",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "cubital antérieur"
+  ],
+  "synonyms_en": [
+   "FCU"
+  ],
+  "mesh_file": "muscles/flexor_carpi_ulnaris_left.obj",
+  "src_files": [
+   "FJ1473M",
+   "FJ1518M"
+  ]
+ },
+ {
+  "id": "flexor_carpi_ulnaris_right",
+  "kind": "muscle",
+  "fma_id": "FMA38617",
+  "name_fr": "Fléchisseur ulnaire du carpe droit",
+  "name_en": "Right flexor carpi ulnaris",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "cubital antérieur"
+  ],
+  "synonyms_en": [
+   "FCU"
+  ],
+  "mesh_file": "muscles/flexor_carpi_ulnaris_right.obj",
+  "src_files": [
+   "FJ1473",
+   "FJ1518"
+  ]
+ },
+ {
+  "id": "palmaris_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA38464",
+  "name_fr": "Long palmaire gauche",
+  "name_en": "Left palmaris longus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "petit palmaire"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/palmaris_longus_left.obj"
+ },
+ {
+  "id": "palmaris_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA38463",
+  "name_fr": "Long palmaire droit",
+  "name_en": "Right palmaris longus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "petit palmaire"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/palmaris_longus_right.obj"
+ },
+ {
+  "id": "flexor_digitorum_superficialis_left",
+  "kind": "muscle",
+  "fma_id": "FMA38471",
+  "name_fr": "Fléchisseur superficiel des doigts gauche",
+  "name_en": "Left flexor digitorum superficialis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "fléchisseur commun superficiel des doigts"
+  ],
+  "synonyms_en": [
+   "FDS"
+  ],
+  "mesh_file": "muscles/flexor_digitorum_superficialis_left.obj",
+  "src_files": [
+   "FJ1475M",
+   "FJ1499M"
+  ]
+ },
+ {
+  "id": "flexor_digitorum_superficialis_right",
+  "kind": "muscle",
+  "fma_id": "FMA38470",
+  "name_fr": "Fléchisseur superficiel des doigts droit",
+  "name_en": "Right flexor digitorum superficialis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "fléchisseur commun superficiel des doigts"
+  ],
+  "synonyms_en": [
+   "FDS"
+  ],
+  "mesh_file": "muscles/flexor_digitorum_superficialis_right.obj",
+  "src_files": [
+   "FJ1475",
+   "FJ1499"
+  ]
+ },
+ {
+  "id": "flexor_digitorum_profundus_left",
+  "kind": "muscle",
+  "fma_id": "FMA38480",
+  "name_fr": "Fléchisseur profond des doigts gauche",
+  "name_en": "Left flexor digitorum profundus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "fléchisseur commun profond des doigts"
+  ],
+  "synonyms_en": [
+   "FDP"
+  ],
+  "mesh_file": "muscles/flexor_digitorum_profundus_left.obj"
+ },
+ {
+  "id": "flexor_digitorum_profundus_right",
+  "kind": "muscle",
+  "fma_id": "FMA38479",
+  "name_fr": "Fléchisseur profond des doigts droit",
+  "name_en": "Right flexor digitorum profundus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "fléchisseur commun profond des doigts"
+  ],
+  "synonyms_en": [
+   "FDP"
+  ],
+  "mesh_file": "muscles/flexor_digitorum_profundus_right.obj"
+ },
+ {
+  "id": "flexor_pollicis_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA38484",
+  "name_fr": "Long fléchisseur du pouce gauche",
+  "name_en": "Left flexor pollicis longus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "FPL"
+  ],
+  "mesh_file": "muscles/flexor_pollicis_longus_left.obj"
+ },
+ {
+  "id": "flexor_pollicis_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA38482",
+  "name_fr": "Long fléchisseur du pouce droit",
+  "name_en": "Right flexor pollicis longus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [
+   "FPL"
+  ],
+  "mesh_file": "muscles/flexor_pollicis_longus_right.obj"
+ },
+ {
+  "id": "extensor_carpi_radialis_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA38496",
+  "name_fr": "Long extenseur radial du carpe gauche",
+  "name_en": "Left extensor carpi radialis longus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "premier radial"
+  ],
+  "synonyms_en": [
+   "ECRL"
+  ],
+  "mesh_file": "muscles/extensor_carpi_radialis_longus_left.obj"
+ },
+ {
+  "id": "extensor_carpi_radialis_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA38495",
+  "name_fr": "Long extenseur radial du carpe droit",
+  "name_en": "Right extensor carpi radialis longus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "premier radial"
+  ],
+  "synonyms_en": [
+   "ECRL"
+  ],
+  "mesh_file": "muscles/extensor_carpi_radialis_longus_right.obj"
+ },
+ {
+  "id": "extensor_carpi_radialis_brevis_left",
+  "kind": "muscle",
+  "fma_id": "FMA38499",
+  "name_fr": "Court extenseur radial du carpe gauche",
+  "name_en": "Left extensor carpi radialis brevis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "second radial"
+  ],
+  "synonyms_en": [
+   "ECRB"
+  ],
+  "mesh_file": "muscles/extensor_carpi_radialis_brevis_left.obj"
+ },
+ {
+  "id": "extensor_carpi_radialis_brevis_right",
+  "kind": "muscle",
+  "fma_id": "FMA38498",
+  "name_fr": "Court extenseur radial du carpe droit",
+  "name_en": "Right extensor carpi radialis brevis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "second radial"
+  ],
+  "synonyms_en": [
+   "ECRB"
+  ],
+  "mesh_file": "muscles/extensor_carpi_radialis_brevis_right.obj"
+ },
+ {
+  "id": "extensor_digitorum_left",
+  "kind": "muscle",
+  "fma_id": "FMA38502",
+  "name_fr": "Extenseur des doigts gauche",
+  "name_en": "Left extensor digitorum",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "extenseur commun des doigts"
+  ],
+  "synonyms_en": [
+   "extensor digitorum communis"
+  ],
+  "mesh_file": "muscles/extensor_digitorum_left.obj"
+ },
+ {
+  "id": "extensor_digitorum_right",
+  "kind": "muscle",
+  "fma_id": "FMA38501",
+  "name_fr": "Extenseur des doigts droit",
+  "name_en": "Right extensor digitorum",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "extenseur commun des doigts"
+  ],
+  "synonyms_en": [
+   "extensor digitorum communis"
+  ],
+  "mesh_file": "muscles/extensor_digitorum_right.obj"
+ },
+ {
+  "id": "extensor_digiti_minimi_left",
+  "kind": "muscle",
+  "fma_id": "FMA38505",
+  "name_fr": "Extenseur du petit doigt gauche",
+  "name_en": "Left extensor digiti minimi",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "extenseur propre du 5e doigt"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/extensor_digiti_minimi_left.obj"
+ },
+ {
+  "id": "extensor_digiti_minimi_right",
+  "kind": "muscle",
+  "fma_id": "FMA38504",
+  "name_fr": "Extenseur du petit doigt droit",
+  "name_en": "Right extensor digiti minimi",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "extenseur propre du 5e doigt"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/extensor_digiti_minimi_right.obj"
+ },
+ {
+  "id": "extensor_carpi_ulnaris_left",
+  "kind": "muscle",
+  "fma_id": "FMA38508",
+  "name_fr": "Extenseur ulnaire du carpe gauche",
+  "name_en": "Left extensor carpi ulnaris",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "cubital postérieur"
+  ],
+  "synonyms_en": [
+   "ECU"
+  ],
+  "mesh_file": "muscles/extensor_carpi_ulnaris_left.obj",
+  "src_files": [
+   "FJ1472M",
+   "FJ1517M"
+  ]
+ },
+ {
+  "id": "extensor_carpi_ulnaris_right",
+  "kind": "muscle",
+  "fma_id": "FMA38507",
+  "name_fr": "Extenseur ulnaire du carpe droit",
+  "name_en": "Right extensor carpi ulnaris",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "cubital postérieur"
+  ],
+  "synonyms_en": [
+   "ECU"
+  ],
+  "mesh_file": "muscles/extensor_carpi_ulnaris_right.obj",
+  "src_files": [
+   "FJ1472",
+   "FJ1517"
+  ]
+ },
+ {
+  "id": "extensor_indicis_left",
+  "kind": "muscle",
+  "fma_id": "FMA38526",
+  "name_fr": "Extenseur de l'index gauche",
+  "name_en": "Left extensor indicis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "extenseur propre de l'index"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/extensor_indicis_left.obj"
+ },
+ {
+  "id": "extensor_indicis_right",
+  "kind": "muscle",
+  "fma_id": "FMA38525",
+  "name_fr": "Extenseur de l'index droit",
+  "name_en": "Right extensor indicis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "extenseur propre de l'index"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/extensor_indicis_right.obj"
+ },
+ {
+  "id": "extensor_pollicis_brevis_left",
+  "kind": "muscle",
+  "fma_id": "FMA38520",
+  "name_fr": "Court extenseur du pouce gauche",
+  "name_en": "Left extensor pollicis brevis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/extensor_pollicis_brevis_left.obj"
+ },
+ {
+  "id": "extensor_pollicis_brevis_right",
+  "kind": "muscle",
+  "fma_id": "FMA38519",
+  "name_fr": "Court extenseur du pouce droit",
+  "name_en": "Right extensor pollicis brevis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/extensor_pollicis_brevis_right.obj"
+ },
+ {
+  "id": "extensor_pollicis_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA38523",
+  "name_fr": "Long extenseur du pouce gauche",
+  "name_en": "Left extensor pollicis longus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/extensor_pollicis_longus_left.obj"
+ },
+ {
+  "id": "extensor_pollicis_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA38522",
+  "name_fr": "Long extenseur du pouce droit",
+  "name_en": "Right extensor pollicis longus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/extensor_pollicis_longus_right.obj"
+ },
+ {
+  "id": "abductor_pollicis_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA38517",
+  "name_fr": "Long abducteur du pouce gauche",
+  "name_en": "Left abductor pollicis longus",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand abducteur du pouce"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/abductor_pollicis_longus_left.obj"
+ },
+ {
+  "id": "abductor_pollicis_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA38516",
+  "name_fr": "Long abducteur du pouce droit",
+  "name_en": "Right abductor pollicis longus",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand abducteur du pouce"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/abductor_pollicis_longus_right.obj"
+ },
+ {
+  "id": "abductor_pollicis_brevis_left",
+  "kind": "muscle",
+  "fma_id": "FMA37387",
+  "name_fr": "Court abducteur du pouce gauche",
+  "name_en": "Left abductor pollicis brevis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/abductor_pollicis_brevis_left.obj"
+ },
+ {
+  "id": "abductor_pollicis_brevis_right",
+  "kind": "muscle",
+  "fma_id": "FMA37386",
+  "name_fr": "Court abducteur du pouce droit",
+  "name_en": "Right abductor pollicis brevis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/abductor_pollicis_brevis_right.obj"
+ },
+ {
+  "id": "opponens_pollicis_left",
+  "kind": "muscle",
+  "fma_id": "FMA37391",
+  "name_fr": "Opposant du pouce gauche",
+  "name_en": "Left opponens pollicis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/opponens_pollicis_left.obj"
+ },
+ {
+  "id": "opponens_pollicis_right",
+  "kind": "muscle",
+  "fma_id": "FMA37390",
+  "name_fr": "Opposant du pouce droit",
+  "name_en": "Right opponens pollicis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/opponens_pollicis_right.obj"
+ },
+ {
+  "id": "flexor_pollicis_brevis_left",
+  "kind": "muscle",
+  "fma_id": "FMA65199",
+  "name_fr": "Court fléchisseur du pouce gauche",
+  "name_en": "Left flexor pollicis brevis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/flexor_pollicis_brevis_left.obj",
+  "src_files": [
+   "FJ1469M",
+   "FJ1514M"
+  ]
+ },
+ {
+  "id": "flexor_pollicis_brevis_right",
+  "kind": "muscle",
+  "fma_id": "FMA65198",
+  "name_fr": "Court fléchisseur du pouce droit",
+  "name_en": "Right flexor pollicis brevis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/flexor_pollicis_brevis_right.obj",
+  "src_files": [
+   "FJ1469",
+   "FJ1514"
+  ]
+ },
+ {
+  "id": "adductor_pollicis_left",
+  "kind": "muscle",
+  "fma_id": "FMA46122",
+  "name_fr": "Adducteur du pouce gauche",
+  "name_en": "Left adductor pollicis",
+  "side": "left",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/adductor_pollicis_left.obj",
+  "src_files": [
+   "FJ1481M",
+   "FJ1515M"
+  ]
+ },
+ {
+  "id": "adductor_pollicis_right",
+  "kind": "muscle",
+  "fma_id": "FMA46121",
+  "name_fr": "Adducteur du pouce droit",
+  "name_en": "Right adductor pollicis",
+  "side": "right",
+  "region": "upper_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/adductor_pollicis_right.obj",
+  "src_files": [
+   "FJ1481",
+   "FJ1515"
+  ]
+ },
+ {
+  "id": "gluteus_maximus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22329",
+  "name_fr": "Grand glutéal gauche",
+  "name_en": "Left gluteus maximus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand fessier",
+   "fessier",
+   "glutéal",
+   "fessiers"
+  ],
+  "synonyms_en": [
+   "glute",
+   "glutes",
+   "gluteus"
+  ],
+  "mesh_file": "muscles/gluteus_maximus_left.obj"
+ },
+ {
+  "id": "gluteus_maximus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22328",
+  "name_fr": "Grand glutéal droit",
+  "name_en": "Right gluteus maximus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "grand fessier",
+   "fessier",
+   "glutéal",
+   "fessiers"
+  ],
+  "synonyms_en": [
+   "glute",
+   "glutes",
+   "gluteus"
+  ],
+  "mesh_file": "muscles/gluteus_maximus_right.obj"
+ },
+ {
+  "id": "gluteus_medius_left",
+  "kind": "muscle",
+  "fma_id": "FMA22331",
+  "name_fr": "Moyen glutéal gauche",
+  "name_en": "Left gluteus medius",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "moyen fessier"
+  ],
+  "synonyms_en": [
+   "glute med"
+  ],
+  "mesh_file": "muscles/gluteus_medius_left.obj"
+ },
+ {
+  "id": "gluteus_medius_right",
+  "kind": "muscle",
+  "fma_id": "FMA22330",
+  "name_fr": "Moyen glutéal droit",
+  "name_en": "Right gluteus medius",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "moyen fessier"
+  ],
+  "synonyms_en": [
+   "glute med"
+  ],
+  "mesh_file": "muscles/gluteus_medius_right.obj"
+ },
+ {
+  "id": "gluteus_minimus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22333",
+  "name_fr": "Petit glutéal gauche",
+  "name_en": "Left gluteus minimus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "petit fessier"
+  ],
+  "synonyms_en": [
+   "glute min"
+  ],
+  "mesh_file": "muscles/gluteus_minimus_left.obj"
+ },
+ {
+  "id": "gluteus_minimus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22332",
+  "name_fr": "Petit glutéal droit",
+  "name_en": "Right gluteus minimus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "petit fessier"
+  ],
+  "synonyms_en": [
+   "glute min"
+  ],
+  "mesh_file": "muscles/gluteus_minimus_right.obj"
+ },
+ {
+  "id": "piriformis_left",
+  "kind": "muscle",
+  "fma_id": "FMA22341",
+  "name_fr": "Piriforme gauche",
+  "name_en": "Left piriformis",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "pyramidal du bassin",
+   "pyramidal"
+  ],
+  "synonyms_en": [
+   "pyriformis"
+  ],
+  "mesh_file": "muscles/piriformis_left.obj"
+ },
+ {
+  "id": "piriformis_right",
+  "kind": "muscle",
+  "fma_id": "FMA22340",
+  "name_fr": "Piriforme droit",
+  "name_en": "Right piriformis",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "pyramidal du bassin",
+   "pyramidal"
+  ],
+  "synonyms_en": [
+   "pyriformis"
+  ],
+  "mesh_file": "muscles/piriformis_right.obj"
+ },
+ {
+  "id": "obturator_internus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22325",
+  "name_fr": "Obturateur interne gauche",
+  "name_en": "Left obturator internus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/obturator_internus_left.obj"
+ },
+ {
+  "id": "obturator_internus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22324",
+  "name_fr": "Obturateur interne droit",
+  "name_en": "Right obturator internus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/obturator_internus_right.obj"
+ },
+ {
+  "id": "quadratus_femoris_left",
+  "kind": "muscle",
+  "fma_id": "FMA22339",
+  "name_fr": "Carré fémoral gauche",
+  "name_en": "Left quadratus femoris",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "carré crural"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/quadratus_femoris_left.obj"
+ },
+ {
+  "id": "quadratus_femoris_right",
+  "kind": "muscle",
+  "fma_id": "FMA22338",
+  "name_fr": "Carré fémoral droit",
+  "name_en": "Right quadratus femoris",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "carré crural"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/quadratus_femoris_right.obj"
+ },
+ {
+  "id": "iliacus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22323",
+  "name_fr": "Iliaque gauche",
+  "name_en": "Left iliacus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "muscle iliaque"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/iliacus_left.obj"
+ },
+ {
+  "id": "iliacus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22322",
+  "name_fr": "Iliaque droit",
+  "name_en": "Right iliacus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "muscle iliaque"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/iliacus_right.obj"
+ },
+ {
+  "id": "psoas_major_left",
+  "kind": "muscle",
+  "fma_id": "FMA22343",
+  "name_fr": "Grand psoas gauche",
+  "name_en": "Left psoas major",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "psoas"
+  ],
+  "synonyms_en": [
+   "psoas"
+  ],
+  "mesh_file": "muscles/psoas_major_left.obj"
+ },
+ {
+  "id": "psoas_major_right",
+  "kind": "muscle",
+  "fma_id": "FMA22342",
+  "name_fr": "Grand psoas droit",
+  "name_en": "Right psoas major",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "psoas"
+  ],
+  "synonyms_en": [
+   "psoas"
+  ],
+  "mesh_file": "muscles/psoas_major_right.obj"
+ },
+ {
+  "id": "pectineus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22451",
+  "name_fr": "Pectiné gauche",
+  "name_en": "Left pectineus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/pectineus_left.obj"
+ },
+ {
+  "id": "pectineus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22450",
+  "name_fr": "Pectiné droit",
+  "name_en": "Right pectineus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/pectineus_right.obj"
+ },
+ {
+  "id": "gracilis_left",
+  "kind": "muscle",
+  "fma_id": "FMA43884",
+  "name_fr": "Gracile gauche",
+  "name_en": "Left gracilis",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "droit interne"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/gracilis_left.obj"
+ },
+ {
+  "id": "gracilis_right",
+  "kind": "muscle",
+  "fma_id": "FMA43883",
+  "name_fr": "Gracile droit",
+  "name_en": "Right gracilis",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "droit interne"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/gracilis_right.obj"
+ },
+ {
+  "id": "sartorius_left",
+  "kind": "muscle",
+  "fma_id": "FMA22355",
+  "name_fr": "Sartorius gauche",
+  "name_en": "Left sartorius",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "couturier"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/sartorius_left.obj"
+ },
+ {
+  "id": "sartorius_right",
+  "kind": "muscle",
+  "fma_id": "FMA22354",
+  "name_fr": "Sartorius droit",
+  "name_en": "Right sartorius",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "couturier"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/sartorius_right.obj"
+ },
+ {
+  "id": "rectus_femoris_left",
+  "kind": "muscle",
+  "fma_id": "FMA38929",
+  "name_fr": "Droit fémoral gauche",
+  "name_en": "Left rectus femoris",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "droit antérieur de la cuisse",
+   "rectus femoris"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/rectus_femoris_left.obj"
+ },
+ {
+  "id": "rectus_femoris_right",
+  "kind": "muscle",
+  "fma_id": "FMA38928",
+  "name_fr": "Droit fémoral droit",
+  "name_en": "Right rectus femoris",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "droit antérieur de la cuisse",
+   "rectus femoris"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/rectus_femoris_right.obj"
+ },
+ {
+  "id": "vastus_lateralis_left",
+  "kind": "muscle",
+  "fma_id": "FMA38931",
+  "name_fr": "Vaste latéral gauche",
+  "name_en": "Left vastus lateralis",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "vaste externe",
+   "vastus lateralis"
+  ],
+  "synonyms_en": [
+   "vastus externus"
+  ],
+  "mesh_file": "muscles/vastus_lateralis_left.obj"
+ },
+ {
+  "id": "vastus_lateralis_right",
+  "kind": "muscle",
+  "fma_id": "FMA38930",
+  "name_fr": "Vaste latéral droit",
+  "name_en": "Right vastus lateralis",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "vaste externe",
+   "vastus lateralis"
+  ],
+  "synonyms_en": [
+   "vastus externus"
+  ],
+  "mesh_file": "muscles/vastus_lateralis_right.obj"
+ },
+ {
+  "id": "vastus_medialis_left",
+  "kind": "muscle",
+  "fma_id": "FMA38933",
+  "name_fr": "Vaste médial gauche",
+  "name_en": "Left vastus medialis",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "vaste interne",
+   "vastus medialis"
+  ],
+  "synonyms_en": [
+   "vastus internus"
+  ],
+  "mesh_file": "muscles/vastus_medialis_left.obj"
+ },
+ {
+  "id": "vastus_medialis_right",
+  "kind": "muscle",
+  "fma_id": "FMA38932",
+  "name_fr": "Vaste médial droit",
+  "name_en": "Right vastus medialis",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "vaste interne",
+   "vastus medialis"
+  ],
+  "synonyms_en": [
+   "vastus internus"
+  ],
+  "mesh_file": "muscles/vastus_medialis_right.obj"
+ },
+ {
+  "id": "vastus_intermedius_left",
+  "kind": "muscle",
+  "fma_id": "FMA38935",
+  "name_fr": "Vaste intermédiaire gauche",
+  "name_en": "Left vastus intermedius",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "crural",
+   "vastus intermedius"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/vastus_intermedius_left.obj"
+ },
+ {
+  "id": "vastus_intermedius_right",
+  "kind": "muscle",
+  "fma_id": "FMA38934",
+  "name_fr": "Vaste intermédiaire droit",
+  "name_en": "Right vastus intermedius",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [
+   "crural",
+   "vastus intermedius"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/vastus_intermedius_right.obj"
+ },
+ {
+  "id": "adductor_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22457",
+  "name_fr": "Long adducteur gauche",
+  "name_en": "Left adductor longus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "moyen adducteur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/adductor_longus_left.obj"
+ },
+ {
+  "id": "adductor_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22456",
+  "name_fr": "Long adducteur droit",
+  "name_en": "Right adductor longus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "moyen adducteur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/adductor_longus_right.obj"
+ },
+ {
+  "id": "adductor_brevis_left",
+  "kind": "muscle",
+  "fma_id": "FMA22454",
+  "name_fr": "Court adducteur gauche",
+  "name_en": "Left adductor brevis",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "petit adducteur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/adductor_brevis_left.obj"
+ },
+ {
+  "id": "adductor_brevis_right",
+  "kind": "muscle",
+  "fma_id": "FMA22452",
+  "name_fr": "Court adducteur droit",
+  "name_en": "Right adductor brevis",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "petit adducteur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/adductor_brevis_right.obj"
+ },
+ {
+  "id": "adductor_magnus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22460",
+  "name_fr": "Grand adducteur gauche",
+  "name_en": "Left adductor magnus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/adductor_magnus_left.obj"
+ },
+ {
+  "id": "adductor_magnus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22459",
+  "name_fr": "Grand adducteur droit",
+  "name_en": "Right adductor magnus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/adductor_magnus_right.obj"
+ },
+ {
+  "id": "tensor_fasciae_latae_left",
+  "kind": "muscle",
+  "fma_id": "FMA22426",
+  "name_fr": "Tenseur du fascia lata gauche",
+  "name_en": "Left tensor fasciae latae",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "TFL",
+   "tenseur du fascia-lata"
+  ],
+  "synonyms_en": [
+   "TFL"
+  ],
+  "mesh_file": "muscles/tensor_fasciae_latae_left.obj"
+ },
+ {
+  "id": "tensor_fasciae_latae_right",
+  "kind": "muscle",
+  "fma_id": "FMA22425",
+  "name_fr": "Tenseur du fascia lata droit",
+  "name_en": "Right tensor fasciae latae",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "TFL",
+   "tenseur du fascia-lata"
+  ],
+  "synonyms_en": [
+   "TFL"
+  ],
+  "mesh_file": "muscles/tensor_fasciae_latae_right.obj"
+ },
+ {
+  "id": "semimembranosus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22449",
+  "name_fr": "Semi-membraneux gauche",
+  "name_en": "Left semimembranosus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "semimembraneux"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/semimembranosus_left.obj"
+ },
+ {
+  "id": "semimembranosus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22448",
+  "name_fr": "Semi-membraneux droit",
+  "name_en": "Right semimembranosus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "semimembraneux"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/semimembranosus_right.obj"
+ },
+ {
+  "id": "semitendinosus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22359",
+  "name_fr": "Semi-tendineux gauche",
+  "name_en": "Left semitendinosus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "semitendineux"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/semitendinosus_left.obj"
+ },
+ {
+  "id": "semitendinosus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22358",
+  "name_fr": "Semi-tendineux droit",
+  "name_en": "Right semitendinosus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "semitendineux"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/semitendinosus_right.obj"
+ },
+ {
+  "id": "biceps_femoris_left",
+  "kind": "muscle",
+  "fma_id": "FMA45889",
+  "name_fr": "Biceps fémoral gauche",
+  "name_en": "Left biceps femoris",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "biceps crural"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/biceps_femoris_left.obj",
+  "src_files": [
+   "FJ1395M",
+   "FJ1444M"
+  ]
+ },
+ {
+  "id": "biceps_femoris_right",
+  "kind": "muscle",
+  "fma_id": "FMA45888",
+  "name_fr": "Biceps fémoral droit",
+  "name_en": "Right biceps femoris",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "biceps crural"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/biceps_femoris_right.obj",
+  "src_files": [
+   "FJ1395",
+   "FJ1444"
+  ]
+ },
+ {
+  "id": "popliteus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22592",
+  "name_fr": "Poplité gauche",
+  "name_en": "Left popliteus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/popliteus_left.obj"
+ },
+ {
+  "id": "popliteus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22591",
+  "name_fr": "Poplité droit",
+  "name_en": "Right popliteus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/popliteus_right.obj"
+ },
+ {
+  "id": "plantaris_left",
+  "kind": "muscle",
+  "fma_id": "FMA22561",
+  "name_fr": "Plantaire gauche",
+  "name_en": "Left plantaris",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "plantaire grêle"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/plantaris_left.obj"
+ },
+ {
+  "id": "plantaris_right",
+  "kind": "muscle",
+  "fma_id": "FMA22560",
+  "name_fr": "Plantaire droit",
+  "name_en": "Right plantaris",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "plantaire grêle"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/plantaris_right.obj"
+ },
+ {
+  "id": "gastrocnemius_left",
+  "kind": "muscle",
+  "fma_id": "FMA45961",
+  "name_fr": "Gastrocnémien gauche",
+  "name_en": "Left gastrocnemius",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "jumeaux",
+   "jumeaux de la jambe",
+   "gastrocnémiens"
+  ],
+  "synonyms_en": [
+   "gastroc",
+   "gastrocnemii"
+  ],
+  "mesh_file": "muscles/gastrocnemius_left.obj",
+  "src_files": [
+   "FJ1394M",
+   "FJ1397M"
+  ]
+ },
+ {
+  "id": "gastrocnemius_right",
+  "kind": "muscle",
+  "fma_id": "FMA45960",
+  "name_fr": "Gastrocnémien droit",
+  "name_en": "Right gastrocnemius",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "jumeaux",
+   "jumeaux de la jambe",
+   "gastrocnémiens"
+  ],
+  "synonyms_en": [
+   "gastroc",
+   "gastrocnemii"
+  ],
+  "mesh_file": "muscles/gastrocnemius_right.obj",
+  "src_files": [
+   "FJ1394",
+   "FJ1397"
+  ]
+ },
+ {
+  "id": "soleus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22559",
+  "name_fr": "Soléaire gauche",
+  "name_en": "Left soleus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/soleus_left.obj"
+ },
+ {
+  "id": "soleus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22558",
+  "name_fr": "Soléaire droit",
+  "name_en": "Right soleus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "deep",
+  "synonyms_fr": [],
+  "synonyms_en": [],
+  "mesh_file": "muscles/soleus_right.obj"
+ },
+ {
+  "id": "tibialis_anterior_left",
+  "kind": "muscle",
+  "fma_id": "FMA22545",
+  "name_fr": "Tibial antérieur gauche",
+  "name_en": "Left tibialis anterior",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "jambier antérieur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/tibialis_anterior_left.obj"
+ },
+ {
+  "id": "tibialis_anterior_right",
+  "kind": "muscle",
+  "fma_id": "FMA22544",
+  "name_fr": "Tibial antérieur droit",
+  "name_en": "Right tibialis anterior",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "jambier antérieur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/tibialis_anterior_right.obj"
+ },
+ {
+  "id": "tibialis_posterior_left",
+  "kind": "muscle",
+  "fma_id": "FMA65019",
+  "name_fr": "Tibial postérieur gauche",
+  "name_en": "Left tibialis posterior",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "jambier postérieur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/tibialis_posterior_left.obj"
+ },
+ {
+  "id": "tibialis_posterior_right",
+  "kind": "muscle",
+  "fma_id": "FMA65018",
+  "name_fr": "Tibial postérieur droit",
+  "name_en": "Right tibialis posterior",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "jambier postérieur"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/tibialis_posterior_right.obj"
+ },
+ {
+  "id": "extensor_digitorum_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22549",
+  "name_fr": "Long extenseur des orteils gauche",
+  "name_en": "Left extensor digitorum longus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "long extenseur commun des orteils"
+  ],
+  "synonyms_en": [
+   "EDL"
+  ],
+  "mesh_file": "muscles/extensor_digitorum_longus_left.obj"
+ },
+ {
+  "id": "extensor_digitorum_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22548",
+  "name_fr": "Long extenseur des orteils droit",
+  "name_en": "Right extensor digitorum longus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "long extenseur commun des orteils"
+  ],
+  "synonyms_en": [
+   "EDL"
+  ],
+  "mesh_file": "muscles/extensor_digitorum_longus_right.obj"
+ },
+ {
+  "id": "extensor_hallucis_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22547",
+  "name_fr": "Long extenseur de l'hallux gauche",
+  "name_en": "Left extensor hallucis longus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "long extenseur du gros orteil",
+   "long extenseur propre du gros orteil"
+  ],
+  "synonyms_en": [
+   "EHL"
+  ],
+  "mesh_file": "muscles/extensor_hallucis_longus_left.obj"
+ },
+ {
+  "id": "extensor_hallucis_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22546",
+  "name_fr": "Long extenseur de l'hallux droit",
+  "name_en": "Right extensor hallucis longus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "long extenseur du gros orteil",
+   "long extenseur propre du gros orteil"
+  ],
+  "synonyms_en": [
+   "EHL"
+  ],
+  "mesh_file": "muscles/extensor_hallucis_longus_right.obj"
+ },
+ {
+  "id": "fibularis_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA22553",
+  "name_fr": "Long fibulaire gauche",
+  "name_en": "Left fibularis longus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "long péronier latéral",
+   "long péronier"
+  ],
+  "synonyms_en": [
+   "peroneus longus"
+  ],
+  "mesh_file": "muscles/fibularis_longus_left.obj"
+ },
+ {
+  "id": "fibularis_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA22552",
+  "name_fr": "Long fibulaire droit",
+  "name_en": "Right fibularis longus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 1,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "long péronier latéral",
+   "long péronier"
+  ],
+  "synonyms_en": [
+   "peroneus longus"
+  ],
+  "mesh_file": "muscles/fibularis_longus_right.obj"
+ },
+ {
+  "id": "fibularis_brevis_left",
+  "kind": "muscle",
+  "fma_id": "FMA22555",
+  "name_fr": "Court fibulaire gauche",
+  "name_en": "Left fibularis brevis",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "court péronier latéral",
+   "court péronier"
+  ],
+  "synonyms_en": [
+   "peroneus brevis"
+  ],
+  "mesh_file": "muscles/fibularis_brevis_left.obj"
+ },
+ {
+  "id": "fibularis_brevis_right",
+  "kind": "muscle",
+  "fma_id": "FMA22554",
+  "name_fr": "Court fibulaire droit",
+  "name_en": "Right fibularis brevis",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "court péronier latéral",
+   "court péronier"
+  ],
+  "synonyms_en": [
+   "peroneus brevis"
+  ],
+  "mesh_file": "muscles/fibularis_brevis_right.obj"
+ },
+ {
+  "id": "fibularis_tertius_left",
+  "kind": "muscle",
+  "fma_id": "FMA22551",
+  "name_fr": "Troisième fibulaire gauche",
+  "name_en": "Left fibularis tertius",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "péronier antérieur",
+   "troisième péronier"
+  ],
+  "synonyms_en": [
+   "peroneus tertius"
+  ],
+  "mesh_file": "muscles/fibularis_tertius_left.obj"
+ },
+ {
+  "id": "fibularis_tertius_right",
+  "kind": "muscle",
+  "fma_id": "FMA22550",
+  "name_fr": "Troisième fibulaire droit",
+  "name_en": "Right fibularis tertius",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "péronier antérieur",
+   "troisième péronier"
+  ],
+  "synonyms_en": [
+   "peroneus tertius"
+  ],
+  "mesh_file": "muscles/fibularis_tertius_right.obj"
+ },
+ {
+  "id": "flexor_digitorum_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA65017",
+  "name_fr": "Long fléchisseur des orteils gauche",
+  "name_en": "Left flexor digitorum longus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "long fléchisseur commun des orteils"
+  ],
+  "synonyms_en": [
+   "FDL"
+  ],
+  "mesh_file": "muscles/flexor_digitorum_longus_left.obj"
+ },
+ {
+  "id": "flexor_digitorum_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA65016",
+  "name_fr": "Long fléchisseur des orteils droit",
+  "name_en": "Right flexor digitorum longus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "long fléchisseur commun des orteils"
+  ],
+  "synonyms_en": [
+   "FDL"
+  ],
+  "mesh_file": "muscles/flexor_digitorum_longus_right.obj"
+ },
+ {
+  "id": "flexor_hallucis_longus_left",
+  "kind": "muscle",
+  "fma_id": "FMA65015",
+  "name_fr": "Long fléchisseur de l'hallux gauche",
+  "name_en": "Left flexor hallucis longus",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "long fléchisseur du gros orteil",
+   "long fléchisseur propre du gros orteil"
+  ],
+  "synonyms_en": [
+   "FHL"
+  ],
+  "mesh_file": "muscles/flexor_hallucis_longus_left.obj"
+ },
+ {
+  "id": "flexor_hallucis_longus_right",
+  "kind": "muscle",
+  "fma_id": "FMA65014",
+  "name_fr": "Long fléchisseur de l'hallux droit",
+  "name_en": "Right flexor hallucis longus",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "deep",
+  "synonyms_fr": [
+   "long fléchisseur du gros orteil",
+   "long fléchisseur propre du gros orteil"
+  ],
+  "synonyms_en": [
+   "FHL"
+  ],
+  "mesh_file": "muscles/flexor_hallucis_longus_right.obj"
+ },
+ {
+  "id": "abductor_hallucis_left",
+  "kind": "muscle",
+  "fma_id": "FMA37460",
+  "name_fr": "Abducteur de l'hallux gauche",
+  "name_en": "Left abductor hallucis",
+  "side": "left",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "abducteur du gros orteil"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/abductor_hallucis_left.obj"
+ },
+ {
+  "id": "abductor_hallucis_right",
+  "kind": "muscle",
+  "fma_id": "FMA37459",
+  "name_fr": "Abducteur de l'hallux droit",
+  "name_en": "Right abductor hallucis",
+  "side": "right",
+  "region": "lower_limb",
+  "tier": 2,
+  "layer": "superficial",
+  "synonyms_fr": [
+   "abducteur du gros orteil"
+  ],
+  "synonyms_en": [],
+  "mesh_file": "muscles/abductor_hallucis_right.obj"
+ }
+]

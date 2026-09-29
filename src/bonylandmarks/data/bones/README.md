@@ -53,3 +53,20 @@ Placer ici les fichiers STL **ou** OBJ avec les noms exacts suivants :
 > fonctionne normalement avec un sous-ensemble des os.
 >
 > Les formats `.obj` sont aussi acceptés (même nom, extension `.obj`).
+
+## Exercice « Anatomie 3D — os et muscles »
+
+Cet exercice n'utilise **pas** ce dossier mais `../bones_full/` (un os par
+fichier) et `../muscles/` (un muscle par fichier), générés à partir de
+l'archive BodyParts3D 4.0 (OBJ) par :
+
+```bash
+python scripts/import_bp3d.py --kind all          # os + muscles
+python scripts/import_bp3d.py --kind bone --dry-run
+```
+
+Le script lit `data/anatomy_bones.json` / `data/anatomy_muscles.json`,
+retrouve les fichiers `FJ*.obj` via l'en-tête `# Concept ID` (le numéro dans
+le nom du fichier n'est pas le numéro FMA) et écrit les meshes avec leurs
+coordonnées BodyParts3D d'origine.  Voir `--help` pour `--src`, `--force`,
+`--target-faces`.
