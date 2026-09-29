@@ -308,6 +308,11 @@ class MainWindow(QMainWindow):
 
 
 def main() -> None:
+    from . import smoke_test
+
+    if smoke_test.is_requested():
+        sys.exit(smoke_test.run())
+
     app = QApplication(sys.argv)
     app.setApplicationName("BonyLandmarks")
     window = MainWindow()

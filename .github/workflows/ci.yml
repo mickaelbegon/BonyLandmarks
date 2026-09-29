@@ -2,9 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, fix/macos-build]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -46,7 +47,7 @@ jobs:
   build-windows:
     needs: test
     runs-on: windows-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/macos-build'
 
     steps:
       - uses: actions/checkout@v4
@@ -59,10 +60,27 @@ jobs:
         run: pip install -e ".[dev]"
 
       - name: Build Windows executable
+        run: pyinstaller --noconfirm packaging/BonyLandmarks.spec
+
+      - name: Smoke test (frozen exe)
+        shell: pwsh
         run: |
-          pyinstaller --onefile --windowed --name BonyLandmarks `
-            --add-data "src/bonylandmarks;bonylandmarks" `
-            src/bonylandmarks/main.py
+          $env:QT_QPA_PLATFORM = "offscreen"
+          $env:BONY_SMOKE_LOG = "$PWD\smoke-windows.log"
+          New-Item -ItemType File -Force $env:BONY_SMOKE_LOG | Out-Null
+          $p = Start-Process -FilePath "dist\BonyLandmarks.exe" -ArgumentList "--smoke-test" `
+                 -Wait -PassThru -NoNewWindow
+          Get-Content $env:BONY_SMOKE_LOG
+          Write-Host "exit code: $($p.ExitCode)"
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: Upload smoke log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-log-windows
+          path: smoke-windows.log
+          if-no-files-found: ignore
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
@@ -73,7 +91,7 @@ jobs:
   build-macos:
     needs: test
     runs-on: macos-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/macos-build'
 
     steps:
       - uses: actions/checkout@v4
@@ -82,14 +100,56 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Runner architecture
+        run: |
+          uname -m
+          python -c "import platform, sys; print(platform.machine(), sys.version)"
+          file "$(python -c 'import sys; print(sys.executable)')"
+
       - name: Install package and dev deps
         run: pip install -e ".[dev]"
 
       - name: Build macOS app (Apple Silicon)
+        run: pyinstaller --noconfirm packaging/BonyLandmarks.spec
+
+      - name: Ad-hoc code signing and verification
         run: |
-          pyinstaller --windowed --name BonyLandmarks \
-            --add-data "src/bonylandmarks:bonylandmarks" \
-            src/bonylandmarks/main.py
+          # Les binaires arm64 doivent être signés (au moins ad-hoc), sinon le noyau les tue.
+          codesign --force --deep --sign - dist/BonyLandmarks.app
+          codesign --verify --deep --strict --verbose=2 dist/BonyLandmarks.app
+          codesign -dv dist/BonyLandmarks.app 2>&1 | head -20
+          plutil -p dist/BonyLandmarks.app/Contents/Info.plist
+
+      - name: Trace architecture
+        run: |
+          EXE=dist/BonyLandmarks.app/Contents/MacOS/BonyLandmarks
+          file "$EXE"
+          lipo -info "$EXE"
+          echo "--- binaires non-arm64 dans le bundle :"
+          find dist/BonyLandmarks.app -type f \( -name "*.dylib" -o -name "*.so" -o -perm +111 \)             -exec file {} + | grep "Mach-O" | grep -v arm64 | head -20 || true
+
+      - name: Smoke test (frozen app)
+        run: |
+          export QT_QPA_PLATFORM=offscreen
+          export BONY_SMOKE_LOG="$PWD/smoke-macos.log"
+          : > "$BONY_SMOKE_LOG"
+          set +e
+          dist/BonyLandmarks.app/Contents/MacOS/BonyLandmarks --smoke-test > smoke-macos.stdout.log 2> smoke-macos.stderr.log
+          code=$?
+          set -e
+          echo "exit code: $code"
+          echo "----- smoke log"; cat "$BONY_SMOKE_LOG"
+          echo "----- stdout"; cat smoke-macos.stdout.log
+          echo "----- stderr"; cat smoke-macos.stderr.log
+          exit $code
+
+      - name: Upload smoke logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-log-macos
+          path: smoke-macos*.log
+          if-no-files-found: ignore
 
       - name: Zip .app bundle
         run: ditto -c -k --keepParent dist/BonyLandmarks.app dist/BonyLandmarks-macOS-arm64.zip
