@@ -17,6 +17,7 @@ Outil interactif 3D pour apprendre à identifier et placer des repères anatomiq
 4. [Soumettre sur Moodle](#4-soumettre-sur-moodle)
 5. [Installation pour le développement](#5-installation-pour-le-développement)
 6. [Architecture technique](#6-architecture-technique)
+7. [Crédits et licences des données](#crédits)
 
 ---
 
@@ -311,6 +312,20 @@ Les meshes 3D osseux de référence sont issus de la base de données **BodyPart
 > BodyParts3D, © The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan
 
 https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html
+
+### Licences des données (meshes os et muscles)
+
+Les meshes osseux et musculaires (`src/bonylandmarks/data/bones/`, `bones_full/`, `muscles/`) sont dérivés de BodyParts3D et restent régis par sa licence **CC BY-SA 2.1 Japon**, distincte de celle du code. Cette licence autorise la copie, la redistribution et la modification, y compris à usage commercial, aux conditions suivantes :
+
+1. **Attribution** : créditer « BodyParts3D, © The Database Center for Life Science » et renvoyer vers la licence. Cette mention figure dans l'écran « À propos » et dans l'exercice Anatomie 3D ; elle doit accompagner toute redistribution des meshes.
+2. **Indication des modifications** : les meshes fournis sont des œuvres dérivées (décimation à 15 000 faces maximum par structure, fusion de fichiers pour les structures composites, sélection et renommage via `scripts/import_bp3d.py`). Toute republication doit le signaler.
+3. **Partage dans les mêmes conditions** : les meshes modifiés doivent être redistribués sous CC BY-SA 2.1 JP (ou une licence qu'elle déclare compatible), jamais sous une licence plus restrictive.
+
+Conséquences pratiques :
+
+- Les fichiers `*.obj` / `*.stl` sont **exclus du dépôt** (`.gitignore`) : ils sont volumineux et ne sont donc pas redistribués avec le code. Chaque utilisateur les génère avec `python scripts/import_bp3d.py --src <dossier BodyParts3D>` après avoir téléchargé la base d'origine.
+- Si des meshes sont un jour publiés ou embarqués dans un exécutable, les accompagner d'un fichier indiquant leur licence CC BY-SA 2.1 JP, l'attribution ci-dessus et la mention des modifications, et les garder comme fichiers de données distincts du code (le copyleft porte sur les meshes, pas sur le code qui les lit).
+- Ce résumé n'est pas un avis juridique : en cas de diffusion large ou commerciale, faire valider par le service juridique de l'établissement, et consulter le texte officiel : https://creativecommons.org/licenses/by-sa/2.1/jp/
 
 ### Claude Code
 
