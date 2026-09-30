@@ -48,6 +48,8 @@ jobs:
     needs: test
     runs-on: windows-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/macos-build'
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -56,16 +58,36 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Télécharger les meshes (release meshes-v1)
+        # Les meshes BodyParts3D (CC BY-SA 2.1 JP) ne sont pas dans git : on les
+        # récupère depuis la release. Si elle n'existe pas, le build ÉCHOUE (pas
+        # d'exécutable silencieusement sans meshes).
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release download meshes-v1 --repo "${{ github.repository }}"                  --pattern 'bonylandmarks-meshes-*.zip' --dir dl; then
+            echo "::error::Release 'meshes-v1' introuvable ou sans asset bonylandmarks-meshes-*.zip. Créer la release (gh release create meshes-v1 dist/bonylandmarks-meshes-v1.zip ...) avant de builder."
+            exit 1
+          fi
+          ZIP=$(ls dl/bonylandmarks-meshes-*.zip | head -n 1)
+          test -f "$ZIP" || { echo "::error::Asset meshes introuvable dans dl/"; exit 1; }
+          python scripts/fetch_meshes.py --zip "$ZIP"
+
       - name: Install package and dev deps
         run: pip install -e ".[dev]"
 
       - name: Build Windows executable
+        env:
+          BONY_REQUIRE_MESHES: "1"
         run: pyinstaller --noconfirm packaging/BonyLandmarks.spec
 
       - name: Smoke test (frozen exe)
         shell: pwsh
         run: |
           $env:QT_QPA_PLATFORM = "offscreen"
+          $env:BONY_REQUIRE_MESHES = "1"
           $env:BONY_SMOKE_LOG = "$PWD\smoke-windows.log"
           New-Item -ItemType File -Force $env:BONY_SMOKE_LOG | Out-Null
           $p = Start-Process -FilePath "dist\BonyLandmarks.exe" -ArgumentList "--smoke-test" `
@@ -92,6 +114,8 @@ jobs:
     needs: test
     runs-on: macos-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/macos-build'
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -99,6 +123,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Télécharger les meshes (release meshes-v1)
+        # Les meshes BodyParts3D (CC BY-SA 2.1 JP) ne sont pas dans git : on les
+        # récupère depuis la release. Si elle n'existe pas, le build ÉCHOUE (pas
+        # d'exécutable silencieusement sans meshes).
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release download meshes-v1 --repo "${{ github.repository }}"                  --pattern 'bonylandmarks-meshes-*.zip' --dir dl; then
+            echo "::error::Release 'meshes-v1' introuvable ou sans asset bonylandmarks-meshes-*.zip. Créer la release (gh release create meshes-v1 dist/bonylandmarks-meshes-v1.zip ...) avant de builder."
+            exit 1
+          fi
+          ZIP=$(ls dl/bonylandmarks-meshes-*.zip | head -n 1)
+          test -f "$ZIP" || { echo "::error::Asset meshes introuvable dans dl/"; exit 1; }
+          python scripts/fetch_meshes.py --zip "$ZIP"
 
       - name: Runner architecture
         run: |
@@ -110,6 +151,8 @@ jobs:
         run: pip install -e ".[dev]"
 
       - name: Build macOS app (Apple Silicon)
+        env:
+          BONY_REQUIRE_MESHES: "1"
         run: pyinstaller --noconfirm packaging/BonyLandmarks.spec
 
       - name: Ad-hoc code signing and verification
@@ -131,6 +174,7 @@ jobs:
       - name: Smoke test (frozen app)
         run: |
           export QT_QPA_PLATFORM=offscreen
+          export BONY_REQUIRE_MESHES=1
           export BONY_SMOKE_LOG="$PWD/smoke-macos.log"
           : > "$BONY_SMOKE_LOG"
           set +e
@@ -147,6 +191,7 @@ jobs:
         run: |
           find dist/BonyLandmarks.app -name "libqcocoa*"
           export QT_QPA_PLATFORM=cocoa
+          export BONY_REQUIRE_MESHES=1
           export BONY_SMOKE_LOG="$PWD/smoke-macos-cocoa.log"
           : > "$BONY_SMOKE_LOG"
           set +e

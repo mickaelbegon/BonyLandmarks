@@ -13,7 +13,7 @@
    "os du front"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/frontal.obj"
+  "mesh_file": "bones_full/frontal.ply"
  },
  {
   "id": "occipital",
@@ -28,7 +28,7 @@
    "occipital"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/occipital.obj"
+  "mesh_file": "bones_full/occipital.ply"
  },
  {
   "id": "mandible",
@@ -49,7 +49,7 @@
    "jawbone",
    "lower jaw"
   ],
-  "mesh_file": "bones_full/mandible.obj"
+  "mesh_file": "bones_full/mandible.ply"
  },
  {
   "id": "sphenoid",
@@ -66,7 +66,7 @@
   "synonyms_en": [
    "sphenoid"
   ],
-  "mesh_file": "bones_full/sphenoid.obj"
+  "mesh_file": "bones_full/sphenoid.ply"
  },
  {
   "id": "ethmoid",
@@ -83,7 +83,7 @@
   "synonyms_en": [
    "ethmoid"
   ],
-  "mesh_file": "bones_full/ethmoid.obj"
+  "mesh_file": "bones_full/ethmoid.ply"
  },
  {
   "id": "vomer",
@@ -98,7 +98,7 @@
    "os vomer"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/vomer.obj"
+  "mesh_file": "bones_full/vomer.ply"
  },
  {
   "id": "hyoid",
@@ -115,7 +115,7 @@
   "synonyms_en": [
    "hyoid"
   ],
-  "mesh_file": "bones_full/hyoid.obj"
+  "mesh_file": "bones_full/hyoid.ply"
  },
  {
   "id": "parietal_left",
@@ -130,7 +130,7 @@
    "pariétal"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/parietal_left.obj"
+  "mesh_file": "bones_full/parietal_left.ply"
  },
  {
   "id": "temporal_left",
@@ -145,7 +145,7 @@
    "temporal"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/temporal_left.obj"
+  "mesh_file": "bones_full/temporal_left.ply"
  },
  {
   "id": "maxilla_left",
@@ -165,7 +165,7 @@
    "upper jaw",
    "maxillary bone"
   ],
-  "mesh_file": "bones_full/maxilla_left.obj"
+  "mesh_file": "bones_full/maxilla_left.ply"
  },
  {
   "id": "zygomatic_left",
@@ -187,7 +187,7 @@
    "cheekbone",
    "malar bone"
   ],
-  "mesh_file": "bones_full/zygomatic_left.obj"
+  "mesh_file": "bones_full/zygomatic_left.ply"
  },
  {
   "id": "nasal_left",
@@ -203,7 +203,7 @@
    "nasal"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/nasal_left.obj"
+  "mesh_file": "bones_full/nasal_left.ply"
  },
  {
   "id": "lacrimal_left",
@@ -222,7 +222,7 @@
   "synonyms_en": [
    "unguis"
   ],
-  "mesh_file": "bones_full/lacrimal_left.obj"
+  "mesh_file": "bones_full/lacrimal_left.ply"
  },
  {
   "id": "palatine_left",
@@ -237,7 +237,7 @@
    "palatin"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/palatine_left.obj"
+  "mesh_file": "bones_full/palatine_left.ply"
  },
  {
   "id": "inferior_nasal_concha_left",
@@ -255,7 +255,7 @@
   "synonyms_en": [
    "inferior turbinate"
   ],
-  "mesh_file": "bones_full/inferior_nasal_concha_left.obj"
+  "mesh_file": "bones_full/inferior_nasal_concha_left.ply"
  },
  {
   "id": "parietal_right",
@@ -270,7 +270,7 @@
    "pariétal"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/parietal_right.obj"
+  "mesh_file": "bones_full/parietal_right.ply"
  },
  {
   "id": "temporal_right",
@@ -285,7 +285,7 @@
    "temporal"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/temporal_right.obj"
+  "mesh_file": "bones_full/temporal_right.ply"
  },
  {
   "id": "maxilla_right",
@@ -305,7 +305,7 @@
    "upper jaw",
    "maxillary bone"
   ],
-  "mesh_file": "bones_full/maxilla_right.obj"
+  "mesh_file": "bones_full/maxilla_right.ply"
  },
  {
   "id": "zygomatic_right",
@@ -327,7 +327,7 @@
    "cheekbone",
    "malar bone"
   ],
-  "mesh_file": "bones_full/zygomatic_right.obj"
+  "mesh_file": "bones_full/zygomatic_right.ply"
  },
  {
   "id": "nasal_right",
@@ -343,7 +343,7 @@
    "nasal"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/nasal_right.obj"
+  "mesh_file": "bones_full/nasal_right.ply"
  },
  {
   "id": "lacrimal_right",
@@ -362,7 +362,7 @@
   "synonyms_en": [
    "unguis"
   ],
-  "mesh_file": "bones_full/lacrimal_right.obj"
+  "mesh_file": "bones_full/lacrimal_right.ply"
  },
  {
   "id": "palatine_right",
@@ -377,7 +377,7 @@
    "palatin"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/palatine_right.obj"
+  "mesh_file": "bones_full/palatine_right.ply"
  },
  {
   "id": "inferior_nasal_concha_right",
@@ -395,7 +395,7 @@
   "synonyms_en": [
    "inferior turbinate"
   ],
-  "mesh_file": "bones_full/inferior_nasal_concha_right.obj"
+  "mesh_file": "bones_full/inferior_nasal_concha_right.ply"
  },
  {
   "id": "atlas",
@@ -415,7 +415,7 @@
    "C1",
    "first cervical vertebra"
   ],
-  "mesh_file": "bones_full/atlas.obj"
+  "mesh_file": "bones_full/atlas.ply"
  },
  {
   "id": "axis",
@@ -435,7 +435,7 @@
    "C2",
    "second cervical vertebra"
   ],
-  "mesh_file": "bones_full/axis.obj"
+  "mesh_file": "bones_full/axis.ply"
  },
  {
   "id": "vertebra_c3",
@@ -454,7 +454,7 @@
    "C3",
    "third cervical vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_c3.obj"
+  "mesh_file": "bones_full/vertebra_c3.ply"
  },
  {
   "id": "vertebra_c4",
@@ -473,7 +473,7 @@
    "C4",
    "fourth cervical vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_c4.obj"
+  "mesh_file": "bones_full/vertebra_c4.ply"
  },
  {
   "id": "vertebra_c5",
@@ -492,7 +492,7 @@
    "C5",
    "fifth cervical vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_c5.obj"
+  "mesh_file": "bones_full/vertebra_c5.ply"
  },
  {
   "id": "vertebra_c6",
@@ -511,7 +511,7 @@
    "C6",
    "sixth cervical vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_c6.obj"
+  "mesh_file": "bones_full/vertebra_c6.ply"
  },
  {
   "id": "vertebra_c7",
@@ -530,7 +530,7 @@
    "C7",
    "seventh cervical vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_c7.obj"
+  "mesh_file": "bones_full/vertebra_c7.ply"
  },
  {
   "id": "vertebra_t1",
@@ -551,7 +551,7 @@
    "T1",
    "first thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t1.obj"
+  "mesh_file": "bones_full/vertebra_t1.ply"
  },
  {
   "id": "vertebra_t2",
@@ -572,7 +572,7 @@
    "T2",
    "second thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t2.obj"
+  "mesh_file": "bones_full/vertebra_t2.ply"
  },
  {
   "id": "vertebra_t3",
@@ -593,7 +593,7 @@
    "T3",
    "third thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t3.obj"
+  "mesh_file": "bones_full/vertebra_t3.ply"
  },
  {
   "id": "vertebra_t4",
@@ -614,7 +614,7 @@
    "T4",
    "fourth thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t4.obj"
+  "mesh_file": "bones_full/vertebra_t4.ply"
  },
  {
   "id": "vertebra_t5",
@@ -635,7 +635,7 @@
    "T5",
    "fifth thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t5.obj"
+  "mesh_file": "bones_full/vertebra_t5.ply"
  },
  {
   "id": "vertebra_t6",
@@ -656,7 +656,7 @@
    "T6",
    "sixth thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t6.obj"
+  "mesh_file": "bones_full/vertebra_t6.ply"
  },
  {
   "id": "vertebra_t7",
@@ -677,7 +677,7 @@
    "T7",
    "seventh thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t7.obj"
+  "mesh_file": "bones_full/vertebra_t7.ply"
  },
  {
   "id": "vertebra_t8",
@@ -698,7 +698,7 @@
    "T8",
    "eighth thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t8.obj"
+  "mesh_file": "bones_full/vertebra_t8.ply"
  },
  {
   "id": "vertebra_t9",
@@ -719,7 +719,7 @@
    "T9",
    "ninth thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t9.obj"
+  "mesh_file": "bones_full/vertebra_t9.ply"
  },
  {
   "id": "vertebra_t10",
@@ -740,7 +740,7 @@
    "T10",
    "tenth thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t10.obj"
+  "mesh_file": "bones_full/vertebra_t10.ply"
  },
  {
   "id": "vertebra_t11",
@@ -761,7 +761,7 @@
    "T11",
    "eleventh thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t11.obj"
+  "mesh_file": "bones_full/vertebra_t11.ply"
  },
  {
   "id": "vertebra_t12",
@@ -782,7 +782,7 @@
    "T12",
    "twelfth thoracic vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_t12.obj"
+  "mesh_file": "bones_full/vertebra_t12.ply"
  },
  {
   "id": "vertebra_l1",
@@ -801,7 +801,7 @@
    "L1",
    "first lumbar vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_l1.obj"
+  "mesh_file": "bones_full/vertebra_l1.ply"
  },
  {
   "id": "vertebra_l2",
@@ -820,7 +820,7 @@
    "L2",
    "second lumbar vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_l2.obj"
+  "mesh_file": "bones_full/vertebra_l2.ply"
  },
  {
   "id": "vertebra_l3",
@@ -839,7 +839,7 @@
    "L3",
    "third lumbar vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_l3.obj"
+  "mesh_file": "bones_full/vertebra_l3.ply"
  },
  {
   "id": "vertebra_l4",
@@ -858,7 +858,7 @@
    "L4",
    "fourth lumbar vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_l4.obj"
+  "mesh_file": "bones_full/vertebra_l4.ply"
  },
  {
   "id": "vertebra_l5",
@@ -877,7 +877,7 @@
    "L5",
    "fifth lumbar vertebra"
   ],
-  "mesh_file": "bones_full/vertebra_l5.obj"
+  "mesh_file": "bones_full/vertebra_l5.ply"
  },
  {
   "id": "sacrum",
@@ -892,7 +892,7 @@
    "os sacrum"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/sacrum.obj"
+  "mesh_file": "bones_full/sacrum.ply"
  },
  {
   "id": "hip_bone_left",
@@ -915,7 +915,7 @@
    "os coxae",
    "coxal bone"
   ],
-  "mesh_file": "bones_full/hip_bone_left.obj"
+  "mesh_file": "bones_full/hip_bone_left.ply"
  },
  {
   "id": "hip_bone_right",
@@ -938,7 +938,7 @@
    "os coxae",
    "coxal bone"
   ],
-  "mesh_file": "bones_full/hip_bone_right.obj"
+  "mesh_file": "bones_full/hip_bone_right.ply"
  },
  {
   "id": "manubrium",
@@ -957,7 +957,7 @@
   "synonyms_en": [
    "manubrium sterni"
   ],
-  "mesh_file": "bones_full/manubrium.obj"
+  "mesh_file": "bones_full/manubrium.ply"
  },
  {
   "id": "sternum_body",
@@ -978,7 +978,7 @@
    "sternal body",
    "gladiolus"
   ],
-  "mesh_file": "bones_full/sternum_body.obj"
+  "mesh_file": "bones_full/sternum_body.ply"
  },
  {
   "id": "xiphoid_process",
@@ -998,7 +998,7 @@
    "xiphoid",
    "xiphisternum"
   ],
-  "mesh_file": "bones_full/xiphoid_process.obj"
+  "mesh_file": "bones_full/xiphoid_process.ply"
  },
  {
   "id": "rib_1_left",
@@ -1017,7 +1017,7 @@
    "rib 1",
    "first rib"
   ],
-  "mesh_file": "bones_full/rib_1_left.obj"
+  "mesh_file": "bones_full/rib_1_left.ply"
  },
  {
   "id": "rib_2_left",
@@ -1036,7 +1036,7 @@
    "rib 2",
    "second rib"
   ],
-  "mesh_file": "bones_full/rib_2_left.obj"
+  "mesh_file": "bones_full/rib_2_left.ply"
  },
  {
   "id": "rib_3_left",
@@ -1055,7 +1055,7 @@
    "rib 3",
    "third rib"
   ],
-  "mesh_file": "bones_full/rib_3_left.obj"
+  "mesh_file": "bones_full/rib_3_left.ply"
  },
  {
   "id": "rib_4_left",
@@ -1074,7 +1074,7 @@
    "rib 4",
    "fourth rib"
   ],
-  "mesh_file": "bones_full/rib_4_left.obj"
+  "mesh_file": "bones_full/rib_4_left.ply"
  },
  {
   "id": "rib_5_left",
@@ -1093,7 +1093,7 @@
    "rib 5",
    "fifth rib"
   ],
-  "mesh_file": "bones_full/rib_5_left.obj"
+  "mesh_file": "bones_full/rib_5_left.ply"
  },
  {
   "id": "rib_6_left",
@@ -1112,7 +1112,7 @@
    "rib 6",
    "sixth rib"
   ],
-  "mesh_file": "bones_full/rib_6_left.obj"
+  "mesh_file": "bones_full/rib_6_left.ply"
  },
  {
   "id": "rib_7_left",
@@ -1131,7 +1131,7 @@
    "rib 7",
    "seventh rib"
   ],
-  "mesh_file": "bones_full/rib_7_left.obj"
+  "mesh_file": "bones_full/rib_7_left.ply"
  },
  {
   "id": "rib_8_left",
@@ -1150,7 +1150,7 @@
    "rib 8",
    "eighth rib"
   ],
-  "mesh_file": "bones_full/rib_8_left.obj"
+  "mesh_file": "bones_full/rib_8_left.ply"
  },
  {
   "id": "rib_9_left",
@@ -1169,7 +1169,7 @@
    "rib 9",
    "ninth rib"
   ],
-  "mesh_file": "bones_full/rib_9_left.obj"
+  "mesh_file": "bones_full/rib_9_left.ply"
  },
  {
   "id": "rib_10_left",
@@ -1188,7 +1188,7 @@
    "rib 10",
    "tenth rib"
   ],
-  "mesh_file": "bones_full/rib_10_left.obj"
+  "mesh_file": "bones_full/rib_10_left.ply"
  },
  {
   "id": "rib_11_left",
@@ -1207,7 +1207,7 @@
    "rib 11",
    "eleventh rib"
   ],
-  "mesh_file": "bones_full/rib_11_left.obj"
+  "mesh_file": "bones_full/rib_11_left.ply"
  },
  {
   "id": "rib_12_left",
@@ -1226,7 +1226,7 @@
    "rib 12",
    "twelfth rib"
   ],
-  "mesh_file": "bones_full/rib_12_left.obj"
+  "mesh_file": "bones_full/rib_12_left.ply"
  },
  {
   "id": "rib_1_right",
@@ -1245,7 +1245,7 @@
    "rib 1",
    "first rib"
   ],
-  "mesh_file": "bones_full/rib_1_right.obj"
+  "mesh_file": "bones_full/rib_1_right.ply"
  },
  {
   "id": "rib_2_right",
@@ -1264,7 +1264,7 @@
    "rib 2",
    "second rib"
   ],
-  "mesh_file": "bones_full/rib_2_right.obj"
+  "mesh_file": "bones_full/rib_2_right.ply"
  },
  {
   "id": "rib_3_right",
@@ -1283,7 +1283,7 @@
    "rib 3",
    "third rib"
   ],
-  "mesh_file": "bones_full/rib_3_right.obj"
+  "mesh_file": "bones_full/rib_3_right.ply"
  },
  {
   "id": "rib_4_right",
@@ -1302,7 +1302,7 @@
    "rib 4",
    "fourth rib"
   ],
-  "mesh_file": "bones_full/rib_4_right.obj"
+  "mesh_file": "bones_full/rib_4_right.ply"
  },
  {
   "id": "rib_5_right",
@@ -1321,7 +1321,7 @@
    "rib 5",
    "fifth rib"
   ],
-  "mesh_file": "bones_full/rib_5_right.obj"
+  "mesh_file": "bones_full/rib_5_right.ply"
  },
  {
   "id": "rib_6_right",
@@ -1340,7 +1340,7 @@
    "rib 6",
    "sixth rib"
   ],
-  "mesh_file": "bones_full/rib_6_right.obj"
+  "mesh_file": "bones_full/rib_6_right.ply"
  },
  {
   "id": "rib_7_right",
@@ -1359,7 +1359,7 @@
    "rib 7",
    "seventh rib"
   ],
-  "mesh_file": "bones_full/rib_7_right.obj"
+  "mesh_file": "bones_full/rib_7_right.ply"
  },
  {
   "id": "rib_8_right",
@@ -1378,7 +1378,7 @@
    "rib 8",
    "eighth rib"
   ],
-  "mesh_file": "bones_full/rib_8_right.obj"
+  "mesh_file": "bones_full/rib_8_right.ply"
  },
  {
   "id": "rib_9_right",
@@ -1397,7 +1397,7 @@
    "rib 9",
    "ninth rib"
   ],
-  "mesh_file": "bones_full/rib_9_right.obj"
+  "mesh_file": "bones_full/rib_9_right.ply"
  },
  {
   "id": "rib_10_right",
@@ -1416,7 +1416,7 @@
    "rib 10",
    "tenth rib"
   ],
-  "mesh_file": "bones_full/rib_10_right.obj"
+  "mesh_file": "bones_full/rib_10_right.ply"
  },
  {
   "id": "rib_11_right",
@@ -1435,7 +1435,7 @@
    "rib 11",
    "eleventh rib"
   ],
-  "mesh_file": "bones_full/rib_11_right.obj"
+  "mesh_file": "bones_full/rib_11_right.ply"
  },
  {
   "id": "rib_12_right",
@@ -1454,7 +1454,7 @@
    "rib 12",
    "twelfth rib"
   ],
-  "mesh_file": "bones_full/rib_12_right.obj"
+  "mesh_file": "bones_full/rib_12_right.ply"
  },
  {
   "id": "clavicle_left",
@@ -1469,7 +1469,7 @@
   "synonyms_en": [
    "collarbone"
   ],
-  "mesh_file": "bones_full/clavicle_left.obj"
+  "mesh_file": "bones_full/clavicle_left.ply"
  },
  {
   "id": "clavicle_right",
@@ -1484,7 +1484,7 @@
   "synonyms_en": [
    "collarbone"
   ],
-  "mesh_file": "bones_full/clavicle_right.obj"
+  "mesh_file": "bones_full/clavicle_right.ply"
  },
  {
   "id": "scapula_left",
@@ -1501,7 +1501,7 @@
   "synonyms_en": [
    "shoulder blade"
   ],
-  "mesh_file": "bones_full/scapula_left.obj"
+  "mesh_file": "bones_full/scapula_left.ply"
  },
  {
   "id": "scapula_right",
@@ -1518,7 +1518,7 @@
   "synonyms_en": [
    "shoulder blade"
   ],
-  "mesh_file": "bones_full/scapula_right.obj"
+  "mesh_file": "bones_full/scapula_right.ply"
  },
  {
   "id": "humerus_left",
@@ -1533,7 +1533,7 @@
    "os du bras"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/humerus_left.obj"
+  "mesh_file": "bones_full/humerus_left.ply"
  },
  {
   "id": "humerus_right",
@@ -1548,7 +1548,7 @@
    "os du bras"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/humerus_right.obj"
+  "mesh_file": "bones_full/humerus_right.ply"
  },
  {
   "id": "radius_left",
@@ -1561,7 +1561,7 @@
   "tier": 1,
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "bones_full/radius_left.obj"
+  "mesh_file": "bones_full/radius_left.ply"
  },
  {
   "id": "radius_right",
@@ -1574,7 +1574,7 @@
   "tier": 1,
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "bones_full/radius_right.obj"
+  "mesh_file": "bones_full/radius_right.ply"
  },
  {
   "id": "ulna_left",
@@ -1592,7 +1592,7 @@
   "synonyms_en": [
    "cubitus"
   ],
-  "mesh_file": "bones_full/ulna_left.obj"
+  "mesh_file": "bones_full/ulna_left.ply"
  },
  {
   "id": "ulna_right",
@@ -1610,7 +1610,7 @@
   "synonyms_en": [
    "cubitus"
   ],
-  "mesh_file": "bones_full/ulna_right.obj"
+  "mesh_file": "bones_full/ulna_right.ply"
  },
  {
   "id": "scaphoid_left",
@@ -1629,7 +1629,7 @@
   "synonyms_en": [
    "navicular bone of hand"
   ],
-  "mesh_file": "bones_full/scaphoid_left.obj"
+  "mesh_file": "bones_full/scaphoid_left.ply"
  },
  {
   "id": "scaphoid_right",
@@ -1648,7 +1648,7 @@
   "synonyms_en": [
    "navicular bone of hand"
   ],
-  "mesh_file": "bones_full/scaphoid_right.obj"
+  "mesh_file": "bones_full/scaphoid_right.ply"
  },
  {
   "id": "lunate_left",
@@ -1667,7 +1667,7 @@
   "synonyms_en": [
    "semilunar"
   ],
-  "mesh_file": "bones_full/lunate_left.obj"
+  "mesh_file": "bones_full/lunate_left.ply"
  },
  {
   "id": "lunate_right",
@@ -1686,7 +1686,7 @@
   "synonyms_en": [
    "semilunar"
   ],
-  "mesh_file": "bones_full/lunate_right.obj"
+  "mesh_file": "bones_full/lunate_right.ply"
  },
  {
   "id": "triquetrum_left",
@@ -1706,7 +1706,7 @@
    "triquetral",
    "pyramidal bone"
   ],
-  "mesh_file": "bones_full/triquetrum_left.obj"
+  "mesh_file": "bones_full/triquetrum_left.ply"
  },
  {
   "id": "triquetrum_right",
@@ -1726,7 +1726,7 @@
    "triquetral",
    "pyramidal bone"
   ],
-  "mesh_file": "bones_full/triquetrum_right.obj"
+  "mesh_file": "bones_full/triquetrum_right.ply"
  },
  {
   "id": "pisiform_left",
@@ -1741,7 +1741,7 @@
    "os pisiforme"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/pisiform_left.obj"
+  "mesh_file": "bones_full/pisiform_left.ply"
  },
  {
   "id": "pisiform_right",
@@ -1756,7 +1756,7 @@
    "os pisiforme"
   ],
   "synonyms_en": [],
-  "mesh_file": "bones_full/pisiform_right.obj"
+  "mesh_file": "bones_full/pisiform_right.ply"
  },
  {
   "id": "trapezium_left",
@@ -1774,7 +1774,7 @@
   "synonyms_en": [
    "greater multangular"
   ],
-  "mesh_file": "bones_full/trapezium_left.obj"
+  "mesh_file": "bones_full/trapezium_left.ply"
  },
  {
   "id": "trapezium_right",
@@ -1792,7 +1792,7 @@
   "synonyms_en": [
    "greater multangular"
   ],
-  "mesh_file": "bones_full/trapezium_right.obj"
+  "mesh_file": "bones_full/trapezium_right.ply"
  },
  {
   "id": "trapezoid_left",
@@ -1810,7 +1810,7 @@
   "synonyms_en": [
    "lesser multangular"
   ],
-  "mesh_file": "bones_full/trapezoid_left.obj"
+  "mesh_file": "bones_full/trapezoid_left.ply"
  },
  {
   "id": "trapezoid_right",
@@ -1828,7 +1828,7 @@
   "synonyms_en": [
    "lesser multangular"
   ],
-  "mesh_file": "bones_full/trapezoid_right.obj"
+  "mesh_file": "bones_full/trapezoid_right.ply"
  },
  {
   "id": "capitate_left",
@@ -1846,7 +1846,7 @@
   "synonyms_en": [
    "os magnum"
   ],
-  "mesh_file": "bones_full/capitate_left.obj"
+  "mesh_file": "bones_full/capitate_left.ply"
  },
  {
   "id": "capitate_right",
@@ -1864,7 +1864,7 @@
   "synonyms_en": [
    "os magnum"
   ],
-  "mesh_file": "bones_full/capitate_right.obj"
+  "mesh_file": "bones_full/capitate_right.ply"
  },
  {
   "id": "hamate_left",
@@ -1883,7 +1883,7 @@
   "synonyms_en": [
    "unciform"
   ],
-  "mesh_file": "bones_full/hamate_left.obj"
+  "mesh_file": "bones_full/hamate_left.ply"
  },
  {
   "id": "hamate_right",
@@ -1902,7 +1902,7 @@
   "synonyms_en": [
    "unciform"
   ],
-  "mesh_file": "bones_full/hamate_right.obj"
+  "mesh_file": "bones_full/hamate_right.ply"
  },
  {
   "id": "metacarpal_1_left",
@@ -1921,7 +1921,7 @@
    "metacarpal 1",
    "first metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_1_left.obj"
+  "mesh_file": "bones_full/metacarpal_1_left.ply"
  },
  {
   "id": "metacarpal_1_right",
@@ -1940,7 +1940,7 @@
    "metacarpal 1",
    "first metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_1_right.obj"
+  "mesh_file": "bones_full/metacarpal_1_right.ply"
  },
  {
   "id": "metacarpal_2_left",
@@ -1959,7 +1959,7 @@
    "metacarpal 2",
    "second metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_2_left.obj"
+  "mesh_file": "bones_full/metacarpal_2_left.ply"
  },
  {
   "id": "metacarpal_2_right",
@@ -1978,7 +1978,7 @@
    "metacarpal 2",
    "second metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_2_right.obj"
+  "mesh_file": "bones_full/metacarpal_2_right.ply"
  },
  {
   "id": "metacarpal_3_left",
@@ -1997,7 +1997,7 @@
    "metacarpal 3",
    "third metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_3_left.obj"
+  "mesh_file": "bones_full/metacarpal_3_left.ply"
  },
  {
   "id": "metacarpal_3_right",
@@ -2016,7 +2016,7 @@
    "metacarpal 3",
    "third metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_3_right.obj"
+  "mesh_file": "bones_full/metacarpal_3_right.ply"
  },
  {
   "id": "metacarpal_4_left",
@@ -2035,7 +2035,7 @@
    "metacarpal 4",
    "fourth metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_4_left.obj"
+  "mesh_file": "bones_full/metacarpal_4_left.ply"
  },
  {
   "id": "metacarpal_4_right",
@@ -2054,7 +2054,7 @@
    "metacarpal 4",
    "fourth metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_4_right.obj"
+  "mesh_file": "bones_full/metacarpal_4_right.ply"
  },
  {
   "id": "metacarpal_5_left",
@@ -2073,7 +2073,7 @@
    "metacarpal 5",
    "fifth metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_5_left.obj"
+  "mesh_file": "bones_full/metacarpal_5_left.ply"
  },
  {
   "id": "metacarpal_5_right",
@@ -2092,7 +2092,7 @@
    "metacarpal 5",
    "fifth metacarpal"
   ],
-  "mesh_file": "bones_full/metacarpal_5_right.obj"
+  "mesh_file": "bones_full/metacarpal_5_right.ply"
  },
  {
   "id": "hand_phalanx_proximal_1_left",
@@ -2109,7 +2109,7 @@
   "synonyms_en": [
    "proximal phalanx thumb left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_1_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_1_left.ply"
  },
  {
   "id": "hand_phalanx_proximal_1_right",
@@ -2126,7 +2126,7 @@
   "synonyms_en": [
    "proximal phalanx thumb right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_1_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_1_right.ply"
  },
  {
   "id": "hand_phalanx_distal_1_left",
@@ -2143,7 +2143,7 @@
   "synonyms_en": [
    "distal phalanx thumb left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_1_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_1_left.ply"
  },
  {
   "id": "hand_phalanx_distal_1_right",
@@ -2160,7 +2160,7 @@
   "synonyms_en": [
    "distal phalanx thumb right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_1_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_1_right.ply"
  },
  {
   "id": "hand_phalanx_proximal_2_left",
@@ -2177,7 +2177,7 @@
   "synonyms_en": [
    "proximal phalanx index finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_2_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_2_left.ply"
  },
  {
   "id": "hand_phalanx_proximal_2_right",
@@ -2194,7 +2194,7 @@
   "synonyms_en": [
    "proximal phalanx index finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_2_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_2_right.ply"
  },
  {
   "id": "hand_phalanx_middle_2_left",
@@ -2211,7 +2211,7 @@
   "synonyms_en": [
    "middle phalanx index finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_middle_2_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_middle_2_left.ply"
  },
  {
   "id": "hand_phalanx_middle_2_right",
@@ -2228,7 +2228,7 @@
   "synonyms_en": [
    "middle phalanx index finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_middle_2_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_middle_2_right.ply"
  },
  {
   "id": "hand_phalanx_distal_2_left",
@@ -2245,7 +2245,7 @@
   "synonyms_en": [
    "distal phalanx index finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_2_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_2_left.ply"
  },
  {
   "id": "hand_phalanx_distal_2_right",
@@ -2262,7 +2262,7 @@
   "synonyms_en": [
    "distal phalanx index finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_2_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_2_right.ply"
  },
  {
   "id": "hand_phalanx_proximal_3_left",
@@ -2279,7 +2279,7 @@
   "synonyms_en": [
    "proximal phalanx middle finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_3_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_3_left.ply"
  },
  {
   "id": "hand_phalanx_proximal_3_right",
@@ -2296,7 +2296,7 @@
   "synonyms_en": [
    "proximal phalanx middle finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_3_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_3_right.ply"
  },
  {
   "id": "hand_phalanx_middle_3_left",
@@ -2313,7 +2313,7 @@
   "synonyms_en": [
    "middle phalanx middle finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_middle_3_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_middle_3_left.ply"
  },
  {
   "id": "hand_phalanx_middle_3_right",
@@ -2330,7 +2330,7 @@
   "synonyms_en": [
    "middle phalanx middle finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_middle_3_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_middle_3_right.ply"
  },
  {
   "id": "hand_phalanx_distal_3_left",
@@ -2347,7 +2347,7 @@
   "synonyms_en": [
    "distal phalanx middle finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_3_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_3_left.ply"
  },
  {
   "id": "hand_phalanx_distal_3_right",
@@ -2364,7 +2364,7 @@
   "synonyms_en": [
    "distal phalanx middle finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_3_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_3_right.ply"
  },
  {
   "id": "hand_phalanx_proximal_4_left",
@@ -2381,7 +2381,7 @@
   "synonyms_en": [
    "proximal phalanx ring finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_4_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_4_left.ply"
  },
  {
   "id": "hand_phalanx_proximal_4_right",
@@ -2398,7 +2398,7 @@
   "synonyms_en": [
    "proximal phalanx ring finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_4_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_4_right.ply"
  },
  {
   "id": "hand_phalanx_middle_4_left",
@@ -2415,7 +2415,7 @@
   "synonyms_en": [
    "middle phalanx ring finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_middle_4_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_middle_4_left.ply"
  },
  {
   "id": "hand_phalanx_middle_4_right",
@@ -2432,7 +2432,7 @@
   "synonyms_en": [
    "middle phalanx ring finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_middle_4_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_middle_4_right.ply"
  },
  {
   "id": "hand_phalanx_distal_4_left",
@@ -2449,7 +2449,7 @@
   "synonyms_en": [
    "distal phalanx ring finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_4_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_4_left.ply"
  },
  {
   "id": "hand_phalanx_distal_4_right",
@@ -2466,7 +2466,7 @@
   "synonyms_en": [
    "distal phalanx ring finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_4_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_4_right.ply"
  },
  {
   "id": "hand_phalanx_proximal_5_left",
@@ -2483,7 +2483,7 @@
   "synonyms_en": [
    "proximal phalanx little finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_5_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_5_left.ply"
  },
  {
   "id": "hand_phalanx_proximal_5_right",
@@ -2500,7 +2500,7 @@
   "synonyms_en": [
    "proximal phalanx little finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_proximal_5_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_proximal_5_right.ply"
  },
  {
   "id": "hand_phalanx_middle_5_left",
@@ -2517,7 +2517,7 @@
   "synonyms_en": [
    "middle phalanx little finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_middle_5_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_middle_5_left.ply"
  },
  {
   "id": "hand_phalanx_middle_5_right",
@@ -2534,7 +2534,7 @@
   "synonyms_en": [
    "middle phalanx little finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_middle_5_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_middle_5_right.ply"
  },
  {
   "id": "hand_phalanx_distal_5_left",
@@ -2551,7 +2551,7 @@
   "synonyms_en": [
    "distal phalanx little finger left"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_5_left.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_5_left.ply"
  },
  {
   "id": "hand_phalanx_distal_5_right",
@@ -2568,7 +2568,7 @@
   "synonyms_en": [
    "distal phalanx little finger right"
   ],
-  "mesh_file": "bones_full/hand_phalanx_distal_5_right.obj"
+  "mesh_file": "bones_full/hand_phalanx_distal_5_right.ply"
  },
  {
   "id": "femur_left",
@@ -2585,7 +2585,7 @@
   "synonyms_en": [
    "thighbone"
   ],
-  "mesh_file": "bones_full/femur_left.obj"
+  "mesh_file": "bones_full/femur_left.ply"
  },
  {
   "id": "femur_right",
@@ -2602,7 +2602,7 @@
   "synonyms_en": [
    "thighbone"
   ],
-  "mesh_file": "bones_full/femur_right.obj"
+  "mesh_file": "bones_full/femur_right.ply"
  },
  {
   "id": "patella_left",
@@ -2619,7 +2619,7 @@
   "synonyms_en": [
    "kneecap"
   ],
-  "mesh_file": "bones_full/patella_left.obj"
+  "mesh_file": "bones_full/patella_left.ply"
  },
  {
   "id": "patella_right",
@@ -2636,7 +2636,7 @@
   "synonyms_en": [
    "kneecap"
   ],
-  "mesh_file": "bones_full/patella_right.obj"
+  "mesh_file": "bones_full/patella_right.ply"
  },
  {
   "id": "tibia_left",
@@ -2653,7 +2653,7 @@
   "synonyms_en": [
    "shinbone"
   ],
-  "mesh_file": "bones_full/tibia_left.obj"
+  "mesh_file": "bones_full/tibia_left.ply"
  },
  {
   "id": "tibia_right",
@@ -2670,7 +2670,7 @@
   "synonyms_en": [
    "shinbone"
   ],
-  "mesh_file": "bones_full/tibia_right.obj"
+  "mesh_file": "bones_full/tibia_right.ply"
  },
  {
   "id": "fibula_left",
@@ -2689,7 +2689,7 @@
    "peroneal bone",
    "calf bone"
   ],
-  "mesh_file": "bones_full/fibula_left.obj"
+  "mesh_file": "bones_full/fibula_left.ply"
  },
  {
   "id": "fibula_right",
@@ -2708,7 +2708,7 @@
    "peroneal bone",
    "calf bone"
   ],
-  "mesh_file": "bones_full/fibula_right.obj"
+  "mesh_file": "bones_full/fibula_right.ply"
  },
  {
   "id": "calcaneus_left",
@@ -2727,7 +2727,7 @@
    "heel bone",
    "calcaneum"
   ],
-  "mesh_file": "bones_full/calcaneus_left.obj"
+  "mesh_file": "bones_full/calcaneus_left.ply"
  },
  {
   "id": "calcaneus_right",
@@ -2746,7 +2746,7 @@
    "heel bone",
    "calcaneum"
   ],
-  "mesh_file": "bones_full/calcaneus_right.obj"
+  "mesh_file": "bones_full/calcaneus_right.ply"
  },
  {
   "id": "talus_left",
@@ -2764,7 +2764,7 @@
    "astragalus",
    "ankle bone"
   ],
-  "mesh_file": "bones_full/talus_left.obj"
+  "mesh_file": "bones_full/talus_left.ply"
  },
  {
   "id": "talus_right",
@@ -2782,7 +2782,7 @@
    "astragalus",
    "ankle bone"
   ],
-  "mesh_file": "bones_full/talus_right.obj"
+  "mesh_file": "bones_full/talus_right.ply"
  },
  {
   "id": "cuboid_left",
@@ -2800,7 +2800,7 @@
   "synonyms_en": [
    "cuboid"
   ],
-  "mesh_file": "bones_full/cuboid_left.obj"
+  "mesh_file": "bones_full/cuboid_left.ply"
  },
  {
   "id": "navicular_left",
@@ -2820,7 +2820,7 @@
    "navicular",
    "tarsal navicular"
   ],
-  "mesh_file": "bones_full/navicular_left.obj"
+  "mesh_file": "bones_full/navicular_left.ply"
  },
  {
   "id": "cuneiform_medial_left",
@@ -2840,7 +2840,7 @@
    "first cuneiform",
    "medial cuneiform"
   ],
-  "mesh_file": "bones_full/cuneiform_medial_left.obj"
+  "mesh_file": "bones_full/cuneiform_medial_left.ply"
  },
  {
   "id": "cuneiform_intermediate_left",
@@ -2860,7 +2860,7 @@
    "second cuneiform",
    "intermediate cuneiform"
   ],
-  "mesh_file": "bones_full/cuneiform_intermediate_left.obj"
+  "mesh_file": "bones_full/cuneiform_intermediate_left.ply"
  },
  {
   "id": "cuneiform_lateral_left",
@@ -2880,7 +2880,7 @@
    "third cuneiform",
    "lateral cuneiform"
   ],
-  "mesh_file": "bones_full/cuneiform_lateral_left.obj"
+  "mesh_file": "bones_full/cuneiform_lateral_left.ply"
  },
  {
   "id": "cuboid_right",
@@ -2898,7 +2898,7 @@
   "synonyms_en": [
    "cuboid"
   ],
-  "mesh_file": "bones_full/cuboid_right.obj"
+  "mesh_file": "bones_full/cuboid_right.ply"
  },
  {
   "id": "navicular_right",
@@ -2918,7 +2918,7 @@
    "navicular",
    "tarsal navicular"
   ],
-  "mesh_file": "bones_full/navicular_right.obj"
+  "mesh_file": "bones_full/navicular_right.ply"
  },
  {
   "id": "cuneiform_medial_right",
@@ -2938,7 +2938,7 @@
    "first cuneiform",
    "medial cuneiform"
   ],
-  "mesh_file": "bones_full/cuneiform_medial_right.obj"
+  "mesh_file": "bones_full/cuneiform_medial_right.ply"
  },
  {
   "id": "cuneiform_intermediate_right",
@@ -2958,7 +2958,7 @@
    "second cuneiform",
    "intermediate cuneiform"
   ],
-  "mesh_file": "bones_full/cuneiform_intermediate_right.obj"
+  "mesh_file": "bones_full/cuneiform_intermediate_right.ply"
  },
  {
   "id": "cuneiform_lateral_right",
@@ -2978,7 +2978,7 @@
    "third cuneiform",
    "lateral cuneiform"
   ],
-  "mesh_file": "bones_full/cuneiform_lateral_right.obj"
+  "mesh_file": "bones_full/cuneiform_lateral_right.ply"
  },
  {
   "id": "metatarsal_1_left",
@@ -2997,7 +2997,7 @@
    "metatarsal 1",
    "first metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_1_left.obj"
+  "mesh_file": "bones_full/metatarsal_1_left.ply"
  },
  {
   "id": "metatarsal_1_right",
@@ -3016,7 +3016,7 @@
    "metatarsal 1",
    "first metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_1_right.obj"
+  "mesh_file": "bones_full/metatarsal_1_right.ply"
  },
  {
   "id": "metatarsal_2_left",
@@ -3035,7 +3035,7 @@
    "metatarsal 2",
    "second metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_2_left.obj"
+  "mesh_file": "bones_full/metatarsal_2_left.ply"
  },
  {
   "id": "metatarsal_2_right",
@@ -3054,7 +3054,7 @@
    "metatarsal 2",
    "second metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_2_right.obj"
+  "mesh_file": "bones_full/metatarsal_2_right.ply"
  },
  {
   "id": "metatarsal_3_left",
@@ -3073,7 +3073,7 @@
    "metatarsal 3",
    "third metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_3_left.obj"
+  "mesh_file": "bones_full/metatarsal_3_left.ply"
  },
  {
   "id": "metatarsal_3_right",
@@ -3092,7 +3092,7 @@
    "metatarsal 3",
    "third metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_3_right.obj"
+  "mesh_file": "bones_full/metatarsal_3_right.ply"
  },
  {
   "id": "metatarsal_4_left",
@@ -3111,7 +3111,7 @@
    "metatarsal 4",
    "fourth metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_4_left.obj"
+  "mesh_file": "bones_full/metatarsal_4_left.ply"
  },
  {
   "id": "metatarsal_4_right",
@@ -3130,7 +3130,7 @@
    "metatarsal 4",
    "fourth metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_4_right.obj"
+  "mesh_file": "bones_full/metatarsal_4_right.ply"
  },
  {
   "id": "metatarsal_5_left",
@@ -3149,7 +3149,7 @@
    "metatarsal 5",
    "fifth metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_5_left.obj"
+  "mesh_file": "bones_full/metatarsal_5_left.ply"
  },
  {
   "id": "metatarsal_5_right",
@@ -3168,7 +3168,7 @@
    "metatarsal 5",
    "fifth metatarsal"
   ],
-  "mesh_file": "bones_full/metatarsal_5_right.obj"
+  "mesh_file": "bones_full/metatarsal_5_right.ply"
  },
  {
   "id": "foot_phalanx_proximal_1_left",
@@ -3186,7 +3186,7 @@
   "synonyms_en": [
    "proximal phalanx big toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_1_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_1_left.ply"
  },
  {
   "id": "foot_phalanx_proximal_1_right",
@@ -3204,7 +3204,7 @@
   "synonyms_en": [
    "proximal phalanx big toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_1_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_1_right.ply"
  },
  {
   "id": "foot_phalanx_distal_1_left",
@@ -3222,7 +3222,7 @@
   "synonyms_en": [
    "distal phalanx big toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_1_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_1_left.ply"
  },
  {
   "id": "foot_phalanx_distal_1_right",
@@ -3240,7 +3240,7 @@
   "synonyms_en": [
    "distal phalanx big toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_1_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_1_right.ply"
  },
  {
   "id": "foot_phalanx_proximal_2_left",
@@ -3257,7 +3257,7 @@
   "synonyms_en": [
    "proximal phalanx second toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_2_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_2_left.ply"
  },
  {
   "id": "foot_phalanx_proximal_2_right",
@@ -3274,7 +3274,7 @@
   "synonyms_en": [
    "proximal phalanx second toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_2_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_2_right.ply"
  },
  {
   "id": "foot_phalanx_middle_2_left",
@@ -3291,7 +3291,7 @@
   "synonyms_en": [
    "middle phalanx second toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_middle_2_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_middle_2_left.ply"
  },
  {
   "id": "foot_phalanx_middle_2_right",
@@ -3308,7 +3308,7 @@
   "synonyms_en": [
    "middle phalanx second toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_middle_2_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_middle_2_right.ply"
  },
  {
   "id": "foot_phalanx_distal_2_left",
@@ -3325,7 +3325,7 @@
   "synonyms_en": [
    "distal phalanx second toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_2_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_2_left.ply"
  },
  {
   "id": "foot_phalanx_distal_2_right",
@@ -3342,7 +3342,7 @@
   "synonyms_en": [
    "distal phalanx second toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_2_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_2_right.ply"
  },
  {
   "id": "foot_phalanx_proximal_3_left",
@@ -3359,7 +3359,7 @@
   "synonyms_en": [
    "proximal phalanx third toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_3_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_3_left.ply"
  },
  {
   "id": "foot_phalanx_proximal_3_right",
@@ -3376,7 +3376,7 @@
   "synonyms_en": [
    "proximal phalanx third toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_3_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_3_right.ply"
  },
  {
   "id": "foot_phalanx_middle_3_left",
@@ -3393,7 +3393,7 @@
   "synonyms_en": [
    "middle phalanx third toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_middle_3_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_middle_3_left.ply"
  },
  {
   "id": "foot_phalanx_middle_3_right",
@@ -3410,7 +3410,7 @@
   "synonyms_en": [
    "middle phalanx third toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_middle_3_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_middle_3_right.ply"
  },
  {
   "id": "foot_phalanx_distal_3_left",
@@ -3427,7 +3427,7 @@
   "synonyms_en": [
    "distal phalanx third toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_3_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_3_left.ply"
  },
  {
   "id": "foot_phalanx_distal_3_right",
@@ -3444,7 +3444,7 @@
   "synonyms_en": [
    "distal phalanx third toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_3_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_3_right.ply"
  },
  {
   "id": "foot_phalanx_proximal_4_left",
@@ -3461,7 +3461,7 @@
   "synonyms_en": [
    "proximal phalanx fourth toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_4_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_4_left.ply"
  },
  {
   "id": "foot_phalanx_proximal_4_right",
@@ -3478,7 +3478,7 @@
   "synonyms_en": [
    "proximal phalanx fourth toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_4_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_4_right.ply"
  },
  {
   "id": "foot_phalanx_middle_4_left",
@@ -3495,7 +3495,7 @@
   "synonyms_en": [
    "middle phalanx fourth toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_middle_4_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_middle_4_left.ply"
  },
  {
   "id": "foot_phalanx_middle_4_right",
@@ -3512,7 +3512,7 @@
   "synonyms_en": [
    "middle phalanx fourth toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_middle_4_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_middle_4_right.ply"
  },
  {
   "id": "foot_phalanx_distal_4_left",
@@ -3529,7 +3529,7 @@
   "synonyms_en": [
    "distal phalanx fourth toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_4_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_4_left.ply"
  },
  {
   "id": "foot_phalanx_distal_4_right",
@@ -3546,7 +3546,7 @@
   "synonyms_en": [
    "distal phalanx fourth toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_4_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_4_right.ply"
  },
  {
   "id": "foot_phalanx_proximal_5_left",
@@ -3564,7 +3564,7 @@
   "synonyms_en": [
    "proximal phalanx little toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_5_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_5_left.ply"
  },
  {
   "id": "foot_phalanx_proximal_5_right",
@@ -3582,7 +3582,7 @@
   "synonyms_en": [
    "proximal phalanx little toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_proximal_5_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_proximal_5_right.ply"
  },
  {
   "id": "foot_phalanx_middle_5_left",
@@ -3600,7 +3600,7 @@
   "synonyms_en": [
    "middle phalanx little toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_middle_5_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_middle_5_left.ply"
  },
  {
   "id": "foot_phalanx_middle_5_right",
@@ -3618,7 +3618,7 @@
   "synonyms_en": [
    "middle phalanx little toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_middle_5_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_middle_5_right.ply"
  },
  {
   "id": "foot_phalanx_distal_5_left",
@@ -3636,7 +3636,7 @@
   "synonyms_en": [
    "distal phalanx little toe left"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_5_left.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_5_left.ply"
  },
  {
   "id": "foot_phalanx_distal_5_right",
@@ -3654,7 +3654,7 @@
   "synonyms_en": [
    "distal phalanx little toe right"
   ],
-  "mesh_file": "bones_full/foot_phalanx_distal_5_right.obj"
+  "mesh_file": "bones_full/foot_phalanx_distal_5_right.ply"
  },
  {
   "id": "sesamoid_medial_left",
@@ -3673,7 +3673,7 @@
    "medial sesamoid",
    "hallux sesamoid"
   ],
-  "mesh_file": "bones_full/sesamoid_medial_left.obj",
+  "mesh_file": "bones_full/sesamoid_medial_left.ply",
   "src_files": [
    "FJ3266"
   ]
@@ -3695,7 +3695,7 @@
    "lateral sesamoid",
    "hallux sesamoid"
   ],
-  "mesh_file": "bones_full/sesamoid_lateral_left.obj",
+  "mesh_file": "bones_full/sesamoid_lateral_left.ply",
   "src_files": [
    "FJ3270"
   ]
@@ -3717,7 +3717,7 @@
    "medial sesamoid",
    "hallux sesamoid"
   ],
-  "mesh_file": "bones_full/sesamoid_medial_right.obj",
+  "mesh_file": "bones_full/sesamoid_medial_right.ply",
   "src_files": [
    "FJ3372"
   ]
@@ -3739,7 +3739,7 @@
    "lateral sesamoid",
    "hallux sesamoid"
   ],
-  "mesh_file": "bones_full/sesamoid_lateral_right.obj",
+  "mesh_file": "bones_full/sesamoid_lateral_right.ply",
   "src_files": [
    "FJ3376"
   ]

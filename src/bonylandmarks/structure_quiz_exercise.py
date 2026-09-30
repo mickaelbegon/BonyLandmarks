@@ -129,10 +129,12 @@ _S: dict[str, tuple[str, str]] = {
         "{n} structure(s) available in the selection",
     ),
     "no_mesh": (
-        "Aucun mesh {kind} n'est installé. Lancez « python scripts/import_bp3d.py "
-        "--kind {arg} » pour les importer depuis BodyParts3D.",
-        "No {kind} mesh is installed. Run “python scripts/import_bp3d.py --kind {arg}” "
-        "to import them from BodyParts3D.",
+        "Aucun mesh {kind} n'est installé. Lancez « python scripts/fetch_meshes.py » "
+        "pour les télécharger (ou « python scripts/import_bp3d.py --kind {arg} » pour "
+        "les régénérer depuis BodyParts3D).",
+        "No {kind} mesh is installed. Run “python scripts/fetch_meshes.py” to download "
+        "them (or “python scripts/import_bp3d.py --kind {arg}” to regenerate them "
+        "from BodyParts3D).",
     ),
     "no_question": (
         "Aucune question possible avec cette sélection.",

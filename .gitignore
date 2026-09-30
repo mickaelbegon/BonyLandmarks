@@ -24,12 +24,17 @@ LOCAL_landmarks.json
 .coverage
 htmlcov/
 # Bone reference meshes — CC BY-SA 2.1 JP (BodyParts3D/DBCLS), too large for git
-# Download and rename per src/bonylandmarks/data/bones/README.md
+# Récupérer avec : python scripts/fetch_meshes.py  (voir src/bonylandmarks/data/bones/README.md)
 src/bonylandmarks/data/bones/*.obj
 src/bonylandmarks/data/bones/*.stl
+src/bonylandmarks/data/bones/*.ply
 src/bonylandmarks/data/bones/validation/
 
 # BodyParts3D meshes complets (os individuels + muscles) — CC BY-SA 2.1 JP, non versionnés
 # Regénérer avec : python scripts/import_bp3d.py --kind all
 src/bonylandmarks/data/bones_full/
 src/bonylandmarks/data/muscles/*.obj
+src/bonylandmarks/data/muscles/*.ply
+# Installés par scripts/fetch_meshes.py (licence + copie du manifest de la release)
+src/bonylandmarks/data/MESHES_LICENSE.txt
+src/bonylandmarks/data/meshes_manifest.json

@@ -34,7 +34,7 @@ from PySide6.QtWidgets import (
 )
 from pyvistaqt import QtInteractor
 
-from .bone_map import BONE_JOINTS, BONE_LABEL_FR, LANDMARK_BONE
+from .bone_map import BONE_JOINTS, BONE_LABEL_FR, LANDMARK_BONE, find_bone_mesh
 from .landmarks_extended import LANDMARK_BY_CODE, LANDMARKS
 from .scene3d import (
     CameraAxes,
@@ -131,22 +131,18 @@ def _lm_positions() -> dict[str, list[float]]:
 
 
 def _load_bone(stem: str) -> Optional[pv.PolyData]:
-    """Load one bone mesh from data/bones/ (STL or OBJ). Returns None if missing."""
-    for ext in (".stl", ".obj", ".STL", ".OBJ"):
-        p = _BONES_DIR / f"{stem}{ext}"
-        if p.exists():
-            try:
-                return pv.read(str(p))
-            except Exception:
-                return None
-    return None
+    """Load one bone mesh from data/bones/ (PLY, STL or OBJ). Returns None if missing."""
+    p = find_bone_mesh(_BONES_DIR, stem)
+    if p is None:
+        return None
+    try:
+        return pv.read(str(p))
+    except Exception:
+        return None
 
 
 def _bone_has_mesh(stem: str) -> bool:
-    for ext in (".stl", ".obj", ".STL", ".OBJ"):
-        if (_BONES_DIR / f"{stem}{ext}").exists():
-            return True
-    return False
+    return find_bone_mesh(_BONES_DIR, stem) is not None
 
 
 def _build_eligible_landmarks() -> list[str]:

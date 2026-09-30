@@ -46,6 +46,7 @@ Outil interactif 3D pour apprendre à identifier et placer des repères anatomiq
 
 ```bash
 pip install -e ".[dev]"
+python scripts/fetch_meshes.py   # meshes BodyParts3D (quiz osseux, Anatomie 3D, annotateur)
 bonylandmarks
 ```
 
@@ -204,6 +205,25 @@ cd BonyLandmarks
 pip install -e ".[dev]"
 ```
 
+### Récupérer les meshes BodyParts3D
+
+Les meshes anatomiques (os et muscles, format PLY binaire, ~36 Mo bruts / ~18 Mo zippés) ne sont pas dans git : ils sont publiés comme asset de la release GitHub `meshes-v1` (voir [Licences des données](#licences-des-données-meshes-os-et-muscles)). Pour les installer dans `src/bonylandmarks/data/` :
+
+```bash
+python scripts/fetch_meshes.py                                     # gh authentifié, sinon URL publique de la release
+python scripts/fetch_meshes.py --zip bonylandmarks-meshes-v1.zip   # depuis un zip local (hors ligne)
+```
+
+Le script vérifie les SHA-256 du `MANIFEST.json` et est idempotent (options `--tag`, `--dest`, `--force`). Sans meshes, les tests passent quand même ; seuls le quiz osseux, l'exercice Anatomie 3D et le dock « Os de référence » de l'annotateur sont inutilisables.
+
+Pour **régénérer** les meshes depuis la base BodyParts3D d'origine (mainteneurs) :
+
+```bash
+python scripts/import_bp3d.py --src <dossier isa_BP3D_4.0_obj_99> --kind all   # écrit des .ply (--format obj possible)
+python scripts/convert_meshes.py    # convertit d'anciens OBJ locaux en PLY (sans re-décimation)
+python scripts/pack_meshes.py       # produit dist/bonylandmarks-meshes-v1.zip
+```
+
 ### Lancer l'application
 
 ```bash
@@ -230,7 +250,7 @@ pyinstaller --onefile --windowed --name BonyLandmarks \
     src/bonylandmarks/main.py
 ```
 
-Les exécutables Windows et macOS sont produits automatiquement par GitHub Actions à chaque push sur `main`.
+Les exécutables Windows et macOS sont produits automatiquement par GitHub Actions à chaque push sur `main`. Le workflow télécharge d'abord les meshes de la release `meshes-v1` (`scripts/fetch_meshes.py`) puis les embarque via `packaging/BonyLandmarks.spec` (`data/bones/`, `bones_full/`, `muscles/` en `.ply`, plus `MESHES_LICENSE.txt`) ; le build échoue si la release est absente. Un build local avec le spec (`pyinstaller --noconfirm packaging/BonyLandmarks.spec`) suppose d'avoir lancé `python scripts/fetch_meshes.py` auparavant.
 
 ---
 
@@ -277,8 +297,9 @@ src/bonylandmarks/
 ├── i18n.py                    # Traductions FR/EN
 └── data/
     ├── landmarks.json         # 182 repères osseux bilingues (9 thèmes)
-    └── bones/
-        └── landmark_positions.json  # code → [x, y, z] (mm, BodyParts3D)
+    ├── bones/
+    │   └── landmark_positions.json  # code → [x, y, z] (mm, BodyParts3D)
+    └── bones/*.ply, bones_full/*.ply, muscles/*.ply  # meshes BodyParts3D (non versionnés : scripts/fetch_meshes.py)
 ```
 
 ### Chiffrement (exercice 1)
@@ -318,13 +339,13 @@ https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html
 Les meshes osseux et musculaires (`src/bonylandmarks/data/bones/`, `bones_full/`, `muscles/`) sont dérivés de BodyParts3D et restent régis par sa licence **CC BY-SA 2.1 Japon**, distincte de celle du code. Cette licence autorise la copie, la redistribution et la modification, y compris à usage commercial, aux conditions suivantes :
 
 1. **Attribution** : créditer « BodyParts3D, © The Database Center for Life Science » et renvoyer vers la licence. Cette mention figure dans l'écran « À propos » et dans l'exercice Anatomie 3D ; elle doit accompagner toute redistribution des meshes.
-2. **Indication des modifications** : les meshes fournis sont des œuvres dérivées (décimation à 15 000 faces maximum par structure, fusion de fichiers pour les structures composites, sélection et renommage via `scripts/import_bp3d.py`). Toute republication doit le signaler.
+2. **Indication des modifications** : les meshes fournis sont des œuvres dérivées (décimation à 15 000 faces maximum par structure, fusion de fichiers pour les structures composites, sélection et renommage via `scripts/import_bp3d.py`, conversion OBJ vers PLY binaire sans modification des coordonnées). Toute republication doit le signaler.
 3. **Partage dans les mêmes conditions** : les meshes modifiés doivent être redistribués sous CC BY-SA 2.1 JP (ou une licence qu'elle déclare compatible), jamais sous une licence plus restrictive.
 
 Conséquences pratiques :
 
-- Les fichiers `*.obj` / `*.stl` sont **exclus du dépôt** (`.gitignore`) : ils sont volumineux et ne sont donc pas redistribués avec le code. Chaque utilisateur les génère avec `python scripts/import_bp3d.py --src <dossier BodyParts3D>` après avoir téléchargé la base d'origine.
-- Si des meshes sont un jour publiés ou embarqués dans un exécutable, les accompagner d'un fichier indiquant leur licence CC BY-SA 2.1 JP, l'attribution ci-dessus et la mention des modifications, et les garder comme fichiers de données distincts du code (le copyleft porte sur les meshes, pas sur le code qui les lit).
+- Les fichiers `*.ply` / `*.obj` / `*.stl` sont **exclus du dépôt** (`.gitignore`) : ils sont volumineux et distribués à part, comme asset de la release GitHub publiée sous le tag `meshes-v1` (`bonylandmarks-meshes-v1.zip`). Chaque utilisateur les installe avec `python scripts/fetch_meshes.py` ; pour les régénérer depuis la base d'origine : `python scripts/import_bp3d.py --src <dossier BodyParts3D>`.
+- Le zip de la release et les exécutables embarquant les meshes contiennent un fichier `MESHES_LICENSE.txt` (FR/EN) indiquant la licence CC BY-SA 2.1 JP, l'attribution ci-dessus et la liste des modifications ; les meshes restent des fichiers de données distincts du code (le copyleft porte sur les meshes, pas sur le code qui les lit).
 - Ce résumé n'est pas un avis juridique : en cas de diffusion large ou commerciale, faire valider par le service juridique de l'établissement, et consulter le texte officiel : https://creativecommons.org/licenses/by-sa/2.1/jp/
 
 ### Claude Code

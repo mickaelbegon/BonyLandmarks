@@ -12,7 +12,11 @@ Chaque enregistrement suit le schéma ::
      "name_fr": "Fémur gauche", "name_en": "Left femur",
      "side": "left", "region": "lower_limb", "tier": 1,
      "synonyms_fr": ["os de la cuisse"], "synonyms_en": [],
-     "mesh_file": "bones_full/femur_left.obj"}
+     "mesh_file": "bones_full/femur_left.ply"}
+
+Format des meshes : PLY binaire (``.ply``), récupérés par
+``python scripts/fetch_meshes.py`` ou régénérés par ``scripts/import_bp3d.py``.
+Si le ``.ply`` est absent, un ``.stl``/``.obj`` de même nom est accepté.
 
 Champs optionnels : ``layer`` (muscles : couche/plan, "" par défaut) et
 ``src_files`` (noms de fichiers sources BodyParts3D, sans extension, ex.
@@ -60,7 +64,7 @@ class Structure:
     tier: int                      # 1 = majeur, 2 = détaillé
     synonyms_fr: tuple[str, ...] = ()
     synonyms_en: tuple[str, ...] = ()
-    mesh_file: str = ""            # relatif à data/, ex. "bones_full/femur_left.obj"
+    mesh_file: str = ""            # relatif à data/, ex. "bones_full/femur_left.ply"
     layer: str = ""                # muscles : couche / plan (optionnel)
     src_files: tuple[str, ...] = ()  # fichiers BP3D sources (optionnel)
 
@@ -128,12 +132,21 @@ def get(id: str) -> Structure:
     return by_id[id]
 
 
+_MESH_EXTS = (".ply", ".stl", ".obj")
+
+
 def mesh_path(s: Structure) -> Path | None:
     """Chemin absolu du mesh, ou ``None`` s'il n'est pas (encore) importé."""
     if not s.mesh_file:
         return None
     p = DATA_DIR / s.mesh_file
-    return p if p.is_file() else None
+    if p.is_file():
+        return p
+    for ext in _MESH_EXTS:  # même nom, autre format (ex. anciens OBJ locaux)
+        alt = p.with_suffix(ext)
+        if alt.is_file():
+            return alt
+    return None
 
 
 def available(kind: str | None = None, region: str | None = None,

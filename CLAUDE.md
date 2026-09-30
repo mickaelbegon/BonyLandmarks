@@ -25,7 +25,11 @@ Point d'entrée CLI : `bonylandmarks` (app étudiant) / `python -m bonylandmarks
 
 | Fichier | Rôle |
 |---|---|
-| `scripts/import_bp3d.py` | Importe les meshes BodyParts3D 4.0 (OBJ `FJ*.obj`) vers `data/bones_full/` (os) et `data/muscles/` (muscles) d'après `anatomy_bones.json` / `anatomy_muscles.json` ; indexe l'en-tête `# Concept ID` de chaque fichier (le numéro `FJ<n>` n'est PAS le FMA) ; options `--src`, `--kind bone\|muscle\|all`, `--target-faces`, `--dry-run`, `--force` |
+| `scripts/import_bp3d.py` | Importe les meshes BodyParts3D 4.0 (OBJ `FJ*.obj`) vers `data/bones_full/` (os) et `data/muscles/` (muscles), écrits en PLY binaire (`--format ply|obj`) d'après `anatomy_bones.json` / `anatomy_muscles.json` ; indexe l'en-tête `# Concept ID` de chaque fichier (le numéro `FJ<n>` n'est PAS le FMA) ; options `--src`, `--kind bone\|muscle\|all`, `--target-faces`, `--dry-run`, `--force` |
+| `scripts/_meshio.py` | Helpers partagés des scripts : `read_obj`, `write_ply` (PLY binaire little-endian, float32, triangles), `read_ply` |
+| `scripts/convert_meshes.py` | Convertit les OBJ existants (`bones/`, `bones_full/`, `muscles/`) en PLY sans re-décimation, avec vérification par relecture ; options `--dry-run`, `--force` ; ne supprime pas les OBJ |
+| `scripts/pack_meshes.py` | Construit `dist/bonylandmarks-meshes-v1.zip` (`bones/`, `bones_full/`, `muscles/` en PLY + `MESHES_LICENSE.txt` FR/EN + `MANIFEST.json` SHA-256) pour la release `meshes-v1` |
+| `scripts/fetch_meshes.py` | Télécharge (gh ou URL publique) et installe l'asset de la release dans `data/` ; vérifie les SHA-256 ; options `--tag`, `--dest`, `--zip`, `--force` ; idempotent |
 | `compute_landmarks.py` | Script standalone : calcule algorithmiquement les positions de référence des repères sur les meshes BodyParts3D, écrit `landmark_positions.json` et des PNG de validation |
 
 ### `src/bonylandmarks/`
@@ -91,11 +95,12 @@ Point d'entrée CLI : `bonylandmarks` (app étudiant) / `python -m bonylandmarks
 |---|---|
 | `landmarks.json` | 182 repères osseux bilingues (9 thèmes : anatomy, shoulder, gait, posture, upper_limb, core, knee_rehab, lower_limb, cpr) |
 | `bones/landmark_positions.json` | `code → [x, y, z]` — positions de référence corrigées par l'expert (généré par `compute_landmarks.py`, affiné par l'annotateur) |
-| `bones/*.stl` ou `*.obj` | Meshes osseux BodyParts3D (**gitignorés**) |
+| `bones/*.ply` (ou `*.stl`/`*.obj`) | Meshes osseux BodyParts3D regroupés (**gitignorés**) — récupérer avec `python scripts/fetch_meshes.py` |
 | `anatomy_bones.json` | Catalogue de 205 os individuels (id, FMA, noms FR/EN, côté, région, tier 1/2, synonymes, `mesh_file`) |
 | `anatomy_muscles.json` | Catalogue de 187 muscles (mêmes champs + `layer` = `superficial`/`deep`, régions `lower_limb`, `upper_limb`, `trunk`, `head_neck`) ; `anatomy_muscles_sources.json` = fichiers sources BP3D |
-| `bones_full/*.obj` | Un mesh par os (coordonnées BP3D d'origine, non recentrées) — **gitignorés**, générés par `scripts/import_bp3d.py --kind bone` |
-| `muscles/*.obj` | Un mesh par muscle — **gitignorés**, générés par `scripts/import_bp3d.py --kind muscle` |
+| `bones_full/*.ply` | Un mesh par os (coordonnées BP3D d'origine, non recentrées) — **gitignorés**, `scripts/fetch_meshes.py` (ou `scripts/import_bp3d.py --kind bone`) |
+| `muscles/*.ply` | Un mesh par muscle — **gitignorés**, `scripts/fetch_meshes.py` (ou `scripts/import_bp3d.py --kind muscle`) |
+| `MESHES_LICENSE.txt`, `meshes_manifest.json` | Licence/attribution CC BY-SA 2.1 JP et manifest installés par `fetch_meshes.py` (gitignorés ; `MESHES_LICENSE.txt` est embarqué dans les exécutables) |
 | `bones/validation/*.png` | Images de validation des algorithmes géométriques |
 
 ---
@@ -206,8 +211,9 @@ Script de comparaison disponible dans le scratchpad de session (non versionné).
 ### Meshes osseux (gitignorés)
 
 - Chemin local : `src/bonylandmarks/data/bones/`
-- Format : `*.stl` ou `*.obj` (stem = bone_stem de `LANDMARK_BONE`)
-- **Non versionnés** (`.gitignore` inclut `*.stl`, `*.obj`)
+- Format : **PLY binaire little-endian** (sommets float32, triangles, sans normales/couleurs, coordonnées BP3D d'origine) ; `*.stl`/`*.obj` restent acceptés (ordre de recherche `.ply`, `.stl`, `.obj` via `bone_map.find_bone_mesh`). Stem = bone_stem de `LANDMARK_BONE`.
+- **Non versionnés** (`.gitignore` inclut `*.ply`, `*.stl`, `*.obj` sous `data/bones/`, `bones_full/`, `muscles/`) : publiés en asset de la release GitHub `meshes-v1` (`bonylandmarks-meshes-v1.zip` + `MANIFEST.json` + `MESHES_LICENSE.txt`).
+- Récupération : `python scripts/fetch_meshes.py` (gh authentifié sinon URL publique ; `--zip` pour un zip local ; SHA-256 vérifiés ; idempotent). La CI l'exécute avant PyInstaller (`build-windows`/`build-macos`, échec si la release manque ; `BONY_REQUIRE_MESHES=1`).
 
 ### Meshes musculaires
 
@@ -220,7 +226,8 @@ Script de comparaison disponible dans le scratchpad de session (non versionné).
   ```
 - `isa_parts_list_e.txt` : mapping concept ID ↔ nom anglais
 - `BONE_MUSCLES` dans `muscle_map.py` : `bone_stem → [FMA IDs]`
-- Import pour les exercices d'anatomie 3D : `python scripts/import_bp3d.py --kind all` (voir `--src`, `--dry-run`, `--force`) ; les meshes importés vont dans `data/bones_full/` et `data/muscles/` (gitignorés).
+- Import pour les exercices d'anatomie 3D : `python scripts/import_bp3d.py --kind all` (voir `--src`, `--dry-run`, `--force`, `--format ply|obj`, défaut ply) ; les meshes importés vont dans `data/bones_full/` et `data/muscles/` (gitignorés). Pour simplement les récupérer : `python scripts/fetch_meshes.py`.
+- Publication : `scripts/convert_meshes.py` (OBJ existants vers PLY, sans re-décimation ; `--dry-run`, `--force`), puis `scripts/pack_meshes.py` (vers `dist/bonylandmarks-meshes-v1.zip`, avec `MANIFEST.json` SHA-256 et `MESHES_LICENSE.txt`), puis `gh release create meshes-v1 ...`.
 
 ### Attribution obligatoire
 
@@ -274,7 +281,7 @@ Unité glTF : **mètres** → `mesh_loader.py` convertit automatiquement en **mi
   ```
   Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
   ```
-- Fichiers gitignorés importants : `*.stl`, `*.obj`, `manifest_private*.json`, `dev_landmarks.json`, `data/bones/validation/`
+- Fichiers gitignorés importants : `*.stl`, `*.obj`, meshes `*.ply` (data/bones, bones_full, muscles), `manifest_private*.json`, `dev_landmarks.json`, `data/bones/validation/`
 
 ---
 

@@ -245,6 +245,7 @@ def test_config_page_defaults_and_no_mesh_message(qapp):
     try:
         assert w.page == 0
         assert not w._start_btn.isEnabled()
+        assert "fetch_meshes.py" in w._avail_lbl.text()
         assert "import_bp3d.py" in w._avail_lbl.text()
         assert "muscle" in w._avail_lbl.text()
         assert "BodyParts3D" in w._attr_lbl.text()
@@ -508,7 +509,7 @@ def test_signals_and_lifecycle(qapp, fake_catalog):
 
 
 @pytest.mark.skipif(
-    not cat.available("bone"), reason="meshes BodyParts3D non importés (scripts/import_bp3d.py)"
+    not cat.available("bone"), reason="meshes BodyParts3D non importés (scripts/fetch_meshes.py)"
 )
 def test_real_meshes_identify_and_locate(qapp):
     from bonylandmarks.structure_quiz_exercise import StructureQuizExercise

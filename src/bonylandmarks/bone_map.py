@@ -1,10 +1,29 @@
-"""Mapping landmark code → bone STL filename stem.
+"""Mapping landmark code → bone mesh filename stem.
 
-The file is looked up in ``data/bones/<stem>.stl`` (or ``.obj``).
+The file is looked up in ``data/bones/<stem>.ply`` (binary PLY, default), then
+``.stl``, then ``.obj``.  Meshes are not versioned in git: fetch them with
+``python scripts/fetch_meshes.py`` (or regenerate with ``scripts/import_bp3d.py``).
 A value of ``None`` means no bone reference is available for that landmark.
 """
 
 from __future__ import annotations
+
+from pathlib import Path
+
+#: Extensions de mesh acceptées, par ordre de préférence.
+MESH_EXTS: tuple[str, ...] = (".ply", ".stl", ".obj", ".PLY", ".STL", ".OBJ")
+
+#: Message affiché quand un mesh osseux est absent.
+MESH_MISSING_HINT = "Meshes absents : lancer « python scripts/fetch_meshes.py »."
+
+
+def find_bone_mesh(bones_dir: Path, stem: str) -> Path | None:
+    """Chemin du mesh ``<stem>`` (.ply, sinon .stl, sinon .obj) ou ``None``."""
+    for ext in MESH_EXTS:
+        p = Path(bones_dir) / f"{stem}{ext}"
+        if p.exists():
+            return p
+    return None
 
 #: landmark code → bone filename stem (without extension)
 LANDMARK_BONE: dict[str, str | None] = {

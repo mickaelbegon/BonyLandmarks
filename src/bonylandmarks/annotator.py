@@ -66,7 +66,13 @@ from PySide6.QtWidgets import (
 )
 from pyvistaqt import QtInteractor
 
-from .bone_map import BONE_JOINTS, BONE_LABEL_FR, LANDMARK_BONE
+from .bone_map import (
+    BONE_JOINTS,
+    BONE_LABEL_FR,
+    LANDMARK_BONE,
+    MESH_MISSING_HINT,
+    find_bone_mesh,
+)
 from .emg_references import (
     EMG_LINE_COLOR, EMG_MARKER_COLOR, EMG_MUSCLE_FMA,
     EMG_PLACEMENT_PCT, EMG_REF_COLORS, EMG_REFERENCES,
@@ -989,15 +995,10 @@ class AnnotatorWindow(QMainWindow):
             return
 
         if stem not in self._bone_cache:
-            bone_path = None
-            for ext in (".stl", ".obj", ".STL", ".OBJ"):
-                p = _BONES_DIR / f"{stem}{ext}"
-                if p.exists():
-                    bone_path = p
-                    break
+            bone_path = find_bone_mesh(_BONES_DIR, stem)
             if bone_path is None:
                 self._bone_missing_lbl.setText(
-                    f"Fichier manquant : {stem}.stl\nVoir data/bones/README.md"
+                    f"Fichier manquant : {stem}.ply\n{MESH_MISSING_HINT}"
                 )
                 self._bone_missing_lbl.setVisible(True)
                 self._bone_edit_btn.setEnabled(False)
@@ -1103,14 +1104,12 @@ class AnnotatorWindow(QMainWindow):
             extra = [s for s in self._custom_overlay_stems if s != current_stem]
         for s in extra:
             if s not in self._bone_cache:
-                for ext in (".stl", ".obj", ".STL", ".OBJ"):
-                    p = _BONES_DIR / f"{s}{ext}"
-                    if p.exists():
-                        try:
-                            self._bone_cache[s] = pv.read(str(p))
-                        except Exception:
-                            pass
-                        break
+                p = find_bone_mesh(_BONES_DIR, s)
+                if p is not None:
+                    try:
+                        self._bone_cache[s] = pv.read(str(p))
+                    except Exception:
+                        pass
             mesh = self._bone_cache.get(s)
             if mesh is None:
                 continue
@@ -2021,14 +2020,12 @@ class AnnotatorWindow(QMainWindow):
             ref_stem = LANDMARK_BONE.get(code)
             if ref_stem is not None and ref_stem != main_stem:
                 if ref_stem not in self._bone_cache:
-                    for ext in (".stl", ".obj", ".STL", ".OBJ"):
-                        p = _BONES_DIR / f"{ref_stem}{ext}"
-                        if p.exists():
-                            try:
-                                self._bone_cache[ref_stem] = pv.read(str(p))
-                            except Exception:
-                                pass
-                            break
+                    p = find_bone_mesh(_BONES_DIR, ref_stem)
+                    if p is not None:
+                        try:
+                            self._bone_cache[ref_stem] = pv.read(str(p))
+                        except Exception:
+                            pass
                 ref_mesh = self._bone_cache.get(ref_stem)
                 if ref_mesh is not None:
                     self._bone_plotter.add_mesh(

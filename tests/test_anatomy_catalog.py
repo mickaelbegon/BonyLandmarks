@@ -73,7 +73,7 @@ def test_bone_fields_valid(bones):
         assert s.tier in (1, 2), s.id
         assert s.name_fr.strip(), s.id
         assert s.name_en.strip(), s.id
-        assert s.mesh_file == f"bones_full/{s.id}.obj", s.id
+        assert s.mesh_file == f"bones_full/{s.id}.ply", s.id
         assert all(isinstance(x, str) and x.strip() for x in s.synonyms_fr + s.synonyms_en)
 
 
@@ -181,7 +181,7 @@ def test_regions_and_display_name():
 
 def test_mesh_path_none_when_missing():
     ghost = Structure(id="ghost", kind="bone", fma_id="FMA0", name_fr="x", name_en="x",
-                      side="mid", region="skull", tier=1, mesh_file="bones_full/__nope__.obj")
+                      side="mid", region="skull", tier=1, mesh_file="bones_full/__nope__.ply")
     assert ac.mesh_path(ghost) is None
     assert ac.mesh_path(Structure(id="g2", kind="bone", fma_id="FMA0", name_fr="x",
                                   name_en="x", side="mid", region="skull", tier=1)) is None
@@ -208,7 +208,7 @@ def test_available_tolerates_missing_meshes(monkeypatch, tmp_path):
 def test_loader_tolerates_missing_and_broken_json(monkeypatch, tmp_path):
     good = {"id": "a_left", "kind": "bone", "fma_id": "FMA1", "name_fr": "A gauche",
             "name_en": "Left a", "side": "left", "region": "skull", "tier": 1,
-            "synonyms_fr": ["aa"], "synonyms_en": [], "mesh_file": "bones_full/a_left.obj",
+            "synonyms_fr": ["aa"], "synonyms_en": [], "mesh_file": "bones_full/a_left.ply",
             "unknown_key": 42}
     (tmp_path / "anatomy_bones.json").write_text(
         json.dumps([good, {"id": "broken"}]), encoding="utf-8")

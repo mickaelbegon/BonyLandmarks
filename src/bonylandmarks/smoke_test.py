@@ -82,6 +82,23 @@ def _check_data() -> list[str]:
     return missing
 
 
+def _check_meshes() -> list[str]:
+    """Compte les meshes .ply embarqués (log) ; échec si 0 et BONY_REQUIRE_MESHES=1."""
+    import bonylandmarks
+
+    root = Path(bonylandmarks.__file__).parent / "data"
+    total = 0
+    for sub in ("bones", "bones_full", "muscles"):
+        n = len(list((root / sub).glob("*.ply"))) if (root / sub).is_dir() else 0
+        _log(f"meshes {sub}/*.ply: {n}")
+        total += n
+    _log(f"meshes .ply embarqués: {total}")
+    if total == 0 and os.environ.get("BONY_REQUIRE_MESHES") == "1":
+        _log("BONY_REQUIRE_MESHES=1 mais aucun mesh embarqué")
+        return ["meshes (aucun .ply)"]
+    return []
+
+
 def _check_ssl() -> None:
     import certifi
     import httpx
@@ -109,6 +126,7 @@ def run() -> int:
         failures = _import_all_modules()
         errors += [f"import {n}" for n in failures]
         errors += [f"data {n}" for n in _check_data()]
+        errors += [f"data {n}" for n in _check_meshes()]
         _check_ssl()
 
         from PySide6.QtCore import QTimer

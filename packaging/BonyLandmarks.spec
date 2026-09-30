@@ -5,6 +5,7 @@ Usage (depuis la racine du dépôt) :
     pyinstaller --noconfirm packaging/BonyLandmarks.spec
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -16,17 +17,33 @@ PKG = SRC / "bonylandmarks"
 IS_MAC = sys.platform == "darwin"
 VERSION = "0.1.0"
 
-# --- Données : uniquement ce qui est nécessaire (pas les meshes STL/OBJ) ---
+# --- Données : JSON/icônes + meshes PLY (BodyParts3D, CC BY-SA 2.1 JP) ---
+# Les meshes ne sont pas dans git : la CI les installe avant PyInstaller avec
+# `python scripts/fetch_meshes.py` (release GitHub `meshes-v1`).  Seuls les .ply
+# sont embarqués (pas les éventuels .obj/.stl locaux, plus volumineux).
 datas = []
 for pattern, dest in [
     ("data/*.json", "bonylandmarks/data"),
+    ("data/MESHES_LICENSE.txt", "bonylandmarks/data"),
     ("data/bones/*.json", "bonylandmarks/data/bones"),
     ("data/bones/*.md", "bonylandmarks/data/bones"),
+    ("data/bones/*.ply", "bonylandmarks/data/bones"),
+    ("data/bones_full/*.ply", "bonylandmarks/data/bones_full"),
+    ("data/muscles/*.ply", "bonylandmarks/data/muscles"),
     ("icons/*.png", "bonylandmarks/icons"),
     ("manifest.dev.json", "bonylandmarks"),
 ]:
     for f in PKG.glob(pattern):
         datas.append((str(f), dest))
+
+n_meshes = sum(1 for src, _dest in datas if src.endswith(".ply"))
+print(f"[spec] {n_meshes} mesh(es) .ply embarqué(s)")
+if n_meshes == 0:
+    msg = ("[spec] AUCUN mesh .ply à embarquer : lancer `python scripts/fetch_meshes.py` "
+           "avant PyInstaller (exercices Anatomie 3D / quiz osseux inutilisables sinon).")
+    if os.environ.get("BONY_REQUIRE_MESHES") == "1":
+        raise SystemExit(msg)
+    print("WARNING " + msg)
 
 for mod in ("certifi", "pyvista", "trimesh", "pyvistaqt"):
     try:

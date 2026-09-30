@@ -445,7 +445,7 @@ BONE_CACHE: dict[str, np.ndarray] = {}
 
 def get_pts(bone_stem: str) -> np.ndarray:
     if bone_stem not in BONE_CACHE:
-        for ext in (".obj", ".stl"):
+        for ext in (".ply", ".stl", ".obj"):
             path = BONES_DIR / f"{bone_stem}{ext}"
             if path.exists():
                 mesh = pv.read(str(path))
@@ -493,10 +493,9 @@ if __name__ == "__main__":
         bone_lm[bone].append((code, pos))
 
     for bone_stem, lm_list in sorted(bone_lm.items()):
-        path = BONES_DIR / f"{bone_stem}.obj"
-        if not path.exists():
-            path = BONES_DIR / f"{bone_stem}.stl"
-        if not path.exists():
+        path = next((BONES_DIR / f"{bone_stem}{ext}" for ext in (".ply", ".stl", ".obj")
+                     if (BONES_DIR / f"{bone_stem}{ext}").exists()), None)
+        if path is None:
             continue
         mesh = pv.read(str(path))
         pl = pv.Plotter(off_screen=True, window_size=[900, 700])

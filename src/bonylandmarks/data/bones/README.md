@@ -1,7 +1,13 @@
 # Meshes de référence osseuse
 
-Ce dossier contient les meshes 3D (STL ou OBJ) des os affichés dans le panneau
-de référence de l'outil d'annotation.
+Ce dossier contient les meshes 3D (PLY binaire ; STL et OBJ acceptés) des os
+affichés dans le panneau de référence de l'outil d'annotation.
+
+**Installation rapide** : `python scripts/fetch_meshes.py` télécharge les meshes
+(PLY) depuis la release GitHub `meshes-v1` et les place ici, dans `../bones_full/`
+et dans `../muscles/`. Ils ne sont pas versionnés (licence CC BY-SA 2.1 JP, voir
+`MESHES_LICENSE.txt` et le README du dépôt). Le reste de ce fichier décrit la
+procédure manuelle.
 
 ## Source recommandée
 
@@ -13,7 +19,8 @@ MeshLab ou Blender si nécessaire).
 
 ## Fichiers attendus
 
-Placer ici les fichiers STL **ou** OBJ avec les noms exacts suivants :
+Placer ici les fichiers PLY, STL **ou** OBJ (recherchés dans cet ordre) avec les
+noms exacts suivants (`.stl` ci-dessous ; `.ply` en priorité, `.obj` acceptés) :
 
 | Fichier                   | Os                          |
 |---------------------------|-----------------------------|
@@ -61,7 +68,7 @@ fichier) et `../muscles/` (un muscle par fichier), générés à partir de
 l'archive BodyParts3D 4.0 (OBJ) par :
 
 ```bash
-python scripts/import_bp3d.py --kind all          # os + muscles
+python scripts/import_bp3d.py --kind all          # os + muscles (écrit des .ply)
 python scripts/import_bp3d.py --kind bone --dry-run
 ```
 

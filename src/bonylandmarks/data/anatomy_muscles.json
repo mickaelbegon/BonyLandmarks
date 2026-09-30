@@ -18,7 +18,7 @@
    "SCM",
    "sternomastoid"
   ],
-  "mesh_file": "muscles/sternocleidomastoid_left.obj"
+  "mesh_file": "muscles/sternocleidomastoid_left.ply"
  },
  {
   "id": "sternocleidomastoid_right",
@@ -39,7 +39,7 @@
    "SCM",
    "sternomastoid"
   ],
-  "mesh_file": "muscles/sternocleidomastoid_right.obj"
+  "mesh_file": "muscles/sternocleidomastoid_right.ply"
  },
  {
   "id": "scalenus_anterior_left",
@@ -55,7 +55,7 @@
   "synonyms_en": [
    "anterior scalene"
   ],
-  "mesh_file": "muscles/scalenus_anterior_left.obj"
+  "mesh_file": "muscles/scalenus_anterior_left.ply"
  },
  {
   "id": "scalenus_anterior_right",
@@ -71,7 +71,7 @@
   "synonyms_en": [
    "anterior scalene"
   ],
-  "mesh_file": "muscles/scalenus_anterior_right.obj"
+  "mesh_file": "muscles/scalenus_anterior_right.ply"
  },
  {
   "id": "scalenus_medius_left",
@@ -87,7 +87,7 @@
   "synonyms_en": [
    "middle scalene"
   ],
-  "mesh_file": "muscles/scalenus_medius_left.obj"
+  "mesh_file": "muscles/scalenus_medius_left.ply"
  },
  {
   "id": "scalenus_medius_right",
@@ -103,7 +103,7 @@
   "synonyms_en": [
    "middle scalene"
   ],
-  "mesh_file": "muscles/scalenus_medius_right.obj"
+  "mesh_file": "muscles/scalenus_medius_right.ply"
  },
  {
   "id": "scalenus_posterior_left",
@@ -119,7 +119,7 @@
   "synonyms_en": [
    "posterior scalene"
   ],
-  "mesh_file": "muscles/scalenus_posterior_left.obj"
+  "mesh_file": "muscles/scalenus_posterior_left.ply"
  },
  {
   "id": "scalenus_posterior_right",
@@ -135,7 +135,7 @@
   "synonyms_en": [
    "posterior scalene"
   ],
-  "mesh_file": "muscles/scalenus_posterior_right.obj"
+  "mesh_file": "muscles/scalenus_posterior_right.ply"
  },
  {
   "id": "digastric_left",
@@ -151,7 +151,7 @@
   "synonyms_en": [
    "digastricus"
   ],
-  "mesh_file": "muscles/digastric_left.obj",
+  "mesh_file": "muscles/digastric_left.ply",
   "src_files": [
    "FJ1555",
    "FJ1560",
@@ -172,7 +172,7 @@
   "synonyms_en": [
    "digastricus"
   ],
-  "mesh_file": "muscles/digastric_right.obj",
+  "mesh_file": "muscles/digastric_right.ply",
   "src_files": [
    "FJ1556",
    "FJ1579"
@@ -192,7 +192,7 @@
    "peaucier du cou"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/platysma_left.obj"
+  "mesh_file": "muscles/platysma_left.ply"
  },
  {
   "id": "platysma_right",
@@ -208,7 +208,7 @@
    "peaucier du cou"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/platysma_right.obj"
+  "mesh_file": "muscles/platysma_right.ply"
  },
  {
   "id": "omohyoid_left",
@@ -224,7 +224,7 @@
    "omohyoïdien"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/omohyoid_left.obj"
+  "mesh_file": "muscles/omohyoid_left.ply"
  },
  {
   "id": "omohyoid_right",
@@ -240,7 +240,7 @@
    "omohyoïdien"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/omohyoid_right.obj"
+  "mesh_file": "muscles/omohyoid_right.ply"
  },
  {
   "id": "sternohyoid_left",
@@ -257,7 +257,7 @@
    "sternohyoïdien"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/sternohyoid_left.obj"
+  "mesh_file": "muscles/sternohyoid_left.ply"
  },
  {
   "id": "sternohyoid_right",
@@ -274,7 +274,7 @@
    "sternohyoïdien"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/sternohyoid_right.obj"
+  "mesh_file": "muscles/sternohyoid_right.ply"
  },
  {
   "id": "splenius_capitis_left",
@@ -291,7 +291,7 @@
    "splénius capitis"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/splenius_capitis_left.obj"
+  "mesh_file": "muscles/splenius_capitis_left.ply"
  },
  {
   "id": "splenius_capitis_right",
@@ -308,7 +308,7 @@
    "splénius capitis"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/splenius_capitis_right.obj"
+  "mesh_file": "muscles/splenius_capitis_right.ply"
  },
  {
   "id": "semispinalis_capitis_left",
@@ -324,7 +324,7 @@
    "grand complexus"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/semispinalis_capitis_left.obj"
+  "mesh_file": "muscles/semispinalis_capitis_left.ply"
  },
  {
   "id": "semispinalis_capitis_right",
@@ -340,7 +340,7 @@
    "grand complexus"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/semispinalis_capitis_right.obj"
+  "mesh_file": "muscles/semispinalis_capitis_right.ply"
  },
  {
   "id": "levator_scapulae_left",
@@ -358,7 +358,7 @@
    "angulaire"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/levator_scapulae_left.obj"
+  "mesh_file": "muscles/levator_scapulae_left.ply"
  },
  {
   "id": "levator_scapulae_right",
@@ -376,7 +376,7 @@
    "angulaire"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/levator_scapulae_right.obj"
+  "mesh_file": "muscles/levator_scapulae_right.ply"
  },
  {
   "id": "pectoralis_major_left",
@@ -396,7 +396,7 @@
    "pec major",
    "pecs"
   ],
-  "mesh_file": "muscles/pectoralis_major_left.obj",
+  "mesh_file": "muscles/pectoralis_major_left.ply",
   "src_files": [
    "FJ1446M",
    "FJ1447M",
@@ -421,7 +421,7 @@
    "pec major",
    "pecs"
   ],
-  "mesh_file": "muscles/pectoralis_major_right.obj",
+  "mesh_file": "muscles/pectoralis_major_right.ply",
   "src_files": [
    "FJ1446",
    "FJ1447",
@@ -442,7 +442,7 @@
   "synonyms_en": [
    "pec minor"
   ],
-  "mesh_file": "muscles/pectoralis_minor_left.obj"
+  "mesh_file": "muscles/pectoralis_minor_left.ply"
  },
  {
   "id": "pectoralis_minor_right",
@@ -458,7 +458,7 @@
   "synonyms_en": [
    "pec minor"
   ],
-  "mesh_file": "muscles/pectoralis_minor_right.obj"
+  "mesh_file": "muscles/pectoralis_minor_right.ply"
  },
  {
   "id": "subclavius_left",
@@ -474,7 +474,7 @@
    "sous-clavier"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/subclavius_left.obj"
+  "mesh_file": "muscles/subclavius_left.ply"
  },
  {
   "id": "subclavius_right",
@@ -490,7 +490,7 @@
    "sous-clavier"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/subclavius_right.obj"
+  "mesh_file": "muscles/subclavius_right.ply"
  },
  {
   "id": "serratus_anterior_left",
@@ -508,7 +508,7 @@
   "synonyms_en": [
    "serratus magnus"
   ],
-  "mesh_file": "muscles/serratus_anterior_left.obj"
+  "mesh_file": "muscles/serratus_anterior_left.ply"
  },
  {
   "id": "serratus_anterior_right",
@@ -526,7 +526,7 @@
   "synonyms_en": [
    "serratus magnus"
   ],
-  "mesh_file": "muscles/serratus_anterior_right.obj"
+  "mesh_file": "muscles/serratus_anterior_right.ply"
  },
  {
   "id": "external_oblique_left",
@@ -545,7 +545,7 @@
   "synonyms_en": [
    "external abdominal oblique"
   ],
-  "mesh_file": "muscles/external_oblique_left.obj"
+  "mesh_file": "muscles/external_oblique_left.ply"
  },
  {
   "id": "external_oblique_right",
@@ -564,7 +564,7 @@
   "synonyms_en": [
    "external abdominal oblique"
   ],
-  "mesh_file": "muscles/external_oblique_right.obj"
+  "mesh_file": "muscles/external_oblique_right.ply"
  },
  {
   "id": "external_intercostal_left",
@@ -582,7 +582,7 @@
   "synonyms_en": [
    "external intercostals"
   ],
-  "mesh_file": "muscles/external_intercostal_left.obj"
+  "mesh_file": "muscles/external_intercostal_left.ply"
  },
  {
   "id": "external_intercostal_right",
@@ -600,7 +600,7 @@
   "synonyms_en": [
    "external intercostals"
   ],
-  "mesh_file": "muscles/external_intercostal_right.obj"
+  "mesh_file": "muscles/external_intercostal_right.ply"
  },
  {
   "id": "trapezius_left",
@@ -618,7 +618,7 @@
   "synonyms_en": [
    "traps"
   ],
-  "mesh_file": "muscles/trapezius_left.obj",
+  "mesh_file": "muscles/trapezius_left.ply",
   "src_files": [
    "FJ1520M",
    "FJ1521M",
@@ -641,7 +641,7 @@
   "synonyms_en": [
    "traps"
   ],
-  "mesh_file": "muscles/trapezius_right.obj",
+  "mesh_file": "muscles/trapezius_right.ply",
   "src_files": [
    "FJ1520",
    "FJ1521",
@@ -665,7 +665,7 @@
   "synonyms_en": [
    "rhomboid"
   ],
-  "mesh_file": "muscles/rhomboid_major_left.obj"
+  "mesh_file": "muscles/rhomboid_major_left.ply"
  },
  {
   "id": "rhomboid_major_right",
@@ -684,7 +684,7 @@
   "synonyms_en": [
    "rhomboid"
   ],
-  "mesh_file": "muscles/rhomboid_major_right.obj"
+  "mesh_file": "muscles/rhomboid_major_right.ply"
  },
  {
   "id": "rhomboid_minor_left",
@@ -700,7 +700,7 @@
    "rhomboïde mineur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/rhomboid_minor_left.obj"
+  "mesh_file": "muscles/rhomboid_minor_left.ply"
  },
  {
   "id": "rhomboid_minor_right",
@@ -716,7 +716,7 @@
    "rhomboïde mineur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/rhomboid_minor_right.obj"
+  "mesh_file": "muscles/rhomboid_minor_right.ply"
  },
  {
   "id": "serratus_posterior_inferior_left",
@@ -733,7 +733,7 @@
    "dentelé postéro-inférieur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/serratus_posterior_inferior_left.obj"
+  "mesh_file": "muscles/serratus_posterior_inferior_left.ply"
  },
  {
   "id": "serratus_posterior_inferior_right",
@@ -750,7 +750,7 @@
    "dentelé postéro-inférieur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/serratus_posterior_inferior_right.obj"
+  "mesh_file": "muscles/serratus_posterior_inferior_right.ply"
  },
  {
   "id": "iliocostalis_lumborum_left",
@@ -766,7 +766,7 @@
    "ilio-costal lombaire"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/iliocostalis_lumborum_left.obj"
+  "mesh_file": "muscles/iliocostalis_lumborum_left.ply"
  },
  {
   "id": "iliocostalis_lumborum_right",
@@ -782,7 +782,7 @@
    "ilio-costal lombaire"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/iliocostalis_lumborum_right.obj"
+  "mesh_file": "muscles/iliocostalis_lumborum_right.ply"
  },
  {
   "id": "longissimus_thoracis_left",
@@ -799,7 +799,7 @@
    "longissimus du thorax"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/longissimus_thoracis_left.obj"
+  "mesh_file": "muscles/longissimus_thoracis_left.ply"
  },
  {
   "id": "longissimus_thoracis_right",
@@ -816,7 +816,7 @@
    "longissimus du thorax"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/longissimus_thoracis_right.obj"
+  "mesh_file": "muscles/longissimus_thoracis_right.ply"
  },
  {
   "id": "diaphragm_mid",
@@ -830,7 +830,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/diaphragm_mid.obj"
+  "mesh_file": "muscles/diaphragm_mid.ply"
  },
  {
   "id": "deltoid_left",
@@ -846,7 +846,7 @@
    "deltoide"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/deltoid_left.obj",
+  "mesh_file": "muscles/deltoid_left.ply",
   "src_files": [
    "FJ1467M",
    "FJ1468M",
@@ -867,7 +867,7 @@
    "deltoide"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/deltoid_right.obj",
+  "mesh_file": "muscles/deltoid_right.ply",
   "src_files": [
    "FJ1467",
    "FJ1468",
@@ -890,7 +890,7 @@
   "synonyms_en": [
    "supraspinatus muscle"
   ],
-  "mesh_file": "muscles/supraspinatus_left.obj"
+  "mesh_file": "muscles/supraspinatus_left.ply"
  },
  {
   "id": "supraspinatus_right",
@@ -908,7 +908,7 @@
   "synonyms_en": [
    "supraspinatus muscle"
   ],
-  "mesh_file": "muscles/supraspinatus_right.obj"
+  "mesh_file": "muscles/supraspinatus_right.ply"
  },
  {
   "id": "infraspinatus_left",
@@ -926,7 +926,7 @@
   "synonyms_en": [
    "infraspinatus muscle"
   ],
-  "mesh_file": "muscles/infraspinatus_left.obj"
+  "mesh_file": "muscles/infraspinatus_left.ply"
  },
  {
   "id": "infraspinatus_right",
@@ -944,7 +944,7 @@
   "synonyms_en": [
    "infraspinatus muscle"
   ],
-  "mesh_file": "muscles/infraspinatus_right.obj"
+  "mesh_file": "muscles/infraspinatus_right.ply"
  },
  {
   "id": "teres_major_left",
@@ -958,7 +958,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/teres_major_left.obj"
+  "mesh_file": "muscles/teres_major_left.ply"
  },
  {
   "id": "teres_major_right",
@@ -972,7 +972,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/teres_major_right.obj"
+  "mesh_file": "muscles/teres_major_right.ply"
  },
  {
   "id": "teres_minor_left",
@@ -986,7 +986,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/teres_minor_left.obj"
+  "mesh_file": "muscles/teres_minor_left.ply"
  },
  {
   "id": "teres_minor_right",
@@ -1000,7 +1000,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/teres_minor_right.obj"
+  "mesh_file": "muscles/teres_minor_right.ply"
  },
  {
   "id": "subscapularis_left",
@@ -1016,7 +1016,7 @@
    "sous-scapulaire"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/subscapularis_left.obj"
+  "mesh_file": "muscles/subscapularis_left.ply"
  },
  {
   "id": "subscapularis_right",
@@ -1032,7 +1032,7 @@
    "sous-scapulaire"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/subscapularis_right.obj"
+  "mesh_file": "muscles/subscapularis_right.ply"
  },
  {
   "id": "coracobrachialis_left",
@@ -1048,7 +1048,7 @@
    "coraco-brachial"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/coracobrachialis_left.obj"
+  "mesh_file": "muscles/coracobrachialis_left.ply"
  },
  {
   "id": "coracobrachialis_right",
@@ -1064,7 +1064,7 @@
    "coraco-brachial"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/coracobrachialis_right.obj"
+  "mesh_file": "muscles/coracobrachialis_right.ply"
  },
  {
   "id": "brachialis_left",
@@ -1082,7 +1082,7 @@
   "synonyms_en": [
    "brachialis anticus"
   ],
-  "mesh_file": "muscles/brachialis_left.obj"
+  "mesh_file": "muscles/brachialis_left.ply"
  },
  {
   "id": "brachialis_right",
@@ -1100,7 +1100,7 @@
   "synonyms_en": [
    "brachialis anticus"
   ],
-  "mesh_file": "muscles/brachialis_right.obj"
+  "mesh_file": "muscles/brachialis_right.ply"
  },
  {
   "id": "biceps_brachii_left",
@@ -1119,7 +1119,7 @@
   "synonyms_en": [
    "biceps"
   ],
-  "mesh_file": "muscles/biceps_brachii_left.obj",
+  "mesh_file": "muscles/biceps_brachii_left.ply",
   "src_files": [
    "FJ1478M",
    "FJ1512M"
@@ -1142,7 +1142,7 @@
   "synonyms_en": [
    "biceps"
   ],
-  "mesh_file": "muscles/biceps_brachii_right.obj",
+  "mesh_file": "muscles/biceps_brachii_right.ply",
   "src_files": [
    "FJ1478",
    "FJ1512"
@@ -1165,7 +1165,7 @@
   "synonyms_en": [
    "triceps"
   ],
-  "mesh_file": "muscles/triceps_brachii_left.obj",
+  "mesh_file": "muscles/triceps_brachii_left.ply",
   "src_files": [
    "FJ1477M",
    "FJ1479M",
@@ -1189,7 +1189,7 @@
   "synonyms_en": [
    "triceps"
   ],
-  "mesh_file": "muscles/triceps_brachii_right.obj",
+  "mesh_file": "muscles/triceps_brachii_right.ply",
   "src_files": [
    "FJ1477",
    "FJ1479",
@@ -1208,7 +1208,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/anconeus_left.obj"
+  "mesh_file": "muscles/anconeus_left.ply"
  },
  {
   "id": "anconeus_right",
@@ -1222,7 +1222,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/anconeus_right.obj"
+  "mesh_file": "muscles/anconeus_right.ply"
  },
  {
   "id": "brachioradialis_left",
@@ -1241,7 +1241,7 @@
   "synonyms_en": [
    "supinator longus"
   ],
-  "mesh_file": "muscles/brachioradialis_left.obj"
+  "mesh_file": "muscles/brachioradialis_left.ply"
  },
  {
   "id": "brachioradialis_right",
@@ -1260,7 +1260,7 @@
   "synonyms_en": [
    "supinator longus"
   ],
-  "mesh_file": "muscles/brachioradialis_right.obj"
+  "mesh_file": "muscles/brachioradialis_right.ply"
  },
  {
   "id": "pronator_teres_left",
@@ -1274,7 +1274,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/pronator_teres_left.obj",
+  "mesh_file": "muscles/pronator_teres_left.ply",
   "src_files": [
    "FJ1474M",
    "FJ1516M"
@@ -1292,7 +1292,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/pronator_teres_right.obj",
+  "mesh_file": "muscles/pronator_teres_right.ply",
   "src_files": [
    "FJ1474",
    "FJ1516"
@@ -1310,7 +1310,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/pronator_quadratus_left.obj"
+  "mesh_file": "muscles/pronator_quadratus_left.ply"
  },
  {
   "id": "pronator_quadratus_right",
@@ -1324,7 +1324,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/pronator_quadratus_right.obj"
+  "mesh_file": "muscles/pronator_quadratus_right.ply"
  },
  {
   "id": "supinator_left",
@@ -1340,7 +1340,7 @@
    "court supinateur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/supinator_left.obj"
+  "mesh_file": "muscles/supinator_left.ply"
  },
  {
   "id": "supinator_right",
@@ -1356,7 +1356,7 @@
    "court supinateur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/supinator_right.obj"
+  "mesh_file": "muscles/supinator_right.ply"
  },
  {
   "id": "flexor_carpi_radialis_left",
@@ -1374,7 +1374,7 @@
   "synonyms_en": [
    "FCR"
   ],
-  "mesh_file": "muscles/flexor_carpi_radialis_left.obj"
+  "mesh_file": "muscles/flexor_carpi_radialis_left.ply"
  },
  {
   "id": "flexor_carpi_radialis_right",
@@ -1392,7 +1392,7 @@
   "synonyms_en": [
    "FCR"
   ],
-  "mesh_file": "muscles/flexor_carpi_radialis_right.obj"
+  "mesh_file": "muscles/flexor_carpi_radialis_right.ply"
  },
  {
   "id": "flexor_carpi_ulnaris_left",
@@ -1410,7 +1410,7 @@
   "synonyms_en": [
    "FCU"
   ],
-  "mesh_file": "muscles/flexor_carpi_ulnaris_left.obj",
+  "mesh_file": "muscles/flexor_carpi_ulnaris_left.ply",
   "src_files": [
    "FJ1473M",
    "FJ1518M"
@@ -1432,7 +1432,7 @@
   "synonyms_en": [
    "FCU"
   ],
-  "mesh_file": "muscles/flexor_carpi_ulnaris_right.obj",
+  "mesh_file": "muscles/flexor_carpi_ulnaris_right.ply",
   "src_files": [
    "FJ1473",
    "FJ1518"
@@ -1452,7 +1452,7 @@
    "petit palmaire"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/palmaris_longus_left.obj"
+  "mesh_file": "muscles/palmaris_longus_left.ply"
  },
  {
   "id": "palmaris_longus_right",
@@ -1468,7 +1468,7 @@
    "petit palmaire"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/palmaris_longus_right.obj"
+  "mesh_file": "muscles/palmaris_longus_right.ply"
  },
  {
   "id": "flexor_digitorum_superficialis_left",
@@ -1486,7 +1486,7 @@
   "synonyms_en": [
    "FDS"
   ],
-  "mesh_file": "muscles/flexor_digitorum_superficialis_left.obj",
+  "mesh_file": "muscles/flexor_digitorum_superficialis_left.ply",
   "src_files": [
    "FJ1475M",
    "FJ1499M"
@@ -1508,7 +1508,7 @@
   "synonyms_en": [
    "FDS"
   ],
-  "mesh_file": "muscles/flexor_digitorum_superficialis_right.obj",
+  "mesh_file": "muscles/flexor_digitorum_superficialis_right.ply",
   "src_files": [
    "FJ1475",
    "FJ1499"
@@ -1530,7 +1530,7 @@
   "synonyms_en": [
    "FDP"
   ],
-  "mesh_file": "muscles/flexor_digitorum_profundus_left.obj"
+  "mesh_file": "muscles/flexor_digitorum_profundus_left.ply"
  },
  {
   "id": "flexor_digitorum_profundus_right",
@@ -1548,7 +1548,7 @@
   "synonyms_en": [
    "FDP"
   ],
-  "mesh_file": "muscles/flexor_digitorum_profundus_right.obj"
+  "mesh_file": "muscles/flexor_digitorum_profundus_right.ply"
  },
  {
   "id": "flexor_pollicis_longus_left",
@@ -1564,7 +1564,7 @@
   "synonyms_en": [
    "FPL"
   ],
-  "mesh_file": "muscles/flexor_pollicis_longus_left.obj"
+  "mesh_file": "muscles/flexor_pollicis_longus_left.ply"
  },
  {
   "id": "flexor_pollicis_longus_right",
@@ -1580,7 +1580,7 @@
   "synonyms_en": [
    "FPL"
   ],
-  "mesh_file": "muscles/flexor_pollicis_longus_right.obj"
+  "mesh_file": "muscles/flexor_pollicis_longus_right.ply"
  },
  {
   "id": "extensor_carpi_radialis_longus_left",
@@ -1598,7 +1598,7 @@
   "synonyms_en": [
    "ECRL"
   ],
-  "mesh_file": "muscles/extensor_carpi_radialis_longus_left.obj"
+  "mesh_file": "muscles/extensor_carpi_radialis_longus_left.ply"
  },
  {
   "id": "extensor_carpi_radialis_longus_right",
@@ -1616,7 +1616,7 @@
   "synonyms_en": [
    "ECRL"
   ],
-  "mesh_file": "muscles/extensor_carpi_radialis_longus_right.obj"
+  "mesh_file": "muscles/extensor_carpi_radialis_longus_right.ply"
  },
  {
   "id": "extensor_carpi_radialis_brevis_left",
@@ -1634,7 +1634,7 @@
   "synonyms_en": [
    "ECRB"
   ],
-  "mesh_file": "muscles/extensor_carpi_radialis_brevis_left.obj"
+  "mesh_file": "muscles/extensor_carpi_radialis_brevis_left.ply"
  },
  {
   "id": "extensor_carpi_radialis_brevis_right",
@@ -1652,7 +1652,7 @@
   "synonyms_en": [
    "ECRB"
   ],
-  "mesh_file": "muscles/extensor_carpi_radialis_brevis_right.obj"
+  "mesh_file": "muscles/extensor_carpi_radialis_brevis_right.ply"
  },
  {
   "id": "extensor_digitorum_left",
@@ -1670,7 +1670,7 @@
   "synonyms_en": [
    "extensor digitorum communis"
   ],
-  "mesh_file": "muscles/extensor_digitorum_left.obj"
+  "mesh_file": "muscles/extensor_digitorum_left.ply"
  },
  {
   "id": "extensor_digitorum_right",
@@ -1688,7 +1688,7 @@
   "synonyms_en": [
    "extensor digitorum communis"
   ],
-  "mesh_file": "muscles/extensor_digitorum_right.obj"
+  "mesh_file": "muscles/extensor_digitorum_right.ply"
  },
  {
   "id": "extensor_digiti_minimi_left",
@@ -1704,7 +1704,7 @@
    "extenseur propre du 5e doigt"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/extensor_digiti_minimi_left.obj"
+  "mesh_file": "muscles/extensor_digiti_minimi_left.ply"
  },
  {
   "id": "extensor_digiti_minimi_right",
@@ -1720,7 +1720,7 @@
    "extenseur propre du 5e doigt"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/extensor_digiti_minimi_right.obj"
+  "mesh_file": "muscles/extensor_digiti_minimi_right.ply"
  },
  {
   "id": "extensor_carpi_ulnaris_left",
@@ -1738,7 +1738,7 @@
   "synonyms_en": [
    "ECU"
   ],
-  "mesh_file": "muscles/extensor_carpi_ulnaris_left.obj",
+  "mesh_file": "muscles/extensor_carpi_ulnaris_left.ply",
   "src_files": [
    "FJ1472M",
    "FJ1517M"
@@ -1760,7 +1760,7 @@
   "synonyms_en": [
    "ECU"
   ],
-  "mesh_file": "muscles/extensor_carpi_ulnaris_right.obj",
+  "mesh_file": "muscles/extensor_carpi_ulnaris_right.ply",
   "src_files": [
    "FJ1472",
    "FJ1517"
@@ -1780,7 +1780,7 @@
    "extenseur propre de l'index"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/extensor_indicis_left.obj"
+  "mesh_file": "muscles/extensor_indicis_left.ply"
  },
  {
   "id": "extensor_indicis_right",
@@ -1796,7 +1796,7 @@
    "extenseur propre de l'index"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/extensor_indicis_right.obj"
+  "mesh_file": "muscles/extensor_indicis_right.ply"
  },
  {
   "id": "extensor_pollicis_brevis_left",
@@ -1810,7 +1810,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/extensor_pollicis_brevis_left.obj"
+  "mesh_file": "muscles/extensor_pollicis_brevis_left.ply"
  },
  {
   "id": "extensor_pollicis_brevis_right",
@@ -1824,7 +1824,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/extensor_pollicis_brevis_right.obj"
+  "mesh_file": "muscles/extensor_pollicis_brevis_right.ply"
  },
  {
   "id": "extensor_pollicis_longus_left",
@@ -1838,7 +1838,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/extensor_pollicis_longus_left.obj"
+  "mesh_file": "muscles/extensor_pollicis_longus_left.ply"
  },
  {
   "id": "extensor_pollicis_longus_right",
@@ -1852,7 +1852,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/extensor_pollicis_longus_right.obj"
+  "mesh_file": "muscles/extensor_pollicis_longus_right.ply"
  },
  {
   "id": "abductor_pollicis_longus_left",
@@ -1868,7 +1868,7 @@
    "grand abducteur du pouce"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/abductor_pollicis_longus_left.obj"
+  "mesh_file": "muscles/abductor_pollicis_longus_left.ply"
  },
  {
   "id": "abductor_pollicis_longus_right",
@@ -1884,7 +1884,7 @@
    "grand abducteur du pouce"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/abductor_pollicis_longus_right.obj"
+  "mesh_file": "muscles/abductor_pollicis_longus_right.ply"
  },
  {
   "id": "abductor_pollicis_brevis_left",
@@ -1898,7 +1898,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/abductor_pollicis_brevis_left.obj"
+  "mesh_file": "muscles/abductor_pollicis_brevis_left.ply"
  },
  {
   "id": "abductor_pollicis_brevis_right",
@@ -1912,7 +1912,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/abductor_pollicis_brevis_right.obj"
+  "mesh_file": "muscles/abductor_pollicis_brevis_right.ply"
  },
  {
   "id": "opponens_pollicis_left",
@@ -1926,7 +1926,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/opponens_pollicis_left.obj"
+  "mesh_file": "muscles/opponens_pollicis_left.ply"
  },
  {
   "id": "opponens_pollicis_right",
@@ -1940,7 +1940,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/opponens_pollicis_right.obj"
+  "mesh_file": "muscles/opponens_pollicis_right.ply"
  },
  {
   "id": "flexor_pollicis_brevis_left",
@@ -1954,7 +1954,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/flexor_pollicis_brevis_left.obj",
+  "mesh_file": "muscles/flexor_pollicis_brevis_left.ply",
   "src_files": [
    "FJ1469M",
    "FJ1514M"
@@ -1972,7 +1972,7 @@
   "layer": "superficial",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/flexor_pollicis_brevis_right.obj",
+  "mesh_file": "muscles/flexor_pollicis_brevis_right.ply",
   "src_files": [
    "FJ1469",
    "FJ1514"
@@ -1990,7 +1990,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/adductor_pollicis_left.obj",
+  "mesh_file": "muscles/adductor_pollicis_left.ply",
   "src_files": [
    "FJ1481M",
    "FJ1515M"
@@ -2008,7 +2008,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/adductor_pollicis_right.obj",
+  "mesh_file": "muscles/adductor_pollicis_right.ply",
   "src_files": [
    "FJ1481",
    "FJ1515"
@@ -2035,7 +2035,7 @@
    "glutes",
    "gluteus"
   ],
-  "mesh_file": "muscles/gluteus_maximus_left.obj"
+  "mesh_file": "muscles/gluteus_maximus_left.ply"
  },
  {
   "id": "gluteus_maximus_right",
@@ -2058,7 +2058,7 @@
    "glutes",
    "gluteus"
   ],
-  "mesh_file": "muscles/gluteus_maximus_right.obj"
+  "mesh_file": "muscles/gluteus_maximus_right.ply"
  },
  {
   "id": "gluteus_medius_left",
@@ -2076,7 +2076,7 @@
   "synonyms_en": [
    "glute med"
   ],
-  "mesh_file": "muscles/gluteus_medius_left.obj"
+  "mesh_file": "muscles/gluteus_medius_left.ply"
  },
  {
   "id": "gluteus_medius_right",
@@ -2094,7 +2094,7 @@
   "synonyms_en": [
    "glute med"
   ],
-  "mesh_file": "muscles/gluteus_medius_right.obj"
+  "mesh_file": "muscles/gluteus_medius_right.ply"
  },
  {
   "id": "gluteus_minimus_left",
@@ -2112,7 +2112,7 @@
   "synonyms_en": [
    "glute min"
   ],
-  "mesh_file": "muscles/gluteus_minimus_left.obj"
+  "mesh_file": "muscles/gluteus_minimus_left.ply"
  },
  {
   "id": "gluteus_minimus_right",
@@ -2130,7 +2130,7 @@
   "synonyms_en": [
    "glute min"
   ],
-  "mesh_file": "muscles/gluteus_minimus_right.obj"
+  "mesh_file": "muscles/gluteus_minimus_right.ply"
  },
  {
   "id": "piriformis_left",
@@ -2149,7 +2149,7 @@
   "synonyms_en": [
    "pyriformis"
   ],
-  "mesh_file": "muscles/piriformis_left.obj"
+  "mesh_file": "muscles/piriformis_left.ply"
  },
  {
   "id": "piriformis_right",
@@ -2168,7 +2168,7 @@
   "synonyms_en": [
    "pyriformis"
   ],
-  "mesh_file": "muscles/piriformis_right.obj"
+  "mesh_file": "muscles/piriformis_right.ply"
  },
  {
   "id": "obturator_internus_left",
@@ -2182,7 +2182,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/obturator_internus_left.obj"
+  "mesh_file": "muscles/obturator_internus_left.ply"
  },
  {
   "id": "obturator_internus_right",
@@ -2196,7 +2196,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/obturator_internus_right.obj"
+  "mesh_file": "muscles/obturator_internus_right.ply"
  },
  {
   "id": "quadratus_femoris_left",
@@ -2212,7 +2212,7 @@
    "carré crural"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/quadratus_femoris_left.obj"
+  "mesh_file": "muscles/quadratus_femoris_left.ply"
  },
  {
   "id": "quadratus_femoris_right",
@@ -2228,7 +2228,7 @@
    "carré crural"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/quadratus_femoris_right.obj"
+  "mesh_file": "muscles/quadratus_femoris_right.ply"
  },
  {
   "id": "iliacus_left",
@@ -2244,7 +2244,7 @@
    "muscle iliaque"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/iliacus_left.obj"
+  "mesh_file": "muscles/iliacus_left.ply"
  },
  {
   "id": "iliacus_right",
@@ -2260,7 +2260,7 @@
    "muscle iliaque"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/iliacus_right.obj"
+  "mesh_file": "muscles/iliacus_right.ply"
  },
  {
   "id": "psoas_major_left",
@@ -2278,7 +2278,7 @@
   "synonyms_en": [
    "psoas"
   ],
-  "mesh_file": "muscles/psoas_major_left.obj"
+  "mesh_file": "muscles/psoas_major_left.ply"
  },
  {
   "id": "psoas_major_right",
@@ -2296,7 +2296,7 @@
   "synonyms_en": [
    "psoas"
   ],
-  "mesh_file": "muscles/psoas_major_right.obj"
+  "mesh_file": "muscles/psoas_major_right.ply"
  },
  {
   "id": "pectineus_left",
@@ -2310,7 +2310,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/pectineus_left.obj"
+  "mesh_file": "muscles/pectineus_left.ply"
  },
  {
   "id": "pectineus_right",
@@ -2324,7 +2324,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/pectineus_right.obj"
+  "mesh_file": "muscles/pectineus_right.ply"
  },
  {
   "id": "gracilis_left",
@@ -2340,7 +2340,7 @@
    "droit interne"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/gracilis_left.obj"
+  "mesh_file": "muscles/gracilis_left.ply"
  },
  {
   "id": "gracilis_right",
@@ -2356,7 +2356,7 @@
    "droit interne"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/gracilis_right.obj"
+  "mesh_file": "muscles/gracilis_right.ply"
  },
  {
   "id": "sartorius_left",
@@ -2372,7 +2372,7 @@
    "couturier"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/sartorius_left.obj"
+  "mesh_file": "muscles/sartorius_left.ply"
  },
  {
   "id": "sartorius_right",
@@ -2388,7 +2388,7 @@
    "couturier"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/sartorius_right.obj"
+  "mesh_file": "muscles/sartorius_right.ply"
  },
  {
   "id": "rectus_femoris_left",
@@ -2405,7 +2405,7 @@
    "rectus femoris"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/rectus_femoris_left.obj"
+  "mesh_file": "muscles/rectus_femoris_left.ply"
  },
  {
   "id": "rectus_femoris_right",
@@ -2422,7 +2422,7 @@
    "rectus femoris"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/rectus_femoris_right.obj"
+  "mesh_file": "muscles/rectus_femoris_right.ply"
  },
  {
   "id": "vastus_lateralis_left",
@@ -2441,7 +2441,7 @@
   "synonyms_en": [
    "vastus externus"
   ],
-  "mesh_file": "muscles/vastus_lateralis_left.obj"
+  "mesh_file": "muscles/vastus_lateralis_left.ply"
  },
  {
   "id": "vastus_lateralis_right",
@@ -2460,7 +2460,7 @@
   "synonyms_en": [
    "vastus externus"
   ],
-  "mesh_file": "muscles/vastus_lateralis_right.obj"
+  "mesh_file": "muscles/vastus_lateralis_right.ply"
  },
  {
   "id": "vastus_medialis_left",
@@ -2479,7 +2479,7 @@
   "synonyms_en": [
    "vastus internus"
   ],
-  "mesh_file": "muscles/vastus_medialis_left.obj"
+  "mesh_file": "muscles/vastus_medialis_left.ply"
  },
  {
   "id": "vastus_medialis_right",
@@ -2498,7 +2498,7 @@
   "synonyms_en": [
    "vastus internus"
   ],
-  "mesh_file": "muscles/vastus_medialis_right.obj"
+  "mesh_file": "muscles/vastus_medialis_right.ply"
  },
  {
   "id": "vastus_intermedius_left",
@@ -2515,7 +2515,7 @@
    "vastus intermedius"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/vastus_intermedius_left.obj"
+  "mesh_file": "muscles/vastus_intermedius_left.ply"
  },
  {
   "id": "vastus_intermedius_right",
@@ -2532,7 +2532,7 @@
    "vastus intermedius"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/vastus_intermedius_right.obj"
+  "mesh_file": "muscles/vastus_intermedius_right.ply"
  },
  {
   "id": "adductor_longus_left",
@@ -2548,7 +2548,7 @@
    "moyen adducteur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/adductor_longus_left.obj"
+  "mesh_file": "muscles/adductor_longus_left.ply"
  },
  {
   "id": "adductor_longus_right",
@@ -2564,7 +2564,7 @@
    "moyen adducteur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/adductor_longus_right.obj"
+  "mesh_file": "muscles/adductor_longus_right.ply"
  },
  {
   "id": "adductor_brevis_left",
@@ -2580,7 +2580,7 @@
    "petit adducteur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/adductor_brevis_left.obj"
+  "mesh_file": "muscles/adductor_brevis_left.ply"
  },
  {
   "id": "adductor_brevis_right",
@@ -2596,7 +2596,7 @@
    "petit adducteur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/adductor_brevis_right.obj"
+  "mesh_file": "muscles/adductor_brevis_right.ply"
  },
  {
   "id": "adductor_magnus_left",
@@ -2610,7 +2610,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/adductor_magnus_left.obj"
+  "mesh_file": "muscles/adductor_magnus_left.ply"
  },
  {
   "id": "adductor_magnus_right",
@@ -2624,7 +2624,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/adductor_magnus_right.obj"
+  "mesh_file": "muscles/adductor_magnus_right.ply"
  },
  {
   "id": "tensor_fasciae_latae_left",
@@ -2643,7 +2643,7 @@
   "synonyms_en": [
    "TFL"
   ],
-  "mesh_file": "muscles/tensor_fasciae_latae_left.obj"
+  "mesh_file": "muscles/tensor_fasciae_latae_left.ply"
  },
  {
   "id": "tensor_fasciae_latae_right",
@@ -2662,7 +2662,7 @@
   "synonyms_en": [
    "TFL"
   ],
-  "mesh_file": "muscles/tensor_fasciae_latae_right.obj"
+  "mesh_file": "muscles/tensor_fasciae_latae_right.ply"
  },
  {
   "id": "semimembranosus_left",
@@ -2678,7 +2678,7 @@
    "semimembraneux"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/semimembranosus_left.obj"
+  "mesh_file": "muscles/semimembranosus_left.ply"
  },
  {
   "id": "semimembranosus_right",
@@ -2694,7 +2694,7 @@
    "semimembraneux"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/semimembranosus_right.obj"
+  "mesh_file": "muscles/semimembranosus_right.ply"
  },
  {
   "id": "semitendinosus_left",
@@ -2710,7 +2710,7 @@
    "semitendineux"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/semitendinosus_left.obj"
+  "mesh_file": "muscles/semitendinosus_left.ply"
  },
  {
   "id": "semitendinosus_right",
@@ -2726,7 +2726,7 @@
    "semitendineux"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/semitendinosus_right.obj"
+  "mesh_file": "muscles/semitendinosus_right.ply"
  },
  {
   "id": "biceps_femoris_left",
@@ -2742,7 +2742,7 @@
    "biceps crural"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/biceps_femoris_left.obj",
+  "mesh_file": "muscles/biceps_femoris_left.ply",
   "src_files": [
    "FJ1395M",
    "FJ1444M"
@@ -2762,7 +2762,7 @@
    "biceps crural"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/biceps_femoris_right.obj",
+  "mesh_file": "muscles/biceps_femoris_right.ply",
   "src_files": [
    "FJ1395",
    "FJ1444"
@@ -2780,7 +2780,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/popliteus_left.obj"
+  "mesh_file": "muscles/popliteus_left.ply"
  },
  {
   "id": "popliteus_right",
@@ -2794,7 +2794,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/popliteus_right.obj"
+  "mesh_file": "muscles/popliteus_right.ply"
  },
  {
   "id": "plantaris_left",
@@ -2810,7 +2810,7 @@
    "plantaire grêle"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/plantaris_left.obj"
+  "mesh_file": "muscles/plantaris_left.ply"
  },
  {
   "id": "plantaris_right",
@@ -2826,7 +2826,7 @@
    "plantaire grêle"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/plantaris_right.obj"
+  "mesh_file": "muscles/plantaris_right.ply"
  },
  {
   "id": "gastrocnemius_left",
@@ -2847,7 +2847,7 @@
    "gastroc",
    "gastrocnemii"
   ],
-  "mesh_file": "muscles/gastrocnemius_left.obj",
+  "mesh_file": "muscles/gastrocnemius_left.ply",
   "src_files": [
    "FJ1394M",
    "FJ1397M"
@@ -2872,7 +2872,7 @@
    "gastroc",
    "gastrocnemii"
   ],
-  "mesh_file": "muscles/gastrocnemius_right.obj",
+  "mesh_file": "muscles/gastrocnemius_right.ply",
   "src_files": [
    "FJ1394",
    "FJ1397"
@@ -2890,7 +2890,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/soleus_left.obj"
+  "mesh_file": "muscles/soleus_left.ply"
  },
  {
   "id": "soleus_right",
@@ -2904,7 +2904,7 @@
   "layer": "deep",
   "synonyms_fr": [],
   "synonyms_en": [],
-  "mesh_file": "muscles/soleus_right.obj"
+  "mesh_file": "muscles/soleus_right.ply"
  },
  {
   "id": "tibialis_anterior_left",
@@ -2920,7 +2920,7 @@
    "jambier antérieur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/tibialis_anterior_left.obj"
+  "mesh_file": "muscles/tibialis_anterior_left.ply"
  },
  {
   "id": "tibialis_anterior_right",
@@ -2936,7 +2936,7 @@
    "jambier antérieur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/tibialis_anterior_right.obj"
+  "mesh_file": "muscles/tibialis_anterior_right.ply"
  },
  {
   "id": "tibialis_posterior_left",
@@ -2952,7 +2952,7 @@
    "jambier postérieur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/tibialis_posterior_left.obj"
+  "mesh_file": "muscles/tibialis_posterior_left.ply"
  },
  {
   "id": "tibialis_posterior_right",
@@ -2968,7 +2968,7 @@
    "jambier postérieur"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/tibialis_posterior_right.obj"
+  "mesh_file": "muscles/tibialis_posterior_right.ply"
  },
  {
   "id": "extensor_digitorum_longus_left",
@@ -2986,7 +2986,7 @@
   "synonyms_en": [
    "EDL"
   ],
-  "mesh_file": "muscles/extensor_digitorum_longus_left.obj"
+  "mesh_file": "muscles/extensor_digitorum_longus_left.ply"
  },
  {
   "id": "extensor_digitorum_longus_right",
@@ -3004,7 +3004,7 @@
   "synonyms_en": [
    "EDL"
   ],
-  "mesh_file": "muscles/extensor_digitorum_longus_right.obj"
+  "mesh_file": "muscles/extensor_digitorum_longus_right.ply"
  },
  {
   "id": "extensor_hallucis_longus_left",
@@ -3023,7 +3023,7 @@
   "synonyms_en": [
    "EHL"
   ],
-  "mesh_file": "muscles/extensor_hallucis_longus_left.obj"
+  "mesh_file": "muscles/extensor_hallucis_longus_left.ply"
  },
  {
   "id": "extensor_hallucis_longus_right",
@@ -3042,7 +3042,7 @@
   "synonyms_en": [
    "EHL"
   ],
-  "mesh_file": "muscles/extensor_hallucis_longus_right.obj"
+  "mesh_file": "muscles/extensor_hallucis_longus_right.ply"
  },
  {
   "id": "fibularis_longus_left",
@@ -3061,7 +3061,7 @@
   "synonyms_en": [
    "peroneus longus"
   ],
-  "mesh_file": "muscles/fibularis_longus_left.obj"
+  "mesh_file": "muscles/fibularis_longus_left.ply"
  },
  {
   "id": "fibularis_longus_right",
@@ -3080,7 +3080,7 @@
   "synonyms_en": [
    "peroneus longus"
   ],
-  "mesh_file": "muscles/fibularis_longus_right.obj"
+  "mesh_file": "muscles/fibularis_longus_right.ply"
  },
  {
   "id": "fibularis_brevis_left",
@@ -3099,7 +3099,7 @@
   "synonyms_en": [
    "peroneus brevis"
   ],
-  "mesh_file": "muscles/fibularis_brevis_left.obj"
+  "mesh_file": "muscles/fibularis_brevis_left.ply"
  },
  {
   "id": "fibularis_brevis_right",
@@ -3118,7 +3118,7 @@
   "synonyms_en": [
    "peroneus brevis"
   ],
-  "mesh_file": "muscles/fibularis_brevis_right.obj"
+  "mesh_file": "muscles/fibularis_brevis_right.ply"
  },
  {
   "id": "fibularis_tertius_left",
@@ -3137,7 +3137,7 @@
   "synonyms_en": [
    "peroneus tertius"
   ],
-  "mesh_file": "muscles/fibularis_tertius_left.obj"
+  "mesh_file": "muscles/fibularis_tertius_left.ply"
  },
  {
   "id": "fibularis_tertius_right",
@@ -3156,7 +3156,7 @@
   "synonyms_en": [
    "peroneus tertius"
   ],
-  "mesh_file": "muscles/fibularis_tertius_right.obj"
+  "mesh_file": "muscles/fibularis_tertius_right.ply"
  },
  {
   "id": "flexor_digitorum_longus_left",
@@ -3174,7 +3174,7 @@
   "synonyms_en": [
    "FDL"
   ],
-  "mesh_file": "muscles/flexor_digitorum_longus_left.obj"
+  "mesh_file": "muscles/flexor_digitorum_longus_left.ply"
  },
  {
   "id": "flexor_digitorum_longus_right",
@@ -3192,7 +3192,7 @@
   "synonyms_en": [
    "FDL"
   ],
-  "mesh_file": "muscles/flexor_digitorum_longus_right.obj"
+  "mesh_file": "muscles/flexor_digitorum_longus_right.ply"
  },
  {
   "id": "flexor_hallucis_longus_left",
@@ -3211,7 +3211,7 @@
   "synonyms_en": [
    "FHL"
   ],
-  "mesh_file": "muscles/flexor_hallucis_longus_left.obj"
+  "mesh_file": "muscles/flexor_hallucis_longus_left.ply"
  },
  {
   "id": "flexor_hallucis_longus_right",
@@ -3230,7 +3230,7 @@
   "synonyms_en": [
    "FHL"
   ],
-  "mesh_file": "muscles/flexor_hallucis_longus_right.obj"
+  "mesh_file": "muscles/flexor_hallucis_longus_right.ply"
  },
  {
   "id": "abductor_hallucis_left",
@@ -3246,7 +3246,7 @@
    "abducteur du gros orteil"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/abductor_hallucis_left.obj"
+  "mesh_file": "muscles/abductor_hallucis_left.ply"
  },
  {
   "id": "abductor_hallucis_right",
@@ -3262,6 +3262,6 @@
    "abducteur du gros orteil"
   ],
   "synonyms_en": [],
-  "mesh_file": "muscles/abductor_hallucis_right.obj"
+  "mesh_file": "muscles/abductor_hallucis_right.ply"
  }
 ]

@@ -5,6 +5,12 @@ Lit ``anatomy_bones.json`` et/ou ``anatomy_muscles.json``, retrouve pour chaque
 entrée le(s) fichier(s) ``FJ*.obj`` correspondant(s), décime au besoin et écrit
 ``data/<mesh_file>`` (``bones_full/`` pour les os, ``muscles/`` pour les muscles).
 
+Format de sortie : PLY binaire little-endian (défaut, ``--format ply``) ou OBJ
+texte (``--format obj``).  L'extension du fichier écrit suit le format choisi,
+quelle que soit l'extension indiquée par ``mesh_file`` dans le JSON.  Pour
+simplement récupérer les meshes déjà publiés, utiliser plutôt
+``python scripts/fetch_meshes.py``.
+
 ATTENTION : le numéro dans ``FJxxxx.obj`` n'est PAS le numéro FMA.  Le concept
 FMA est dans l'en-tête de chaque fichier (``# Concept ID : FMA13039``), c'est
 donc l'en-tête qui est indexé.  Plusieurs fichiers peuvent porter le même FMA :
@@ -21,6 +27,7 @@ Exemples ::
     python scripts/import_bp3d.py --kind bone
     python scripts/import_bp3d.py --kind all --target-faces 10000
     python scripts/import_bp3d.py --kind muscle --dry-run
+    python scripts/import_bp3d.py --kind bone --format obj
 
 BodyParts3D, © The Database Center for Life Science, licensed under
 CC Attribution-Share Alike 2.1 Japan.
@@ -34,6 +41,9 @@ import sys
 from pathlib import Path
 
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _meshio import write_ply  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[1]
 DATA_DIR = REPO / "src" / "bonylandmarks" / "data"
@@ -190,7 +200,10 @@ def main(argv: list[str] | None = None) -> int:
                     help="nombre max de triangles par structure (0 = pas de décimation) [15000]")
     ap.add_argument("--dry-run", action="store_true", help="résout les fichiers sans rien écrire")
     ap.add_argument("--force", action="store_true", help="réécrit les fichiers déjà présents")
-    ap.add_argument("--no-normals", action="store_true", help="n'écrit pas les normales (fichiers plus légers)")
+    ap.add_argument("--format", choices=("ply", "obj"), default="ply",
+                    help="format de sortie [défaut: ply = binaire little-endian]")
+    ap.add_argument("--no-normals", action="store_true",
+                    help="(--format obj) n'écrit pas les normales (fichiers plus légers)")
     args = ap.parse_args(argv)
 
     for stream in (sys.stdout, sys.stderr):
@@ -221,13 +234,14 @@ def main(argv: list[str] | None = None) -> int:
             if not srcs:
                 missing.append(label)
                 continue
-            dest = DATA_DIR / e["mesh_file"]
+            dest = (DATA_DIR / e["mesh_file"]).with_suffix(f".{args.format}")
+            dest_rel = dest.relative_to(DATA_DIR).as_posix()
             if dest.is_file() and not args.force and not args.dry_run:
                 skipped += 1
                 total_bytes += dest.stat().st_size
                 continue
             if args.dry_run:
-                print(f"  {label} <- {'+'.join(s['stem'] for s in srcs)} -> {e['mesh_file']}")
+                print(f"  {label} <- {'+'.join(s['stem'] for s in srcs)} -> {dest_rel}")
                 continue
             try:
                 verts, faces = load_merged([s["path"] for s in srcs])
@@ -241,7 +255,10 @@ def main(argv: list[str] | None = None) -> int:
                     "Source files : " + ", ".join(s["stem"] for s in srcs),
                     f"Faces : {len(faces)} (source: {n0}); coordinates: original BodyParts3D (mm)",
                 ]
-                write_obj(dest, verts, faces, header, normals=not args.no_normals)
+                if args.format == "ply":
+                    write_ply(dest, verts, faces, header)
+                else:
+                    write_obj(dest, verts, faces, header, normals=not args.no_normals)
                 written += 1
                 total_bytes += dest.stat().st_size
             except Exception as exc:  # un mesh défectueux ne doit pas arrêter le lot
