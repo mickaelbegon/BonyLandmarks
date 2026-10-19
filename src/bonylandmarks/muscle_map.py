@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -150,19 +151,38 @@ def find_bp3d_dir() -> Path | None:
     return None
 
 
+def _index_cache_path() -> Path:
+    return Path.home() / ".bonylandmarks" / "bp3d_muscle_index.json"
+
+
+def _dir_signature(bp3d_dir: Path) -> dict:
+    files = list(bp3d_dir.glob("FJ*.obj"))
+    newest = max((f.stat().st_mtime_ns for f in files), default=0)
+    return {"dir": str(bp3d_dir), "count": len(files), "newest": newest}
+
+
 def build_muscle_index(bp3d_dir: Path) -> dict[int, Path]:
     """Construit le mapping FMA concept ID → chemin OBJ en scannant les en-têtes.
 
-    Lit uniquement les premières lignes de chaque fichier OBJ pour
-    extraire le Concept ID sans charger tout le fichier.
+    Lit uniquement les premières lignes de chaque fichier OBJ ; le résultat est
+    mis en cache dans ``~/.bonylandmarks/`` (invalidé si le dossier change),
+    car le scan des ~2200 fichiers prend plusieurs secondes.
     """
+    sig = _dir_signature(bp3d_dir)
+    cache = _index_cache_path()
+    try:
+        data = json.loads(cache.read_text(encoding="utf-8"))
+        if data.get("signature") == sig:
+            return {int(k): Path(v) for k, v in data["index"].items()}
+    except (OSError, ValueError, KeyError):
+        pass
+
     index: dict[int, Path] = {}
     for obj_path in sorted(bp3d_dir.glob("FJ*.obj")):
         try:
             with obj_path.open(encoding="utf-8", errors="replace") as fh:
                 for i, line in enumerate(fh):
                     if i >= 20:
-                        # Headers are in the first ~5 lines; bail out early
                         break
                     m = _CONCEPT_RE.match(line)
                     if m:
@@ -173,6 +193,15 @@ def build_muscle_index(bp3d_dir: Path) -> dict[int, Path]:
                         break
         except OSError:
             continue
+
+    try:
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_text(
+            json.dumps({"signature": sig, "index": {str(k): str(v) for k, v in index.items()}}),
+            encoding="utf-8",
+        )
+    except OSError:
+        pass
     return index
 
 
